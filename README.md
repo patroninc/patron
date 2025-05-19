@@ -5,14 +5,16 @@
 
 # PATRON
 
+See [/astrobits](/astrobits) if you are interested in the component library.
+
 I have been a daily active Patreon user for the past 7 years and have always thought the experience was subpar. Particularly for serialized content. I think it's finally time to do something about it!
 
 I will be building an open source Patreon alternative in public over the course of the next 100 days. My goal is to finish a MVP in time to buy a few billboards around when Dragon Con happens Labor Day in Atlanta, Georga. Wish me luck and maybe consider contributing if you wish.
 
 ## 100 Day Plan (Start 05/12)
 
-- [ ] Day 1-3: Secure patron.com or a similar domain.
-- [ ] Day 4-10: Launch a neo-brutalist, 8/16-bit styled website with a waitlist offering lifetime low fees (<5%).
+- [x] Day 1-3: Secure patron.com or a similar domain.
+- [ ] Day 4-10: Launch a neo-brutalist, 8/16-bit styled website with a waitlist offering lifetime low fees (<5%). - **in progress**
 - [ ] Day 11-14: Write a compelling blog post explaining the vision behind building a Patreon competitor.
 - [ ] Day 15-17: Share the blog on targeted platforms like HackerNews, r/progressionfantasy, and r/hfy where I have recognition.
 - [ ] Day 18-30: Grow the waitlist by promoting the project and engaging with potential users specifically in the writing category that uses Patreon.
