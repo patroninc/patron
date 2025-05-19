@@ -1,6 +1,8 @@
 {
   "extends": "stylelint-config-standard",
-  "plugins": ["stylelint-selector-bem-pattern"],
+  "plugins": [
+    "stylelint-selector-bem-pattern"
+  ],
   "rules": {
     "plugin/selector-bem-pattern": {
       "preset": "bem",
@@ -23,6 +25,7 @@
     ],
     "number-max-precision": null,
     "at-rule-no-deprecated": null,
-    "at-rule-no-unknown": null
+    "at-rule-no-unknown": null,
+    "import-notation": null
   }
 }
