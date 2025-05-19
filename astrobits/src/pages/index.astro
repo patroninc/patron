@@ -1,6 +1,32 @@
 ---
 import "../styles/global.css";
 import Button from "../components/Button/Button.astro";
+import Card from "../components/Card/Card.astro";
+import { getCollection } from "astro:content";
+
+type ButtonVariant = "primary" | "secondary-warm" | "secondary-neutral";
+
+const components = {
+  Button: {
+    variants: [
+      { name: "primary" as ButtonVariant, component: Button },
+      {
+        name: "secondary-warm" as ButtonVariant,
+        component: Button,
+      },
+      {
+        name: "secondary-neutral" as ButtonVariant,
+        component: Button,
+      },
+    ],
+  },
+  Card: {
+    variants: [{ component: Card }],
+  },
+};
+
+const allComponents = await getCollection("components");
+console.log(allComponents);
 ---
 
 <html lang="en">
@@ -9,49 +35,57 @@ import Button from "../components/Button/Button.astro";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
+    <title>Astrobit component library</title>
   </head>
-  <body>
-    <div>
-      <h3 class="abtw:text-2xl">Buttons</h3>
-      <div>
-        <p>Primary:</p>
-        <div style="margin: 2rem;">
-          <Button variant="primary">Click Me</Button>
-        </div>
-        <div style="margin: 2rem;">
-          <Button variant="primary" disabled>Click Me</Button>
-        </div>
-      </div>
+  <body class="astrobit-body abtw:container abtw:mx-auto abtw:px-4 abtw:py-8">
+    <header
+      class="abtw:mb-32 abtw:text-center abtw:gap-4 abtw:flex abtw:flex-col"
+    >
+      <h1 class="abtw:text-6xl abtw:font-bold">Astrobit component library</h1>
+      <p class="abtw:text-4xl abtw:font-medium">
+        Explore the components available in this library.
+      </p>
+    </header>
 
-      <div>
-        <p>Secondary Neutral:</p>
-        <div style="margin: 2rem;">
-          <Button variant="secondary-neutral">Click Me</Button>
-        </div>
-        <div style="margin: 2rem;">
-          <Button variant="secondary-neutral" disabled>Click Me</Button>
-        </div>
-      </div>
-
-      <div>
-        <p>Secondary Warm:</p>
-        <div style="margin: 2rem;">
-          <Button variant="secondary-warm">Click Me</Button>
-        </div>
-        <div style="margin: 2rem;">
-          <Button variant="secondary-warm" disabled>Click Me</Button>
-        </div>
-      </div>
-
-      <div class="abtw:flex abtw:gap-8 abtw:m-8">
-        <div>
-          <Button variant="primary">Click Me</Button>
-        </div>
-        <div>
-          <Button variant="secondary-warm" disabled>Click Me</Button>
-        </div>
-      </div>
-    </div>
+    <main class="abtw:max-w-9/10 abtw:mx-auto">
+      <section
+        class="abtw:grid abtw:md:grid-cols-3 abtw:sm:grid-cols-2 abtw:gap-8 abtw:grid-cols-1"
+      >
+        {
+          allComponents.map((component) => (
+            <a
+              href={`/component/${component.data.slug}`}
+              class="abtw:group abtw:transition-all abtw:hover:-translate-y-4 abtw:duration-300"
+              aria-label={component.data.title}
+            >
+              <Card>
+                <div class="abtw:flex abtw:flex-col abtw:h-full">
+                  {Object.entries(components).map(([name, { variants }]) => {
+                    return component.data.title == name ? (
+                      <div class="abtw:flex abtw:flex-col abtw:gap-8 abtw:px-12 abtw:pt-4 abtw:h-full abtw:flex-1 abtw:flex-grow">
+                        {variants.map((variant) => {
+                          const Component = variant.component;
+                          const variantName =
+                            "name" in variant ? variant.name : undefined;
+                          return (
+                            <Component variant={variantName}>
+                              {variantName ? variantName : name}
+                            </Component>
+                          );
+                        })}
+                      </div>
+                    ) : null;
+                  })}
+                  <h2 class="abtw:text-2xl abtw:mt-8 abtw:mb-0 abtw:group-hover:text-[var(--astrobit-primary)] abtw:underline">
+                    {component.data.title}
+                  </h2>
+                  <p class="abtw:text-lg">{component.data.description}</p>
+                </div>
+              </Card>
+            </a>
+          ))
+        }
+      </section>
+    </main>
   </body>
 </html>
