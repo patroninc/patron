@@ -26,7 +26,6 @@ const components = {
 };
 
 const allComponents = await getCollection("components");
-console.log(allComponents);
 ---
 
 <html lang="en">
@@ -35,7 +34,8 @@ console.log(allComponents);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astrobit component library</title>
+    <script defer data-domain="astrobits.dev" src="https://plausible.trieve.ai/js/script.js"></script>
+    <title>Astrobits component library</title>
   </head>
   <body class="astrobit-body abtw:container abtw:mx-auto abtw:px-4 abtw:py-8">
     <header
