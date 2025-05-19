@@ -1,6 +1,6 @@
 # Astrobits
 
-![astrobits-preview-image](./astrobit-component-library.png)
+![astrobits-preview-image](https://patroninc.b-cdn.net/astrobit-component-library.png)
 
 ```sh
 yarn add astrobits

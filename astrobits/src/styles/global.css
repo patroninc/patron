@@ -56,6 +56,6 @@ html {
   background-color: color-mix(
     in oklab,
     var(--astrobit-warm-accent),
-    transparent 50%
+    transparent 70%
   );
 }
