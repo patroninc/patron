@@ -1,0 +1,48 @@
+---
+import "../styles/global.css";
+import Button from "../components/Button/Button.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <div>
+      <h3 class="abtw:text-2xl">Buttons</h3>
+      <div>
+        <p>Primary:</p>
+        <div style="margin: 2rem;">
+          <Button variant="primary">Click Me</Button>
+        </div>
+        <div style="margin: 2rem;">
+          <Button variant="primary" disabled>Click Me</Button>
+        </div>
+      </div>
+
+      <div>
+        <p>Secondary Neutral:</p>
+        <div style="margin: 2rem;">
+          <Button variant="secondary-neutral">Click Me</Button>
+        </div>
+        <div style="margin: 2rem;">
+          <Button variant="secondary-neutral" disabled>Click Me</Button>
+        </div>
+      </div>
+
+      <div>
+        <p>Secondary Warm:</p>
+        <div style="margin: 2rem;">
+          <Button variant="secondary-warm">Click Me</Button>
+        </div>
+        <div style="margin: 2rem;">
+          <Button variant="secondary-warm" disabled>Click Me</Button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,69 @@
+@import "tailwindcss" prefix(abtw);
+
+.astrobit-button {
+  @apply abtw:px-2 abtw:py-0.5 abtw:text-lg;
+  position: relative;
+  display: inline-block;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-family: var(--astrobit-font-family);
+  text-decoration: none;
+  color: var(--astrobit-black);
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  vertical-align: middle;
+  outline: none;
+  border-image-source: url("../../assets/pixel-diamond.svg");
+  border-color: var(--astrobit-black);
+  border-image-outset: 2;
+  border-image-repeat: stretch;
+  border-image-slice: 3;
+  border-image-width: 2;
+  border-style: solid;
+  border-width: 5px;
+}
+
+.astrobit-button--primary {
+  background-color: var(--astrobit-primary);
+  color: var(--astrobit-warm-accent);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-warm-accent, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-primary, var(--astrobit-white));
+
+  &:active {
+    box-shadow:
+      2px 2px 0 2px var(--astrobit-primary, var(--astrobit-black)),
+      -2px -2px 0 2px var(--astrobit-warm-accent, var(--astrobit-white));
+  }
+}
+
+.astrobit-button--secondary-warm {
+  background-color: var(--astrobit-warm-accent);
+  color: var(--astrobit-black);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-primary, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-warm-accent, var(--astrobit-white));
+
+  &:active {
+    box-shadow:
+      2px 2px 0 2px var(--astrobit-warm-accent, var(--astrobit-black)),
+      -2px -2px 0 2px var(--astrobit-primary, var(--astrobit-white));
+  }
+}
+
+.astrobit-button--secondary-neutral {
+  background-color: var(--astrobit-neutral-accent);
+  color: var(--astrobit-black);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-primary, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-neutral-accent, var(--astrobit-white));
+
+  &:active {
+    box-shadow:
+      2px 2px 0 2px var(--astrobit-neutral-accent, var(--astrobit-black)),
+      -2px -2px 0 2px var(--astrobit-primary, var(--astrobit-white));
+  }
+}
