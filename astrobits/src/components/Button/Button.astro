@@ -1,5 +1,4 @@
 ---
-import "../../styles/global.css";
 import "./Button.css";
 interface Props {
   disabled?: boolean;
@@ -26,6 +25,4 @@ const { variant = "primary", disabled = false, type = "button" } = Astro.props;
   <span class="astrobit-button__content">
     <slot />
   </span>
-  <span class="astrobit-button__border astrobit-button__border--outer"></span>
-  <span class="astrobit-button__border astrobit-button__border--inner"></span>
 </button>

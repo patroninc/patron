@@ -45,8 +45,17 @@ html {
   --astrobit-neutral-accent-800: oklch(30.919% 0 none);
   --astrobit-neutral-accent-900: oklch(19.125% 0 none);
   --astrobit-neutral-accent-950: oklch(12.212% 0 none);
+  --astrobit-shadow: var(--astrobit-primary-950);
 }
 
 @theme {
   --font-sans: var(--astrobit-font-family);
+}
+
+.astrobit-body {
+  background-color: color-mix(
+    in oklab,
+    var(--astrobit-warm-accent),
+    transparent 50%
+  );
 }
