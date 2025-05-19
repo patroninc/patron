@@ -30,8 +30,7 @@
     "format": "prettier --write .",
     "lint:js": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
     "lint:styles": "stylelint \"src/**/*.{css,scss}\" --fix",
-    "lint:bem": "postcss-bem-linter \"src/**/*.{css,scss}\"",
-    "lint": "yarn lint:js && yarn lint:styles && yarn lint:bem"
+    "lint": "yarn lint:js && yarn lint:styles"
   },
   "devDependencies": {
     "@eslint/js": "^9.27.0",

@@ -1,43 +1,38 @@
 @import url("https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap");
-@import "tailwindcss" prefix(abtw);
+@import url("tailwindcss") prefix(abtw);
 
 html {
   font-family: var(--astrobit-font-family);
-}
-
-@theme {
-  --font-sans: var(--astrobit-font-family);
 }
 
 :root {
   --astrobit-font-family: "Pixelify Sans", sans-serif;
   --astrobit-white: #fff;
   --astrobit-black: oklch(21.779% 0 none);
-  --astrobit-primary: oklch(60.481% 0.21656 257.21);
-  --astrobit-primary-50: oklch(87.605% 0.06289 250.73);
-  --astrobit-primary-100: oklch(84.019% 0.08209 251);
-  --astrobit-primary-200: oklch(77.328% 0.11932 251.31);
-  --astrobit-primary-300: oklch(71.083% 0.15502 252.45);
-  --astrobit-primary-400: oklch(65.391% 0.18815 254.22);
-  --astrobit-primary-500: oklch(60.481% 0.21656 257.21);
-  --astrobit-primary-600: oklch(50.509% 0.17784 256.8);
-  --astrobit-primary-700: oklch(40.018% 0.13688 256.05);
-  --astrobit-primary-800: oklch(28.79% 0.0926 254.31);
-  --astrobit-primary-900: oklch(16.351% 0.04246 246.44);
-  --astrobit-primary-950: oklch(6.5534% 0.0175 247.65);
-  --astrobit-warm-accent: oklch(93.382% 0.02745 83.536);
-  --astrobit-warm-accent: oklch(93.382% 0.02745 83.536);
+  --astrobit-primary: oklch(60.481% 0.21656 257.21deg);
+  --astrobit-primary-50: oklch(87.605% 0.06289 250.73deg);
+  --astrobit-primary-100: oklch(84.019% 0.08209 251deg);
+  --astrobit-primary-200: oklch(77.328% 0.11932 251.31deg);
+  --astrobit-primary-300: oklch(71.083% 0.15502 252.45deg);
+  --astrobit-primary-400: oklch(65.391% 0.18815 254.22deg);
+  --astrobit-primary-500: oklch(60.481% 0.21656 257.21deg);
+  --astrobit-primary-600: oklch(50.509% 0.17784 256.8deg);
+  --astrobit-primary-700: oklch(40.018% 0.13688 256.05deg);
+  --astrobit-primary-800: oklch(28.79% 0.0926 254.31deg);
+  --astrobit-primary-900: oklch(16.351% 0.04246 246.44deg);
+  --astrobit-primary-950: oklch(6.5534% 0.0175 247.65deg);
+  --astrobit-warm-accent: oklch(93.382% 0.02745 83.536deg);
   --astrobit-warm-accent-50: oklch(100% 0 none);
   --astrobit-warm-accent-100: oklch(100% 0 none);
   --astrobit-warm-accent-200: oklch(100% 0 none);
   --astrobit-warm-accent-300: oklch(100% 0 none);
-  --astrobit-warm-accent-400: oklch(98.304% 0.00736 80.721);
-  --astrobit-warm-accent-500: oklch(93.382% 0.02745 83.536);
-  --astrobit-warm-accent-600: oklch(86.74% 0.05613 83.965);
-  --astrobit-warm-accent-700: oklch(79.839% 0.08281 83.355);
-  --astrobit-warm-accent-800: oklch(73.301% 0.10744 82.392);
-  --astrobit-warm-accent-900: oklch(64.566% 0.1084 80.369);
-  --astrobit-warm-accent-950: oklch(58.873% 0.09835 80.568);
+  --astrobit-warm-accent-400: oklch(98.304% 0.00736 80.721deg);
+  --astrobit-warm-accent-500: oklch(93.382% 0.02745 83.536deg);
+  --astrobit-warm-accent-600: oklch(86.74% 0.05613 83.965deg);
+  --astrobit-warm-accent-700: oklch(79.839% 0.08281 83.355deg);
+  --astrobit-warm-accent-800: oklch(73.301% 0.10744 82.392deg);
+  --astrobit-warm-accent-900: oklch(64.566% 0.1084 80.369deg);
+  --astrobit-warm-accent-950: oklch(58.873% 0.09835 80.568deg);
   --astrobit-neutral-accent: oklch(88.224% 0 none);
   --astrobit-neutral-accent-50: oklch(97.614% 0 none);
   --astrobit-neutral-accent-100: oklch(94.309% 0 none);
@@ -50,4 +45,8 @@ html {
   --astrobit-neutral-accent-800: oklch(30.919% 0 none);
   --astrobit-neutral-accent-900: oklch(19.125% 0 none);
   --astrobit-neutral-accent-950: oklch(12.212% 0 none);
+}
+
+@theme {
+  --font-sans: var(--astrobit-font-family);
 }

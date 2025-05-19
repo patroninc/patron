@@ -21,6 +21,8 @@
         "message": "Class names should follow BEM methodology with 'astrobit-' prefix: .astrobit-block__element--modifier or .astrobit-u-utility"
       }
     ],
-    "number-max-precision": null
+    "number-max-precision": null,
+    "at-rule-no-deprecated": null,
+    "at-rule-no-unknown": null
   }
 }

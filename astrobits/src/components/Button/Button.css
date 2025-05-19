@@ -1,7 +1,8 @@
-@import "tailwindcss" prefix(abtw);
+@import url("tailwindcss") prefix(abtw);
 
 .astrobit-button {
   @apply abtw:px-2 abtw:py-0.5 abtw:text-lg;
+
   position: relative;
   display: inline-block;
   border: none;
@@ -16,12 +17,8 @@
   user-select: none;
   vertical-align: middle;
   outline: none;
-  border-image-source: url("../../assets/pixel-diamond.svg");
+  border-image: url("../../assets/pixel-diamond.svg") 3 2 2 stretch;
   border-color: var(--astrobit-black);
-  border-image-outset: 2;
-  border-image-repeat: stretch;
-  border-image-slice: 3;
-  border-image-width: 2;
   border-style: solid;
   border-width: 5px;
 }
