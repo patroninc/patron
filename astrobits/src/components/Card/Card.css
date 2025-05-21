@@ -9,7 +9,7 @@
 }
 
 .astrobit-card {
-  @apply abtw:p-4;
+  @apply abtw:p-4 abtw:-ml-1.5;
 
   height: 100%;
   z-index: -1;

@@ -1,0 +1,59 @@
+---
+import { getCollection, render } from "astro:content";
+import PageLayout from "../../../layouts/PageLayout.astro";
+import Button from "../../../components/Button/Button.astro";
+import "./index.css";
+import Card from "../../../components/Card/Card.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("components");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, description, date } = entry.data;
+
+// Format the publication date if it exists
+const formattedDate = date
+  ? new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  : null;
+---
+
+<PageLayout
+  title={title}
+  description={description}
+  type="article"
+  showHeader={false}
+>
+  <article class="abtw:prose abtw:max-w-none abtw:mx-auto">
+    <header class="abtw:mb-8">
+      <h1 class="abtw:text-6xl abtw:font-bold abtw:mb-4">{title}</h1>
+      {
+        description && (
+          <p class="abtw:text-xl abtw:text-gray-600 abtw:mb-4">{description}</p>
+        )
+      }
+      {
+        formattedDate && (
+          <time class="abtw:text-gray-500">Published on {formattedDate}</time>
+        )
+      }
+    </header>
+
+    <Content components={{ Button, Card }} />
+
+    <div class="abtw:mt-12 abtw:pt-8 abtw:border-t abtw:border-gray-200">
+      <a href="/" class="abtw:text-blue-600 abtw:hover:text-blue-800"
+        >← Back to home</a
+      >
+    </div>
+  </article>
+</PageLayout>

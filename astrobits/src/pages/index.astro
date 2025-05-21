@@ -1,5 +1,5 @@
 ---
-import "../styles/global.css";
+import PageLayout from "../layouts/PageLayout.astro";
 import Button from "../components/Button/Button.astro";
 import Card from "../components/Card/Card.astro";
 import { getCollection } from "astro:content";
@@ -28,88 +28,43 @@ const components = {
 const allComponents = await getCollection("components");
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <script defer data-domain="astrobits.dev" src="https://plausible.trieve.ai/js/script.js"></script>
-    <title>Astrobits component library</title>
-  </head>
-  <body class="astrobit-body abtw:container abtw:mx-auto abtw:px-4 abtw:py-8">
-    <header
-      class="abtw:mb-32 abtw:text-center abtw:gap-4 abtw:flex abtw:flex-col"
-    >
-      <h1 class="abtw:text-6xl abtw:font-bold">Astrobit component library</h1>
-      <p class="abtw:text-4xl abtw:font-medium">
-        Explore the components available in this library.
-      </p>
-      <div class="abtw:flex abtw:gap-4 abtw:justify-center">
+<PageLayout>
+  <section
+    class="abtw:grid abtw:md:grid-cols-3 abtw:sm:grid-cols-2 abtw:gap-8 abtw:grid-cols-1"
+  >
+    {
+      allComponents.map((component) => (
         <a
-          href="https://github.com/patroninc/patron"
-          target="_blank"
-          aria-label="GitHub Repo"
+          href={`/components/${component.data.slug}`}
+          class="abtw:group abtw:transition-all abtw:hover:-translate-y-4 abtw:duration-300"
+          aria-label={component.data.title}
         >
-          <img
-            alt="GitHub Repo stars"
-            class="abtw:h-6 abtw:block"
-            src="https://img.shields.io/github/stars/patroninc/patron?style=flat-square&logo=github&label=Star%20the%20Repo&labelColor=%23000&color=%23007bff"
-          />
+          <Card>
+            <div class="abtw:flex abtw:flex-col abtw:h-full">
+              {Object.entries(components).map(([name, { variants }]) => {
+                return component.data.title == name ? (
+                  <div class="abtw:flex abtw:flex-col abtw:gap-8 abtw:px-12 abtw:pt-4 abtw:h-full abtw:flex-1 abtw:flex-grow">
+                    {variants.map((variant) => {
+                      const Component = variant.component;
+                      const variantName =
+                        "name" in variant ? variant.name : undefined;
+                      return (
+                        <Component variant={variantName}>
+                          {variantName ? variantName : name}
+                        </Component>
+                      );
+                    })}
+                  </div>
+                ) : null;
+              })}
+              <h2 class="abtw:text-2xl abtw:mt-8 abtw:mb-0 abtw:group-hover:text-[var(--astrobit-primary)] abtw:underline">
+                {component.data.title}
+              </h2>
+              <p class="abtw:text-lg">{component.data.description}</p>
+            </div>
+          </Card>
         </a>
-        <a
-          href="https://www.npmjs.com/package/astrobits"
-          aria-label="NPM Version"
-          target="_blank"
-        >
-          <img
-            class="abtw:h-6 abtw:block"
-            alt="NPM Version"
-            src="https://img.shields.io/npm/v/astrobits?style=flat-square&logo=npm&labelColor=%23000&color=%23cb3837"
-          />
-        </a>
-      </div>
-    </header>
-
-    <main class="abtw:max-w-9/10 abtw:mx-auto">
-      <section
-        class="abtw:grid abtw:md:grid-cols-3 abtw:sm:grid-cols-2 abtw:gap-8 abtw:grid-cols-1"
-      >
-        {
-          allComponents.map((component) => (
-            <a
-              href={`/component/${component.data.slug}`}
-              class="abtw:group abtw:transition-all abtw:hover:-translate-y-4 abtw:duration-300"
-              aria-label={component.data.title}
-            >
-              <Card>
-                <div class="abtw:flex abtw:flex-col abtw:h-full">
-                  {Object.entries(components).map(([name, { variants }]) => {
-                    return component.data.title == name ? (
-                      <div class="abtw:flex abtw:flex-col abtw:gap-8 abtw:px-12 abtw:pt-4 abtw:h-full abtw:flex-1 abtw:flex-grow">
-                        {variants.map((variant) => {
-                          const Component = variant.component;
-                          const variantName =
-                            "name" in variant ? variant.name : undefined;
-                          return (
-                            <Component variant={variantName}>
-                              {variantName ? variantName : name}
-                            </Component>
-                          );
-                        })}
-                      </div>
-                    ) : null;
-                  })}
-                  <h2 class="abtw:text-2xl abtw:mt-8 abtw:mb-0 abtw:group-hover:text-[var(--astrobit-primary)] abtw:underline">
-                    {component.data.title}
-                  </h2>
-                  <p class="abtw:text-lg">{component.data.description}</p>
-                </div>
-              </Card>
-            </a>
-          ))
-        }
-      </section>
-    </main>
-  </body>
-</html>
+      ))
+    }
+  </section>
+</PageLayout>

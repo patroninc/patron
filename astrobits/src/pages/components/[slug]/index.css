@@ -1,0 +1,76 @@
+@reference "../../../styles/global.css";
+
+article > h1 {
+  @apply abtw:text-3xl abtw:font-bold abtw:mb-6 abtw:mt-8;
+}
+
+article > h2 {
+  @apply abtw:text-2xl abtw:font-bold abtw:mb-4 abtw:mt-8;
+}
+
+article > h3 {
+  @apply abtw:text-xl abtw:font-bold abtw:mb-3 abtw:mt-6;
+}
+
+article > h4 {
+  @apply abtw:text-lg abtw:font-bold abtw:mb-2 abtw:mt-6;
+}
+
+article > p {
+  @apply abtw:mb-4 abtw:leading-relaxed;
+}
+
+/* Lists */
+article > ul {
+  @apply abtw:list-disc abtw:ml-6 abtw:mb-4;
+}
+
+article > ol {
+  @apply abtw:list-decimal abtw:ml-6 abtw:mb-4;
+}
+
+article > li {
+  @apply abtw:mb-1;
+}
+
+/* Links */
+article > a {
+  @apply abtw:text-blue-600 abtw:hover:text-blue-800 abtw:underline;
+}
+
+/* Blockquotes */
+article > blockquote {
+  @apply abtw:border-l-4 abtw:border-gray-300 abtw:pl-4 abtw:italic abtw:text-gray-700 abtw:my-4;
+}
+
+/* Code */
+article > code {
+  @apply abtw:bg-gray-100 abtw:px-1 abtw:rounded abtw:font-mono abtw:text-sm;
+}
+
+article > pre {
+  @apply abtw:bg-gray-100 abtw:p-4 abtw:rounded-lg abtw:font-mono abtw:text-sm abtw:overflow-auto abtw:my-6;
+}
+
+/* Tables */
+article > table {
+  @apply abtw:border-collapse abtw:w-full abtw:mb-4;
+}
+
+article > th {
+  @apply abtw:border abtw:border-gray-300 abtw:bg-gray-100 abtw:p-2 abtw:font-bold abtw:text-left;
+}
+
+article > td {
+  @apply abtw:border abtw:border-gray-300 abtw:p-2;
+}
+
+/* Horizontal rule */
+article > hr {
+  @apply abtw:my-6 abtw:border-t abtw:border-gray-300;
+}
+
+/* Images */
+article > img {
+  @apply abtw:max-w-full abtw:h-auto abtw:mx-auto abtw:my-4 abtw:rounded;
+}

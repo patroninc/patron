@@ -2,6 +2,74 @@
 title: Card
 slug: card
 description: Apply the pixel border along with a large shadow to create a neo-brutalist container.
+date: 2025-05-21
+tags: ["components", "UI", "card"]
 ---
 
-Foobar
+# Card Component
+
+The Card component is a versatile container with a neo-brutalist design, featuring a distinctive pixel border and large shadow. Cards can be used to group related content and create visual hierarchy in your interface.
+
+## Basic Usage
+
+A basic card serves as a container for any content you want to group together.
+
+<Card>
+  <h3>Basic Card</h3>
+  <p>This is a simple card container with the default styling.</p>
+</Card>
+
+```jsx
+import { Card } from "astrobits";
+
+<Card>
+  <h3>Basic Card</h3>
+  <p>This is a simple card container with the default styling.</p>
+</Card>;
+```
+
+## Animated Card Links
+
+Cards can be used as clickable links with hover animations. The example below demonstrates how to create cards that slide up on hover while only highlighting the heading text.
+
+This implementation uses:
+
+- The `group` class to enable targeting child elements on parent hover
+- `transition-all` and `duration-300` for smooth animations
+- `hover:-translate-y-4` to create the upward slide effect on hover
+- `group-hover:text-[var(--astrobit-primary)]` to change only the heading color when the card is hovered
+
+<div
+  href="#"
+  class="abtw:group abtw:block abtw:transition-all abtw:hover:-translate-y-4 abtw:duration-300 abtw:cursor-pointer"
+  aria-label="Card title"
+>
+  <Card>
+    <div class="abtw:flex abtw:flex-col abtw:h-full">
+      <h2 class="abtw:text-2xl abtw:group-hover:text-[var(--astrobit-primary)] abtw:group-hover:underline">
+        Card Title
+      </h2>
+      <p class="abtw:text-lg">Card description text</p>
+    </div>
+
+  </Card>
+</div>
+
+```jsx
+<a
+  href="/path/to/page"
+  class="abtw:group abtw:transition-all abtw:hover:-translate-y-4 abtw:duration-300"
+  aria-label="Card title"
+>
+  <Card>
+    <div class="abtw:flex abtw:flex-col abtw:h-full">
+      {/* Card content goes here */}
+
+      <h2 class="abtw:text-2xl abtw:mt-8 abtw:mb-0 abtw:group-hover:text-[var(--astrobit-primary)] abtw:group-hover:underline">
+        Card Title
+      </h2>
+      <p class="abtw:text-lg">Card description text</p>
+    </div>
+  </Card>
+</a>
+```

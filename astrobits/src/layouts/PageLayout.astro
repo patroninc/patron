@@ -1,0 +1,109 @@
+---
+import "../styles/global.css";
+
+// Define the interface for the component props
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: URL | string;
+  type?: "website" | "article";
+  showHeader?: boolean;
+}
+
+// Destructure props with default values
+const {
+  title = "Astrobits component library",
+  description = "A collection of reusable UI components for Astro projects",
+  image = "/og-image.png", // Assumes you have a default OG image at this path
+  canonicalURL = new URL(Astro.url.pathname, Astro.site),
+  type = "website",
+  showHeader = true,
+} = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <script
+      defer
+      data-domain="astrobits.dev"
+      src="https://plausible.trieve.ai/js/script.js"></script>
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.site)} />
+
+    <!-- Additional head content -->
+    <slot name="head" />
+  </head>
+  <body class="astrobit-body abtw:container abtw:mx-auto abtw:px-4 abtw:py-8">
+    {
+      showHeader && (
+        <header class="abtw:mb-32 abtw:text-center abtw:gap-4 abtw:flex abtw:flex-col">
+          <h1 class="abtw:text-6xl abtw:font-bold">
+            Astrobit component library
+          </h1>
+          <p class="abtw:text-4xl abtw:font-medium">
+            Explore the components available in this library.
+          </p>
+          <div class="abtw:flex abtw:gap-4 abtw:justify-center">
+            <a
+              href="https://github.com/patroninc/patron"
+              target="_blank"
+              aria-label="GitHub Repo"
+            >
+              <img
+                alt="GitHub Repo stars"
+                class="abtw:h-6 abtw:block"
+                src="https://img.shields.io/github/stars/patroninc/patron?style=flat-square&logo=github&label=Star%20the%20Repo&labelColor=%23000&color=%23007bff"
+              />
+            </a>
+            <a
+              href="https://www.npmjs.com/package/astrobits"
+              aria-label="NPM Version"
+              target="_blank"
+            >
+              <img
+                class="abtw:h-6 abtw:block"
+                alt="NPM Version"
+                src="https://img.shields.io/npm/v/astrobits?style=flat-square&logo=npm&labelColor=%23000&color=%23cb3837"
+              />
+            </a>
+          </div>
+        </header>
+      )
+    }
+
+    <main class="abtw:max-w-9/10 abtw:mx-auto">
+      <slot />
+    </main>
+
+    <footer class="abtw:mt-16 abtw:text-center abtw:text-sm abtw:text-gray-500">
+      <slot name="footer">
+        <p>© {new Date().getFullYear()} Astrobits. All rights reserved.</p>
+      </slot>
+    </footer>
+  </body>
+</html>

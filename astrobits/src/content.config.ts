@@ -7,6 +7,8 @@ const components = defineCollection({
     title: z.string(),
     slug: z.string(),
     description: z.string(),
+    date: z.date(),
+    tags: z.array(z.string()),
   }),
 });
 
