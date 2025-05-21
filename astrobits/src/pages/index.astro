@@ -26,6 +26,19 @@ const components = {
 };
 
 const allComponents = await getCollection("components");
+
+allComponents.sort((a, b) => {
+  const titleA = a.data.title.toLowerCase();
+  const titleB = b.data.title.toLowerCase();
+
+  if (titleA < titleB) {
+    return -1;
+  }
+  if (titleA > titleB) {
+    return 1;
+  }
+  return 0;
+});
 ---
 
 <PageLayout>
