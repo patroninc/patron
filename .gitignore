@@ -142,3 +142,9 @@ dist/
 # generated types
 .astro/
 
+commondir
+gitdir
+HEAD
+index
+ORIG_HEAD
+FETCH_HEAD
