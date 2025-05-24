@@ -1,0 +1,49 @@
+@reference "../../styles/global.css";
+
+.astrobit-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.astrobit-tooltip__content {
+  @apply abtw:px-2 abtw:py-1 abtw:text-sm;
+  
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  background-color: var(--astrobit-black);
+  color: var(--astrobit-white);
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 1000;
+  font-family: var(--astrobit-font-family);
+  font-size: 12px;
+  line-height: 1.2;
+  border: 2px solid var(--astrobit-primary);
+  box-shadow: 2px 2px 0 0 var(--astrobit-primary);
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.astrobit-tooltip__content::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--astrobit-black);
+}
+
+.astrobit-tooltip:hover .astrobit-tooltip__content {
+  opacity: 1;
+  visibility: visible;
+}

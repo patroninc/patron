@@ -1,0 +1,15 @@
+---
+import "./Tooltip.css";
+interface Props {
+  tooltip: string;
+}
+
+const { tooltip } = Astro.props;
+---
+
+<div class="astrobit-tooltip">
+  <slot />
+  <div class="astrobit-tooltip__content">
+    {tooltip}
+  </div>
+</div>
