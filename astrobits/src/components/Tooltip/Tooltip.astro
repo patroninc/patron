@@ -1,0 +1,30 @@
+---
+import "./Tooltip.css";
+interface Props {
+  content: string;
+  variant?: "primary" | "secondary-warm" | "secondary-neutral";
+  position?: "top" | "bottom" | "left" | "right";
+}
+
+const { content, variant = "primary", position = "top" } = Astro.props;
+---
+
+<span
+  class:list={[
+    "astrobit-tooltip",
+    {
+      "astrobit-tooltip--primary": variant === "primary",
+      "astrobit-tooltip--secondary-warm": variant === "secondary-warm",
+      "astrobit-tooltip--secondary-neutral": variant === "secondary-neutral",
+      "astrobit-tooltip--top": position === "top",
+      "astrobit-tooltip--bottom": position === "bottom",
+      "astrobit-tooltip--left": position === "left",
+      "astrobit-tooltip--right": position === "right",
+    },
+  ]}
+>
+  <span class="astrobit-tooltip__trigger">
+    <slot />
+  </span>
+  <span class="astrobit-tooltip__content" set:html={content}></span>
+</span>

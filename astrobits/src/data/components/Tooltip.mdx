@@ -1,0 +1,137 @@
+---
+title: Tooltip
+slug: tooltip
+description: "A comprehensive guide to using the Tooltip component in your application"
+date: 2025-05-24
+tags: ["components", "UI", "tooltip", "help", "interactive"]
+---
+
+# Tooltip Component
+
+The Tooltip component provides contextual help information that appears on hover. It supports `primary`, `secondary-warm`, and `secondary-neutral` variants with customizable positioning options (top, bottom, left, right).
+
+## Primary
+
+The primary tooltip uses the main theme colors and is ideal for important help information or key feature explanations.
+
+<Tooltip content="This is a primary tooltip with important information" variant="primary">
+  Hover me (Primary)
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip content="This is a primary tooltip with important information" variant="primary">
+  Hover me (Primary)
+</Tooltip>;
+```
+
+## Secondary Warm
+
+The secondary warm tooltip provides a softer appearance and is suitable for supplementary help text or friendly guidance.
+
+<Tooltip 
+  content="This is a secondary warm tooltip with helpful guidance" 
+  variant="secondary-warm"
+>
+  Hover me (Secondary Warm)
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip 
+  content="This is a secondary warm tooltip with helpful guidance" 
+  variant="secondary-warm"
+>
+  Hover me (Secondary Warm)
+</Tooltip>;
+```
+
+## Secondary Neutral
+
+The secondary neutral tooltip offers a subtle appearance and is perfect for less critical information or technical details.
+
+<Tooltip 
+  content="This is a secondary neutral tooltip with technical details" 
+  variant="secondary-neutral"
+>
+  Hover me (Secondary Neutral)
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip 
+  content="This is a secondary neutral tooltip with technical details" 
+  variant="secondary-neutral"
+>
+  Hover me (Secondary Neutral)
+</Tooltip>;
+```
+
+## Positioning
+
+The tooltip can be positioned on different sides of the trigger element. Available positions are `top` (default), `bottom`, `left`, and `right`.
+
+### Top Position
+
+<Tooltip content="Tooltip appears above the element" position="top">
+  Top Tooltip
+</Tooltip>
+
+```jsx
+<Tooltip content="Tooltip appears above the element" position="top">
+  Top Tooltip
+</Tooltip>
+```
+
+### Bottom Position
+
+<Tooltip content="Tooltip appears below the element" position="bottom">
+  Bottom Tooltip
+</Tooltip>
+
+```jsx
+<Tooltip content="Tooltip appears below the element" position="bottom">
+  Bottom Tooltip
+</Tooltip>
+```
+
+### Left Position
+
+<Tooltip content="Tooltip appears to the left" position="left">
+  Left Tooltip
+</Tooltip>
+
+```jsx
+<Tooltip content="Tooltip appears to the left" position="left">
+  Left Tooltip
+</Tooltip>
+```
+
+### Right Position
+
+<Tooltip content="Tooltip appears to the right" position="right">
+  Right Tooltip
+</Tooltip>
+
+```jsx
+<Tooltip content="Tooltip appears to the right" position="right">
+  Right Tooltip
+</Tooltip>
+```
+
+## HTML Content
+
+The tooltip supports HTML content through the `content` prop, allowing for rich formatting within the tooltip.
+
+<Tooltip content="<strong>Bold text</strong> and <em>italic text</em> in tooltip">
+  HTML Content Tooltip
+</Tooltip>
+
+```jsx
+<Tooltip content="<strong>Bold text</strong> and <em>italic text</em> in tooltip">
+  HTML Content Tooltip
+</Tooltip>
+```

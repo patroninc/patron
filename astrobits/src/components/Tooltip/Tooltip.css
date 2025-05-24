@@ -1,0 +1,91 @@
+@reference "../../styles/global.css";
+
+.astrobit-tooltip {
+  position: relative;
+  display: inline-block;
+  font-family: var(--astrobit-font-family);
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.astrobit-tooltip__trigger {
+  cursor: help;
+}
+
+.astrobit-tooltip__content {
+  @apply abtw:px-2 abtw:py-1 abtw:text-sm;
+  
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap;
+  border-color: var(--astrobit-black);
+  border-image: url("../../assets/pixel-diamond.svg") 3 2 2 stretch;
+  border-image-outset: 2;
+  border-image-repeat: stretch;
+  border-image-slice: 3;
+  border-image-width: 2;
+  border-style: solid;
+  border-width: 5px;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.astrobit-tooltip:hover .astrobit-tooltip__content {
+  visibility: visible;
+  opacity: 1;
+}
+
+.astrobit-tooltip--top .astrobit-tooltip__content {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+}
+
+.astrobit-tooltip--bottom .astrobit-tooltip__content {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+}
+
+.astrobit-tooltip--left .astrobit-tooltip__content {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 8px;
+}
+
+.astrobit-tooltip--right .astrobit-tooltip__content {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 8px;
+}
+
+.astrobit-tooltip--primary .astrobit-tooltip__content {
+  background-color: var(--astrobit-primary);
+  color: var(--astrobit-warm-accent);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-warm-accent, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-primary, var(--astrobit-white));
+}
+
+.astrobit-tooltip--secondary-warm .astrobit-tooltip__content {
+  background-color: var(--astrobit-warm-accent);
+  color: var(--astrobit-black);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-primary, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-warm-accent, var(--astrobit-white));
+}
+
+.astrobit-tooltip--secondary-neutral .astrobit-tooltip__content {
+  background-color: var(--astrobit-neutral-accent);
+  color: var(--astrobit-black);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-primary, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-neutral-accent, var(--astrobit-white));
+}
