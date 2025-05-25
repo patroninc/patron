@@ -1,0 +1,226 @@
+@reference "../../styles/global.css";
+
+.astrobit-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.astrobit-tooltip__bubble {
+  @apply abtw:px-2 abtw:py-1 abtw:text-sm;
+
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  background-color: transparent;
+  font-family: var(--astrobit-font-family);
+  text-decoration: none;
+  color: var(--astrobit-black);
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  z-index: 1000;
+  pointer-events: none;
+  border-color: var(--astrobit-black);
+  border-image: url("../../assets/pixel-diamond.svg") 3 2 2 stretch;
+  border-image-outset: 2;
+  border-image-repeat: stretch;
+  border-image-slice: 3;
+  border-image-width: 2;
+  border-style: solid;
+  border-width: 5px;
+  transition: opacity 0.3s, visibility 0.3s;
+  
+  /* Default positioning: off top-right corner */
+  bottom: 100%;
+  left: 100%;
+  margin-bottom: 8px;
+  margin-left: -20px;
+  
+  /* Speech bubble tail (more pixel-art looking) */
+  &::before,
+  &::after {
+    position: absolute;
+    content: "";
+    image-rendering: pixelated;
+  }
+  
+  /* Main tail section */
+  &::before {
+    bottom: -14px;
+    left: 16px;
+    width: 26px;
+    height: 10px;
+    background-color: var(--astrobit-primary);
+    border-right: 4px solid var(--astrobit-black);
+    border-left: 4px solid var(--astrobit-black);
+    z-index: 1001;
+  }
+  
+  /* Tail tip with pixel-perfect edges */
+  &::after {
+    bottom: -18px;
+    left: 20px;
+    width: 18px;
+    height: 4px;
+    background-color: var(--astrobit-primary);
+    box-shadow: 
+      -4px 0 var(--astrobit-black),
+      4px 0 var(--astrobit-black),
+      -4px 4px var(--astrobit-primary),
+      0 4px var(--astrobit-black),
+      -8px 4px var(--astrobit-black),
+      -4px 8px var(--astrobit-black),
+      -8px 8px var(--astrobit-black);
+    z-index: 1000;
+  }
+}
+
+.astrobit-tooltip:hover .astrobit-tooltip__bubble {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Smart repositioning for viewport boundaries */
+@media screen {
+  .astrobit-tooltip__bubble {
+    /* Use CSS container queries or JavaScript for smart repositioning */
+    /* For now, we'll use a simple approach with viewport units */
+    
+    /* If tooltip would extend beyond right edge, position on left side */
+    /* This will be handled by JavaScript for precise control */
+  }
+}
+
+/* Variant styles */
+.astrobit-tooltip__bubble--primary {
+  background-color: var(--astrobit-primary);
+  color: var(--astrobit-warm-accent);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-warm-accent, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-primary, var(--astrobit-white));
+    
+  &::before {
+    background-color: var(--astrobit-primary);
+    border-right: 4px solid var(--astrobit-black);
+    border-left: 4px solid var(--astrobit-black);
+  }
+  
+  &::after {
+    background-color: var(--astrobit-primary);
+    box-shadow: 
+      -4px 0 var(--astrobit-black),
+      4px 0 var(--astrobit-black),
+      -4px 4px var(--astrobit-primary),
+      0 4px var(--astrobit-black),
+      -8px 4px var(--astrobit-black),
+      -4px 8px var(--astrobit-black),
+      -8px 8px var(--astrobit-black);
+  }
+}
+
+.astrobit-tooltip__bubble--secondary-warm {
+  background-color: var(--astrobit-warm-accent);
+  color: var(--astrobit-black);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-primary, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-warm-accent, var(--astrobit-white));
+    
+  &::before {
+    background-color: var(--astrobit-warm-accent);
+    border-right: 4px solid var(--astrobit-black);
+    border-left: 4px solid var(--astrobit-black);
+  }
+  
+  &::after {
+    background-color: var(--astrobit-warm-accent);
+    box-shadow: 
+      -4px 0 var(--astrobit-black),
+      4px 0 var(--astrobit-black),
+      -4px 4px var(--astrobit-warm-accent),
+      0 4px var(--astrobit-black),
+      -8px 4px var(--astrobit-black),
+      -4px 8px var(--astrobit-black),
+      -8px 8px var(--astrobit-black);
+  }
+}
+
+.astrobit-tooltip__bubble--secondary-neutral {
+  background-color: var(--astrobit-neutral-accent);
+  color: var(--astrobit-black);
+  box-shadow:
+    2px 2px 0 2px var(--astrobit-primary, var(--astrobit-black)),
+    -2px -2px 0 2px var(--astrobit-neutral-accent, var(--astrobit-white));
+    
+  &::before {
+    background-color: var(--astrobit-neutral-accent);
+    border-right: 4px solid var(--astrobit-black);
+    border-left: 4px solid var(--astrobit-black);
+  }
+  
+  &::after {
+    background-color: var(--astrobit-neutral-accent);
+    box-shadow: 
+      -4px 0 var(--astrobit-black),
+      4px 0 var(--astrobit-black),
+      -4px 4px var(--astrobit-neutral-accent),
+      0 4px var(--astrobit-black),
+      -8px 4px var(--astrobit-black),
+      -4px 8px var(--astrobit-black),
+      -8px 8px var(--astrobit-black);
+  }
+}
+
+/* Left positioning when right would go off-screen */
+.astrobit-tooltip__bubble--left {
+  left: auto;
+  right: 100%;
+  margin-left: 0;
+  margin-right: -20px;
+  
+  /* Adjust tail position for left-aligned tooltips */
+  &::before {
+    left: auto;
+    right: 16px;
+  }
+  
+  &::after {
+    left: auto;
+    right: 20px;
+    box-shadow: 
+      -4px 0 var(--astrobit-black),
+      4px 0 var(--astrobit-black),
+      4px 4px currentColor,
+      0 4px var(--astrobit-black),
+      8px 4px var(--astrobit-black),
+      4px 8px var(--astrobit-black),
+      8px 8px var(--astrobit-black);
+  }
+}
+
+/* Create explicit right variant for consistency */
+.astrobit-tooltip__bubble--right {
+  left: 100%;
+  right: auto;
+  margin-left: -20px;
+  margin-right: 0;
+  
+  &::before {
+    left: 16px;
+    right: auto;
+  }
+  
+  &::after {
+    left: 20px;
+    right: auto;
+    box-shadow: 
+      -4px 0 var(--astrobit-black),
+      4px 0 var(--astrobit-black),
+      -4px 4px currentColor,
+      0 4px var(--astrobit-black),
+      -8px 4px var(--astrobit-black),
+      -4px 8px var(--astrobit-black),
+      -8px 8px var(--astrobit-black);
+  }
+}

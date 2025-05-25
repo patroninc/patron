@@ -4,6 +4,7 @@ import PageLayout from "../../../layouts/PageLayout.astro";
 import Button from "../../../components/Button/Button.astro";
 import "./index.css";
 import Card from "../../../components/Card/Card.astro";
+import Tooltip from "../../../components/Tooltip/Tooltip.astro";
 
 export async function getStaticPaths() {
   const entries = await getCollection("components");
@@ -48,7 +49,7 @@ const formattedDate = date
       }
     </header>
 
-    <Content components={{ Button, Card }} />
+    <Content components={{ Button, Card, Tooltip }} />
 
     <div class="abtw:mt-12 abtw:pt-8 abtw:border-t abtw:border-gray-200">
       <a href="/" class="abtw:text-blue-600 abtw:hover:text-blue-800"

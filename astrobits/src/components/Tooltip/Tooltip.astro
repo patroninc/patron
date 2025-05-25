@@ -1,0 +1,65 @@
+---
+import "./Tooltip.css";
+interface Props {
+  content: string;
+  variant?: "primary" | "secondary-warm" | "secondary-neutral";
+}
+
+const { content, variant = "primary" } = Astro.props;
+---
+
+<div class="astrobit-tooltip">
+  <slot />
+  <div
+    class:list={[
+      "astrobit-tooltip__bubble",
+      {
+        "astrobit-tooltip__bubble--primary": variant === "primary",
+        "astrobit-tooltip__bubble--secondary-warm": variant === "secondary-warm",
+        "astrobit-tooltip__bubble--secondary-neutral": variant === "secondary-neutral",
+      },
+    ]}
+    set:html={content}
+  />
+</div>
+
+<script>
+  function initTooltips() {
+    const tooltips = document.querySelectorAll('.astrobit-tooltip');
+    
+    tooltips.forEach(tooltip => {
+      const bubble = tooltip.querySelector('.astrobit-tooltip__bubble');
+      if (!bubble) return;
+      
+      tooltip.addEventListener('mouseenter', () => {
+        // Check if tooltip would go off right edge of screen
+        const rect = tooltip.getBoundingClientRect();
+        const bubbleRect = bubble.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        
+        // Reset position classes
+        bubble.classList.remove('astrobit-tooltip__bubble--left');
+        bubble.classList.remove('astrobit-tooltip__bubble--right');
+        
+        // Default to right positioning
+        bubble.classList.add('astrobit-tooltip__bubble--right');
+        
+        // If bubble would extend beyond right edge, position on left
+        if (rect.left + bubbleRect.width > viewportWidth - 20) {
+          bubble.classList.remove('astrobit-tooltip__bubble--right');
+          bubble.classList.add('astrobit-tooltip__bubble--left');
+        }
+      });
+    });
+  }
+  
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTooltips);
+  } else {
+    initTooltips();
+  }
+  
+  // Re-initialize for dynamically added tooltips
+  document.addEventListener('astro:page-load', initTooltips);
+</script>

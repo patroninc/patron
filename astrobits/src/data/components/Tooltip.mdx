@@ -1,0 +1,123 @@
+---
+title: Tooltip
+slug: tooltip
+description: "A comprehensive guide to using the Tooltip component in your application"
+date: 2025-05-24
+tags: ["components", "UI", "tooltip", "help", "hover"]
+---
+
+# Tooltip Component
+
+The Tooltip component displays helpful information in a speech bubble on hover. It supports `primary`, `secondary-warm`, and `secondary-neutral` variants matching the Button component style. The tooltip automatically positions itself on the top-right by default, and intelligently repositions to the top-left when it would go off-screen.
+
+## Primary
+
+The primary tooltip uses the main brand colors for important help text or critical information.
+
+<Tooltip content="This is helpful primary information" variant="primary">
+  Hover for primary tooltip
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip content="This is helpful primary information" variant="primary">
+  Hover for primary tooltip
+</Tooltip>;
+```
+
+## Secondary Warm
+
+The secondary warm tooltip provides a warm, inviting feel for friendly help text or supplementary information.
+
+<Tooltip content="This is warm helpful information" variant="secondary-warm">
+  Hover for warm tooltip
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip content="This is warm helpful information" variant="secondary-warm">
+  Hover for warm tooltip
+</Tooltip>;
+```
+
+## Secondary Neutral
+
+The secondary neutral tooltip is used for standard help text and general information that doesn't require emphasis.
+
+<Tooltip content="This is neutral helpful information" variant="secondary-neutral">
+  Hover for neutral tooltip
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip content="This is neutral helpful information" variant="secondary-neutral">
+  Hover for neutral tooltip
+</Tooltip>;
+```
+
+## Speech Bubble Design
+
+The tooltip appears as a speech bubble with a pointer, creating a clear visual connection between the trigger element and the help content. The bubble automatically positions itself to stay within the viewport.
+
+<Tooltip content="I'm a speech bubble! Notice how I point to the element below me." variant="primary">
+  Speech bubble example
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip content="I'm a speech bubble! Notice how I point to the element below me." variant="primary">
+  Speech bubble example
+</Tooltip>;
+```
+
+## Smart Positioning
+
+The tooltip automatically repositions itself based on available screen space. Try hovering over elements near the right edge of your screen to see the smart repositioning in action.
+
+<Tooltip content="This tooltip will automatically reposition itself if it would go off-screen" variant="secondary-warm">
+  Smart positioning demo
+</Tooltip>
+
+## Flexible Content Width
+
+The tooltip doesn't constrain content width, allowing developers to control the size based on their needs. You can include longer text, formatted content, or even HTML in the tooltip.
+
+<Tooltip content="This is a much longer tooltip message that demonstrates how the component handles wider content without artificial width constraints. The developer controls the width based on their content needs." variant="secondary-neutral">
+  Long content example
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip content="This is a much longer tooltip message that demonstrates flexible width handling." variant="secondary-neutral">
+  Long content example
+</Tooltip>;
+```
+
+## With Icons or Interactive Elements
+
+The tooltip accepts any content in its slot, making it perfect for icons, buttons, or other interactive elements.
+
+<Tooltip content="Click this icon to perform an action" variant="primary">
+  <button>🔧</button>
+</Tooltip>
+
+<Tooltip content="Get help about this feature" variant="secondary-warm">
+  <span style="font-size: 1.2em;">❓</span>
+</Tooltip>
+
+```jsx
+import { Tooltip } from "astrobits";
+
+<Tooltip content="Click this icon to perform an action" variant="primary">
+  <button>🔧</button>
+</Tooltip>
+
+<Tooltip content="Get help about this feature" variant="secondary-warm">
+  <span style="font-size: 1.2em;">❓</span>
+</Tooltip>;
+```
