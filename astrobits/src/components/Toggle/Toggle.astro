@@ -1,0 +1,55 @@
+---
+import "./Toggle.css";
+interface Props {
+  disabled?: boolean;
+  variant?: "primary" | "secondary-warm" | "secondary-neutral";
+  checked?: boolean;
+}
+
+const { variant = "primary", disabled = false, checked = false } = Astro.props;
+---
+
+<label
+  class:list={[
+    "astrobit-toggle",
+    {
+      "astrobit-toggle--disabled": disabled,
+      "astrobit-toggle--primary": variant === "primary",
+      "astrobit-toggle--secondary-warm": variant === "secondary-warm",
+      "astrobit-toggle--secondary-neutral": variant === "secondary-neutral",
+    },
+  ]}
+>
+  <input
+    type="checkbox"
+    class="astrobit-toggle__input"
+    disabled={disabled}
+    checked={checked}
+  />
+  <span class="astrobit-toggle__slider"></span>
+</label>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggles = document.querySelectorAll('.astrobit-toggle__input');
+    
+    toggles.forEach((toggle) => {
+      toggle.addEventListener('change', (event) => {
+        const target = event.target as HTMLInputElement;
+        const label = target.closest('.astrobit-toggle');
+        
+        if (target.checked) {
+          label?.classList.add('astrobit-toggle--checked');
+        } else {
+          label?.classList.remove('astrobit-toggle--checked');
+        }
+      });
+      
+      // Set initial state
+      const label = toggle.closest('.astrobit-toggle');
+      if ((toggle as HTMLInputElement).checked) {
+        label?.classList.add('astrobit-toggle--checked');
+      }
+    });
+  });
+</script>
