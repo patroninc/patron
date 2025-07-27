@@ -32,7 +32,8 @@ export const homepage = singleton({
         }),
         externalImageUrl: fields.url({
           label: "Hero Image (External URL)",
-          description: "External URL for the hero image (use this for large GIFs or externally hosted images)",
+          description:
+            "External URL for the hero image (use this for large GIFs or externally hosted images)",
           validation: {
             isRequired: false,
           },

@@ -1,16 +1,24 @@
 ---
+import Layout from "@layouts/Layout.astro";
+import { keystatic } from "@lib/keystatic/client";
+import invariant from "tiny-invariant";
+import { marked } from "marked";
 
+const i18n = await keystatic.singletons.homepage.read({
+  resolveLinkedFiles: true,
+});
+invariant(i18n, "No homepage content found");
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title={i18n.metadata.title} description={i18n.metadata.description}>
+  <section
+    class="container my-12 flex flex-col items-center rounded-xl text-center md:px-8"
+  >
+    <h2
+      class="text-5xl font-medium text-balance md:text-7xl"
+      set:html={marked.parseInline(i18n.callToAction.title)}
+    />
+  </section>
+</Layout>
+
+<script></script>

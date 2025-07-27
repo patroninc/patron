@@ -1,0 +1,35 @@
+---
+import invariant from "tiny-invariant";
+import { keystatic } from "@lib/keystatic/client";
+
+const i18n = await keystatic.singletons.footer.read({
+  resolveLinkedFiles: true,
+});
+invariant(i18n, "No footer content found");
+---
+
+<footer class="bg-gray-900 py-12 text-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      {
+        i18n.navigationSections.map((section) => (
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-100">{section.title}</h3>
+            <div class="flex flex-col space-y-2">
+              {section.links.map((link) => (
+                <a
+                  href={link.href}
+                  target={link.newTab ? "_blank" : undefined}
+                  rel={link.newTab ? "noopener noreferrer" : undefined}
+                  class="text-gray-300 transition-colors duration-200 hover:text-white"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</footer>

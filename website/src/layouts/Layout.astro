@@ -1,0 +1,142 @@
+---
+import "@styles/global.css";
+import Footer from "@components/Footer.astro";
+import Nav from "@components/Nav.astro";
+import { getImage } from "astro:assets";
+
+const currentUrl = Astro.url.href;
+
+interface Props {
+  title?: string;
+  description?: string;
+  hideMovingBackground?: boolean;
+  ogTitle?: string;
+  ogSiteName?: string;
+  ogUrl?: string;
+  ogDescription?: string;
+  ogType?: string;
+  ogImage?: string;
+  articlePublishedTime?: string;
+  articleModifiedTime?: string;
+  articleExpirationTime?: string;
+  articleAuthors?: string[];
+  articleSection?: string;
+  articleTags?: string[];
+}
+
+const {
+  title = "Patron",
+  description = "Patron is an open source Patreon alternative with lower fees designed for creators who publish ongoing sequential content like books, podcasts, and comics.",
+  ogTitle = "Patron",
+  ogSiteName = "Patron.com",
+  ogUrl = currentUrl,
+  ogDescription = "Patron is an open source Patreon alternative with lower fees designed for creators who publish ongoing sequential content like books, podcasts, and comics. We built this for creators like you who release episodes regularly and want to keep more of what you earn.",
+  ogType = "website",
+  ogImage,
+  articlePublishedTime,
+  articleModifiedTime,
+  articleExpirationTime,
+  articleAuthors = [],
+  articleSection,
+  articleTags = [],
+} = Astro.props;
+
+// const icon = await getImage({ src: , format: "avif", width: 128 });
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#3d1943" />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:site_name" content={ogSiteName} />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:image" content={ogImage} />
+    {
+      articleTags.length > 0 && (
+        <meta property="og:article:tag" content={articleTags.join(",")} />
+      )
+    }
+    {
+      articlePublishedTime && (
+        <meta
+          property="article:published_time"
+          content={articlePublishedTime}
+        />
+      )
+    }
+    {
+      articleModifiedTime && (
+        <meta property="article:modified_time" content={articleModifiedTime} />
+      )
+    }
+    {
+      articleExpirationTime && (
+        <meta
+          property="article:expiration_time"
+          content={articleExpirationTime}
+        />
+      )
+    }
+    {
+      articleAuthors.length > 0 && (
+        <meta property="article:author" content={articleAuthors.join(",")} />
+      )
+    }
+    {
+      articleSection && (
+        <meta property="article:section" content={articleSection} />
+      )
+    }
+    {
+      articleTags.length > 0 && (
+        <meta property="article:tag" content={articleTags.join(",")} />
+      )
+    }
+    <script
+      is:inline
+      defer
+      data-domain="patron.com"
+      src="https://plausible.patron.com/js/script.js"></script>
+    <title>{title}</title>
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${title} RSS Feed`}
+      href={new URL("rss.xml", Astro.site)}
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://cdn.patron.com/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://cdn.patron.com/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://cdn.patron.com/favicon-16x16.png"
+    />
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body class="flex max-w-[100vw] flex-col overflow-x-hidden">
+    <Nav />
+    <main class="z-10 flex flex-col gap-8 sm:gap-16">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {});
+  </script>
+</html>

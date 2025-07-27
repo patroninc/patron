@@ -1,0 +1,43 @@
+---
+import invariant from "tiny-invariant";
+import { keystatic } from "@lib/keystatic/client";
+
+const i18n = await keystatic.singletons.nav.read({
+  resolveLinkedFiles: true,
+});
+invariant(i18n, "No homepage content found");
+---
+
+<nav class="flex items-center justify-between bg-white p-4 shadow-sm">
+  <div class="flex items-center space-x-6">
+    {
+      i18n.navigationLinks.map((link) => (
+        <a
+          href={link.href}
+          target={link.newTab ? "_blank" : undefined}
+          rel={link.newTab ? "noopener noreferrer" : undefined}
+          class="font-medium text-gray-700 transition-colors duration-200 hover:text-gray-900"
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </div>
+
+  {
+    i18n.ctaButton.enabled && (
+      <a
+        href={i18n.ctaButton.href}
+        target={i18n.ctaButton.newTab ? "_blank" : undefined}
+        rel={i18n.ctaButton.newTab ? "noopener noreferrer" : undefined}
+        class={`rounded-md px-4 py-2 font-medium transition-colors duration-200 ${
+          i18n.ctaButton.variant === "primary"
+            ? "bg-blue-600 text-white hover:bg-blue-700"
+            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+        }`}
+      >
+        {i18n.ctaButton.label}
+      </a>
+    )
+  }
+</nav>
