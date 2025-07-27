@@ -1,0 +1,22 @@
+logo: {}
+navigationSections:
+  - title: col 1
+    links:
+      - label: testing
+        href: https://testing.com
+        newTab: false
+  - title: col 2
+    links:
+      - label: testing2
+        href: https://testing2.com
+        newTab: false
+contact:
+  title: Contact
+  email: humans@patron.com
+socialMedia:
+  - platform: github
+    url: https://github.com/patroninc/patron
+  - platform: twitter
+    url: https://x.com/skeptrune
+copyright: © 2025 Patron Inc. All rights reserved.
+bottomLinks: []

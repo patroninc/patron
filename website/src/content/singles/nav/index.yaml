@@ -1,0 +1,9 @@
+logo:
+  href: /
+navigationLinks: []
+ctaButton:
+  enabled: true
+  label: Sign up for the waitlist
+  href: '#waitlist'
+  newTab: false
+  variant: primary

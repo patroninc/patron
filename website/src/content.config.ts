@@ -10,8 +10,7 @@ const testimonials = defineCollection({
     z.object({
       author: z.string(),
       quote: z.string(),
-      image: image(),
-      relatedPost: z.string().optional(),
+      image: image().optional(),
       order: z.number().optional(),
     }),
 });

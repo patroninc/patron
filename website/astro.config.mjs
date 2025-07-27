@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import keystatic from "@keystatic/astro";
 import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
+import devtoolsJson from "vite-plugin-devtools-json";
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,6 +16,7 @@ export default defineConfig({
           theme: "nord",
         },
       }),
+      devtoolsJson(),
     ],
   },
 

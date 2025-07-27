@@ -40,8 +40,6 @@ const {
   articleSection,
   articleTags = [],
 } = Astro.props;
-
-// const icon = await getImage({ src: , format: "avif", width: 128 });
 ---
 
 <html lang="en">
@@ -103,12 +101,6 @@ const {
       data-domain="patron.com"
       src="https://plausible.patron.com/js/script.js"></script>
     <title>{title}</title>
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title={`${title} RSS Feed`}
-      href={new URL("rss.xml", Astro.site)}
-    />
     <link
       rel="apple-touch-icon"
       sizes="180x180"

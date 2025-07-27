@@ -14,14 +14,9 @@ export const testimonials = collection({
       name: { label: "Author" },
     }),
     image: fields.image({
-      label: "Brand logo",
+      label: "Profile logo",
       directory: "src/assets/images/testimonials",
       publicPath: "/src/assets/images/testimonials/",
-      validation: { isRequired: true },
-    }),
-    relatedPost: fields.relationship({
-      label: "Related post",
-      collection: "blogPosts",
     }),
     order: fields.number({
       label: "Order",
