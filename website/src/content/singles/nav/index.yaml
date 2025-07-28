@@ -3,7 +3,7 @@ logo:
 navigationLinks: []
 ctaButton:
   enabled: true
-  label: Sign up for the waitlist
+  label: Join the waitlist
   href: '#waitlist'
   newTab: false
   variant: primary

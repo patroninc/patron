@@ -1,0 +1,32 @@
+---
+export interface Props {
+  class?: string;
+  as?: keyof HTMLElementTagNameMap;
+  variant?: "sm" | "md" | "lg" | "xl";
+  borderWidth?: "1" | "2" | "3";
+  [key: string]: any;
+}
+
+const { 
+  class: className = "", 
+  as: Tag = "div", 
+  variant = "md",
+  borderWidth = "2",
+  ...props 
+} = Astro.props;
+
+// Build the pixelated border class based on props
+const borderClass = variant === "md" 
+  ? `pixelated-border-${borderWidth}` 
+  : `pixelated-border-${borderWidth} pixelated-border-${variant}`;
+---
+
+<Tag
+  class:list={[
+    borderClass,
+    className
+  ]}
+  {...props}
+>
+  <slot />
+</Tag>

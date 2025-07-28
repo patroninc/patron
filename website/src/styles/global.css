@@ -1,22 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --color-white: #fff;
-  --color-black: #000;
-  --color-red-500: oklch(0.637 0.237 25.331);
-  --color-gray-600: oklch(0.446 0.03 256.802);
-  --color-gray-700: oklch(0.373 0.034 259.733);
-  --color-gray-800: oklch(0.278 0.033 256.848);
+  --font-display: "Albert Sans", sans-serif;
+  --font-display--font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  --font-display--font-variation-settings: "wght" 400;
 
-  --color-primary-100: #fcf1fe;
-  --color-primary-200: #f7eaf9;
-  --color-primary-300: #e9d7ea;
-  --color-primary-400: #c18ec8;
-  --color-primary-500: #8e0da2;
-  --color-primary-600: #820c95;
-  --color-primary-700: #6f0b7f;
-  --color-primary-900: #3d1943;
+  --color-robin-s-egg-blue: oklch(78.514% 0.14212 180.35);
+  --color-robin-s-egg-blue-50: oklch(95.051% 0.07184 187.42);
+  --color-robin-s-egg-blue-100: oklch(93.93% 0.08939 186.2);
+  --color-robin-s-egg-blue-200: oklch(92.067% 0.12001 184.87);
+  --color-robin-s-egg-blue-300: oklch(90.78% 0.1422 183.93);
+  --color-robin-s-egg-blue-400: oklch(89.99% 0.15587 182.14);
+  --color-robin-s-egg-blue-500: oklch(89.604% 0.16244 180.12);
+  --color-robin-s-egg-blue-600: oklch(78.514% 0.14212 180.35);
+  --color-robin-s-egg-blue-700: oklch(62.662% 0.1135 180.25);
+  --color-robin-s-egg-blue-800: oklch(45.755% 0.08241 181.11);
+  --color-robin-s-egg-blue-900: oklch(27.014% 0.04853 181.54);
+  --color-robin-s-egg-blue-950: oklch(16.398% 0.02872 186.35);
+
+  --color-boston-blue: oklch(59.071% 0.13126 250.27);
+  --color-boston-blue-50: oklch(88.508% 0.03566 246.91);
+  --color-boston-blue-100: oklch(85.189% 0.04543 246.3);
+  --color-boston-blue-200: oklch(78.371% 0.06697 248.01);
+  --color-boston-blue-300: oklch(71.837% 0.08954 248.67);
+  --color-boston-blue-400: oklch(65.359% 0.11086 249.14);
+  --color-boston-blue-500: oklch(59.071% 0.13126 250.27);
+  --color-boston-blue-600: oklch(49.551% 0.10694 249.86);
+  --color-boston-blue-700: oklch(39.299% 0.08217 250.22);
+  --color-boston-blue-800: oklch(28.611% 0.05414 249.39);
+  --color-boston-blue-900: oklch(16.513% 0.02297 251.22);
+  --color-boston-blue-950: oklch(6.9239% 0.008 284.11);
+
+  --color-ecstasy: oklch(72.947% 0.17217 56.704);
+  --color-ecstasy-50: oklch(92.581% 0.04725 66.158);
+  --color-ecstasy-100: oklch(90.129% 0.06385 66.866);
+  --color-ecstasy-200: oklch(85.489% 0.09633 65.939);
+  --color-ecstasy-300: oklch(80.995% 0.1261 64.735);
+  --color-ecstasy-400: oklch(76.743% 0.15322 61.405);
+  --color-ecstasy-500: oklch(72.947% 0.17217 56.704);
+  --color-ecstasy-600: oklch(62.527% 0.15205 55.299);
+  --color-ecstasy-700: oklch(50.066% 0.1194 56.406);
+  --color-ecstasy-800: oklch(36.777% 0.08436 58.666);
+  --color-ecstasy-900: oklch(21.929% 0.04587 63.307);
+  --color-ecstasy-950: oklch(13.62% 0.02407 75.132);
+
+  --color-malibu: oklch(66.266% 0.18098 277.13);
+  --color-malibu-50: oklch(92.015% 0.0394 282.46);
+  --color-malibu-100: oklch(86.802% 0.06641 282.11);
+  --color-malibu-200: oklch(76.37% 0.12297 280);
+  --color-malibu-300: oklch(66.266% 0.18098 277.13);
+  --color-malibu-400: oklch(54.055% 0.2549 271.09);
+  --color-malibu-500: oklch(46.409% 0.30488 264.8);
+  --color-malibu-600: oklch(39.528% 0.26534 264.15);
+  --color-malibu-700: oklch(31.55% 0.20928 264.17);
+  --color-malibu-800: oklch(23.164% 0.1482 264.21);
+  --color-malibu-900: oklch(13.67% 0.07895 263.98);
+  --color-malibu-950: oklch(8.1304% 0.0407 262.93);
 
   ----default-transition-timing-function: var(--ease-in-out);
   ---default-transition-duration: 400ms;
@@ -25,7 +66,7 @@
 @layer base {
 }
 
-@layer utilities {
+@layer components {
   .container {
     @apply mx-auto max-w-[80rem];
     @media (width <= 84rem) {
@@ -46,9 +87,24 @@
   }
 }
 
-/* inter-latin-wght-normal */
-@font-face {
+/* Pixelated Border Utilities */
+@utility pixelated-border-double {
+  border-image: url("../assets/pixel-diamond.svg") 3 2 2 stretch;
+  border-image-outset: 2;
+  border-image-repeat: stretch;
+  border-image-slice: 3;
+  border-image-width: 2;
+  border-style: solid;
+  border-width: 5px;
 }
-/* inter-latin-wght-italic */
-@font-face {
+
+/* Single diamond border variant */
+@utility pixelated-border-single {
+  border-image: url("../assets/pixel-diamond.svg") 3 1 1 stretch;
+  border-image-outset: 2;
+  border-image-repeat: stretch;
+  border-image-slice: 3;
+  border-image-width: 2;
+  border-style: solid;
+  border-width: 5px;
 }
