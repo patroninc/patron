@@ -24,7 +24,7 @@ invariant(i18n, "No homepage content found");
       </div>
     </div>
     <nav
-      class="grid grid-cols-3 h-full w-full items-center border-y-5 border-y-black bg-white p-[15px]"
+      class="grid h-full w-full grid-cols-3 items-center border-y-5 border-y-black bg-white p-[15px]"
     >
       <div class="justify-self-start">
         <a href={i18n.logo.href} aria-label="Go to homepage">
@@ -51,9 +51,9 @@ invariant(i18n, "No homepage content found");
         }
       </div>
 
-      <div class="justify-self-end">
-        {
-          i18n.ctaButton.enabled && (
+      {
+        i18n.ctaButton.enabled && (
+          <div class="justify-self-end">
             <Button
               shadow={false}
               as="a"
@@ -63,9 +63,9 @@ invariant(i18n, "No homepage content found");
             >
               {i18n.ctaButton.label} <ArrowRight />
             </Button>
-          )
-        }
-      </div>
+          </div>
+        )
+      }
     </nav>
     <div class="flex h-full w-[10px] items-center justify-center">
       <div
