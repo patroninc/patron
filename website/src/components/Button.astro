@@ -2,31 +2,51 @@
 export interface Props {
   class?: string;
   as?: keyof HTMLElementTagNameMap;
-  variant?: "sm" | "md" | "lg" | "xl";
-  borderWidth?: "1" | "2" | "3";
+  size?: "lg" | "md" | "icon";
+  color?: "primary" | "secondary";
+  shadow?: boolean;
   [key: string]: any;
 }
 
-const { 
-  class: className = "", 
-  as: Tag = "div", 
-  variant = "md",
-  borderWidth = "2",
-  ...props 
+const {
+  class: className = "",
+  as: Tag = "button",
+  size = "md",
+  color = "primary",
+  shadow = true,
+  ...props
 } = Astro.props;
-
-// Build the pixelated border class based on props
-const borderClass = variant === "md" 
-  ? `pixelated-border-${borderWidth}` 
-  : `pixelated-border-${borderWidth} pixelated-border-${variant}`;
 ---
 
 <Tag
   class:list={[
-    borderClass,
-    className
+    className,
+    "flex group items-center justify-center relative",
+    size === "lg" ? "h-[66px]" : "h-[52px]",
   ]}
   {...props}
 >
-  <slot />
+  <div class:list={[
+    "flex items-center justify-center z-[1] h-full transition-transform duration-150",
+    shadow && "group-hover:translate-x-[5px] group-hover:translate-y-[5px]",
+  ]}>
+    <div class="h-[calc(100%-10px)] w-[5px] bg-black"></div>
+    <div
+      class:list={[
+        "h-full flex items-center justify-center gap-2 border-y-5 border-y-black text-[20px]",
+        color === "primary" ? "bg-blue text-white" : "bg-white text-black",
+        size === "icon" ? "max-w-[42px] overflow-hidden px-2 py-2" : "w-[unset] px-5 py-[7px]",
+      ]}
+    >
+      <slot />
+    </div>
+    <div class="h-[calc(100%-10px)] w-[5px] bg-black"></div>
+  </div>
+
+  {shadow && (
+    <>
+      <div class="absolute top-[10px] right-[-5px] bg-black w-[10px] h-[calc(100%-10px)]"></div>
+      <div class="absolute bottom-[-5px] left-[10px] bg-black w-[calc(100%-10px)] h-[10px]"></div>
+    </>
+  )}
 </Tag>
