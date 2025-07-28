@@ -23,7 +23,7 @@ const {
 } = Astro.props;
 
 const images = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/**/*.{jpeg,jpg,png,gif,svg,webp}"
+  "/src/assets/**/*.{jpeg,jpg,png,gif,svg,webp}",
 );
 
 const src =
@@ -32,7 +32,7 @@ const src =
     : rawSrc;
 if (!src) {
   console.warn(
-    `KeystaticImage: Unable to find image "${rawSrc}". Make sure the path is correct.`
+    `KeystaticImage: Unable to find image "${rawSrc}". Make sure the path is correct.`,
   );
 }
 
