@@ -1,9 +1,17 @@
 logo:
   href: /
-navigationLinks: []
+  alt: Patron Logo
+  image: /src/assets/images/logo.svg
+navigationLinks:
+  - label: Features
+    href: /features
+  - label: Pricing
+    href: /pricing
+  - label: About
+    href: /about
 ctaButton:
   enabled: true
   label: Join the waitlist
-  href: '#waitlist'
+  href: "#waitlist"
   newTab: false
   variant: primary

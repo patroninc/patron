@@ -10,43 +10,49 @@ const i18n = await keystatic.singletons.nav.read({
 invariant(i18n, "No homepage content found");
 ---
 
-<nav class="flex items-center justify-between bg-white p-4 pixelated-border-double border-8 border-black mt-10 mx-20">
-  <!-- Logo Section -->
-  <div class="flex items-center">
-    <div class="pixelated-border-2 border-black bg-black text-white px-3 py-2 font-bold text-xl font-display">
-      P
+<div class="fixed top-[15px] left-0 right-0 z-50">
+  <div class="flex items-center justify-between max-w-container mx-auto h-[90px] w-full">
+    <div class="w-[10px] h-full flex items-center justify-center">
+      <div class="w-[5px] bg-black h-full max-h-[calc(100%-20px)]"></div>
+      <div class="w-[5px] bg-white border-y-5 border-y-black h-full max-h-[calc(100%-10px)]"></div>
+    </div>
+    <nav class="flex items-center justify-between w-full h-full p-[15px] bg-white border-y-5 border-y-black">
+      <div class="w-[227px]">
+        <img src={i18n.logo.image} alt={i18n.logo.alt ?? ""} class="h-[50px]" />
+      </div>
+
+      <div class="flex items-center space-x-[50px]">
+        {
+          i18n.navigationLinks.map((link) => (
+            <a
+              href={link.href}
+              target={link.newTab ? "_blank" : undefined}
+              rel={link.newTab ? "noopener noreferrer" : undefined}
+              class="text-lg"
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+    
+      {
+        i18n.ctaButton.enabled && (
+          <Button
+            shadow={false}
+            as="a"
+            href={i18n.ctaButton.href}
+            target={i18n.ctaButton.newTab ? "_blank" : undefined}
+            rel={i18n.ctaButton.newTab ? "noopener noreferrer" : undefined}
+          >
+            {i18n.ctaButton.label} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </Button>
+        )
+      }
+    </nav>
+    <div class="w-[10px] h-full flex items-center justify-center">
+      <div class="w-[5px] bg-white border-y-5 border-y-black h-full max-h-[calc(100%-10px)]"></div>
+      <div class="w-[5px] bg-black h-full max-h-[calc(100%-20px)]"></div>
     </div>
   </div>
-
-  <!-- Navigation Links -->
-  <div class="flex items-center space-x-8">
-    {
-      i18n.navigationLinks.map((link) => (
-        <a
-          href={link.href}
-          target={link.newTab ? "_blank" : undefined}
-          rel={link.newTab ? "noopener noreferrer" : undefined}
-          class="font-medium text-black font-display hover:text-gray-600 transition-colors duration-200"
-        >
-          {link.label}
-        </a>
-      ))
-    }
-  </div>
-
-  <!-- CTA Button -->
-  {
-    i18n.ctaButton.enabled && (
-      <Button
-        as="a"
-        href={i18n.ctaButton.href}
-        target={i18n.ctaButton.newTab ? "_blank" : undefined}
-        rel={i18n.ctaButton.newTab ? "noopener noreferrer" : undefined}
-        class="bg-malibu-400 text-white font-medium text-lg font-display px-4 py-2 hover:bg-malibu-500 transition-colors duration-200 pixelated-border-single"
-        borderWidth="1"
-      >
-        {i18n.ctaButton.label} <Icon name="bi:arrow-right-short" class="inline-block h-6 w-6" />
-      </Button>
-    )
-  }
-</nav>
+</div>
