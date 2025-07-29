@@ -120,9 +120,9 @@ const {
     />
     {description && <meta name="description" content={description} />}
   </head>
-  <body class="flex max-w-[100vw] flex-col overflow-x-hidden">
+  <body>
     <Nav />
-    <main class="z-10 flex flex-col gap-8 sm:gap-16">
+    <main class="z-10">
       <slot />
     </main>
     <Footer />

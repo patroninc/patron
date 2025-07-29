@@ -17,7 +17,7 @@
   --text-h5: 20px;
 
   --text-2xl: 36px;
-  --text-2xl--line-height: 36px;
+  --text-2xl--line-height: 43px;
   --text-xl: 24px;
   --text-xl--line-height: 34px;
   --text-lg: 20px;
@@ -37,6 +37,7 @@
   body {
     font-family: "Albert Sans", sans-serif;
     font-weight: 500;
+    color: black;
   }
 
   h1,
@@ -49,15 +50,15 @@
   }
 
   h1 {
-    @apply text-h1;
+    @apply text-h1 leading-[77px];
   }
 
   h2 {
-    @apply text-h2;
+    @apply text-h2 leading-[58px];
   }
 
   h3 {
-    @apply text-h3;
+    @apply text-h3 leading-[43px];
   }
 
   h4 {
@@ -71,7 +72,7 @@
 
 @layer components {
   .container-content {
-    @apply mx-auto max-w-[var(--spacing-container)];
+    @apply mx-auto w-full max-w-[var(--spacing-container)];
     @media (width <= var(--spacing-container)) {
       width: 100%;
     }
@@ -98,4 +99,9 @@
   border-image-width: 1;
   border-style: solid;
   border-width: 5px;
+}
+
+@utility cube-grid-bg {
+  background-image: url("../src/assets/cube-grid.svg");
+  background-size: 100% 100%;
 }
