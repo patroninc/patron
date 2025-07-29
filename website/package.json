@@ -16,6 +16,7 @@
     "@astrojs/react": "^4.3.0",
     "@keystatic/astro": "^5.0.6",
     "@keystatic/core": "^0.5.47",
+    "@lucide/astro": "^0.534.0",
     "@tailwindcss/vite": "^4.1.7",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

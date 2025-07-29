@@ -1057,6 +1057,11 @@
     y-protocols "^1.0.6"
     yjs "^13.6.11"
 
+"@lucide/astro@^0.534.0":
+  version "0.534.0"
+  resolved "https://registry.yarnpkg.com/@lucide/astro/-/astro-0.534.0.tgz#4a735ecef5dcd62ed00eb892a46de8b71c07c511"
+  integrity sha512-jbacrwJ9tu/40KUhXCpP0qozskY12uOx/dfgqVFbQQfFYZAErwFaHx6RCapmyWOnWwx8fkf8CY6Lirxt8mdaeQ==
+
 "@markdoc/markdoc@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@markdoc/markdoc/-/markdoc-0.4.0.tgz#0ac4126c7f0b9370eb45cc05296c044d78c18a16"
@@ -4531,6 +4536,11 @@ mdast-util-gfm-task-list-item@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/mdast-util-gfm-task-list-item/-/mdast-util-gfm-task-list-item-2.0.0.tgz#e68095d2f8a4303ef24094ab642e1047b991a936"
   integrity sha512-IrtvNvjxC1o06taBAVJznEnkiHxLFTzgonUdy8hzFVeDun0uTjxxrRGVaNFqkU1wJR3RBPEfsxmU6jDWPofrTQ==
+  dependencies:
+    "@types/mdast" "^4.0.0"
+    devlop "^1.0.0"
+    mdast-util-from-markdown "^2.0.0"
+    mdast-util-to-markdown "^2.0.0"
 
 mdast-util-gfm@^3.0.0:
   version "3.1.0"
