@@ -1,8 +1,8 @@
 ---
 import invariant from "tiny-invariant";
 import { keystatic } from "@lib/keystatic/client";
-import { Icon } from "astro-icon/components";
 import Button from "./Button.astro";
+import ArrowRight from "@lucide/astro/icons/arrow-right";
 
 const i18n = await keystatic.singletons.nav.read({
   resolveLinkedFiles: true,
@@ -10,15 +10,28 @@ const i18n = await keystatic.singletons.nav.read({
 invariant(i18n, "No homepage content found");
 ---
 
-<div class="fixed top-[15px] left-0 right-0 z-50">
-  <div class="flex items-center justify-between max-w-container mx-auto h-[90px] w-full">
-    <div class="w-[10px] h-full flex items-center justify-center">
-      <div class="w-[5px] bg-black h-full max-h-[calc(100%-20px)]"></div>
-      <div class="w-[5px] bg-white border-y-5 border-y-black h-full max-h-[calc(100%-10px)]"></div>
+<div class="fixed top-[15px] right-0 left-0 z-50">
+  <div
+    class="max-w-container mx-auto flex h-[90px] w-full items-center justify-between"
+  >
+    <div class="flex h-full w-[10px] items-center justify-center">
+      <div class="h-full max-h-[calc(100%-20px)] w-[5px] bg-black"></div>
+      <div
+        class="h-full max-h-[calc(100%-10px)] w-[5px] border-y-5 border-y-black bg-white"
+      >
+      </div>
     </div>
-    <nav class="flex items-center justify-between w-full h-full p-[15px] bg-white border-y-5 border-y-black">
+    <nav
+      class="flex h-full w-full items-center justify-between border-y-5 border-y-black bg-white p-[15px]"
+    >
       <div class="w-[227px]">
-        <img src={i18n.logo.image} alt={i18n.logo.alt ?? ""} class="h-[50px]" />
+        <a href={i18n.logo.href}>
+          <img
+            src={i18n.logo.image}
+            alt={i18n.logo.alt ?? ""}
+            class="h-[50px]"
+          />
+        </a>
       </div>
 
       <div class="flex items-center space-x-[50px]">
@@ -35,7 +48,7 @@ invariant(i18n, "No homepage content found");
           ))
         }
       </div>
-    
+
       {
         i18n.ctaButton.enabled && (
           <Button
@@ -45,14 +58,17 @@ invariant(i18n, "No homepage content found");
             target={i18n.ctaButton.newTab ? "_blank" : undefined}
             rel={i18n.ctaButton.newTab ? "noopener noreferrer" : undefined}
           >
-            {i18n.ctaButton.label} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            {i18n.ctaButton.label} <ArrowRight />
           </Button>
         )
       }
     </nav>
-    <div class="w-[10px] h-full flex items-center justify-center">
-      <div class="w-[5px] bg-white border-y-5 border-y-black h-full max-h-[calc(100%-10px)]"></div>
-      <div class="w-[5px] bg-black h-full max-h-[calc(100%-20px)]"></div>
+    <div class="flex h-full w-[10px] items-center justify-center">
+      <div
+        class="h-full max-h-[calc(100%-10px)] w-[5px] border-y-5 border-y-black bg-white"
+      >
+      </div>
+      <div class="h-full max-h-[calc(100%-20px)] w-[5px] bg-black"></div>
     </div>
   </div>
 </div>
