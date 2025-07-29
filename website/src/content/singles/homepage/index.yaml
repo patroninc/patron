@@ -5,14 +5,46 @@ metadata:
     creators who publish ongoing sequential content like books, podcasts, and
     comics.
 hero:
-  title: ''
+  title:
+    text: "Get paid for your passion and pay"
+    emphasized: "10x less fees"
+  description: "Patron is a open-source Patreon alternative with radically low fees."
+  ctaButtonText: "Join the waitlist"
+  emailPlaceholder: "Enter your email"
   overrideActions: []
-killerFeatures:
-  title: ''
-  features: []
-secondFeatures:
-  title: ''
-  features: []
-callToAction:
-  title: ''
+features:
+  title: "Everything you need in one platform."
+  features:
+    - title: "Open Source"
+      description: "Gain complete control with a transparent, open-source platform that you can even self-host for ultimate flexibility."
+    - title: "Empowering Creators"
+      description: "Gain complete control with a transparent, open-source platform that you can even self-host for ultimate flexibility."
+    - title: "Low Fees"
+      description: "Built from the ground up as a robust alternative to existing platforms, with your success at its core."
+steps:
+  title: "How it works"
+  steps:
+    - title: "Create Your Page"
+      description: "Easily set up and brand your unique creator page. Showcase your work and define your offerings."
+    - title: "Define Tiers"
+      description: "Design various membership tiers and specify the exclusive content and benefits each tier receives."
+    - title: "Publish Content"
+      description: "Effortlessly publish exclusive content - videos, articles, audio, and more - directly to your paying supporters."
+    - title: "Get Paid"
+      description: "Receive payments directly from your fans. Our transparent system ensures you'll get paid seamlessly."
+faq:
+  title: "Frequently Asked Questions"
+  items:
+    - question: "What is Patron?"
+      answer: "Patron is a open-source Patreon alternative with radically low fees."
+    - question: "How does Patron compare to Patreon?"
+      answer: "Patron is a open-source Patreon alternative with radically low fees."
+    - question: "How does Patron compare to Patreon?"
+      answer: "Patron is a open-source Patreon alternative with radically low fees."
+    - question: "How does Patron compare to Patreon?"
+      answer: "Patron is a open-source Patreon alternative with radically low fees."
+cta:
+  title: "Join the waitlist and get 1% fees forever."
+  description: "Start creating content you love for users together with 500.000+ other creators."
+  emailPlaceholder: "Enter your email"
   overrideActions: []

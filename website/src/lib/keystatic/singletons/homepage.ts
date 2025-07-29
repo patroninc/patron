@@ -1,7 +1,6 @@
 import { fields, singleton } from "@keystatic/core";
 import { metadata } from "../shared/metadata";
 import { overrideActions } from "../shared/override-actions";
-import { styledTitle } from "../shared/styled-title";
 
 export const homepage = singleton({
   label: "Homepage",
@@ -11,32 +10,22 @@ export const homepage = singleton({
 
     hero: fields.object(
       {
-        tagline: fields.text({
-          label: "Tagline",
+        title: fields.object({
+          text: fields.text({
+            label: "Text",
+          }),
+          emphasized: fields.text({
+            label: "Emphasized text",
+          }),
         }),
-        taglineURL: fields.url({
-          label: "Tagline URL",
+        description: fields.text({
+          label: "Description",
         }),
-        title: styledTitle(),
-        leadText: fields.text({
-          label: "Text",
+        ctaButtonText: fields.text({
+          label: "CTA Button Text",
         }),
-        image: fields.image({
-          label: "Hero Image (Local)",
-          description: "The main image for the hero section (from local files)",
-          directory: "src/assets/images/home",
-          publicPath: "/src/assets/images/home/",
-          validation: {
-            isRequired: false,
-          },
-        }),
-        externalImageUrl: fields.url({
-          label: "Hero Image (External URL)",
-          description:
-            "External URL for the hero image (use this for large GIFs or externally hosted images)",
-          validation: {
-            isRequired: false,
-          },
+        emailPlaceholder: fields.text({
+          label: "Email Placeholder",
         }),
         overrideActions,
       },
@@ -45,9 +34,11 @@ export const homepage = singleton({
       },
     ),
 
-    killerFeatures: fields.object(
+    features: fields.object(
       {
-        title: styledTitle(),
+        title: fields.text({
+          label: "Title",
+        }),
         features: fields.array(
           fields.object({
             title: fields.text({
@@ -59,22 +50,19 @@ export const homepage = singleton({
               validation: { isRequired: true },
               multiline: true,
             }),
-            image: fields.image({
-              label: "Image",
-              directory: "src/assets/images/home",
-              publicPath: "/src/assets/images/home/",
-            }),
           }),
           { label: "Items", itemLabel: (i) => i.fields.title.value },
         ),
       },
-      { label: "Killer features" },
+      { label: "Features" },
     ),
 
-    secondFeatures: fields.object(
+    steps: fields.object(
       {
-        title: styledTitle(),
-        features: fields.array(
+        title: fields.text({
+          label: "Title",
+        }),
+        steps: fields.array(
           fields.object({
             title: fields.text({
               label: "Title",
@@ -85,24 +73,49 @@ export const homepage = singleton({
               validation: { isRequired: true },
               multiline: true,
             }),
-            image: fields.image({
-              label: "Image",
-              directory: "src/assets/images/home",
-              publicPath: "/src/assets/images/home/",
-            }),
           }),
           { label: "Items", itemLabel: (i) => i.fields.title.value },
         ),
       },
       {
-        label: "Second features",
-        description: "For example, regarding privacy",
+        label: "Steps",
       },
     ),
-
-    callToAction: fields.object(
+    faq: fields.object(
       {
-        title: styledTitle(),
+        title: fields.text({
+          label: "Title",
+        }),
+        items: fields.array(
+          fields.object({
+            question: fields.text({
+              label: "Question",
+              validation: { isRequired: true },
+            }),
+            answer: fields.text({
+              label: "Answer",
+              validation: { isRequired: true },
+              multiline: true,
+            }),
+          }),
+          { label: "FAQ Items", itemLabel: (i) => i.fields.question.value },
+        ),
+      },
+      {
+        label: "FAQ",
+      },
+    ),
+    cta: fields.object(
+      {
+        title: fields.text({
+          label: "Title",
+        }),
+        description: fields.text({
+          label: "Description",
+        }),
+        emailPlaceholder: fields.text({
+          label: "Email Placeholder",
+        }),
         overrideActions,
       },
       { label: "Call to Action" },
