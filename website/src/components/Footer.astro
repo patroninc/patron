@@ -1,6 +1,10 @@
 ---
 import invariant from "tiny-invariant";
 import { keystatic } from "@lib/keystatic/client";
+import Github from "./icons/Github.astro";
+import X from "./icons/X.astro";
+import Linkedin from "./icons/Linkedin.astro";
+import Youtube from "./icons/Youtube.astro";
 
 const i18n = await keystatic.singletons.footer.read({
   resolveLinkedFiles: true,
@@ -8,28 +12,142 @@ const i18n = await keystatic.singletons.footer.read({
 invariant(i18n, "No footer content found");
 ---
 
-<footer class="bg-gray-900 py-12 text-white">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-      {
-        i18n.navigationSections.map((section) => (
-          <div class="space-y-4">
-            <h3 class="text-lg font-semibold text-gray-100">{section.title}</h3>
-            <div class="flex flex-col space-y-2">
-              {section.links.map((link) => (
-                <a
-                  href={link.href}
-                  target={link.newTab ? "_blank" : undefined}
-                  rel={link.newTab ? "noopener noreferrer" : undefined}
-                  class="text-gray-300 transition-colors duration-200 hover:text-white"
-                >
+<div class="bg-white">
+  <footer class="pt-[100px] pb-[200px]">
+    <div class="container-content">
+      <div class="grid grid-cols-4 gap-10">
+        <div class="flex flex-col items-start gap-10">
+          <img src={i18n.logo.image} alt={i18n.logo.alt} class="h-[50px]" />
+
+          <p class="text-xs">
+            {i18n.tagline}
+          </p>
+
+          <div class="flex items-center gap-[30px]">
+            <a
+              href={i18n.socialMedia[0].url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Github class="size-[30px]" />
+            </a>
+            <a
+              href={i18n.socialMedia[1].url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <X class="size-[30px]" />
+            </a>
+            <a
+              href={i18n.socialMedia[2].url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Linkedin class="size-[30px]" />
+            </a>
+            <a
+              href={i18n.socialMedia[3].url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Youtube class="size-[30px]" />
+            </a>
+          </div>
+        </div>
+        <div>
+          {
+            i18n.navigationSections.map((section) => (
+              <div class="flex flex-col gap-10">
+                <h4 class="text-h4 leading-[29px] text-black">
+                  {section.title}
+                </h4>
+                <div class="flex flex-col space-y-5">
+                  {section.links.map((link) => (
+                    <a
+                      href={link.href}
+                      target={link.newTab ? "_blank" : undefined}
+                      rel={link.newTab ? "noopener noreferrer" : undefined}
+                      class="text-xs text-black"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <div class="flex flex-col gap-10">
+          <h4 class="text-h4 leading-[29px] text-black">Company</h4>
+          <div class="flex flex-col gap-5">
+            {
+              i18n.bottomLinks.map((link) => (
+                <a href={link.href} class="text-xs text-black">
                   {link.label}
                 </a>
-              ))}
-            </div>
+              ))
+            }
           </div>
-        ))
-      }
+        </div>
+        <div class="flex flex-col gap-10">
+          <h4 class="text-h4 leading-[29px] text-black">Contact</h4>
+          <div class="flex flex-col gap-5">
+            <a
+              href={`mailto:${i18n.contact.email}`}
+              class="text-xs text-black hover:underline"
+            >
+              {i18n.contact.email}
+            </a>
+            <a
+              href={`tel:${i18n.contact.phone}`}
+              class="text-xs text-black hover:underline"
+            >
+              {i18n.contact.phone}
+            </a>
+            <a
+              href={`https://maps.app.goo.gl/1234567890`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-black hover:underline"
+            >
+              {i18n.contact.address}
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="w-full"
+    viewBox="0 0 1440 168"
+    fill="none"
+  >
+    <g clip-path="url(#clip0_391_1410)">
+      <rect width="1440" height="168" fill="white"></rect>
+      <path
+        d="M169.059 28.1416L197.235 28.1426V112.57H140.883V28.1426H56.3525V112.572H169.059V140.715H56.3525V197H0V0H169.059V28.1416Z"
+        fill="black"></path>
+      <path
+        d="M310.588 197H254.235V56.2861H310.588V197ZM451.471 197H395.118V140.714H310.589V112.571H395.118V56.2861H451.471V197ZM395.118 28.1426H423.294V56.2852H366.941V28.1426H338.765V56.2852H282.412V28.1426H310.589V0H395.118V28.1426Z"
+        fill="black"></path>
+      <path
+        d="M677.529 0V28.1426H621.177V197H564.823V28.1426H508.471V0H677.529Z"
+        fill="black"></path>
+      <path
+        d="M931.765 197H847.236V168.857H931.765V197ZM903.588 28.1426H931.765V112.57H875.412V28.1426H790.882V112.571H847.236V84.4287H875.411V140.714H903.588V168.856H819.059V140.714H790.882V196.999H734.53V0H903.588V28.1426Z"
+        fill="black"></path>
+      <path
+        d="M1157.82 197H1016.94V168.857H1157.82V197ZM1186 168.855H1129.65V28.1426H1045.12V168.855H988.765V28.1426H1016.94V0H1157.82V28.1426H1186V168.855Z"
+        fill="black"></path>
+      <path
+        d="M1299.35 197H1243V0H1299.35V197ZM1440.24 197H1383.88V0H1440.24V197ZM1355.71 84.4287H1383.88V140.714H1355.71V112.572H1327.53V56.2861H1355.71V84.4287ZM1327.53 84.4277H1299.35V28.1426H1327.53V84.4277Z"
+        fill="black"></path>
+    </g>
+    <defs>
+      <clipPath id="clip0_391_1410">
+        <rect width="1440" height="168" fill="white"></rect>
+      </clipPath>
+    </defs>
+  </svg>
+</div>
