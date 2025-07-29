@@ -4,21 +4,253 @@ import { keystatic } from "@lib/keystatic/client";
 import invariant from "tiny-invariant";
 import { marked } from "marked";
 
+import cubeGrid from "@assets/grid-cube.svg";
+import diamondGrid from "@assets/grid-diamond.svg";
+
+import Star1 from "@components/icons/Star1.astro";
+import Box from "@components/Box.astro";
+import Button from "@components/Button.astro";
+import Oss from "@components/icons/Oss.astro";
+import Percent from "@components/icons/Percent.astro";
+import Heart from "@components/icons/Heart.astro";
+import Accordion from "@components/Accordion.astro";
+
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+
 const i18n = await keystatic.singletons.homepage.read({
   resolveLinkedFiles: true,
 });
 invariant(i18n, "No homepage content found");
+
+const { hero, metadata, features: featuresData, steps, faq, cta } = i18n;
+
+const getFeatureIcon = (title: string) => {
+  const iconMap = {
+    "Open Source": Oss,
+    "Empowering Creators": Heart,
+    "Low Fees": Percent,
+  };
+
+  return iconMap[title as keyof typeof iconMap];
+};
+
+const features = featuresData.features.map((feature) => ({
+  ...feature,
+  iconComponent: getFeatureIcon(feature.title),
+}));
 ---
 
-<Layout title={i18n.metadata.title} description={i18n.metadata.description}>
+<style
+  define:vars={{
+    cubeBg: `url(${cubeGrid.src})`,
+    diamondBg: `url(${diamondGrid.src})`,
+  }}
+>
+  .cube-bg {
+    background-image: var(--cubeBg);
+    background-size: 200px;
+    background-position: 0% 0%;
+  }
+  .diamond-bg {
+    background-image: var(--diamondBg);
+    background-size: 400px;
+    background-position: 0% 0%;
+  }
+</style>
+
+<Layout title={metadata.title} description={metadata.description}>
   <section
-    class="container my-12 flex flex-col items-center rounded-xl text-center md:px-8"
+    class="bg-green cube-bg flex min-h-[850px] flex-col items-center justify-center px-20 py-[100px]"
   >
-    <h2
-      class="text-5xl font-medium text-balance md:text-7xl"
-      set:html={marked.parseInline(i18n.callToAction.title)}
-    />
+    <div class="container-content flex items-center justify-between">
+      <div class="flex w-[750px] flex-col gap-[60px]">
+        <h1 class="text-h1 w-full">
+          <span set:html={marked.parseInline(hero.title.text)} />
+          <span
+            class="text-orange relative ml-9"
+            style="-webkit-text-stroke: 2px black;"
+          >
+            <span set:html={marked.parseInline(hero.title.emphasized)} />
+            <Star1 class="absolute bottom-0 -left-7 size-[30px]" />
+            <Star1 class="absolute top-0 -right-5 size-[30px]" />
+          </span>
+        </h1>
+        <p class="max-w-[600px] text-2xl">
+          {hero.description}
+        </p>
+        <div class="flex items-center gap-[10px]">
+          <Box class="w-max">
+            <input
+              placeholder={hero.emailPlaceholder}
+              type="text"
+              class="h-[58px] w-[400px] bg-white px-[15px] py-[5px] text-xl"
+            />
+          </Box>
+          <Button size="lg" shadow={false}
+            >{hero.ctaButtonText}
+            <ArrowRight />
+          </Button>
+        </div>
+      </div>
+      <div class="w-[400px]">
+        <div class="flex h-[400px] w-full items-end justify-between">
+          <Box class="h-10 w-[165px]">
+            <div class="bg-orange flex h-full items-center justify-center">
+              <p class="text-xl">1%</p>
+            </div>
+          </Box>
+          <Box class="h-[400px] w-[165px]">
+            <div class="flex h-full items-center justify-center bg-white">
+              <p class="text-xl">10% + tax</p>
+            </div>
+          </Box>
+        </div>
+        <div
+          class="mt-2.5 flex w-full items-end justify-between text-center text-[28px]"
+        >
+          <div class="h-10 w-[165px]">
+            <p class="font-semibold">Patron™</p>
+          </div>
+          <div class="h-10 w-[165px]">
+            <p>Patreon</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="bg-purple diamond-bg border-y-5 border-y-black px-20 py-[100px]"
+  >
+    <div class="container-content text-center">
+      <h2 class="text-h2 mb-[60px]">{featuresData.title}</h2>
+
+      <div class="flex items-center justify-between gap-8">
+        {
+          features.map((feature) => {
+            const IconComponent = feature.iconComponent;
+            return (
+              <Box shadow>
+                <div class="bg-green relative p-10">
+                  <div class="flex flex-col items-center justify-start gap-[25px]">
+                    <div class="flex flex-col items-center justify-start gap-[25px]">
+                      <IconComponent class="size-[100px]" />
+                      <h3 class="text-h3">{feature.title}</h3>
+                    </div>
+                    <p class="text-lg">{feature.description}</p>
+                  </div>
+                </div>
+              </Box>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="bg-green cube-bg flex flex-col items-center justify-center px-20 py-[100px]"
+  >
+    <div class="container-content text-center">
+      <h2 class="text-h2 mb-[60px]">{steps.title}</h2>
+
+      <div class="relative mx-auto mb-5 h-10 w-full">
+        <div
+          class="absolute top-[10px] z-[1] mx-auto h-5 w-full border-5 border-black bg-white"
+        >
+        </div>
+        <div
+          class="relative grid grid-cols-4 items-center justify-between gap-8"
+        >
+          {
+            Array(4)
+              .fill(0)
+              .map((_) => (
+                <div class="flex w-[290px] flex-col items-center">
+                  <div class="flex items-center justify-center">
+                    <div class="relative z-10 flex h-10 items-center">
+                      <div class="flex h-full w-[10px] items-center justify-center">
+                        <div class="h-5 w-[5px] bg-black" />
+                        <div class="h-[30px] w-[5px] border-y-5 border-y-black bg-white" />
+                      </div>
+                      <div class="h-full w-5 border-y-5 border-y-black bg-white" />
+                      <div class="flex h-full w-[10px] items-center justify-center">
+                        <div class="h-[30px] w-[5px] border-y-5 border-y-black bg-white" />
+                        <div class="h-5 w-[5px] bg-black" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+          }
+        </div>
+      </div>
+
+      <div class="flex w-full items-center justify-between gap-8">
+        {
+          steps.steps.map((step) => {
+            return (
+              <div class="flex w-[290px] flex-col items-center justify-start gap-4">
+                <h4 class="text-h4">{step.title}</h4>
+                <p class="base">{step.description}</p>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="bg-purple diamond-bg border-y-5 border-y-black px-20 py-[100px]"
+  >
+    <div class="container-content text-center">
+      <h2 class="text-h2 mb-[60px]">{faq.title}</h2>
+
+      <div class="flex flex-col items-center justify-between gap-4">
+        {
+          faq.items.map((item) => {
+            return <Accordion title={item.question} details={item.answer} />;
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="w-full bg-black px-20 py-[100px]">
+    <div
+      class="container-content flex flex-col items-start justify-center gap-[60px]"
+    >
+      <h2 class="text-h1 text-white">
+        {cta.title}
+      </h2>
+      <p class="relative w-[716px] text-left text-2xl text-white">
+        {cta.description}
+      </p>
+      <div
+        class="relative flex h-[60px] items-center justify-between gap-[5px]"
+      >
+        <div class="relative h-full w-max">
+          <input
+            placeholder={cta.emailPlaceholder}
+            type="text"
+            class="h-full w-[400px] bg-white px-[15px] py-[5px] text-xl"
+          />
+          <div class="absolute top-0 right-0 size-[5px] bg-black"></div>
+          <div class="absolute right-0 bottom-0 size-[5px] bg-black"></div>
+          <div class="absolute top-0 left-0 size-[5px] bg-black"></div>
+          <div class="absolute bottom-0 left-0 size-[5px] bg-black"></div>
+        </div>
+        <div class="relative h-full w-max">
+          <button class="bg-blue flex size-[60px] items-center justify-center">
+            <ArrowRight class="size-[34px]" color="white" />
+          </button>
+          <div class="absolute top-0 right-0 size-[5px] bg-black"></div>
+          <div class="absolute right-0 bottom-0 size-[5px] bg-black"></div>
+          <div class="absolute top-0 left-0 size-[5px] bg-black"></div>
+          <div class="absolute bottom-0 left-0 size-[5px] bg-black"></div>
+        </div>
+      </div>
+    </div>
   </section>
 </Layout>
-
-<script></script>
