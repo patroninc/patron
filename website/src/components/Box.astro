@@ -3,30 +3,35 @@ export interface Props {
   class?: string;
   as?: keyof HTMLElementTagNameMap;
   shadow?: boolean;
+  color?: "black" | "white";
   [key: string]: any;
 }
 
-const { 
-  class: className = "", 
-  as: Tag = "div", 
+const {
+  class: className = "",
+  as: Tag = "div",
   shadow = false,
-  ...props 
+  color = "black",
+  ...props
 } = Astro.props;
 ---
 
 <Tag
   class:list={[
     className,
-    "relative border-md",
+    "relative",
+    color === "black" ? "border-md" : "white-border-md",
   ]}
   {...props}
 >
-  {shadow && (
-    <>
-      <div class="absolute top-[5px] right-[-10px] bg-black w-[10px] h-full"></div>
-      <div class="absolute bottom-[-10px] left-[5px] bg-black w-full h-[10px]"></div>
-    </>
-  )}
+  {
+    shadow && (
+      <>
+        <div class="absolute top-[5px] right-[-10px] h-full w-[10px] bg-black" />
+        <div class="absolute bottom-[-10px] left-[5px] h-[10px] w-full bg-black" />
+      </>
+    )
+  }
 
   <slot />
 </Tag>

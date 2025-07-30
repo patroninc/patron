@@ -2,13 +2,20 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@theme {
-  --font-display: "Albert Sans", sans-serif;
-
+:root {
   --color-blue: #265b92;
   --color-green: #00d6bd;
   --color-purple: #7a83ff;
   --color-orange: #f68615;
+}
+
+@theme {
+  --font-display: "Albert Sans", sans-serif;
+
+  --color-blue: var(--color-blue);
+  --color-green: var(--color-green);
+  --color-purple: var(--color-purple);
+  --color-orange: var(--color-orange);
 
   --text-h1: 64px;
   --text-h2: 48px;
@@ -34,8 +41,13 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     font-family: "Albert Sans", sans-serif;
+    overflow-x: hidden;
     font-weight: 500;
     color: black;
   }
@@ -101,7 +113,23 @@
   border-width: 5px;
 }
 
+@utility white-border-md {
+  border-image: url("../assets/white-border-md.svg") 3 1 1 stretch;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-slice: 1;
+  border-image-width: 1;
+  border-style: solid;
+  border-width: 5px;
+}
+
 @utility cube-grid-bg {
   background-image: url("../src/assets/cube-grid.svg");
   background-size: 100% 100%;
+}
+
+@utility end-cta-bg {
+  background-image: url("../src/assets/end-cta-bg.svg");
+  background-repeat: repeat;
+  background-position: center;
 }
