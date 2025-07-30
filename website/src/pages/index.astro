@@ -14,7 +14,14 @@ import Oss from "@components/icons/Oss.astro";
 import Percent from "@components/icons/Percent.astro";
 import Heart from "@components/icons/Heart.astro";
 import Accordion from "@components/Accordion.astro";
-
+import Marquee from "@components/Marquee.astro";
+import Star5 from "@components/icons/Star5.astro";
+import Steps from "@components/Steps.astro";
+import Testimonial from "@components/Testimonial.astro";
+import Star2 from "@components/icons/Star2.astro";
+import Star3 from "@components/icons/Star3.astro";
+import Star4 from "@components/icons/Star4.astro";
+import Star6 from "@components/icons/Star6.astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 
 const i18n = await keystatic.singletons.homepage.read({
@@ -22,7 +29,36 @@ const i18n = await keystatic.singletons.homepage.read({
 });
 invariant(i18n, "No homepage content found");
 
-const { hero, metadata, features: featuresData, steps, faq, cta } = i18n;
+// Get all testimonials using Keystatic
+const allTestimonials = await keystatic.collections.testimonials.list();
+const testimonialsData = await Promise.all(
+  allTestimonials.map(async (testimonial) => {
+    const data = await keystatic.collections.testimonials.read(testimonial);
+    return data;
+  })
+);
+const sortedTestimonials = testimonialsData
+  .filter((t): t is NonNullable<typeof t> => Boolean(t))
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+// Split testimonials into 2 groups
+const firstHalf = sortedTestimonials.slice(
+  0,
+  Math.ceil(sortedTestimonials.length / 2)
+);
+const secondHalf = sortedTestimonials.slice(
+  Math.ceil(sortedTestimonials.length / 2)
+);
+
+const {
+  hero,
+  metadata,
+  features: featuresData,
+  steps,
+  faq,
+  cta,
+  testimonials: testimonialsConfig,
+} = i18n;
 
 const getFeatureIcon = (title: string) => {
   const iconMap = {
@@ -120,7 +156,7 @@ const features = featuresData.features.map((feature) => ({
   </section>
 
   <section
-    class="bg-purple diamond-bg border-y-5 border-y-black px-20 py-[100px]"
+    class="bg-purple diamond-bg relative border-y-5 border-y-black px-20 pt-[100px] pb-[200px]"
   >
     <div class="container-content text-center">
       <h2 class="text-h2 mb-[60px]">{featuresData.title}</h2>
@@ -146,64 +182,94 @@ const features = featuresData.features.map((feature) => ({
         }
       </div>
     </div>
-  </section>
 
-  <section
-    class="bg-green cube-bg flex flex-col items-center justify-center px-20 py-[100px]"
-  >
-    <div class="container-content text-center">
-      <h2 class="text-h2 mb-[60px]">{steps.title}</h2>
-
-      <div class="relative mx-auto mb-5 h-10 w-full">
-        <div
-          class="absolute top-[10px] z-[1] mx-auto h-5 w-full border-5 border-black bg-white"
+    <div class="absolute -bottom-[150px] -left-[5%] h-[300px] w-full">
+      <div class="relative h-full">
+        <Marquee
+          repeat={10}
+          gap="30px"
+          pauseOnHover={false}
+          className="absolute top-[90px] left-0 w-[calc(100%+10%)] rotate-6 border-y-5 border-y-black bg-white py-[30px]"
         >
-        </div>
-        <div
-          class="relative grid grid-cols-4 items-center justify-between gap-8"
+          <div class="flex items-center justify-center gap-[30px]">
+            <p class="text-2xl">1% FEES FOR EARLY ADOPTERS</p>
+            <Star5 class="size-12" />
+          </div>
+        </Marquee>
+        <Marquee
+          repeat={10}
+          gap="30px"
+          pauseOnHover={false}
+          className="absolute bottom-[90px] left-0 w-[calc(100%+10%)] -rotate-6 border-y-5 border-y-black bg-white py-[30px]"
         >
-          {
-            Array(4)
-              .fill(0)
-              .map((_) => (
-                <div class="flex w-[290px] flex-col items-center">
-                  <div class="flex items-center justify-center">
-                    <div class="relative z-10 flex h-10 items-center">
-                      <div class="flex h-full w-[10px] items-center justify-center">
-                        <div class="h-5 w-[5px] bg-black" />
-                        <div class="h-[30px] w-[5px] border-y-5 border-y-black bg-white" />
-                      </div>
-                      <div class="h-full w-5 border-y-5 border-y-black bg-white" />
-                      <div class="flex h-full w-[10px] items-center justify-center">
-                        <div class="h-[30px] w-[5px] border-y-5 border-y-black bg-white" />
-                        <div class="h-5 w-[5px] bg-black" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-          }
-        </div>
-      </div>
-
-      <div class="flex w-full items-center justify-between gap-8">
-        {
-          steps.steps.map((step) => {
-            return (
-              <div class="flex w-[290px] flex-col items-center justify-start gap-4">
-                <h4 class="text-h4">{step.title}</h4>
-                <p class="base">{step.description}</p>
-              </div>
-            );
-          })
-        }
+          <div class="flex items-center justify-center gap-[30px]">
+            <p class="text-2xl">1% FEES FOR EARLY ADOPTERS</p>
+            <Star5 class="size-12" />
+          </div>
+        </Marquee>
       </div>
     </div>
   </section>
 
   <section
-    class="bg-purple diamond-bg border-y-5 border-y-black px-20 py-[100px]"
+    class="bg-green cube-bg flex flex-col items-center justify-center px-20 pt-[200px] pb-[100px]"
   >
+    <div class="container-content text-center">
+      <h2 class="text-h2 mb-[60px]">{steps.title}</h2>
+
+      <Steps steps={steps.steps} />
+    </div>
+  </section>
+
+  <section
+    class="bg-orange diamond-bg relative border-y-5 border-y-black px-20 py-[100px]"
+  >
+    <Star2 class="absolute top-14 left-12 size-20" />
+    <Star3 class="absolute top-10 right-10 size-20" />
+    <div class="container-content text-center">
+      <h2 class="text-h2 mb-[60px]">{testimonialsConfig.title}</h2>
+
+      <div class="flex flex-col items-center justify-center gap-8">
+        <Marquee
+          className="pb-[5px]"
+          repeat={5}
+          gap="40px"
+          speed={0.2}
+          direction="right"
+          pauseOnHover
+        >
+          {
+            firstHalf.map((testimonial) => (
+              <Testimonial testimonial={testimonial} />
+            ))
+          }
+        </Marquee>
+        <Marquee
+          pauseOnHover
+          className="pb-[5px]"
+          repeat={5}
+          gap="40px"
+          speed={0.2}
+        >
+          {
+            secondHalf.map((testimonial) => (
+              <Testimonial testimonial={testimonial} />
+            ))
+          }
+        </Marquee>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-green cube-bg relative overflow-hidden px-20 py-[100px]">
+    <Star4
+      color="var(--color-blue)"
+      class="absolute top-[50px] -left-[150px] size-[300px]"
+    />
+    <Star6
+      color="var(--color-orange)"
+      class="absolute -right-[150px] bottom-[50px] size-[300px]"
+    />
     <div class="container-content text-center">
       <h2 class="text-h2 mb-[60px]">{faq.title}</h2>
 
@@ -217,40 +283,49 @@ const features = featuresData.features.map((feature) => ({
     </div>
   </section>
 
-  <section class="w-full bg-black px-20 py-[100px]">
-    <div
-      class="container-content flex flex-col items-start justify-center gap-[60px]"
-    >
-      <h2 class="text-h1 text-white">
-        {cta.title}
-      </h2>
-      <p class="relative w-[716px] text-left text-2xl text-white">
-        {cta.description}
-      </p>
-      <div
-        class="relative flex h-[60px] items-center justify-between gap-[5px]"
-      >
-        <div class="relative h-full w-max">
-          <input
-            placeholder={cta.emailPlaceholder}
-            type="text"
-            class="h-full w-[400px] bg-white px-[15px] py-[5px] text-xl"
-          />
-          <div class="absolute top-0 right-0 size-[5px] bg-black"></div>
-          <div class="absolute right-0 bottom-0 size-[5px] bg-black"></div>
-          <div class="absolute top-0 left-0 size-[5px] bg-black"></div>
-          <div class="absolute bottom-0 left-0 size-[5px] bg-black"></div>
+  <section
+    id="waitlist"
+    class="end-cta-bg w-full scroll-mt-[120px] border-y-[10px] border-y-black bg-black px-20 py-[100px]"
+  >
+    <div class="container-content">
+      <Box color="white" class="w-max">
+        <div
+          class="flex w-max flex-col items-start justify-start gap-[60px] bg-black p-10"
+        >
+          <h2 class="text-h1 w-[700px] leading-[77px] text-white">
+            {cta.title}
+          </h2>
+          <p class="relative w-[716px] text-left text-2xl text-white">
+            {cta.description}
+          </p>
+          <div
+            class="relative flex h-[60px] items-center justify-between gap-[5px]"
+          >
+            <div class="relative h-full w-max">
+              <input
+                placeholder={cta.emailPlaceholder}
+                type="text"
+                class="h-full w-[400px] bg-white px-[15px] py-[5px] text-xl"
+              />
+              <div class="absolute top-0 right-0 size-[5px] bg-black"></div>
+              <div class="absolute right-0 bottom-0 size-[5px] bg-black"></div>
+              <div class="absolute top-0 left-0 size-[5px] bg-black"></div>
+              <div class="absolute bottom-0 left-0 size-[5px] bg-black"></div>
+            </div>
+            <div class="relative h-full w-max">
+              <button
+                class="bg-blue flex size-[60px] items-center justify-center"
+              >
+                <ArrowRight class="size-[34px]" color="white" />
+              </button>
+              <div class="absolute top-0 right-0 size-[5px] bg-black"></div>
+              <div class="absolute right-0 bottom-0 size-[5px] bg-black"></div>
+              <div class="absolute top-0 left-0 size-[5px] bg-black"></div>
+              <div class="absolute bottom-0 left-0 size-[5px] bg-black"></div>
+            </div>
+          </div>
         </div>
-        <div class="relative h-full w-max">
-          <button class="bg-blue flex size-[60px] items-center justify-center">
-            <ArrowRight class="size-[34px]" color="white" />
-          </button>
-          <div class="absolute top-0 right-0 size-[5px] bg-black"></div>
-          <div class="absolute right-0 bottom-0 size-[5px] bg-black"></div>
-          <div class="absolute top-0 left-0 size-[5px] bg-black"></div>
-          <div class="absolute bottom-0 left-0 size-[5px] bg-black"></div>
-        </div>
-      </div>
+      </Box>
     </div>
   </section>
 </Layout>
