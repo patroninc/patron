@@ -105,6 +105,11 @@ export const homepage = singleton({
         label: "FAQ",
       },
     ),
+    testimonials: fields.object({
+      title: fields.text({
+        label: "Title",
+      }),
+    }),
     cta: fields.object(
       {
         title: fields.text({
