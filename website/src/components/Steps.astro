@@ -1,0 +1,85 @@
+---
+import Create from "@components/icons/Create.astro";
+import Tiers from "@components/icons/Tiers.astro";
+import Upload from "@components/icons/Upload.astro";
+import Dollar from "@components/icons/Dollar.astro";
+
+interface Props {
+  steps: readonly {
+    readonly title: string;
+    readonly description: string;
+  }[];
+}
+
+const { steps }: Props = Astro.props;
+
+const icons = [Create, Tiers, Upload, Dollar];
+---
+
+<div class="relative mx-auto mb-5 h-[100px] w-full">
+  <div
+    class="absolute top-[40px] left-[calc(100%/8)] z-[1] mx-auto h-5 w-[calc(100%-(100%/4))] border-5 border-black bg-white"
+  >
+  </div>
+  <div class="relative grid grid-cols-4 items-center justify-between gap-8">
+    {
+      Array(4)
+        .fill(0)
+        .map((_, index) => (
+          <div class="flex w-[290px] flex-col items-center">
+            <div class="flex items-center justify-center">
+              <button
+                id={`step-button-${index}`}
+                class="relative z-10 flex size-[90px] items-center"
+              >
+                <div class="h-[70px] w-[5px] bg-black" />
+                <div class="flex flex-col items-center">
+                  <div class="h-[5px] w-[70px] bg-black" />
+                  <div class="relative size-[80px]">
+                    <div class="absolute top-0 left-0 z-[1] size-[5px] bg-black" />
+                    <div class="absolute top-0 right-0 z-[1] size-[5px] bg-black" />
+                    <div class="absolute bottom-0 left-0 z-[1] size-[5px] bg-black" />
+                    <div class="absolute right-0 bottom-0 z-[1] size-[5px] bg-black" />
+                    <div class="bg-blue flex h-full w-full items-center justify-center">
+                      {(() => {
+                        const IconComponent = icons[index];
+                        return (
+                          <IconComponent class="size-[45px]" color="white" />
+                        );
+                      })()}
+                    </div>
+                  </div>
+                  <div class="h-[5px] w-[70px] bg-black" />
+                </div>
+                <div class="h-[70px] w-[5px] bg-black" />
+              </button>
+            </div>
+          </div>
+        ))
+    }
+  </div>
+</div>
+
+<div class="flex w-full items-center justify-between gap-8">
+  {
+    steps.map((step) => {
+      return (
+        <div class="flex w-[290px] flex-col items-center justify-start gap-4">
+          <h4 class="text-h4">{step.title}</h4>
+          <p class="base">{step.description}</p>
+        </div>
+      );
+    })
+  }
+</div>
+
+<script>
+  const stepButtons = document.querySelectorAll(
+    "#step-button-0, #step-button-1, #step-button-2, #step-button-3"
+  );
+  stepButtons.forEach((stepButton) => {
+    stepButton.addEventListener("click", () => {
+      stepButton.classList.add("active");
+    });
+  });
+</script>

@@ -1,0 +1,130 @@
+---
+export interface Props {
+  /**
+   * Optional CSS class name to apply custom styles
+   */
+  className?: string;
+  /**
+   * Whether to reverse the animation direction
+   * @default false
+   */
+  reverse?: boolean;
+  /**
+   * Whether to pause the animation on hover
+   * @default false
+   */
+  pauseOnHover?: boolean;
+  /**
+   * Whether to animate vertically instead of horizontally
+   * @default false
+   */
+  vertical?: boolean;
+  /**
+   * Number of times to repeat the content
+   * @default 4
+   */
+  repeat?: number;
+  /**
+   * Gap between items (CSS value like "1rem", "16px", etc.)
+   * @default "1rem"
+   */
+  gap?: string;
+  /**
+   * Animation speed multiplier (1 = normal speed, 2 = twice as fast, 0.5 = half speed)
+   * @default 1
+   */
+  speed?: number;
+  /**
+   * Animation direction ("left", "right")
+   * @default "left"
+   */
+  direction?: "left" | "right";
+}
+
+const {
+  className = "",
+  reverse = false,
+  pauseOnHover = false,
+  vertical = false,
+  repeat = 4,
+  gap = "1rem",
+  speed = 1,
+  direction = "left",
+} = Astro.props;
+
+// Calculate duration based on speed (base duration is 7s)
+const duration = 7 / speed;
+---
+
+<div
+  class={`group flex overflow-hidden [gap:var(--gap)] ${
+    vertical ? "flex-col" : "flex-row"
+  } ${pauseOnHover ? "pause-on-hover" : ""} ${className}`}
+  style={`--gap: ${gap}; --duration: ${duration}s;`}
+>
+  {
+    Array(repeat)
+      .fill(0)
+      .map((_, i) => (
+        <div
+          class={`flex shrink-0 justify-around [gap:var(--gap)] ${
+            vertical
+              ? "animate-marquee-vertical flex-col"
+              : direction === "right"
+                ? "animate-marquee-right flex-row"
+                : "animate-marquee flex-row"
+          }`}
+        >
+          <slot />
+        </div>
+      ))
+  }
+</div>
+
+<style>
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+
+  @keyframes marquee-right {
+    from {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes marquee-vertical {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee var(--duration) linear infinite;
+  }
+
+  .animate-marquee-right {
+    animation: marquee-right var(--duration) linear infinite;
+  }
+
+  .animate-marquee-vertical {
+    animation: marquee-vertical var(--duration) linear infinite;
+  }
+
+  /* Pause animation on hover - only when pause-on-hover class is present */
+  .pause-on-hover:hover .animate-marquee,
+  .pause-on-hover:hover .animate-marquee-right,
+  .pause-on-hover:hover .animate-marquee-vertical {
+    animation-play-state: paused;
+  }
+</style>
