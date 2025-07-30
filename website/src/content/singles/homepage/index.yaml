@@ -43,6 +43,8 @@ faq:
       answer: "Patron is a open-source Patreon alternative with radically low fees."
     - question: "How does Patron compare to Patreon?"
       answer: "Patron is a open-source Patreon alternative with radically low fees."
+testimonials:
+  title: "What our creators say"
 cta:
   title: "Join the waitlist and get 1% fees forever."
   description: "Start creating content you love for users together with 500.000+ other creators."

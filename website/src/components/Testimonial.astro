@@ -1,0 +1,27 @@
+---
+import Box from "./Box.astro";
+
+const { testimonial } = Astro.props;
+---
+
+<Box class="w-[400px]" shadow>
+  <div class="bg-purple flex h-full flex-col items-center p-[25px]">
+    <div class="mb-5 flex flex-col items-center gap-[10px]">
+      {
+        testimonial.image && (
+          <Box>
+            <img
+              src={testimonial.image}
+              alt={testimonial.author}
+              class="size-10 object-cover"
+            />
+          </Box>
+        )
+      }
+      <div>
+        <h4 class="text-h4">{testimonial.author}</h4>
+      </div>
+    </div>
+    <p class="text-base">"{testimonial.quote}"</p>
+  </div>
+</Box>
