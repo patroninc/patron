@@ -9,7 +9,6 @@ import diamondGrid from "@assets/grid-diamond.svg";
 
 import Star1 from "@components/icons/Star1.astro";
 import Box from "@components/Box.astro";
-import Button from "@components/Button.astro";
 import Oss from "@components/icons/Oss.astro";
 import Percent from "@components/icons/Percent.astro";
 import Heart from "@components/icons/Heart.astro";
@@ -23,6 +22,9 @@ import Star3 from "@components/icons/Star3.astro";
 import Star4 from "@components/icons/Star4.astro";
 import Star6 from "@components/icons/Star6.astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
+import Input from "@components/Input.astro";
+import Check from "@lucide/astro/icons/check";
+import EndCtaGrid from "@components/EndCtaGrid.astro";
 
 const i18n = await keystatic.singletons.homepage.read({
   resolveLinkedFiles: true,
@@ -114,19 +116,34 @@ const features = featuresData.features.map((feature) => ({
         <p class="max-w-[600px] text-2xl">
           {hero.description}
         </p>
-        <div class="flex items-center gap-[10px]">
-          <Box class="w-max">
-            <input
-              placeholder={hero.emailPlaceholder}
-              type="text"
-              class="h-[58px] w-[400px] bg-white px-[15px] py-[5px] text-xl"
-            />
+        <form id="hero" class="flex items-center gap-[10px]">
+          <Input
+            containerClass="w-max"
+            placeholder={hero.emailPlaceholder}
+            required
+            type="email"
+            class="h-[58px] w-[400px] bg-white px-[15px] py-[5px] text-xl"
+          />
+          <Box class="w-[266px] overflow-hidden">
+            <div
+              class="success-message absolute -top-[58px] left-0 flex w-full flex-col items-center transition-all duration-300 ease-in-out"
+            >
+              <div
+                class="bg-orange flex h-[58px] w-full items-center justify-center gap-2 text-[24px] select-none"
+              >
+                Joined
+                <Check class="size-6" />
+              </div>
+            </div>
+            <button
+              type="submit"
+              class="bg-blue flex h-[58px] w-full items-center justify-center gap-2 text-[24px] text-white outline-none"
+            >
+              {hero.ctaButtonText}
+              <ArrowRight size={34} />
+            </button>
           </Box>
-          <Button size="lg" shadow={false}
-            >{hero.ctaButtonText}
-            <ArrowRight />
-          </Button>
-        </div>
+        </form>
       </div>
       <div class="w-[400px]">
         <div class="flex h-[400px] w-full items-end justify-between">
@@ -200,6 +217,7 @@ const features = featuresData.features.map((feature) => ({
           repeat={10}
           gap="30px"
           pauseOnHover={false}
+          direction="right"
           className="absolute bottom-[90px] left-0 w-[calc(100%+10%)] -rotate-6 border-y-5 border-y-black bg-white py-[30px]"
         >
           <div class="flex items-center justify-center gap-[30px]">
@@ -285,8 +303,9 @@ const features = featuresData.features.map((feature) => ({
 
   <section
     id="waitlist"
-    class="end-cta-bg w-full scroll-mt-[120px] border-y-[10px] border-y-black bg-black px-20 py-[100px]"
+    class="relative w-full scroll-mt-[120px] overflow-hidden border-y-[10px] border-y-black bg-black px-20 py-[100px]"
   >
+    <EndCtaGrid />
     <div class="container-content">
       <Box color="white" class="w-max">
         <div
@@ -298,34 +317,102 @@ const features = featuresData.features.map((feature) => ({
           <p class="relative w-[716px] text-left text-2xl text-white">
             {cta.description}
           </p>
-          <div
+          <form
+            id="end-cta"
             class="relative flex h-[60px] items-center justify-between gap-[5px]"
           >
             <div class="relative h-full w-max">
               <input
                 placeholder={cta.emailPlaceholder}
                 type="text"
-                class="h-full w-[400px] bg-white px-[15px] py-[5px] text-xl"
+                class="peer h-full w-[400px] bg-white px-[15px] py-[5px] text-xl outline-none"
               />
-              <div class="absolute top-0 right-0 size-[5px] bg-black"></div>
-              <div class="absolute right-0 bottom-0 size-[5px] bg-black"></div>
-              <div class="absolute top-0 left-0 size-[5px] bg-black"></div>
-              <div class="absolute bottom-0 left-0 size-[5px] bg-black"></div>
             </div>
-            <div class="relative h-full w-max">
+            <div class="relative h-full w-max overflow-hidden">
+              <div
+                class="success-message absolute -top-[60px] left-0 flex w-full flex-col items-center transition-all duration-300 ease-in-out"
+              >
+                <div
+                  class="bg-orange flex h-[60px] w-full items-center justify-center select-none"
+                >
+                  <Check class="size-[34px]" />
+                </div>
+              </div>
               <button
-                class="bg-blue flex size-[60px] items-center justify-center"
+                class="bg-blue flex size-[60px] items-center justify-center outline-none"
               >
                 <ArrowRight class="size-[34px]" color="white" />
               </button>
-              <div class="absolute top-0 right-0 size-[5px] bg-black"></div>
-              <div class="absolute right-0 bottom-0 size-[5px] bg-black"></div>
-              <div class="absolute top-0 left-0 size-[5px] bg-black"></div>
-              <div class="absolute bottom-0 left-0 size-[5px] bg-black"></div>
             </div>
-          </div>
+          </form>
         </div>
       </Box>
     </div>
   </section>
 </Layout>
+
+<script>
+  const button = document.querySelector("form#hero button");
+  const heroForm = document.querySelector("form#hero");
+  const endCtaForm = document.querySelector("form#end-cta");
+
+  if (button) {
+    button.addEventListener("focus", () => {
+      const parent = button.parentElement;
+      if (parent) {
+        parent.classList.remove("border-md");
+        parent.classList.add("border-border");
+      }
+    });
+
+    button.addEventListener("blur", () => {
+      const parent = button.parentElement;
+      if (parent) {
+        parent.classList.remove("border-border");
+        parent.classList.add("border-md");
+      }
+    });
+  }
+
+  if (heroForm) {
+    heroForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const successMessage = heroForm.querySelector(
+        "form#hero .success-message"
+      ) as HTMLDivElement | null;
+
+      const input = heroForm.querySelector(
+        'form#hero input[type="email"]'
+      ) as HTMLInputElement | null;
+
+      if (input) {
+        console.log("input value:", input.value);
+      }
+
+      successMessage?.classList.add("top-0");
+      successMessage?.classList.remove("top-[-58px]");
+    });
+  }
+
+  if (endCtaForm) {
+    endCtaForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const successMessage = endCtaForm.querySelector(
+        "form#end-cta .success-message"
+      ) as HTMLDivElement | null;
+
+      const input = endCtaForm.querySelector(
+        'form#end-cta input[type="email"]'
+      ) as HTMLInputElement | null;
+
+      if (input) {
+        console.log("input value:", input.value);
+      }
+
+      successMessage?.classList.add("top-0");
+      successMessage?.classList.remove("top-[-60px]");
+    });
+  }
+</script>
