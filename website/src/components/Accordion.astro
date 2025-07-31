@@ -13,7 +13,7 @@ const { title, details } = Astro.props as Props;
 <Box shadow>
   <div class="accordion group relative w-[550px]">
     <button
-      class="accordion__button bg-purple flex w-full flex-1 items-center justify-between gap-2.5 p-5 transition"
+      class="accordion__button bg-purple flex w-full flex-1 items-center justify-between gap-2.5 p-5 transition outline-none"
       type="button"
       id={`${title} accordion menu button`}
       aria-expanded="false"
@@ -41,6 +41,26 @@ const { title, details } = Astro.props as Props;
 </Box>
 
 <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const accordionButtons = document.querySelectorAll(".accordion__button");
+    if (!accordionButtons || accordionButtons.length === 0) return;
+
+    accordionButtons.forEach((accordion) => {
+      const parent = accordion.parentElement?.parentElement;
+      if (!parent) return;
+
+      accordion.addEventListener("focus", () => {
+        parent.classList.remove("border-md");
+        parent.classList.add("border-border");
+      });
+
+      accordion.addEventListener("blur", () => {
+        parent.classList.remove("border-border");
+        parent.classList.add("border-md");
+      });
+    });
+  });
+
   function accordionSetup() {
     const accordionMenus = document.querySelectorAll(
       ".accordion"

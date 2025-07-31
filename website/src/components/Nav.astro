@@ -3,6 +3,7 @@ import invariant from "tiny-invariant";
 import { keystatic } from "@lib/keystatic/client";
 import Button from "./Button.astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
+import Link from "./Link.astro";
 
 const i18n = await keystatic.singletons.nav.read({
   resolveLinkedFiles: true,
@@ -37,14 +38,14 @@ invariant(i18n, "No homepage content found");
       <div class="flex items-center space-x-[50px]">
         {
           i18n.navigationLinks.map((link) => (
-            <a
+            <Link
               href={link.href}
               target={link.newTab ? "_blank" : undefined}
               rel={link.newTab ? "noopener noreferrer" : undefined}
-              class="text-lg underline-offset-4 hover:underline"
+              class="text-lg"
             >
               {link.label}
-            </a>
+            </Link>
           ))
         }
       </div>

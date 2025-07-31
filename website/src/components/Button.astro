@@ -2,7 +2,7 @@
 export interface Props {
   class?: string;
   as?: keyof HTMLElementTagNameMap;
-  size?: "lg" | "md" | "icon";
+  size?: "md" | "icon";
   color?: "primary" | "secondary";
   shadow?: boolean;
   [key: string]: any;
@@ -20,9 +20,8 @@ const {
 
 <Tag
   class:list={[
+    "group relative flex h-[52px] items-center justify-center outline-none",
     className,
-    "group relative flex items-center justify-center",
-    size === "lg" ? "h-[66px]" : "h-[52px]",
   ]}
   {...props}
 >
@@ -32,7 +31,7 @@ const {
       shadow && "group-hover:translate-x-[5px] group-hover:translate-y-[5px]",
     ]}
   >
-    <div class="h-[calc(100%-10px)] w-[5px] bg-black"></div>
+    <div class="h-[calc(100%-10px)] w-[5px] bg-black group-focus:h-full"></div>
     <div
       class:list={[
         "flex h-full items-center justify-center gap-2 border-y-5 border-y-black text-[20px]",
@@ -44,7 +43,7 @@ const {
     >
       <slot />
     </div>
-    <div class="h-[calc(100%-10px)] w-[5px] bg-black"></div>
+    <div class="h-[calc(100%-10px)] w-[5px] bg-black group-focus:h-full"></div>
   </div>
 
   {
