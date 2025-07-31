@@ -1,0 +1,30 @@
+---
+import Star1 from "@components/grid-stars/Star1.astro";
+import Star2 from "@components/grid-stars/Star2.astro";
+import Star3 from "@components/grid-stars/Star3.astro";
+import Star4 from "@components/grid-stars/Star4.astro";
+import Star5 from "@components/grid-stars/Star5.astro";
+import Star6 from "@components/grid-stars/Star6.astro";
+
+const stars = [Star1, Star2, Star3, Star4, Star5, Star6];
+---
+
+<div
+  class="absolute top-[-50px] left-[-100px] z-[0] flex h-[1000px] w-[3000px] flex-wrap"
+>
+  {
+    Array(20)
+      .fill(0)
+      .map((_, idx) => (
+        <div class="flex h-[400px] w-[600px] flex-wrap items-center justify-start gap-[-10px] [*>svg]:h-[100px]">
+          {stars.map((Star) => (
+            <div class="group relative flex size-[200px] items-center justify-center [&>svg]:relative [&>svg]:left-[10px] [&>svg]:h-[100px]">
+              <Star />
+              <div class="absolute top-0 left-[10px] h-[10px] w-[190px] bg-white/20" />
+              <div class="absolute top-[10px] left-0 h-[190px] w-[10px] bg-white/20" />
+            </div>
+          ))}
+        </div>
+      ))
+  }
+</div>

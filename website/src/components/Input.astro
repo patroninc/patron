@@ -1,0 +1,37 @@
+---
+import Box from "./Box.astro";
+
+interface Props {
+  class: string;
+  [key: string]: any;
+  containerClass?: string;
+}
+
+const { class: className, containerClass, ...props } = Astro.props;
+---
+
+<Box class={containerClass}>
+  <input class:list={[className, "component-input outline-none"]} {...props} />
+</Box>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const inputs = document.querySelectorAll(".component-input");
+    if (!inputs || inputs.length === 0) return;
+
+    inputs.forEach((input) => {
+      const parent = input.parentElement;
+      if (!parent) return;
+
+      input.addEventListener("focus", () => {
+        parent.classList.remove("border-md");
+        parent.classList.add("border-border");
+      });
+
+      input.addEventListener("blur", () => {
+        parent.classList.remove("border-border");
+        parent.classList.add("border-md");
+      });
+    });
+  });
+</script>
