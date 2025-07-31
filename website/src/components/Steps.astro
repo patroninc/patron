@@ -28,10 +28,7 @@ const icons = [Create, Tiers, Upload, Dollar];
         .map((_, index) => (
           <div class="flex w-[290px] flex-col items-center">
             <div class="flex items-center justify-center">
-              <button
-                id={`step-button-${index}`}
-                class="relative z-10 flex size-[90px] items-center"
-              >
+              <div class="relative z-10 flex size-[90px] items-center">
                 <div class="h-[70px] w-[5px] bg-black" />
                 <div class="flex flex-col items-center">
                   <div class="h-[5px] w-[70px] bg-black" />
@@ -52,7 +49,7 @@ const icons = [Create, Tiers, Upload, Dollar];
                   <div class="h-[5px] w-[70px] bg-black" />
                 </div>
                 <div class="h-[70px] w-[5px] bg-black" />
-              </button>
+              </div>
             </div>
           </div>
         ))
@@ -72,14 +69,3 @@ const icons = [Create, Tiers, Upload, Dollar];
     })
   }
 </div>
-
-<script>
-  const stepButtons = document.querySelectorAll(
-    "#step-button-0, #step-button-1, #step-button-2, #step-button-3"
-  );
-  stepButtons.forEach((stepButton) => {
-    stepButton.addEventListener("click", () => {
-      stepButton.classList.add("active");
-    });
-  });
-</script>

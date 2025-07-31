@@ -5,6 +5,7 @@ import Github from "./icons/Github.astro";
 import X from "./icons/X.astro";
 import Linkedin from "./icons/Linkedin.astro";
 import Youtube from "./icons/Youtube.astro";
+import Link from "./Link.astro";
 
 const i18n = await keystatic.singletons.footer.read({
   resolveLinkedFiles: true,
@@ -67,14 +68,14 @@ invariant(i18n, "No footer content found");
                 </h4>
                 <div class="flex flex-col space-y-5">
                   {section.links.map((link) => (
-                    <a
+                    <Link
                       href={link.href}
                       target={link.newTab ? "_blank" : undefined}
                       rel={link.newTab ? "noopener noreferrer" : undefined}
-                      class="text-xs text-black underline-offset-4 hover:underline"
+                      class="text-xs"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -86,12 +87,9 @@ invariant(i18n, "No footer content found");
           <div class="flex flex-col gap-5">
             {
               i18n.bottomLinks.map((link) => (
-                <a
-                  href={link.href}
-                  class="text-xs text-black underline-offset-4 hover:underline"
-                >
+                <Link href={link.href} class="text-xs">
                   {link.label}
-                </a>
+                </Link>
               ))
             }
           </div>
@@ -99,26 +97,20 @@ invariant(i18n, "No footer content found");
         <div class="flex flex-col gap-10">
           <h4 class="text-h4 leading-[29px] text-black">Contact</h4>
           <div class="flex flex-col gap-5">
-            <a
-              href={`mailto:${i18n.contact.email}`}
-              class="text-xs text-black underline-offset-4 hover:underline"
-            >
+            <Link href={`mailto:${i18n.contact.email}`} class="text-xs">
               {i18n.contact.email}
-            </a>
-            <a
-              href={`tel:${i18n.contact.phone}`}
-              class="text-xs text-black underline-offset-4 hover:underline"
-            >
+            </Link>
+            <Link href={`tel:${i18n.contact.phone}`} class="text-xs">
               {i18n.contact.phone}
-            </a>
-            <a
+            </Link>
+            <Link
               href={`https://maps.app.goo.gl/1234567890`}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-xs text-black underline-offset-4 hover:underline"
+              class="!w-full text-xs"
             >
               {i18n.contact.address}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

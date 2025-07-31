@@ -5,7 +5,7 @@
 :root {
   --color-blue: #265b92;
   --color-green: #00d6bd;
-  --color-purple: #7a83ff;
+  --color-purple: #858deb;
   --color-orange: #f68615;
 }
 
@@ -113,6 +113,36 @@
   border-width: 5px;
 }
 
+@utility border-border {
+  border-image: url("../assets/border.svg") 3 1 1 stretch;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-slice: 1;
+  border-image-width: 1;
+  border-style: solid;
+  border-width: 5px;
+}
+
+@utility border-lg {
+  border-image: url("../assets/border-lg.svg") 3 1 1 stretch;
+  border-image-outset: 1;
+  border-image-repeat: stretch;
+  border-image-slice: 2;
+  border-image-width: 8px;
+  border-style: solid;
+  border-width: 2px;
+}
+
+@utility border-lg-xs {
+  border-image: url("../assets/border-lg.svg") 3 1 1 stretch;
+  border-image-outset: 1;
+  border-image-repeat: stretch;
+  border-image-slice: 2;
+  border-image-width: 8px;
+  border-style: solid;
+  border-width: 2px;
+}
+
 @utility white-border-md {
   border-image: url("../assets/white-border-md.svg") 3 1 1 stretch;
   border-image-outset: 0;
@@ -121,6 +151,16 @@
   border-image-width: 1;
   border-style: solid;
   border-width: 5px;
+}
+
+@utility grid-border-md {
+  border-image: url("../assets/grid-md-border.svg") 3 1 1 stretch;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-slice: 1;
+  border-image-width: 1;
+  border-style: solid;
+  border-width: 10px;
 }
 
 @utility cube-grid-bg {
