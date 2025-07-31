@@ -1,0 +1,25 @@
+---
+interface Props {
+  href: string;
+  target?: string;
+  rel?: string;
+  class?: string;
+  [key: string]: any;
+}
+
+const { href, target, rel, class: className, ...props } = Astro.props;
+---
+
+<a
+  href={href}
+  target={target}
+  rel={rel}
+  class:list={[className, "group relative w-max"]}
+  {...props}
+>
+  <div
+    class="group-hover:border-lg absolute top-[-8px] left-[-15px] h-[calc(100%+16px)] w-[calc(100%+30px)]"
+  >
+  </div>
+  <slot />
+</a>
