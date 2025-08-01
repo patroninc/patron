@@ -98,11 +98,15 @@ const features = featuresData.features.map((feature) => ({
 
 <Layout title={metadata.title} description={metadata.description}>
   <section
-    class="bg-green cube-bg flex min-h-[850px] flex-col items-center justify-center px-20 py-[100px]"
+    class="bg-green cube-bg flex min-h-[800px] w-full flex-col items-center justify-center px-20 py-[100px] xl:min-h-[850px]"
   >
-    <div class="container-content flex items-center justify-between">
-      <div class="flex w-[750px] flex-col gap-[60px]">
-        <h1 class="text-h1 w-full">
+    <div
+      class="container-content flex items-center justify-center xl:justify-between"
+    >
+      <div
+        class="flex w-[750px] flex-col items-center gap-[60px] xl:items-start"
+      >
+        <h1 class="w-full text-center xl:text-left">
           <span set:html={marked.parseInline(hero.title.text)} />
           <span
             class="text-orange relative ml-9"
@@ -113,7 +117,7 @@ const features = featuresData.features.map((feature) => ({
             <Star1 class="absolute top-0 -right-5 size-[30px]" />
           </span>
         </h1>
-        <p class="max-w-[600px] text-2xl">
+        <p class="max-w-[600px] text-center text-2xl xl:text-left">
           {hero.description}
         </p>
         <form id="hero" class="flex items-center gap-[10px]">
@@ -137,6 +141,7 @@ const features = featuresData.features.map((feature) => ({
             </div>
             <button
               type="submit"
+              aria-label="Join the waitlist"
               class="bg-blue flex h-[58px] w-full items-center justify-center gap-2 text-[24px] text-white outline-none"
             >
               {hero.ctaButtonText}
@@ -145,7 +150,7 @@ const features = featuresData.features.map((feature) => ({
           </Box>
         </form>
       </div>
-      <div class="w-[400px]">
+      <div class="hidden w-[400px] xl:block">
         <div class="flex h-[400px] w-full items-end justify-between">
           <Box class="h-10 w-[165px]">
             <div class="bg-orange flex h-full items-center justify-center">
@@ -173,10 +178,10 @@ const features = featuresData.features.map((feature) => ({
   </section>
 
   <section
-    class="bg-purple diamond-bg relative border-y-5 border-y-black px-20 pt-[100px] pb-[200px]"
+    class="bg-purple diamond-bg relative max-w-full border-y-5 border-y-black px-20 pt-[100px] pb-[200px]"
   >
     <div class="container-content text-center">
-      <h2 class="text-h2 mb-[60px]">{featuresData.title}</h2>
+      <h2 class="mb-[60px]">{featuresData.title}</h2>
 
       <div class="flex items-center justify-between gap-8">
         {
@@ -188,7 +193,7 @@ const features = featuresData.features.map((feature) => ({
                   <div class="flex flex-col items-center justify-start gap-[25px]">
                     <div class="flex flex-col items-center justify-start gap-[25px]">
                       <IconComponent class="size-[100px]" />
-                      <h3 class="text-h3">{feature.title}</h3>
+                      <h3>{feature.title}</h3>
                     </div>
                     <p class="text-lg">{feature.description}</p>
                   </div>
@@ -200,13 +205,15 @@ const features = featuresData.features.map((feature) => ({
       </div>
     </div>
 
-    <div class="absolute -bottom-[150px] -left-[5%] h-[300px] w-full">
-      <div class="relative h-full">
+    <div
+      class="absolute -bottom-[150px] -left-[5%] h-[300px] w-[calc(100%+5%)] overflow-hidden"
+    >
+      <div class="relative h-full w-full">
         <Marquee
           repeat={10}
           gap="30px"
           pauseOnHover={false}
-          className="absolute top-[90px] left-0 w-[calc(100%+10%)] rotate-6 border-y-5 border-y-black bg-white py-[30px]"
+          className="absolute top-[90px] left-0 w-[calc(100%+10%)] rotate-[5deg] border-y-5 border-y-black bg-white py-[30px]"
         >
           <div class="flex items-center justify-center gap-[30px]">
             <p class="text-2xl">1% FEES FOR EARLY ADOPTERS</p>
@@ -218,7 +225,7 @@ const features = featuresData.features.map((feature) => ({
           gap="30px"
           pauseOnHover={false}
           direction="right"
-          className="absolute bottom-[90px] left-0 w-[calc(100%+10%)] -rotate-6 border-y-5 border-y-black bg-white py-[30px]"
+          className="absolute bottom-[90px] left-0 w-[calc(100%+10%)] -rotate-[5deg] border-y-5 border-y-black bg-white py-[30px]"
         >
           <div class="flex items-center justify-center gap-[30px]">
             <p class="text-2xl">1% FEES FOR EARLY ADOPTERS</p>
@@ -233,14 +240,14 @@ const features = featuresData.features.map((feature) => ({
     class="bg-green cube-bg flex flex-col items-center justify-center px-20 pt-[200px] pb-[100px]"
   >
     <div class="container-content text-center">
-      <h2 class="text-h2 mb-[60px]">{steps.title}</h2>
+      <h2 class="mb-[60px]">{steps.title}</h2>
 
       <Steps steps={steps.steps} />
     </div>
   </section>
 
   <section
-    class="bg-orange diamond-bg relative border-y-5 border-y-black px-20 py-[100px]"
+    class="bg-orange diamond-bg relative overflow-x-hidden border-y-5 border-y-black px-20 py-[100px]"
   >
     <Star2 class="absolute top-14 left-12 size-20" />
     <Star3 class="absolute top-10 right-10 size-20" />
@@ -289,7 +296,7 @@ const features = featuresData.features.map((feature) => ({
       class="absolute -right-[150px] bottom-[50px] size-[300px]"
     />
     <div class="container-content text-center">
-      <h2 class="text-h2 mb-[60px]">{faq.title}</h2>
+      <h2 class="mb-[60px]">{faq.title}</h2>
 
       <div class="flex flex-col items-center justify-between gap-4">
         {
@@ -311,7 +318,7 @@ const features = featuresData.features.map((feature) => ({
         <div
           class="flex w-max flex-col items-start justify-start gap-[60px] bg-black p-10"
         >
-          <h2 class="text-h1 w-[700px] leading-[77px] text-white">
+          <h2 class="w-[700px] text-white">
             {cta.title}
           </h2>
           <p class="relative w-[716px] text-left text-2xl text-white">
@@ -322,27 +329,29 @@ const features = featuresData.features.map((feature) => ({
             class="relative flex h-[60px] items-center justify-between gap-[5px]"
           >
             <div class="relative h-full w-max">
-              <input
-                placeholder={cta.emailPlaceholder}
-                type="text"
-                class="peer h-full w-[400px] bg-white px-[15px] py-[5px] text-xl outline-none"
-              />
+              <Box color="white" class="h-full w-max">
+                <input
+                  placeholder={cta.emailPlaceholder}
+                  type="email"
+                  required
+                  class="peer h-full w-[400px] bg-white px-[15px] py-[5px] text-xl outline-none"
+                />
+              </Box>
             </div>
             <div class="relative h-full w-max overflow-hidden">
-              <div
-                class="success-message absolute -top-[60px] left-0 flex w-full flex-col items-center transition-all duration-300 ease-in-out"
-              >
+              <Box color="blue" class="relative h-full w-max">
                 <div
-                  class="bg-orange flex h-[60px] w-full items-center justify-center select-none"
+                  class="success-message bg-orange absolute -top-[65px] -left-[5px] z-10 flex size-[60px] items-center justify-center transition-all duration-300 ease-in-out select-none"
                 >
                   <Check class="size-[34px]" />
                 </div>
-              </div>
-              <button
-                class="bg-blue flex size-[60px] items-center justify-center outline-none"
-              >
-                <ArrowRight class="size-[34px]" color="white" />
-              </button>
+                <button
+                  aria-label="Join the waitlist"
+                  class="bg-blue flex size-[50px] items-center justify-center outline-none"
+                >
+                  <ArrowRight class="size-[34px]" color="white" />
+                </button>
+              </Box>
             </div>
           </form>
         </div>
@@ -355,6 +364,44 @@ const features = featuresData.features.map((feature) => ({
   const button = document.querySelector("form#hero button");
   const heroForm = document.querySelector("form#hero");
   const endCtaForm = document.querySelector("form#end-cta");
+  const endCtaInput = document.querySelector(
+    'form#end-cta input[type="email"]'
+  ) as HTMLInputElement | null;
+  const endCtaButton = document.querySelector(
+    "form#end-cta button"
+  ) as HTMLButtonElement | null;
+
+  endCtaInput?.addEventListener("focus", () => {
+    const parent = endCtaInput?.parentElement;
+    if (parent) {
+      parent.classList.remove("white-border-md");
+      parent.classList.add("white-border");
+    }
+  });
+
+  endCtaInput?.addEventListener("blur", () => {
+    const parent = endCtaInput?.parentElement;
+    if (parent) {
+      parent.classList.remove("white-border");
+      parent.classList.add("white-border-md");
+    }
+  });
+
+  endCtaButton?.addEventListener("focus", () => {
+    const parent = endCtaButton?.parentElement;
+    if (parent) {
+      parent.classList.remove("blue-border-md");
+      parent.classList.add("blue-border");
+    }
+  });
+
+  endCtaButton?.addEventListener("blur", () => {
+    const parent = endCtaButton?.parentElement;
+    if (parent) {
+      parent.classList.remove("blue-border");
+      parent.classList.add("blue-border-md");
+    }
+  });
 
   if (button) {
     button.addEventListener("focus", () => {
@@ -403,15 +450,11 @@ const features = featuresData.features.map((feature) => ({
         "form#end-cta .success-message"
       ) as HTMLDivElement | null;
 
-      const input = endCtaForm.querySelector(
-        'form#end-cta input[type="email"]'
-      ) as HTMLInputElement | null;
-
-      if (input) {
-        console.log("input value:", input.value);
+      if (endCtaInput) {
+        console.log("input value:", endCtaInput.value);
       }
 
-      successMessage?.classList.add("top-0");
+      successMessage?.classList.add("top-[-5px]");
       successMessage?.classList.remove("top-[-60px]");
     });
   }
