@@ -65,6 +65,12 @@ const { title, details } = Astro.props as Props;
     const accordionMenus = document.querySelectorAll(
       ".accordion"
     ) as NodeListOf<HTMLElement>;
+
+    // Store all accordion buttons for keyboard navigation
+    const allAccordionButtons = Array.from(accordionMenus)
+      .map((menu) => menu.querySelector(".accordion__button") as HTMLElement)
+      .filter(Boolean);
+
     accordionMenus.forEach((accordionMenu) => {
       const accordionButton = accordionMenu.querySelector(
         ".accordion__button"
@@ -77,7 +83,8 @@ const { title, details } = Astro.props as Props;
       ) as HTMLElement;
 
       if (accordionButton && accordionContent && accordionChevron) {
-        accordionButton.addEventListener("click", (event) => {
+        // Click handler for opening/closing accordion
+        const toggleAccordion = (event: Event) => {
           if (!accordionMenu.classList.contains("active")) {
             // if accordion is currently closed, so open it
             accordionMenu.classList.add("active");
@@ -105,6 +112,47 @@ const { title, details } = Astro.props as Props;
           }
           event.preventDefault();
           return false;
+        };
+
+        // Click event
+        accordionButton.addEventListener("click", toggleAccordion);
+
+        // Keyboard event handler
+        accordionButton.addEventListener("keydown", (event) => {
+          const currentIndex = allAccordionButtons.indexOf(accordionButton);
+
+          switch (event.key) {
+            case "ArrowDown":
+              event.preventDefault();
+              const nextIndex = (currentIndex + 1) % allAccordionButtons.length;
+              allAccordionButtons[nextIndex]?.focus();
+              break;
+
+            case "ArrowUp":
+              event.preventDefault();
+              const prevIndex =
+                currentIndex === 0
+                  ? allAccordionButtons.length - 1
+                  : currentIndex - 1;
+              allAccordionButtons[prevIndex]?.focus();
+              break;
+
+            case "Home":
+              event.preventDefault();
+              allAccordionButtons[0]?.focus();
+              break;
+
+            case "End":
+              event.preventDefault();
+              allAccordionButtons[allAccordionButtons.length - 1]?.focus();
+              break;
+
+            case "Enter":
+            case " ":
+              event.preventDefault();
+              toggleAccordion(event);
+              break;
+          }
         });
       }
     });
