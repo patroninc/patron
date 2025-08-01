@@ -36,6 +36,8 @@
 
   --spacing-container: 1280px;
 
+  --breakpoint-b1320: 1320px;
+
   --default-transition-timing-function: var(--ease-in-out);
   --default-transition-duration: 400ms;
 }
@@ -48,9 +50,15 @@
   body {
     font-family: "Albert Sans", sans-serif;
     overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
     font-weight: 500;
     color: black;
   }
+
+  /* * {
+    outline: 1px solid rgba(255, 255, 255, 0.4);
+  } */
 
   h1,
   h2,
@@ -62,7 +70,7 @@
   }
 
   h1 {
-    @apply text-h1 leading-[77px];
+    @apply b1320:text-h1 text-[60px] leading-[77px];
   }
 
   h2 {
@@ -145,6 +153,36 @@
 
 @utility white-border-md {
   border-image: url("../assets/white-border-md.svg") 3 1 1 stretch;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-slice: 1;
+  border-image-width: 1;
+  border-style: solid;
+  border-width: 5px;
+}
+
+@utility blue-border-md {
+  border-image: url("../assets/blue-border-md.svg") 3 1 1 stretch;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-slice: 1;
+  border-image-width: 1;
+  border-style: solid;
+  border-width: 5px;
+}
+
+@utility white-border {
+  border-image: url("../assets/white-border.svg") 3 1 1 stretch;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-slice: 1;
+  border-image-width: 1;
+  border-style: solid;
+  border-width: 5px;
+}
+
+@utility blue-border {
+  border-image: url("../assets/blue-border.svg") 3 1 1 stretch;
   border-image-outset: 0;
   border-image-repeat: stretch;
   border-image-slice: 1;
