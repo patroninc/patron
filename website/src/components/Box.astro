@@ -3,7 +3,7 @@ export interface Props {
   class?: string;
   as?: keyof HTMLElementTagNameMap;
   shadow?: boolean;
-  color?: "black" | "white";
+  color?: "black" | "white" | "blue";
   [key: string]: any;
 }
 
@@ -20,7 +20,11 @@ const {
   class:list={[
     className,
     "relative",
-    color === "black" ? "border-md" : "white-border-md",
+    color === "black"
+      ? "border-md"
+      : color === "white"
+        ? "white-border-md"
+        : "blue-border-md",
   ]}
   {...props}
 >
