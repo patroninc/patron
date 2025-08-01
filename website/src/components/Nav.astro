@@ -11,7 +11,7 @@ const i18n = await keystatic.singletons.nav.read({
 invariant(i18n, "No homepage content found");
 ---
 
-<div class="fixed top-[15px] right-0 left-0 z-50">
+<div class="fixed top-[15px] right-0 left-0 z-50 px-20">
   <div
     class="max-w-container mx-auto flex h-[90px] w-full items-center justify-between"
   >
@@ -26,7 +26,7 @@ invariant(i18n, "No homepage content found");
       class="flex h-full w-full items-center justify-between border-y-5 border-y-black bg-white p-[15px]"
     >
       <div class="w-[227px]">
-        <a href={i18n.logo.href}>
+        <a href={i18n.logo.href} aria-label="Go to homepage">
           <img
             src={i18n.logo.image}
             alt={i18n.logo.alt ?? ""}
