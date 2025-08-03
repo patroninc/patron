@@ -63,7 +63,7 @@ const { title, details } = Astro.props as Props;
 
   function accordionSetup() {
     const accordionMenus = document.querySelectorAll(
-      ".accordion"
+      ".accordion",
     ) as NodeListOf<HTMLElement>;
 
     // Store all accordion buttons for keyboard navigation
@@ -73,13 +73,13 @@ const { title, details } = Astro.props as Props;
 
     accordionMenus.forEach((accordionMenu) => {
       const accordionButton = accordionMenu.querySelector(
-        ".accordion__button"
+        ".accordion__button",
       ) as HTMLElement;
       const accordionChevron = accordionMenu.querySelector(
-        ".accordion__chevron"
+        ".accordion__chevron",
       ) as HTMLElement;
       const accordionContent = accordionMenu.querySelector(
-        ".accordion__content"
+        ".accordion__content",
       ) as HTMLElement;
 
       if (accordionButton && accordionContent && accordionChevron) {

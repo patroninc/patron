@@ -37,7 +37,7 @@ const testimonialsData = await Promise.all(
   allTestimonials.map(async (testimonial) => {
     const data = await keystatic.collections.testimonials.read(testimonial);
     return data;
-  })
+  }),
 );
 const sortedTestimonials = testimonialsData
   .filter((t): t is NonNullable<typeof t> => Boolean(t))
@@ -46,10 +46,10 @@ const sortedTestimonials = testimonialsData
 // Split testimonials into 2 groups
 const firstHalf = sortedTestimonials.slice(
   0,
-  Math.ceil(sortedTestimonials.length / 2)
+  Math.ceil(sortedTestimonials.length / 2),
 );
 const secondHalf = sortedTestimonials.slice(
-  Math.ceil(sortedTestimonials.length / 2)
+  Math.ceil(sortedTestimonials.length / 2),
 );
 
 const {
@@ -365,10 +365,10 @@ const features = featuresData.features.map((feature) => ({
   const heroForm = document.querySelector("form#hero");
   const endCtaForm = document.querySelector("form#end-cta");
   const endCtaInput = document.querySelector(
-    'form#end-cta input[type="email"]'
+    'form#end-cta input[type="email"]',
   ) as HTMLInputElement | null;
   const endCtaButton = document.querySelector(
-    "form#end-cta button"
+    "form#end-cta button",
   ) as HTMLButtonElement | null;
 
   endCtaInput?.addEventListener("focus", () => {
@@ -426,11 +426,11 @@ const features = featuresData.features.map((feature) => ({
       e.preventDefault();
 
       const successMessage = heroForm.querySelector(
-        "form#hero .success-message"
+        "form#hero .success-message",
       ) as HTMLDivElement | null;
 
       const input = heroForm.querySelector(
-        'form#hero input[type="email"]'
+        'form#hero input[type="email"]',
       ) as HTMLInputElement | null;
 
       if (input) {
@@ -447,7 +447,7 @@ const features = featuresData.features.map((feature) => ({
       e.preventDefault();
 
       const successMessage = endCtaForm.querySelector(
-        "form#end-cta .success-message"
+        "form#end-cta .success-message",
       ) as HTMLDivElement | null;
 
       if (endCtaInput) {
