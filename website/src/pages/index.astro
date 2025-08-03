@@ -451,10 +451,39 @@ const features = featuresData.features.map((feature) => ({
         })
       });
 
-      return response.ok;
+      if (response.ok) {
+        await sendWelcomeEmail(email);
+        return true;
+      }
+
+      return false;
     } catch (error) {
       console.error('Failed to subscribe:', error);
       return false;
+    }
+  }
+
+  async function sendWelcomeEmail(email: string): Promise<void> {
+    try {
+      const response = await fetch('https://listmonk.skeptrune.com/api/tx', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Authorization': 'Basic ' + btoa(`${import.meta.env.PUBLIC_LISTMONK_API_USER}:${import.meta.env.PUBLIC_LISTMONK_API_KEY}`)
+        },
+        body: JSON.stringify({
+          subscriber_email: email,
+          template_id: 3,
+          content_type: "html",
+          from_email: "nick.k@patron.com"
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Failed to send welcome email:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error sending welcome email:', error);
     }
   }
 
