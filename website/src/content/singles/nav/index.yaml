@@ -12,6 +12,6 @@ navigationLinks:
 ctaButton:
   enabled: true
   label: Join the waitlist
-  href: "#waitlist"
   newTab: false
   variant: primary
+  id: nav-cta-button
