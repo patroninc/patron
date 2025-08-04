@@ -6,6 +6,7 @@ import X from "./icons/X.astro";
 import Linkedin from "./icons/Linkedin.astro";
 import Youtube from "./icons/Youtube.astro";
 import Link from "./Link.astro";
+import KeystaticImage from "./KeystaticImage.astro";
 
 const i18n = await keystatic.singletons.footer.read({
   resolveLinkedFiles: true,
@@ -18,7 +19,7 @@ invariant(i18n, "No footer content found");
     <div class="container-content">
       <div class="grid grid-cols-4 gap-10">
         <div class="flex flex-col items-start gap-10">
-          <img src={i18n.logo.image} alt={i18n.logo.alt} class="h-[50px]" />
+          <KeystaticImage src={i18n.logo.image} alt={i18n.logo.alt} class="h-[50px]" />
 
           <p class="text-xs">
             {i18n.tagline}

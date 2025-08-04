@@ -4,6 +4,7 @@ import { keystatic } from "@lib/keystatic/client";
 import Button from "./Button.astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import Link from "./Link.astro";
+import KeystaticImage from "./KeystaticImage.astro";
 
 const i18n = await keystatic.singletons.nav.read({
   resolveLinkedFiles: true,
@@ -25,9 +26,9 @@ invariant(i18n, "No homepage content found");
     <nav
       class="flex h-full w-full items-center justify-between border-y-5 border-y-black bg-white p-[15px]"
     >
-      <div class="w-[227px]">
+      <div>
         <a href={i18n.logo.href} aria-label="Go to homepage">
-          <img
+          <KeystaticImage
             src={i18n.logo.image}
             alt={i18n.logo.alt ?? ""}
             class="h-[50px]"
