@@ -1,5 +1,6 @@
 ---
 import Box from "./Box.astro";
+import KeystaticImage from "./KeystaticImage.astro";
 
 const { testimonial } = Astro.props;
 ---
@@ -10,7 +11,7 @@ const { testimonial } = Astro.props;
       {
         testimonial.image && (
           <Box>
-            <img
+            <KeystaticImage
               src={testimonial.image}
               alt={testimonial.author}
               class="size-10 object-cover"
