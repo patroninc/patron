@@ -54,9 +54,11 @@ export const nav = singleton({
       }),
       href: fields.text({
         label: "Button URL",
-        validation: {
-          isRequired: true,
-        },
+      }),
+      id: fields.text({
+        label: "Button ID",
+        description: "Optional ID attribute for the button",
+        defaultValue: "nav-cta-button",
       }),
       newTab: fields.checkbox({
         label: "Open in new tab",
