@@ -36,9 +36,9 @@ invariant(i18n, "No homepage content found");
         </a>
       </div>
 
-      {
-        i18n.navigationLinks.map((link) => (
-          <div class="flex items-center justify-center space-x-[50px]">
+      <div class="flex items-center justify-center space-x-[50px]">
+        {
+          i18n.navigationLinks.map((link) => (
             <Link
               href={link.href}
               target={link.newTab ? "_blank" : undefined}
@@ -47,13 +47,13 @@ invariant(i18n, "No homepage content found");
             >
               {link.label}
             </Link>
-          </div>
-        ))
-      }
+          ))
+        }
+      </div>
 
-      {
-        i18n.ctaButton.enabled && (
-          <div class="justify-self-end">
+      <div class="justify-self-end">
+        {
+          i18n.ctaButton.enabled && (
             <Button
               shadow={false}
               as="a"
@@ -65,9 +65,9 @@ invariant(i18n, "No homepage content found");
               <span class="hidden sm:inline">{i18n.ctaButton.label}</span>{" "}
               <ArrowRight />
             </Button>
-          </div>
-        )
-      }
+          )
+        }
+      </div>
     </nav>
     <div class="flex h-full w-[10px] items-center justify-center">
       <div
