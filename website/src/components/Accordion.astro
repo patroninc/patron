@@ -10,8 +10,8 @@ interface Props {
 const { title, details } = Astro.props as Props;
 ---
 
-<Box shadow>
-  <div class="accordion group relative w-[550px]">
+<Box class="w-full" shadow>
+  <div class="accordion group relative w-full max-w-full">
     <button
       class="accordion__button bg-purple flex w-full flex-1 items-center justify-between gap-2.5 p-5 transition outline-none"
       type="button"
@@ -19,7 +19,7 @@ const { title, details } = Astro.props as Props;
       aria-expanded="false"
       aria-controls={`${title} accordion menu content`}
     >
-      <h4 class="text-h4">{title}</h4>
+      <h4 class="text-left">{title}</h4>
 
       <ChevronDown
         class="accordion__chevron h-7 w-7 shrink-0 transition-transform"
@@ -32,7 +32,7 @@ const { title, details } = Astro.props as Props;
       class="accordion__content hidden max-h-0 overflow-hidden bg-white transition-all duration-300 ease-in-out"
     >
       <p
-        class="prose max-w-full border-t-5 border-t-black p-5 text-left text-lg text-black transition-[height]"
+        class="t-lg max-w-full border-t-5 border-t-black p-5 text-left text-black transition-[height]"
       >
         {details}
       </p>

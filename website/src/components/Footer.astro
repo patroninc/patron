@@ -15,17 +15,17 @@ invariant(i18n, "No footer content found");
 ---
 
 <div class="bg-white">
-  <footer class="px-20 pt-[100px] pb-[200px]">
+  <footer class="px-base pt-[80px] pb-[140px] sm:pt-[100px] sm:pb-[200px]">
     <div class="container-content">
-      <div class="grid grid-cols-4 gap-10">
-        <div class="flex flex-col items-start gap-10">
+      <div class="flex flex-col justify-between gap-12 sm:flex-row sm:gap-10">
+        <div class="flex w-[240px] flex-col items-start gap-10">
           <KeystaticImage
             src={i18n.logo.image}
             alt={i18n.logo.alt}
             class="h-[50px]"
           />
 
-          <p class="text-xs">
+          <p class="t-xs">
             {i18n.tagline}
           </p>
 
@@ -48,23 +48,54 @@ invariant(i18n, "No footer content found");
             >
               <X class="size-[30px]" />
             </a>
+          </div>
+        </div>
+        <div class="flex w-[240px] flex-col gap-10">
+          <h4>Contact</h4>
+          <div class="flex flex-col gap-5">
+            <Link href={`mailto:${i18n.contact.email}`} class="t-xs">
+              {i18n.contact.email}
+            </Link>
+            <Link href={`tel:${i18n.contact.phone}`} class="t-xs">
+              {i18n.contact.phone}
+            </Link>
+            <p class="t-xs !w-full">
+              {i18n.contact.address}
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- footer with 4 columns -->
+      <!-- <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="flex flex-col items-start gap-10">
+          <KeystaticImage
+            src={i18n.logo.image}
+            alt={i18n.logo.alt}
+            class="h-[50px]"
+          />
+
+          <p class="t-xs">
+            {i18n.tagline}
+          </p>
+
+          <div class="flex items-center gap-[30px]">
             <a
-              href={i18n.socialMedia[2].url}
+              href={i18n.socialMedia[0].url}
               target="_blank"
               class="underline-offset-4 hover:underline"
               rel="noopener noreferrer"
-              aria-label="Connect with us on LinkedIn"
+              aria-label="Visit our GitHub profile"
             >
-              <Linkedin class="size-[30px]" />
+              <Github class="size-[30px]" />
             </a>
             <a
-              href={i18n.socialMedia[3].url}
+              href={i18n.socialMedia[1].url}
               target="_blank"
               class="underline-offset-4 hover:underline"
               rel="noopener noreferrer"
-              aria-label="Subscribe to our YouTube channel"
+              aria-label="Follow us on X (Twitter)"
             >
-              <Youtube class="size-[30px]" />
+              <X class="size-[30px]" />
             </a>
           </div>
         </div>
@@ -72,16 +103,14 @@ invariant(i18n, "No footer content found");
           {
             i18n.navigationSections.map((section) => (
               <div class="flex flex-col gap-10">
-                <h4 class="text-h4 leading-[29px] text-black">
-                  {section.title}
-                </h4>
+                <h4>{section.title}</h4>
                 <div class="flex flex-col space-y-5">
                   {section.links.map((link) => (
                     <Link
                       href={link.href}
                       target={link.newTab ? "_blank" : undefined}
                       rel={link.newTab ? "noopener noreferrer" : undefined}
-                      class="text-xs"
+                      class="t-xs"
                     >
                       {link.label}
                     </Link>
@@ -92,11 +121,11 @@ invariant(i18n, "No footer content found");
           }
         </div>
         <div class="flex flex-col gap-10">
-          <h4 class="text-h4 leading-[29px] text-black">Company</h4>
+          <h4>Company</h4>
           <div class="flex flex-col gap-5">
             {
               i18n.bottomLinks.map((link) => (
-                <Link href={link.href} class="text-xs">
+                <Link href={link.href} class="t-xs">
                   {link.label}
                 </Link>
               ))
@@ -104,25 +133,20 @@ invariant(i18n, "No footer content found");
           </div>
         </div>
         <div class="flex flex-col gap-10">
-          <h4 class="text-h4 leading-[29px] text-black">Contact</h4>
+          <h4>Contact</h4>
           <div class="flex flex-col gap-5">
-            <Link href={`mailto:${i18n.contact.email}`} class="text-xs">
+            <Link href={`mailto:${i18n.contact.email}`} class="t-xs">
               {i18n.contact.email}
             </Link>
-            <Link href={`tel:${i18n.contact.phone}`} class="text-xs">
+            <Link href={`tel:${i18n.contact.phone}`} class="t-xs">
               {i18n.contact.phone}
             </Link>
-            <Link
-              href={`https://maps.app.goo.gl/1234567890`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="!w-full text-xs"
-            >
+            <p class="t-xs !w-full">
               {i18n.contact.address}
-            </Link>
+            </p>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </footer>
   <svg
