@@ -12,7 +12,7 @@ const i18n = await keystatic.singletons.nav.read({
 invariant(i18n, "No homepage content found");
 ---
 
-<div class="fixed top-[15px] right-0 left-0 z-50 px-20">
+<div class="px-base fixed top-[15px] right-0 left-0 z-50">
   <div
     class="max-w-container mx-auto flex h-[90px] w-full items-center justify-between"
   >
@@ -36,20 +36,20 @@ invariant(i18n, "No homepage content found");
         </a>
       </div>
 
-      <div class="flex items-center justify-center space-x-[50px]">
-        {
-          i18n.navigationLinks.map((link) => (
+      {
+        i18n.navigationLinks.map((link) => (
+          <div class="flex items-center justify-center space-x-[50px]">
             <Link
               href={link.href}
               target={link.newTab ? "_blank" : undefined}
               rel={link.newTab ? "noopener noreferrer" : undefined}
-              class="text-lg"
+              class="t-lg"
             >
               {link.label}
             </Link>
-          ))
-        }
-      </div>
+          </div>
+        ))
+      }
 
       {
         i18n.ctaButton.enabled && (
@@ -61,7 +61,9 @@ invariant(i18n, "No homepage content found");
               target={i18n.ctaButton.newTab ? "_blank" : undefined}
               rel={i18n.ctaButton.newTab ? "noopener noreferrer" : undefined}
             >
-              {i18n.ctaButton.label} <ArrowRight />
+              <span class="inline sm:hidden">{i18n.ctaButton.shortLabel}</span>
+              <span class="hidden sm:inline">{i18n.ctaButton.label}</span>{" "}
+              <ArrowRight />
             </Button>
           </div>
         )
@@ -76,3 +78,31 @@ invariant(i18n, "No homepage content found");
     </div>
   </div>
 </div>
+
+<script>
+  const navCtaButton = document.getElementById("nav-cta-button");
+
+  if (navCtaButton) {
+    navCtaButton.addEventListener("click", () => {
+      const waitlistSection = document.getElementById("waitlist");
+      const emailInput = document.querySelector(
+        '#waitlist input[type="email"]',
+      ) as HTMLInputElement;
+
+      if (waitlistSection) {
+        // Smooth scroll to the waitlist section
+        waitlistSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+
+        // Focus on the email input after a short delay to ensure scroll is complete
+        setTimeout(() => {
+          if (emailInput) {
+            emailInput.focus();
+          }
+        }, 1000);
+      }
+    });
+  }
+</script>

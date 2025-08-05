@@ -52,6 +52,12 @@ export const nav = singleton({
           isRequired: true,
         },
       }),
+      shortLabel: fields.text({
+        label: "Short Button Label",
+        validation: {
+          isRequired: true,
+        },
+      }),
       href: fields.text({
         label: "Button URL",
       }),
