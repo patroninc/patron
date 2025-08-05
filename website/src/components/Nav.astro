@@ -24,7 +24,7 @@ invariant(i18n, "No homepage content found");
       </div>
     </div>
     <nav
-      class="grid h-full w-full grid-cols-3 items-center border-y-5 border-y-black bg-white p-[15px]"
+      class="grid h-full w-full grid-cols-2 items-center border-y-5 border-y-black bg-white p-[15px]"
     >
       <div class="justify-self-start">
         <a href={i18n.logo.href} aria-label="Go to homepage">
@@ -34,21 +34,6 @@ invariant(i18n, "No homepage content found");
             class="h-[50px]"
           />
         </a>
-      </div>
-
-      <div class="flex items-center justify-center space-x-[50px]">
-        {
-          i18n.navigationLinks.map((link) => (
-            <Link
-              href={link.href}
-              target={link.newTab ? "_blank" : undefined}
-              rel={link.newTab ? "noopener noreferrer" : undefined}
-              class="t-lg"
-            >
-              {link.label}
-            </Link>
-          ))
-        }
       </div>
 
       <div class="justify-self-end">
