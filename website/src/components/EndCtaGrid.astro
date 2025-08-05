@@ -18,10 +18,10 @@ const stars = [Star1, Star2, Star3, Star4, Star5, Star6];
       .map((_, idx) => (
         <div class="flex h-[400px] w-[600px] flex-wrap items-center justify-start gap-[-10px] [*>svg]:h-[100px]">
           {stars.map((Star) => (
-            <div class="group relative flex size-[200px] items-center justify-center [&>svg]:relative [&>svg]:left-[10px] [&>svg]:h-[100px]">
+            <div class="group relative flex size-[200px] items-center justify-center [&>svg]:relative [&>svg]:top-[5px] [&>svg]:left-[5px] [&>svg]:h-[100px]">
               <Star />
-              <div class="absolute top-0 left-[10px] h-[10px] w-[190px] bg-white/20" />
-              <div class="absolute top-[10px] left-0 h-[190px] w-[10px] bg-white/20" />
+              <div class="absolute top-0 left-[10px] h-[10px] w-[190px] bg-white/10" />
+              <div class="absolute top-[10px] left-0 h-[190px] w-[10px] bg-white/10" />
             </div>
           ))}
         </div>
