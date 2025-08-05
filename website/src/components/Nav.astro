@@ -24,9 +24,9 @@ invariant(i18n, "No homepage content found");
       </div>
     </div>
     <nav
-      class="grid h-full w-full grid-cols-2 items-center border-y-5 border-y-black bg-white p-[15px]"
+      class="flex h-full w-full items-center justify-between border-y-5 border-y-black bg-white p-[15px]"
     >
-      <div class="justify-self-start">
+      <div class="lg:w-[227px]">
         <a href={i18n.logo.href} aria-label="Go to homepage">
           <KeystaticImage
             src={i18n.logo.image}
@@ -36,23 +36,29 @@ invariant(i18n, "No homepage content found");
         </a>
       </div>
 
-      <div class="justify-self-end">
+      <div class="hidden items-center space-x-[50px]">
         {
-          i18n.ctaButton.enabled && (
-            <Button
-              shadow={false}
-              as="a"
-              href={i18n.ctaButton.href}
-              target={i18n.ctaButton.newTab ? "_blank" : undefined}
-              rel={i18n.ctaButton.newTab ? "noopener noreferrer" : undefined}
+          i18n.navigationLinks.map((link) => (
+            <Link
+              href={link.href}
+              target={link.newTab ? "_blank" : undefined}
+              rel={link.newTab ? "noopener noreferrer" : undefined}
+              class="t-lg"
             >
-              <span class="inline sm:hidden">{i18n.ctaButton.shortLabel}</span>
-              <span class="hidden sm:inline">{i18n.ctaButton.label}</span>{" "}
-              <ArrowRight />
-            </Button>
-          )
+              {link.label}
+            </Link>
+          ))
         }
       </div>
+      {
+        i18n.ctaButton.enabled && (
+          <Button shadow={false} as="button" type="button" id="nav-cta-button">
+            <span class="inline sm:hidden">{i18n.ctaButton.shortLabel}</span>
+            <span class="hidden sm:inline">{i18n.ctaButton.label}</span>
+            <ArrowRight />
+          </Button>
+        )
+      }
     </nav>
     <div class="flex h-full w-[10px] items-center justify-center">
       <div
