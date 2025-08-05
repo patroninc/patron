@@ -5,7 +5,7 @@ import KeystaticImage from "./KeystaticImage.astro";
 const { testimonial } = Astro.props;
 ---
 
-<Box class="w-[400px]" shadow>
+<Box class="w-full md:w-[400px]" shadow>
   <div class="bg-purple flex h-full flex-col items-center p-[25px]">
     <div class="mb-5 flex flex-col items-center gap-[10px]">
       {
@@ -20,9 +20,9 @@ const { testimonial } = Astro.props;
         )
       }
       <div>
-        <h4 class="text-h4">{testimonial.author}</h4>
+        <h4>{testimonial.author}</h4>
       </div>
     </div>
-    <p class="text-base">"{testimonial.quote}"</p>
+    <p class="t-base">"{testimonial.quote}"</p>
   </div>
 </Box>

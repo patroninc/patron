@@ -19,24 +19,36 @@
 
   --text-h1: 64px;
   --text-h2: 48px;
+  --text-h3-lg: 42px;
   --text-h3: 36px;
+  --text-h4-lg: 32px;
   --text-h4: 24px;
   --text-h5: 20px;
-
   --text-2xl: 36px;
-  --text-2xl--line-height: 43px;
   --text-xl: 24px;
-  --text-xl--line-height: 34px;
   --text-lg: 20px;
-  --text-lg--line-height: 26px;
   --text-base: 18px;
-  --text-base--line-height: 25px;
   --text-xs: 16px;
-  --text-xs--line-height: 21px;
+  --text-xxs: 14px;
+
+  --leading-h1: 77px;
+  --leading-h2: 57px;
+  --leading-h3-lg: 50px;
+  --leading-h3: 43px;
+  --leading-h4-lg: 34px;
+  --leading-h4: 29px;
+  --leading-h5: 24px;
+  --leading-2xl: 43px;
+  --leading-xl: 34px;
+  --leading-lg: 26px;
+  --leading-base: 25px;
+  --leading-xs: 21px;
+  --leading-xxs: 19px;
 
   --spacing-container: 1280px;
 
   --breakpoint-b1320: 1320px;
+  --breakpoint-b1100: 1100px;
 
   --default-transition-timing-function: var(--ease-in-out);
   --default-transition-duration: 400ms;
@@ -57,7 +69,7 @@
   }
 
   /* * {
-    outline: 1px solid rgba(255, 255, 255, 0.4);
+    outline: 1px solid rgb(255, 0, 0);
   } */
 
   h1,
@@ -70,23 +82,47 @@
   }
 
   h1 {
-    @apply b1320:text-h1 text-[60px] leading-[77px];
+    @apply b1320:text-h1 xl:leading-h1 sm:text-h2 sm:leading-h2 text-h3 leading-h3 xl:text-[60px];
   }
 
   h2 {
-    @apply text-h2 leading-[58px];
+    @apply xl:text-h2 xl:leading-h2 md:text-h3-lg md:leading-h3-lg text-h3 leading-h3;
   }
 
   h3 {
-    @apply text-h3 leading-[43px];
+    @apply xl:text-h3 xl:leading-h3 md:text-h4-lg md:leading-h4-lg text-h4 leading-h4;
   }
 
   h4 {
-    @apply text-h4;
+    @apply lg:text-h4 lg:leading-h4 text-h5 leading-h5;
   }
 
   h5 {
-    @apply text-h5;
+    @apply leading-h5 text-h5;
+  }
+
+  .t-2xl {
+    @apply lg:leading-2xl leading-xl text-xl lg:text-2xl;
+  }
+
+  .t-xl {
+    @apply lg:leading-xl leading-lg text-lg lg:text-xl;
+  }
+
+  .t-lg {
+    @apply lg:leading-lg leading-base text-base lg:text-lg;
+  }
+
+  .t-base {
+    @apply lg:leading-base leading-xs text-xs lg:text-base;
+  }
+
+  .t-xs {
+    @apply lg:leading-xs text-xxs leading-xxs lg:text-xs;
+  }
+
+  .t-xxs {
+    @apply leading-xxs text-xxs;
   }
 }
 
@@ -97,17 +133,9 @@
       width: 100%;
     }
   }
-}
 
-@theme {
-  --animate-scroll: scroll 40s linear infinite;
-  @keyframes scroll {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-100%);
-    }
+  .px-base {
+    @apply b1100:px-20 px-5 md:px-10;
   }
 }
 

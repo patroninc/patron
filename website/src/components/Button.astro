@@ -31,10 +31,13 @@ const {
       shadow && "group-hover:translate-x-[5px] group-hover:translate-y-[5px]",
     ]}
   >
-    <div class="h-[calc(100%-10px)] w-[5px] bg-black group-focus:h-full"></div>
+    <div
+      class="h-[calc(100%-10px)] w-[5px] bg-black group-focus-visible:h-full"
+    >
+    </div>
     <div
       class:list={[
-        "flex h-full items-center justify-center gap-2 border-y-5 border-y-black text-[20px]",
+        "t-lg flex h-full items-center justify-center gap-2 border-y-5 border-y-black",
         color === "primary" ? "bg-blue text-white" : "bg-white text-black",
         size === "icon"
           ? "max-w-[42px] overflow-hidden px-2 py-2"
@@ -43,7 +46,10 @@ const {
     >
       <slot />
     </div>
-    <div class="h-[calc(100%-10px)] w-[5px] bg-black group-focus:h-full"></div>
+    <div
+      class="h-[calc(100%-10px)] w-[5px] bg-black group-focus-visible:h-full"
+    >
+    </div>
   </div>
 
   {
