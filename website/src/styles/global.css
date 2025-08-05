@@ -127,15 +127,15 @@
 }
 
 @layer components {
-  .container-content {
-    @apply mx-auto w-full max-w-[var(--spacing-container)];
-    @media (width <= var(--spacing-container)) {
-      width: 100%;
-    }
-  }
-
   .px-base {
     @apply b1100:px-20 px-5 md:px-10;
+  }
+}
+
+.container-content {
+  @apply mx-auto w-full max-w-[var(--spacing-container)];
+  @media (width <= var(--spacing-container)) {
+    width: 100%;
   }
 }
 
