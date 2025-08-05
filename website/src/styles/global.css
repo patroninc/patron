@@ -132,13 +132,6 @@
   }
 }
 
-.container-content {
-  @apply mx-auto w-full max-w-[var(--spacing-container)];
-  @media (width <= var(--spacing-container)) {
-    width: 100%;
-  }
-}
-
 @utility border-md {
   border-image: url("../assets/border-md.svg") 3 1 1 stretch;
   border-image-outset: 0;
@@ -238,4 +231,16 @@
   background-image: url("../src/assets/end-cta-bg.svg");
   background-repeat: repeat;
   background-position: center;
+}
+
+.container-content {
+  margin: auto;
+  max-width: 1280px;
+  width: 100%;
+}
+
+@media (width <= 1280px) {
+  .container-content {
+    width: 100%;
+  }
 }
