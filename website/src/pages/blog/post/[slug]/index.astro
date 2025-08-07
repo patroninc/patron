@@ -1,0 +1,199 @@
+---
+import KeystaticImage from "@components/KeystaticImage.astro";
+import Layout from "@layouts/Layout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("blogPosts");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const categories = await getCollection("blogCategories");
+const site = Astro.site;
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+const i18n = entry.data;
+const ogImage = new URL(i18n.coverImage.src, site).href;
+---
+
+<Layout
+  title=`${i18n.title} | Blog | Trieve`
+  ogTitle={`${i18n.title} |  Blog`}
+  description={i18n.summary}
+  ogDescription={i18n.summary}
+  ogImage={ogImage}
+  hideMovingBackground
+  ogType="article"
+  articlePublishedTime={i18n.createdAt?.toISOString()}
+  articleModifiedTime={i18n.lastUpdatedAt?.toISOString()}
+  articleAuthors={i18n.author ? [i18n.author] : []}
+  articleSection={i18n.ogSection ?? "Technology"}
+  articleTags={i18n.categories}
+>
+  <section
+    class="container flex flex-col gap-8 text-lg md:gap-12 my-4 md:my-16"
+  >
+    <h1 class="text-4xl md:text-5xl">{i18n.title}</h1>
+    <div
+      class="flex flex-col md:flex-row gap-4 md:gap-12 items-center justify-start"
+    >
+      <KeystaticImage
+        class="md:flex-1/2 md:max-w-1/2 rounded-xl"
+        src={i18n.coverImage &&
+        (typeof i18n.coverImage !== "string" || i18n.coverImage !== "")
+          ? i18n.coverImage
+          : undefined}
+        alt=""
+        loading="eager"
+        widths={[350, 640]}
+        sizes="(min-width: 1420px) 640px, (min-width: 780px) 45.48vw, calc(100vw - 64px)"
+      />
+      <div class="flex flex-col gap-4">
+        <p class="md:flex-1/2 text-xl max-w-[40ch]">{i18n.summary}</p>
+
+        {
+          (i18n.author || i18n.lastUpdatedAt || i18n.createdAt) && (
+            <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+              {i18n.author && (
+          <span class="font-medium">{`Written by ${i18n.author}`}</span>
+              )}
+              {(i18n.lastUpdatedAt || i18n.createdAt) && (
+          <>
+            <span class="mx-1 text-gray-400">•</span>
+            <span>
+              {(i18n.lastUpdatedAt
+                ? i18n.lastUpdatedAt
+                : i18n.createdAt
+              )
+                ? (i18n.lastUpdatedAt
+                    ? i18n.lastUpdatedAt
+                    : i18n.createdAt
+                  )?.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                : ""}
+            </span>
+          </>
+              )}
+            </div>
+          )
+        }
+
+        <div class="flex flex-row gap-2">
+          {
+            i18n.categories.map((postCategory) => (
+              <a
+                href={`/blog/${postCategory}`}
+                class="bg-primary-300 text-primary-700 px-4 py-2 text-sm rounded active:"
+              >
+                {categories.find((c) => c.id === postCategory)?.data.name}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="container flex flex-col gap-8 md:gap-16 md:flex-row">
+    <div class="md:flex-3/4 md:max-w-3/4">
+      <article class="content text-lg pr-2 xl:pr-0">
+        <Content />
+      </article>
+    </div>
+  </section>
+</Layout>
+
+<style lang="postcss" >
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  h2 {
+    &:not(:first-child) {
+      margin: 1rem 0 1rem;
+    }
+  }
+
+  h3 {
+    font-style: italic;
+    font-weight: 300;
+    &:not(:first-child) {
+      margin: 1rem 0 0;
+    }
+  }
+
+  ol {
+    list-style: decimal inside;
+    padding-left: 1.2rem;
+    
+    li {
+      margin-bottom: 1rem;
+      &::marker {
+        font-weight: bold;
+      }
+    }
+  }
+
+  ul {
+    list-style: disc inside;
+    padding-left: 1.2rem;
+
+    li {
+      margin-bottom: 1rem;
+      &::marker {
+        font-weight: bold;
+      }
+    }
+  }
+
+  a {
+    text-decoration: underline;
+    font-weight: 500;
+    color: var(--color-primary-500);
+    &:visited {
+      color: var(--color-primary-700);
+    }
+  }
+
+  pre {
+    padding: 1rem;
+  }
+
+  img,pre {
+    border-radius: 0.75rem;
+  }
+
+  table {
+    tr {
+      border-bottom: 1px solid var(--color-gray-300);
+
+      td {
+        padding: 0.5rem 1rem;
+        &:first-child {
+          font-weight: 500;
+        }
+
+        a {
+          word-break: unset;
+        }
+      }
+    }
+
+    tr:has(td:empty + td:not(:empty) + td:empty) {       
+      td {
+        padding: 1.5rem 0;
+        text-align: center;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+</style>

@@ -1,0 +1,10 @@
+title: |
+  Welcome to the patron blog!
+latestPublication: Latest publication
+featuredPosts:
+  title: |
+    Featured posts
+  posts:
+    - testing
+furtherReadingsTitle: |
+  Hello world
