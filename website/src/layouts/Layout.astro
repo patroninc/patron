@@ -2,7 +2,8 @@
 import "@styles/global.css";
 import Footer from "@components/Footer.astro";
 import Nav from "@components/Nav.astro";
-import { getImage } from "astro:assets";
+import cubeGrid from "@assets/grid-cube.svg";
+import diamondGrid from "@assets/grid-diamond.svg";
 
 const currentUrl = Astro.url.href;
 
@@ -119,6 +120,7 @@ const {
     <main class="relative z-10 w-full">
       <slot />
     </main>
+    <Footer />
   </body>
 
   <script>

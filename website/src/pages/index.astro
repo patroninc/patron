@@ -4,9 +4,6 @@ import { keystatic } from "@lib/keystatic/client";
 import invariant from "tiny-invariant";
 import { marked } from "marked";
 
-import cubeGrid from "@assets/grid-cube.svg";
-import diamondGrid from "@assets/grid-diamond.svg";
-
 import Star1 from "@components/icons/Star1.astro";
 import Box from "@components/Box.astro";
 import Oss from "@components/icons/Oss.astro";
@@ -25,7 +22,6 @@ import ArrowRight from "@lucide/astro/icons/arrow-right";
 import Input from "@components/Input.astro";
 import Check from "@lucide/astro/icons/check";
 import EndCtaGrid from "@components/EndCtaGrid.astro";
-import Footer from "@components/Footer.astro";
 
 const i18n = await keystatic.singletons.homepage.read({
   resolveLinkedFiles: true,
@@ -79,24 +75,6 @@ const features = featuresData.features.map((feature) => ({
 }));
 ---
 
-<style
-  define:vars={{
-    cubeBg: `url(${cubeGrid.src})`,
-    diamondBg: `url(${diamondGrid.src})`,
-  }}
->
-  .cube-bg {
-    background-image: var(--cubeBg);
-    background-size: 200px;
-    background-position: 0% 0%;
-  }
-  .diamond-bg {
-    background-image: var(--diamondBg);
-    background-size: 400px;
-    background-position: 0% 0%;
-  }
-</style>
-
 <Layout
   title={metadata.title}
   description={metadata.description}
@@ -116,20 +94,20 @@ const features = featuresData.features.map((feature) => ({
         >
           <span set:html={marked.parseInline(hero.title.text)} />
           <span
-            class="text-orange relative ml-9 hidden md:inline"
+            class="text-orange relative ml-9 hidden md:inline-block"
             style="-webkit-text-stroke: 2px black;"
           >
             <span set:html={marked.parseInline(hero.title.emphasized)} />
             <Star1 class="absolute bottom-0 -left-7 size-[30px]" />
-            <Star1 class="absolute top-0 -right-5 size-[30px]" />
+            <Star1 class="absolute top-0 -right-7 size-[30px]" />
           </span>
           <span
             class="text-orange relative inline md:hidden"
             style="-webkit-text-stroke: 1.5px black;"
           >
             <span set:html={marked.parseInline(hero.title.emphasized)} />
-            <Star1 class="absolute bottom-0 -left-7 size-[25px]" />
-            <Star1 class="absolute top-0 -right-7 size-[25px]" />
+            <Star1 class="absolute bottom-0 -left-6 size-[22px]" />
+            <Star1 class="absolute top-0 -right-6 size-[22px]" />
           </span>
         </h1>
         <p class="t-2xl max-w-[600px] text-center xl:text-left">
@@ -386,8 +364,6 @@ const features = featuresData.features.map((feature) => ({
       </Box>
     </div>
   </section>
-
-  <Footer />
 </Layout>
 
 <script>

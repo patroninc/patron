@@ -1,20 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import cubeGrid from "@assets/grid-cube.svg";
 import Button from "@components/Button.astro";
 ---
-
-<style
-  define:vars={{
-    cubeBg: `url(${cubeGrid.src})`,
-  }}
->
-  .cube-bg {
-    background-image: var(--cubeBg);
-    background-size: 200px;
-    background-position: 0% 0%;
-  }
-</style>
 
 <Layout title={"404 - Page Not Found"} description={"404 - Page Not Found"}>
   <div
