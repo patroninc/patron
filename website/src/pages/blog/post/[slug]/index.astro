@@ -1,7 +1,13 @@
 ---
-import KeystaticImage from "@components/KeystaticImage.astro";
 import Layout from "@layouts/Layout.astro";
 import { getCollection, render } from "astro:content";
+import Box from "@components/Box.astro";
+import YoutubeEmbed from "@components/blog/YoutubeEmbed.astro";
+import VimeoEmbed from "@components/blog/VimeoEmbed.astro";
+import Info from "@components/blog/Info.astro";
+import Warning from "@components/blog/Warning.astro";
+import TextBoxLearnMore from "@components/blog/TextBoxLearnMore.astro";
+import TextBox from "@components/blog/TextBox.astro";
 
 export async function getStaticPaths() {
   const entries = await getCollection("blogPosts");
@@ -22,8 +28,8 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
 ---
 
 <Layout
-  title=`${i18n.title} | Blog | Trieve`
-  ogTitle={`${i18n.title} |  Blog`}
+  title={`${i18n.title} - Patron Blog`}
+  ogTitle={`${i18n.title} - Patron Blog`}
   description={i18n.summary}
   ogDescription={i18n.summary}
   ogImage={ogImage}
@@ -36,75 +42,65 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
   articleTags={i18n.categories}
 >
   <section
-    class="container flex flex-col gap-8 text-lg md:gap-12 my-4 md:my-16"
+    class="bg-green cube-bg px-base mx-auto pt-[150px] pb-[80px] sm:pt-[200px] sm:pb-[160px]"
   >
-    <h1 class="text-4xl md:text-5xl">{i18n.title}</h1>
-    <div
-      class="flex flex-col md:flex-row gap-4 md:gap-12 items-center justify-start"
-    >
-      <KeystaticImage
-        class="md:flex-1/2 md:max-w-1/2 rounded-xl"
-        src={i18n.coverImage &&
-        (typeof i18n.coverImage !== "string" || i18n.coverImage !== "")
-          ? i18n.coverImage
-          : undefined}
-        alt=""
-        loading="eager"
-        widths={[350, 640]}
-        sizes="(min-width: 1420px) 640px, (min-width: 780px) 45.48vw, calc(100vw - 64px)"
-      />
-      <div class="flex flex-col gap-4">
-        <p class="md:flex-1/2 text-xl max-w-[40ch]">{i18n.summary}</p>
-
+    <div class="mx-auto flex w-full max-w-[1100px] flex-col">
+      <div class="text-center">
+        <h1>{i18n.title}</h1>
+      </div>
+      <div
+        class="t-lg mt-10 mb-16 flex w-full items-center justify-between gap-4"
+      >
         {
           (i18n.author || i18n.lastUpdatedAt || i18n.createdAt) && (
-            <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
-              {i18n.author && (
-          <span class="font-medium">{`Written by ${i18n.author}`}</span>
-              )}
+            <div class="flex flex-wrap items-center gap-2">
+              {i18n.author && <span>{`Written by ${i18n.author}`}</span>}
               {(i18n.lastUpdatedAt || i18n.createdAt) && (
-          <>
-            <span class="mx-1 text-gray-400">•</span>
-            <span>
-              {(i18n.lastUpdatedAt
-                ? i18n.lastUpdatedAt
-                : i18n.createdAt
-              )
-                ? (i18n.lastUpdatedAt
-                    ? i18n.lastUpdatedAt
-                    : i18n.createdAt
-                  )?.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })
-                : ""}
-            </span>
-          </>
+                <>
+                  <span class="mx-1">•</span>
+                  <span>
+                    {(i18n.lastUpdatedAt ? i18n.lastUpdatedAt : i18n.createdAt)
+                      ? (i18n.lastUpdatedAt
+                          ? i18n.lastUpdatedAt
+                          : i18n.createdAt
+                        )?.toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })
+                      : ""}
+                  </span>
+                </>
               )}
             </div>
           )
         }
 
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-row gap-5">
           {
             i18n.categories.map((postCategory) => (
-              <a
-                href={`/blog/${postCategory}`}
-                class="bg-primary-300 text-primary-700 px-4 py-2 text-sm rounded active:"
-              >
-                {categories.find((c) => c.id === postCategory)?.data.name}
+              <a href={`/blog/category/${postCategory}`} class="">
+                <Box>
+                  <div class="t-sm bg-white px-3 py-1.5">
+                    {categories.find((c) => c.id === postCategory)?.data.name}
+                  </div>
+                </Box>
               </a>
             ))
           }
         </div>
       </div>
-    </div>
-  </section>
-  <section class="container flex flex-col gap-8 md:gap-16 md:flex-row">
-    <div class="md:flex-3/4 md:max-w-3/4">
-      <article class="content text-lg pr-2 xl:pr-0">
-        <Content />
+      <article class="content text-lg">
+        <Content
+          components={{
+            YoutubeEmbed,
+            VimeoEmbed,
+            Info,
+            Warning,
+            TextBoxLearnMore,
+            TextBox,
+          }}
+        />
       </article>
     </div>
   </section>
@@ -122,9 +118,14 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
     }
   }
 
+  code:not(pre code) {
+    border: 2px solid rgb(0, 0, 0);
+    background-color: white;
+    padding: 2px 6px;
+    border-radius: 0px;
+  }
+
   h3 {
-    font-style: italic;
-    font-weight: 300;
     &:not(:first-child) {
       margin: 1rem 0 0;
     }
@@ -168,17 +169,18 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
   }
 
   img,pre {
-    border-radius: 0.75rem;
+    border-radius: 0px;
+    border: 5px solid rgb(0, 0, 0);
   }
 
   table {
     tr {
-      border-bottom: 1px solid var(--color-gray-300);
+      border-bottom: 1px solid black;
 
       td {
         padding: 0.5rem 1rem;
         &:first-child {
-          font-weight: 500;
+          font-weight: 600;
         }
 
         a {
