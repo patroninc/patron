@@ -17,7 +17,7 @@ export default defineConfig({
     icon(),
     mdx({
       shikiConfig: {
-        theme: "nord",
+        theme: "ayu-dark",
       },
     }),
     sitemap(),
