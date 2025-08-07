@@ -1,0 +1,90 @@
+---
+import Box from "@components/Box.astro";
+import KeystaticImage from "@components/KeystaticImage.astro";
+import CalendarDays from "@lucide/astro/icons/calendar-days";
+import type { CollectionEntry } from "astro:content";
+
+const { posts } = Astro.props as {
+  posts: CollectionEntry<"blogPosts">[];
+};
+
+const POSTS_PER_LOAD = 6;
+---
+
+<div
+  class="grid grid-cols-1 gap-5 sm:gap-10 md:grid-cols-2 lg:grid-cols-3"
+  id="posts-grid"
+>
+  {
+    posts.map((post, idx) => {
+      const colorPattern = [
+        "orange",
+        "green",
+        "purple",
+        "green",
+        "purple",
+        "orange",
+      ];
+      const bgColor = colorPattern[idx % 6];
+
+      return (
+        <Box
+          shadow
+          key={post.id}
+          class={`post-card ${idx >= POSTS_PER_LOAD ? "hidden" : ""}`}
+        >
+          <a href={`/blog/post/${post.id}`}>
+            <div
+              class={`flex h-full flex-col gap-4 p-5 sm:p-[30px] bg-${bgColor}`}
+            >
+              <Box class="aspect-video w-full overflow-hidden">
+                <KeystaticImage
+                  src={post.data.coverImage}
+                  alt={post.data.title}
+                  class="size-full object-cover"
+                />
+              </Box>
+              <div class="flex flex-col gap-[10px]">
+                <h4>{post.data.title}</h4>
+                <div class="flex items-center gap-2">
+                  <CalendarDays class="size-5" />
+                  <span class="t-base">
+                    {post.data.createdAt?.toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+              <p class="t-base">{post.data.summary}</p>
+            </div>
+          </a>
+        </Box>
+      );
+    })
+  }
+</div>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const showMoreBtn = document.getElementById("show-more-btn");
+    const postCards = document.querySelectorAll(".post-card");
+
+    if (showMoreBtn) {
+      let postsToShow = 6;
+
+      showMoreBtn.addEventListener("click", function () {
+        for (
+          let i = postsToShow;
+          i < Math.min(postsToShow + 6, postCards.length);
+          i++
+        ) {
+          postCards[i].classList.remove("hidden");
+        }
+
+        postsToShow += 6;
+
+        if (postsToShow >= postCards.length) {
+          showMoreBtn.parentElement.style.display = "none";
+        }
+      });
+    }
+  });
+</script>
