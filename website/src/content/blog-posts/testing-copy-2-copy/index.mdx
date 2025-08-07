@@ -1,0 +1,42 @@
+---
+title: Testing
+summary: >-
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu neque diam.
+  Duis eu risus fermentum, lobortis libero sed, sagittis.
+author: nick khami
+createdAt: 2025-08-07T08:17:00.000Z
+lastUpdatedAt: 2025-08-07T08:17:00.000Z
+isDraft: false
+categories:
+  - testing
+  - testing-3
+coverImage: /src/assets/images/blog-posts/testing-copy-2-copy/coverImage.png
+ogSection: Technology
+---
+We were tired of using Javascript for our backend services when we started building Trieve. We wanted something better, something faster, something safer, something rusty. Our main motivation behind choosing to use rust was for the learning experience behind it.
+
+## Why Actix
+
+When looking at what framework to use we had two choices actix\_web or rocket. We chose to use actix and actix\_web because we heard that it was faster than rocket from benchmarks.
+
+## Our Naive Solution
+
+### Streaming data with Actix
+
+The first thing we saw on how to stream data in actix\_web was using tokio's built-in [`mpsc_channels`](https://docs.rs/tokio/latest/tokio/sync/mpsc/fn.channel.html#).
+
+```rs
+pub type StreamItem = Result<Bytes, actix_web::Error>;
+
+pub async fn stream_response(messages: Vec<Message>, pool: web::Data<Pool>)  {
+    let (tx, rx) = mpsc::channel::<StreamItem>(1000);
+    let receiver_stream: ReceiverStream<StreamItem> = ReceiverStream::new(rx);
+    ...
+    // Send data at some point
+    let _ = tx.send(Ok("data".into())
+    ...
+
+    // Return Result<HttpResponse, actix_web::Error> to client
+    Ok(HttpResponse::Ok().streaming(receiver_stream))
+}
+```
