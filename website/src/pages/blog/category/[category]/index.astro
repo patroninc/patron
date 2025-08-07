@@ -1,6 +1,8 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import Button from "@components/Button.astro";
+import Posts from "@components/Posts.astro";
 
 export async function getStaticPaths() {
   const categories = await getCollection("blogCategories");
@@ -16,14 +18,29 @@ export async function getStaticPaths() {
 }
 
 const { entries, category } = Astro.props;
+
+const POSTS_PER_LOAD = 6;
 ---
 
-<Layout title=`${category.name} | Blog | Trieve`>
-  <section class="container flex flex-col gap-4 my-4 md:mt-8 md:mb-16">
-    <h1 class="">Blog</h1>
-    <h2>Category: {category.name}</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-      {entries.map(async (e) => <p>{JSON.stringify(e.data, null, 2)}</p>)}
+<Layout title=`${category.name} posts - Patron Blog`>
+  <section
+    class="bg-green cube-bg px-base mx-auto pt-[150px] pb-[80px] sm:pt-[200px] sm:pb-[160px]"
+  >
+    <div class="container-content flex flex-col gap-10">
+      <h1>
+        Category:
+        {category.name}
+      </h1>
+
+      <Posts posts={entries} />
+
+      {
+        entries.length > POSTS_PER_LOAD && (
+          <div class="flex justify-center">
+            <Button id="show-more-btn">Show more</Button>
+          </div>
+        )
+      }
     </div>
   </section>
 </Layout>

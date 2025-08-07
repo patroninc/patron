@@ -4,6 +4,10 @@ import { keystatic } from "@lib/keystatic/client";
 import { getCollection } from "astro:content";
 import { marked } from "marked";
 import invariant from "tiny-invariant";
+import Button from "@components/Button.astro";
+import Posts from "@components/Posts.astro";
+
+const POSTS_PER_LOAD = 6;
 
 const i18n = await keystatic.singletons.blog.read({
   resolveLinkedFiles: true,
@@ -15,56 +19,64 @@ const allPosts = await getCollection("blogPosts").then((posts) =>
     .filter((e) => !e.data.isDraft)
     .toSorted(
       (a, b) =>
-        (b.data.createdAt?.getTime() ?? 0) - (a.data.createdAt?.getTime() ?? 0)
-    )
+        (b.data.createdAt?.getTime() ?? 0) - (a.data.createdAt?.getTime() ?? 0),
+    ),
 );
 
-const { featuredPosts, posts } = allPosts.slice(1).reduce(
-  (acc, el) => {
-    if (i18n.featuredPosts.posts.some((fp) => fp === el.id)) {
-      acc.featuredPosts.push(el);
-    } else {
-      acc.posts.push(el);
-    }
+// Get all categories
+const allCategories = await getCollection("blogCategories");
+const categories = allCategories.map((cat) => ({
+  slug: cat.id,
+  name: cat.data.name,
+}));
 
-    return acc;
-  },
-  { featuredPosts: [], posts: [] } as Record<string, typeof allPosts>
-);
+// Count posts per category
+const categoryCounts: Record<string, number> = {};
+allPosts.forEach((post) => {
+  if (post.data.categories) {
+    post.data.categories.forEach((cat) => {
+      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+  }
+});
+
+// Filter categories to only show those that have posts
+const activeCategories = categories.filter((cat) => categoryCounts[cat.slug]);
 ---
 
-<Layout title="Blog | Trieve">
+<Layout title="Blog - Patron">
   <section
-    class="container mx-auto flex flex-col md:flex-row gap-16 md:gap-8 lg:gap-16 mt-8 md:mt-8 md:justify-between"
+    class="bg-green cube-bg px-base mx-auto pt-[150px] pb-[80px] sm:pt-[200px] sm:pb-[160px]"
   >
-    <div class="md:flex-1/2 flex justify-start items-center">
-      <h1
-        set:html={marked(i18n.title)}
-        class="text-6xl md:text-5xl lg:text-7xl"
-      />
-    </div>
+    <div class="container-content flex flex-col gap-10">
+      <h1 set:html={marked(i18n.title)} />
 
-    <div class="md:flex-1/3 lg:flex-1/2">
-      <p class="text-lg mb-1">
-        {i18n.latestPublication || "Latest publication"}
-      </p>
+      <!-- Category Buttons -->
+      <div class="flex flex-wrap gap-5">
+        {
+          activeCategories.map((category) => (
+            <Button
+              shadow={false}
+              as="a"
+              href={`/blog/category/${category.slug}`}
+              color="secondary"
+              data-category={category.slug}
+            >
+              {category.name} ({categoryCounts[category.slug]})
+            </Button>
+          ))
+        }
+      </div>
 
-      {JSON.stringify(allPosts[0], null, 2)}
-    </div>
-  </section>
+      <Posts posts={allPosts} />
 
-  <section class="container mx-auto flex flex-col gap-4">
-    <h2 class="text-5xl" set:html={marked(i18n.featuredPosts.title)} />
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-      {featuredPosts.map((post) => JSON.stringify(post, null, 2))}
-    </div>
-  </section>
-
-  <section class="container mx-auto flex flex-col gap-4">
-    <h2 class="text-5xl" set:html={marked(i18n.furtherReadingsTitle)} />
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-      {posts.map((post) => JSON.stringify(post, null, 2))}
+      {
+        allPosts.length > POSTS_PER_LOAD && (
+          <div class="flex justify-center">
+            <Button id="show-more-btn">Show more</Button>
+          </div>
+        )
+      }
     </div>
   </section>
 </Layout>
