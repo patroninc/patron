@@ -1,14 +1,12 @@
 ---
-import Layout from "@layouts/Layout.astro";
+import "@styles/global.css";
 import Button from "@components/Button.astro";
 ---
 
-<Layout title={"404 - Page Not Found"} description={"404 - Page Not Found"}>
-  <div
-    class="bg-green cube-bg flex h-screen w-full flex-col items-center justify-center gap-10 px-5 text-center"
-  >
-    <h1 class="t-4xl">404 - Page Not Found</h1>
-    <p class="t-2xl">The page you are looking for does not exist.</p>
-    <Button as="a" href="/"> Go back to the homepage </Button>
-  </div>
-</Layout>
+<div
+  class="bg-green cube-bg flex h-screen w-full flex-col items-center justify-center gap-10 px-5 text-center"
+>
+  <h1 class="t-4xl">404 - Page Not Found</h1>
+  <p class="t-2xl">The page you are looking for does not exist.</p>
+  <Button as="a" href="/"> Go back to the homepage </Button>
+</div>
