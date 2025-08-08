@@ -61,14 +61,6 @@ export const blogPosts = collection({
         },
       },
       components: {
-        TextBox: wrapper({
-          label: "TextBox",
-          schema: {},
-        }),
-        TextBoxLearnMore: wrapper({
-          label: "TextBoxLearnMore",
-          schema: {},
-        }),
         Info: wrapper({
           label: "Info",
           schema: {},
@@ -77,18 +69,20 @@ export const blogPosts = collection({
           label: "Warning",
           schema: {},
         }),
-        VimeoEmbed: block({
-          label: "Vimeo Embed",
+        LearnMore: wrapper({
+          label: "Learn More",
+          schema: {},
+        }),
+        Vimeo: block({
+          label: "Vimeo",
           schema: {
-            src: fields.text({ label: "Video Src" }),
-            title: fields.text({ label: "Video Title" }),
+            id: fields.text({ label: "Video Src" }),
           },
         }),
-        YoutubeEmbed: block({
-          label: "YouTube Embed",
+        YouTube: block({
+          label: "YouTube",
           schema: {
-            src: fields.text({ label: "Video Src" }),
-            title: fields.text({ label: "Video Title" }),
+            id: fields.text({ label: "Video Src" }),
           },
         }),
       },
