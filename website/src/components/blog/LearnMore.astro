@@ -1,0 +1,22 @@
+---
+import Box from "@components/Box.astro";
+import LightbulbIcon from "@lucide/astro/icons/lightbulb";
+---
+
+<Box class="w-max max-w-full">
+  <div
+    class="bg-purple grid w-full grid-cols-[24px_1fr] gap-4 px-4 py-3 sm:grid-cols-[32px_1fr] sm:gap-5 sm:px-5 sm:py-4"
+  >
+    <LightbulbIcon class="size-6 sm:size-8" />
+    <div class="flex flex-col gap-2">
+      <p
+        class="prose-none text-[16px] leading-6 font-bold sm:text-[20px] sm:leading-8"
+      >
+        Learn more
+      </p>
+      <div class="text-[14px] sm:text-[18px]">
+        <slot />
+      </div>
+    </div>
+  </div>
+</Box>

@@ -1,25 +1,20 @@
-<div class="rounded-md bg-yellow-50 p-4">
-  <div class="flex">
-    <div class="flex-shrink-0">
-      <svg
-        class="h-5 w-5 text-yellow-400"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-          clip-rule="evenodd"></path>
-      </svg>
-    </div>
-    <div class="ml-3">
-      <h3 class="text-sm font-medium !text-yellow-800 dark:!text-yellow-800">
+---
+import Box from "@components/Box.astro";
+import AlertTriangleIcon from "@lucide/astro/icons/triangle-alert";
+---
+
+<Box class="w-max max-w-full">
+  <div
+    class="bg-orange grid w-full grid-cols-[24px_1fr] gap-4 px-5 py-3 sm:grid-cols-[32px_1fr] sm:gap-5 sm:px-5 sm:py-4"
+  >
+    <AlertTriangleIcon class="size-6 sm:size-8" />
+    <div class="flex flex-col gap-2">
+      <p class="text-[16px] leading-6 font-bold sm:text-[20px] sm:leading-8">
         Attention needed
-      </h3>
-      <div class="mt-2 text-sm text-yellow-700">
+      </p>
+      <div class="text-[14px] sm:text-[18px]">
         <slot />
       </div>
     </div>
   </div>
-</div>
+</Box>
