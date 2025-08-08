@@ -10,7 +10,6 @@ categories:
 coverImage: /src/assets/images/blog-posts/testing/coverImage.png
 ogSection: Technology
 ---
-
 Here is a sample of some basic Markdown syntax that can be used when writing Markdown content in Astro.
 
 ## Headings
@@ -45,7 +44,7 @@ Itatur? Quiatae cullecum rem ent aut odis in re eossequodi nonsequ idebis ne sap
 
 #### Output
 
-![blog placeholder](https://images.immediate.co.uk/production/volatile/sites/10/2018/02/f9d1af50-fd2f-43e6-9964-0a74f0f1e08c-6b6985c.jpg?quality=90&fit=700,466)
+![](/src/assets/images/blog-posts/testing/f9d1af50-fd2f-43e6-9964-0a74f0f1e08c-6b6985c.jpg)
 
 ## Blockquotes
 
@@ -62,24 +61,8 @@ The blockquote element represents content that is quoted from another source, op
 
 #### Output
 
-> Tiam, ad mint andaepu dandae nostion secatur sequo quae.  
-> **Note** that you can use _Markdown syntax_ within a blockquote.
-
-### Blockquote with attribution
-
-#### Syntax
-
-```markdown
-> Don't communicate by sharing memory, share memory by communicating.<br>
-> — <cite>Rob Pike[^1]</cite>
-```
-
-#### Output
-
-> Don't communicate by sharing memory, share memory by communicating.<br/>
-> — <cite>Rob Pike[^1]</cite>
-
-[^1]: The above quote is excerpted from Rob Pike's [talk](https://www.youtube.com/watch?v=PAAkCSZUG1c) during Gopherfest, November 18, 2015.
+> Tiam, ad mint andaepu dandae nostion secatur sequo quae.\
+> **Note** that you can use *Markdown syntax* within a blockquote.
 
 ## Tables
 
@@ -95,13 +78,13 @@ The blockquote element represents content that is quoted from another source, op
 
 | Italics   | Bold     | Code   |
 | --------- | -------- | ------ |
-| _italics_ | **bold** | `code` |
+| *italics* | **bold** | `code` |
 
 ## Code Blocks
 
 #### Syntax
 
-we can use 3 backticks ``` in new line and write snippet and close with 3 backticks on new line and to highlight language specific syntac, write one word of language name after first 3 backticks, for eg. html, javascript, css, markdown, typescript, txt, bash
+we can use 3 backticks \`\`\` in new line and write snippet and close with 3 backticks on new line and to highlight language specific syntac, write one word of language name after first 3 backticks, for eg. html, javascript, css, markdown, typescript, txt, bash
 
 ````markdown
 ```html
@@ -163,9 +146,9 @@ Output
 
 #### Output
 
-- List item
-- Another item
-- And another item
+* List item
+* Another item
+* And another item
 
 ### Nested list
 
@@ -183,38 +166,38 @@ Output
 
 #### Output
 
-- Fruit
-  - Apple
-  - Orange
-  - Banana
-- Dairy
-  - Milk
-  - Cheese
+* Fruit
+  * Apple
+  * Orange
+  * Banana
+* Dairy
+  * Milk
+  * Cheese
 
-## Other Elements — abbr, sub, sup, kbd, mark
+## Custom components
 
-#### Syntax
+### Info
 
-```markdown
-<abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
+<Info>
+  Lorem ipsum dolor sit amet
+</Info>
 
-H<sub>2</sub>O
+### Warning
 
-X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
+<Warning>
+  Lorem ipsum dolor sit amet
+</Warning>
 
-Press <kbd><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>Delete</kbd></kbd> to end the session.
+### Learn more
 
-Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
-```
+<LearnMore>
+  Lorem ipsum dolor sit amet
+</LearnMore>
 
-#### Output
+### Vimeo
 
-<abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
+<Vimeo id="https://vimeo.com/182932029" />
 
-H<sub>2</sub>O
+### Youtube
 
-X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
-
-Press <kbd><kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>Delete</kbd></kbd> to end the session.
-
-Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
+<YouTube id="https://www.youtube.com/watch?v=NSAOrGb9orM" />
