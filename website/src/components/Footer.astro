@@ -7,13 +7,21 @@ import Linkedin from "./icons/Linkedin.astro";
 import Youtube from "./icons/Youtube.astro";
 import Link from "./Link.astro";
 import KeystaticImage from "./KeystaticImage.astro";
+import EndCta from "./EndCta.astro";
 
 const i18n = await keystatic.singletons.footer.read({
   resolveLinkedFiles: true,
 });
+
+const homepageI18n = await keystatic.singletons.homepage.read({
+  resolveLinkedFiles: true,
+});
+const cta = homepageI18n?.cta;
+
 invariant(i18n, "No footer content found");
 ---
 
+<EndCta cta={cta} />
 <div class="border-t-5 border-black bg-white">
   <footer class="px-base pt-[80px] pb-[140px] sm:pt-[100px] sm:pb-[200px]">
     <div class="container-content">
