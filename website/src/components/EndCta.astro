@@ -3,6 +3,7 @@ import EndCtaGrid from "@components/EndCtaGrid.astro";
 import Box from "@components/Box.astro";
 import Check from "@lucide/astro/icons/check";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
+import Input from "./Input.astro";
 
 const { cta } = Astro.props;
 ---
@@ -30,6 +31,7 @@ const { cta } = Astro.props;
           <div class="relative h-full w-full sm:w-max">
             <Box color="white" class="h-full w-full sm:w-max">
               <input
+                id="waitlist-email-footer"
                 placeholder={cta.emailPlaceholder}
                 type="email"
                 required

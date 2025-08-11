@@ -110,15 +110,14 @@ const features = featuresData.features.map((feature) => ({
             <Star1 class="absolute top-0 -right-6 size-[22px]" />
           </span>
         </h1>
-        <p class="t-2xl max-w-[600px] text-center xl:text-left">
-          {hero.description}
-        </p>
+        <p class="t-2xl max-w-[600px] text-center xl:text-left" set:html={hero.description.replace(/\*([^*]+)\*/g, "<em>$1</em>")}></p>
         <form
           id="hero"
           class="flex w-full max-w-[350px] flex-col items-center gap-5 sm:w-[unset] sm:max-w-[unset] sm:flex-row sm:gap-[10px]"
         >
           <Input
             containerClass="sm:w-max w-full"
+            id="waitlist-email-hero"
             placeholder={hero.emailPlaceholder}
             required
             type="email"

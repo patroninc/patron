@@ -73,26 +73,45 @@ invariant(i18n, "No homepage content found");
 <script>
   const navCtaButton = document.getElementById("nav-cta-button");
 
+  function getPageY(el: Element) {
+    const rect = el.getBoundingClientRect();
+    return rect.top + window.scrollY + rect.height / 2;
+  }
+
+  function findNearestEmailInput(): HTMLInputElement | null {
+    const hero = document.getElementById("waitlist-email-hero") as HTMLInputElement | null;
+    let footer = document.getElementById("waitlist") as HTMLInputElement | null;
+
+    // Fallback in case the footer input doesn't have the expected ID
+    if (!footer) {
+      footer = document.querySelector('form#end-cta input[type="email"]') as HTMLInputElement | null;
+    }
+
+    const candidates = [hero, footer].filter(Boolean) as HTMLInputElement[];
+    if (candidates.length === 0) return null;
+
+    const currentY = window.scrollY + window.innerHeight / 2;
+    let nearest = candidates[0];
+    let minDist = Math.abs(getPageY(nearest) - currentY);
+
+    for (let i = 1; i < candidates.length; i++) {
+      const d = Math.abs(getPageY(candidates[i]) - currentY);
+      if (d < minDist) {
+        minDist = d;
+        nearest = candidates[i];
+      }
+    }
+    return nearest;
+  }
+
   if (navCtaButton) {
     navCtaButton.addEventListener("click", () => {
-      const waitlistSection = document.getElementById("waitlist");
-      const emailInput = document.querySelector(
-        '#waitlist input[type="email"]',
-      ) as HTMLInputElement;
+      const targetInput = findNearestEmailInput();
 
-      if (waitlistSection) {
-        // Smooth scroll to the waitlist section
-        waitlistSection.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-
-        // Focus on the email input after a short delay to ensure scroll is complete
-        setTimeout(() => {
-          if (emailInput) {
-            emailInput.focus();
-          }
-        }, 1000);
+      if (targetInput) {
+        targetInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => targetInput.focus(), 600);
+        return;
       }
     });
   }

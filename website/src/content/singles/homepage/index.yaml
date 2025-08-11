@@ -10,7 +10,7 @@ hero:
     emphasized: 10x less fees
   description: >-
     Patron is a Patreon alternative designed specifically for creators who
-    publish ongoing sequential content like books, podcasts, and comics.
+    publish ongoing *sequential content* like books, podcasts, and comics.
   ctaButtonText: Join the waitlist
   emailPlaceholder: Enter your email
   overrideActions: []
