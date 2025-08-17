@@ -27,7 +27,7 @@ const socialIconMap = {
 ---
 
 <EndCta cta={cta} />
-<div class="border-t-5 border-black bg-white">
+<div class="font-display border-t-5 border-black bg-white">
   <footer class="px-base pt-[80px] pb-[140px] sm:pt-[100px] sm:pb-[200px]">
     <div class="container-content">
       <div class="flex flex-col justify-between gap-12 sm:flex-row sm:gap-10">
@@ -65,14 +65,20 @@ const socialIconMap = {
           </div>
         </div>
         <div class="flex w-[240px] flex-col gap-10">
-          <h4>Contact</h4>
+          <p class="lg:text-h4 lg:leading-h4 text-h5 leading-h5 font-bold">
+            Contact
+          </p>
           <div class="flex flex-col gap-5">
             <Link href={`mailto:${i18n.contact.email}`} class="t-xs">
               {i18n.contact.email}
             </Link>
-            <Link href={`tel:${i18n.contact.phone}`} class="t-xs">
-              {i18n.contact.phone}
-            </Link>
+            {
+              i18n.contact.phone && (
+                <Link href={`tel:${i18n.contact.phone}`} class="t-xs">
+                  {i18n.contact.phone}
+                </Link>
+              )
+            }
             <p class="t-xs !w-full">
               {i18n.contact.address}
             </p>

@@ -19,7 +19,11 @@ const { title, details } = Astro.props as Props;
       aria-expanded="false"
       aria-controls={`${title} accordion menu content`}
     >
-      <h4 class="text-left">{title}</h4>
+      <p
+        class="lg:text-h4 lg:leading-h4 text-h5 leading-h5 text-left font-bold"
+      >
+        {title}
+      </p>
 
       <ChevronDown
         class="accordion__chevron h-7 w-7 shrink-0 transition-transform"
