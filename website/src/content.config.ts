@@ -25,6 +25,8 @@ const blogPosts = defineCollection({
       title: z.string(),
       summary: z.string(),
       author: z.string().optional(),
+      authorTwitter: z.string().optional(),
+      authorLinkedIn: z.string().optional(),
       createdAt: z.date().nullish(),
       lastUpdatedAt: z.date().nullish(),
       ogSection: z.string().optional(),

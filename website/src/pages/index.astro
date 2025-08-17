@@ -86,9 +86,7 @@ const features = featuresData.features.map((feature) => ({
     <div
       class="container-content flex items-center justify-center xl:justify-between"
     >
-      <div
-        class="flex w-[750px] flex-col items-center gap-8 xl:items-start"
-      >
+      <div class="flex w-[750px] flex-col items-center gap-8 xl:items-start">
         <h1
           class="flex w-full max-w-[420px] flex-col items-center text-center md:block md:max-w-full xl:text-left"
         >
@@ -110,7 +108,10 @@ const features = featuresData.features.map((feature) => ({
             <Star1 class="absolute top-0 -right-6 size-[22px]" />
           </span>
         </h1>
-        <p class="t-2xl max-w-[600px] text-center xl:text-left" set:html={hero.description.replace(/\*([^*]+)\*/g, "<em>$1</em>")}></p>
+        <p
+          class="t-2xl max-w-[600px] text-center xl:text-left"
+          set:html={hero.description.replace(/\*([^*]+)\*/g, "<em>$1</em>")}
+        />
         <form
           id="hero"
           class="flex w-full max-w-[350px] flex-col items-center gap-5 sm:w-[unset] sm:max-w-[unset] sm:flex-row sm:gap-[10px]"
@@ -137,7 +138,7 @@ const features = featuresData.features.map((feature) => ({
             <button
               type="submit"
               aria-label="Join the waitlist"
-              class="bg-blue t-xl flex h-[50px] w-full items-center justify-center gap-2 text-white outline-none md:h-[58px] cursor-pointer button-animated-bg"
+              class="bg-blue t-xl button-animated-bg flex h-[50px] w-full cursor-pointer items-center justify-center gap-2 text-white outline-none md:h-[58px]"
             >
               {hero.ctaButtonText}
               <ArrowRight class="size-5 md:size-[28px] lg:size-[34px]" />

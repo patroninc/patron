@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -10,7 +9,8 @@
 }
 
 @theme {
-  --font-display: "Albert Sans", sans-serif;
+  --font-display: var(--font-albert-sans, "Albert Sans", sans-serif);
+  --font-serif: var(--font-crimson-text, "Lora", serif);
 
   --color-blue: var(--color-blue);
   --color-green: var(--color-green);

@@ -1,0 +1,54 @@
+---
+export interface Props {
+  class?: string;
+  as?: keyof HTMLElementTagNameMap;
+  shadow?: boolean;
+  color?: "black" | "white" | "blue";
+  pixelated?: boolean;
+  pixelatedBorder?: boolean;
+  [key: string]: any;
+}
+
+const {
+  class: className = "",
+  as: Tag = "div",
+  shadow = false,
+  color = "black",
+  pixelated = false,
+  ...props
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    className,
+    "relative",
+    color === "black"
+      ? "border-md"
+      : color === "white"
+        ? "white-border-md"
+        : "blue-border-md",
+    pixelated ? "group relative overflow-hidden outline-none" : "",
+  ]}
+  {...props}
+>
+  <div
+    class:list={[
+      pixelated ? "z-[1] h-full transition-transform duration-150" : "",
+    ]}
+  >
+    {
+      pixelated && (
+        <div class="h-[calc(100%-10px)] w-[5px] bg-black group-focus-visible:h-full" />
+      )
+    }
+    <div class:list={[pixelated && color === "black" ? "bg-white p-4 sm:p-6" : ""]}>
+      <slot />
+    </div>
+    {
+      pixelated && (
+        <div class="h-[calc(100%-10px)] w-[5px] bg-black group-focus-visible:h-full" />
+      )
+    }
+  </div>
+</Tag>

@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import keystatic from "@keystatic/astro";
 import react from "@astrojs/react";
@@ -35,5 +35,19 @@ export default defineConfig({
   },
   image: {
     domains: ["127.0.0.1"],
+  },
+  experimental: {
+    fonts: [
+      {
+        provider: fontProviders.google(),
+        name: "Albert Sans",
+        cssVariable: "--font-albert-sans",
+      },
+      {
+        provider: fontProviders.google(),
+        name: "Lora",
+        cssVariable: "--font-lora",
+      },
+    ],
   },
 });

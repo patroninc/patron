@@ -22,6 +22,14 @@ export const blogPosts = collection({
     }),
     summary: fields.text({ label: "Summary", multiline: true }),
     author: fields.text({ label: "Author" }),
+    authorTwitter: fields.text({
+      label: "Author Twitter",
+      description: "Twitter handle (without @)",
+    }),
+    authorLinkedIn: fields.text({
+      label: "Author LinkedIn",
+      description: "LinkedIn profile URL",
+    }),
     createdAt: fields.datetime({
       label: "Created at",
       defaultValue: { kind: "now" },

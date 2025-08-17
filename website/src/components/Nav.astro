@@ -40,7 +40,7 @@ invariant(i18n, "No homepage content found");
       </div>
 
       <!-- Desktop Navigation Links -->
-      <div class="hidden lg:flex items-center space-x-[50px]">
+      <div class="hidden items-center space-x-[50px] sm:flex">
         {
           i18n.navigationLinks.map((link) => (
             <Link
@@ -54,7 +54,7 @@ invariant(i18n, "No homepage content found");
           ))
         }
       </div>
-      
+
       <!-- Desktop CTA + GitHub Button + Mobile Menu Button -->
       <div class="flex items-center space-x-4" transition:persist>
         <!-- GitHub Button -->
@@ -66,27 +66,35 @@ invariant(i18n, "No homepage content found");
           rel="noopener noreferrer"
           shadow={false}
         >
-          <Icon name='simple-icons:github' class="h-6 w-6" />
+          <Icon name="simple-icons:github" class="h-6 w-6" />
           <span id="star-count">
-            <span class="skeleton-loader animate-pulse bg-gray-300 rounded h-4 w-5 inline-block"></span>
+            <span
+              class="skeleton-loader inline-block h-4 w-5 animate-pulse rounded bg-gray-300"
+            ></span>
           </span>
         </Button>
-        
+
         <!-- Mobile Menu Button -->
         <button
           id="mobile-menu-button"
-          class="lg:hidden flex items-center justify-center w-10 h-10"
+          class="flex h-10 w-10 items-center justify-center lg:hidden"
           aria-label="Toggle mobile menu"
           aria-expanded="false"
         >
           <Menu id="menu-icon" class="h-6 w-6" />
-          <X id="close-icon" class="h-6 w-6 hidden" />
+          <X id="close-icon" class="hidden h-6 w-6" />
         </button>
-        
+
         <!-- Desktop CTA Button (hidden on mobile) -->
         {
           i18n.ctaButton.enabled && (
-            <Button shadow={false} as="button" type="button" id="nav-cta-button" class="hidden lg:flex">
+            <Button
+              shadow={false}
+              as="button"
+              type="button"
+              id="nav-cta-button"
+              class="hidden sm:flex"
+            >
               {i18n.ctaButton.label}
               <ArrowRight />
             </Button>
@@ -106,23 +114,27 @@ invariant(i18n, "No homepage content found");
 <!-- Mobile Menu Overlay -->
 <div
   id="mobile-menu"
-  class="lg:hidden fixed inset-0 z-[55] bg-black bg-opacity-50 hidden"
+  class="bg-opacity-50 fixed inset-0 z-[55] hidden bg-black lg:hidden"
   aria-hidden="true"
 >
-  <div class="fixed right-0 top-0 h-full w-80 bg-white border-l-5 border-l-black transform translate-x-full transition-transform duration-300 ease-in-out">
-    <div class="flex flex-col h-full">
+  <div
+    class="fixed top-0 right-0 h-full w-80 translate-x-full transform border-l-5 border-l-black bg-white transition-transform duration-300 ease-in-out"
+  >
+    <div class="flex h-full flex-col">
       <!-- Mobile menu header -->
-      <div class="flex items-center justify-between p-6 border-b-5 border-b-black">
+      <div
+        class="flex items-center justify-between border-b-5 border-b-black p-6"
+      >
         <h2 class="text-lg font-bold">Menu</h2>
         <button
           id="mobile-menu-close"
-          class="flex items-center justify-center w-8 h-8"
+          class="flex h-8 w-8 items-center justify-center"
           aria-label="Close mobile menu"
         >
           <X class="h-6 w-6" />
         </button>
       </div>
-      
+
       <!-- Mobile navigation links -->
       <div class="flex-1 px-6 py-4">
         <nav class="flex flex-col space-y-4">
@@ -132,7 +144,7 @@ invariant(i18n, "No homepage content found");
                 href={link.href}
                 target={link.newTab ? "_blank" : undefined}
                 rel={link.newTab ? "noopener noreferrer" : undefined}
-                class="t-lg py-3 border-b border-gray-200 mobile-nav-link"
+                class="t-lg mobile-nav-link border-b border-gray-200 py-3"
               >
                 {link.label}
               </Link>
@@ -140,11 +152,11 @@ invariant(i18n, "No homepage content found");
           }
         </nav>
       </div>
-      
+
       <!-- Mobile CTA Button at bottom -->
       {
         i18n.ctaButton.enabled && (
-          <div class="p-6 border-t-5 border-t-black">
+          <div class="border-t-5 border-t-black p-6">
             <Button
               shadow={false}
               as="button"
@@ -185,7 +197,7 @@ invariant(i18n, "No homepage content found");
         }, 10);
       }
       document.body.style.overflow = "hidden";
-      
+
       if (mobileMenuButton) {
         mobileMenuButton.setAttribute("aria-expanded", "true");
       }
@@ -205,7 +217,7 @@ invariant(i18n, "No homepage content found");
         }, 300);
       }
       document.body.style.overflow = "";
-      
+
       if (mobileMenuButton) {
         mobileMenuButton.setAttribute("aria-expanded", "false");
       }
@@ -216,7 +228,8 @@ invariant(i18n, "No homepage content found");
 
   if (mobileMenuButton) {
     mobileMenuButton.addEventListener("click", () => {
-      const isExpanded = mobileMenuButton.getAttribute("aria-expanded") === "true";
+      const isExpanded =
+        mobileMenuButton.getAttribute("aria-expanded") === "true";
       if (isExpanded) {
         closeMobileMenu();
       } else {
@@ -239,13 +252,17 @@ invariant(i18n, "No homepage content found");
   }
 
   // Close mobile menu when clicking nav links
-  mobileNavLinks.forEach(link => {
+  mobileNavLinks.forEach((link) => {
     link.addEventListener("click", closeMobileMenu);
   });
 
   // Close mobile menu on escape key
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && mobileMenu && !mobileMenu.classList.contains("hidden")) {
+    if (
+      e.key === "Escape" &&
+      mobileMenu &&
+      !mobileMenu.classList.contains("hidden")
+    ) {
       closeMobileMenu();
     }
   });
@@ -256,12 +273,16 @@ invariant(i18n, "No homepage content found");
   }
 
   function findNearestEmailInput(): HTMLInputElement | null {
-    const hero = document.getElementById("waitlist-email-hero") as HTMLInputElement | null;
+    const hero = document.getElementById(
+      "waitlist-email-hero",
+    ) as HTMLInputElement | null;
     let footer = document.getElementById("waitlist") as HTMLInputElement | null;
 
     // Fallback in case the footer input doesn't have the expected ID
     if (!footer) {
-      footer = document.querySelector('form#end-cta input[type="email"]') as HTMLInputElement | null;
+      footer = document.querySelector(
+        'form#end-cta input[type="email"]',
+      ) as HTMLInputElement | null;
     }
 
     const candidates = [hero, footer].filter(Boolean) as HTMLInputElement[];
@@ -304,28 +325,30 @@ invariant(i18n, "No homepage content found");
 
   async function fetchGitHubStars() {
     try {
-      const response = await fetch('https://api.github.com/repos/patroninc/patron');
+      const response = await fetch(
+        "https://api.github.com/repos/patroninc/patron",
+      );
       if (response.ok) {
         const data = await response.json();
         const starCount = data.stargazers_count;
-        
+
         const formatStarCount = (count: number): string => {
           if (count >= 1000) {
-            return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+            return (count / 1000).toFixed(1).replace(/\.0$/, "") + "k";
           }
           return count.toString();
         };
-        
-        const starCountElement = document.getElementById('star-count');
+
+        const starCountElement = document.getElementById("star-count");
         if (starCountElement) {
           starCountElement.textContent = formatStarCount(starCount);
         }
       }
     } catch (error) {
-      console.error('Failed to fetch GitHub star count:', error);
-      const starCountElement = document.getElementById('star-count');
+      console.error("Failed to fetch GitHub star count:", error);
+      const starCountElement = document.getElementById("star-count");
       if (starCountElement) {
-        starCountElement.textContent = '★';
+        starCountElement.textContent = "★";
       }
     }
   }
