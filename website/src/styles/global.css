@@ -251,3 +251,31 @@
     width: 100%;
   }
 }
+
+.button-animated-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-animated-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.button-animated-bg:hover::before,
+.button-animated-bg:focus-visible::before {
+  width: 100%;
+}
+
+.button-animated-bg > * {
+  position: relative;
+  z-index: 20;
+}

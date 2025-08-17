@@ -2,8 +2,7 @@
 import "@styles/global.css";
 import Footer from "@components/Footer.astro";
 import Nav from "@components/Nav.astro";
-import cubeGrid from "@assets/grid-cube.svg";
-import diamondGrid from "@assets/grid-diamond.svg";
+import { ClientRouter } from "astro:transitions";
 
 const currentUrl = Astro.url.href;
 
@@ -127,3 +126,6 @@ const {
     document.addEventListener("DOMContentLoaded", () => {});
   </script>
 </html>
+
+<ClientRouter />
+
