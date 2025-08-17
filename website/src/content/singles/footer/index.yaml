@@ -1,7 +1,7 @@
 logo:
   alt: Patron Logo
   image: /src/assets/images/logo.svg
-tagline: "Create more."
+tagline: "Create more. Keep more of the support you earn."
 navigationSections:
   - title: Resources
     links:
@@ -16,23 +16,19 @@ navigationSections:
         newTab: false
 contact:
   title: Contact
-  email: support@patron.com
-  phone: 555-XXX-XXXX
-  address: 1234 Lombard Street, San Francisco, CA 94133
+  email: humans@patron.com
 socialMedia:
   - platform: github
     url: https://github.com/patroninc/patron
   - platform: twitter
     url: https://x.com/skeptrune
-  - platform: linkedin
+  - platform: twitch
     url: https://www.linkedin.com/company/patroninc/
   - platform: youtube
     url: https://www.youtube.com/@patroninc
+  - platform: discord
+    url: https://discord.gg/3vtTNMZbjG
 bottomLinks:
-  - label: About
-    href: /about
-  - label: Privacy Policy
-    href: /privacy
-  - label: Terms of Service
-    href: /terms
+  - label: Blog
+    href: /blog
 copyright: © 2025 Patron Inc. All rights reserved.

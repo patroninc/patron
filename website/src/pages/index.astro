@@ -87,7 +87,7 @@ const features = featuresData.features.map((feature) => ({
       class="container-content flex items-center justify-center xl:justify-between"
     >
       <div
-        class="flex w-[750px] flex-col items-center gap-[60px] xl:items-start"
+        class="flex w-[750px] flex-col items-center gap-8 xl:items-start"
       >
         <h1
           class="flex w-full max-w-[420px] flex-col items-center text-center md:block md:max-w-full xl:text-left"
@@ -98,8 +98,8 @@ const features = featuresData.features.map((feature) => ({
             style="-webkit-text-stroke: 2px black;"
           >
             <span set:html={marked.parseInline(hero.title.emphasized)} />
-            <Star1 class="absolute bottom-0 -left-7 size-[30px]" />
-            <Star1 class="absolute top-0 -right-7 size-[30px]" />
+            <Star1 class="absolute bottom-0 -left-9 size-[30px]" />
+            <Star1 class="absolute top-0 -right-9 size-[30px]" />
           </span>
           <span
             class="text-orange relative inline md:hidden"
@@ -137,7 +137,7 @@ const features = featuresData.features.map((feature) => ({
             <button
               type="submit"
               aria-label="Join the waitlist"
-              class="bg-blue t-xl flex h-[50px] w-full items-center justify-center gap-2 text-white outline-none md:h-[58px]"
+              class="bg-blue t-xl flex h-[50px] w-full items-center justify-center gap-2 text-white outline-none md:h-[58px] cursor-pointer"
             >
               {hero.ctaButtonText}
               <ArrowRight class="size-5 md:size-[28px] lg:size-[34px]" />
@@ -179,23 +179,25 @@ const features = featuresData.features.map((feature) => ({
       <h2 class="mb-[60px]">{featuresData.title}</h2>
 
       <div
-        class="mx-auto flex max-w-[400px] flex-col items-center justify-between gap-6 lg:mx-[unset] lg:max-w-[unset] lg:flex-row xl:gap-8"
+        class="mx-auto flex max-w-[400px] flex-col items-center justify-between gap-6 lg:mx-[unset] lg:max-w-[unset] lg:flex-row lg:gap-6 xl:gap-8"
       >
         {
           features.map((feature) => {
             const IconComponent = feature.iconComponent;
             return (
-              <Box shadow>
-                <div class="bg-green relative p-5 sm:p-8 xl:p-10">
-                  <div class="flex flex-col items-center justify-start gap-[25px]">
+              <div class="lg:flex-1">
+                <Box shadow>
+                  <div class="bg-green relative p-5 sm:p-8 xl:p-10">
                     <div class="flex flex-col items-center justify-start gap-[25px]">
-                      <IconComponent class="size-[80px] xl:size-[100px]" />
-                      <h3>{feature.title}</h3>
+                      <div class="flex flex-col items-center justify-start gap-[25px]">
+                        <IconComponent class="size-[80px] xl:size-[100px]" />
+                        <h3>{feature.title}</h3>
+                      </div>
+                      <p class="t-lg">{feature.description}</p>
                     </div>
-                    <p class="t-lg">{feature.description}</p>
                   </div>
-                </div>
-              </Box>
+                </Box>
+              </div>
             );
           })
         }

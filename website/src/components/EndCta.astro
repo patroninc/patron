@@ -4,6 +4,7 @@ import Box from "@components/Box.astro";
 import Check from "@lucide/astro/icons/check";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import Input from "./Input.astro";
+import button from "./Button.astro";
 
 const { cta } = Astro.props;
 ---
@@ -47,8 +48,9 @@ const { cta } = Astro.props;
                 <Check class="size-[34px]" />
               </div>
               <button
+                color="secondary"
                 aria-label="Join the waitlist"
-                class="bg-blue flex size-[50px] items-center justify-center outline-none"
+                class="bg-blue flex size-[50px] items-center justify-center outline-none cursor-pointer"
               >
                 <ArrowRight class="size-[34px]" color="white" />
               </button>

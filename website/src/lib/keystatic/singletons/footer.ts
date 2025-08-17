@@ -83,6 +83,7 @@ export const footer = singleton({
             { value: "facebook", label: "Facebook" },
             { value: "instagram", label: "Instagram" },
             { value: "discord", label: "Discord" },
+            { value: "twitch", label: "Twitch" },
           ],
           defaultValue: "github",
         }),

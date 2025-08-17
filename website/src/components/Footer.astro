@@ -1,10 +1,7 @@
 ---
 import invariant from "tiny-invariant";
 import { keystatic } from "@lib/keystatic/client";
-import Github from "./icons/Github.astro";
-import X from "./icons/X.astro";
-import Linkedin from "./icons/Linkedin.astro";
-import Youtube from "./icons/Youtube.astro";
+import { Icon } from "astro-icon/components";
 import Link from "./Link.astro";
 import KeystaticImage from "./KeystaticImage.astro";
 import EndCta from "./EndCta.astro";
@@ -19,6 +16,14 @@ const homepageI18n = await keystatic.singletons.homepage.read({
 const cta = homepageI18n?.cta;
 
 invariant(i18n, "No footer content found");
+
+const socialIconMap = {
+  github: { icon: "bi:github", label: "Visit our GitHub profile" },
+  twitter: { icon: "bi:twitter-x", label: "Follow us on X (Twitter)" },
+  twitch: { icon: "bi:linkedin", label: "Connect with us on LinkedIn" },
+  youtube: { icon: "bi:youtube", label: "Subscribe to our YouTube channel" },
+  discord: { icon: "bi:discord", label: "Join our Discord server" },
+} as const;
 ---
 
 <EndCta cta={cta} />
@@ -38,24 +43,22 @@ invariant(i18n, "No footer content found");
           </p>
 
           <div class="flex items-center gap-[30px]">
-            <a
-              href={i18n.socialMedia[0].url}
-              target="_blank"
-              class="underline-offset-4 hover:underline"
-              rel="noopener noreferrer"
-              aria-label="Visit our GitHub profile"
-            >
-              <Github class="size-[30px]" />
-            </a>
-            <a
-              href={i18n.socialMedia[1].url}
-              target="_blank"
-              class="underline-offset-4 hover:underline"
-              rel="noopener noreferrer"
-              aria-label="Follow us on X (Twitter)"
-            >
-              <X class="size-[30px]" />
-            </a>
+            {i18n.socialMedia.map((social) => {
+              const iconData = socialIconMap[social.platform as keyof typeof socialIconMap];
+              if (!iconData) return null;
+              
+              return (
+                <a
+                  href={social.url}
+                  target="_blank"
+                  class="underline-offset-4 hover:underline"
+                  rel="noopener noreferrer"
+                  aria-label={iconData.label}
+                >
+                  <Icon name={iconData.icon} class="h-6 w-6" />
+                </a>
+              );
+            })}
           </div>
         </div>
         <div class="flex w-[240px] flex-col gap-10">
@@ -73,88 +76,26 @@ invariant(i18n, "No footer content found");
           </div>
         </div>
       </div>
-      <!-- footer with 4 columns -->
-      <!-- <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="flex flex-col items-start gap-10">
-          <KeystaticImage
-            src={i18n.logo.image}
-            alt={i18n.logo.alt}
-            class="h-[50px]"
-          />
-
-          <p class="t-xs">
-            {i18n.tagline}
-          </p>
-
-          <div class="flex items-center gap-[30px]">
-            <a
-              href={i18n.socialMedia[0].url}
-              target="_blank"
-              class="underline-offset-4 hover:underline"
-              rel="noopener noreferrer"
-              aria-label="Visit our GitHub profile"
-            >
-              <Github class="size-[30px]" />
-            </a>
-            <a
-              href={i18n.socialMedia[1].url}
-              target="_blank"
-              class="underline-offset-4 hover:underline"
-              rel="noopener noreferrer"
-              aria-label="Follow us on X (Twitter)"
-            >
-              <X class="size-[30px]" />
-            </a>
-          </div>
-        </div>
-        <div>
-          {
-            i18n.navigationSections.map((section) => (
-              <div class="flex flex-col gap-10">
-                <h4>{section.title}</h4>
-                <div class="flex flex-col space-y-5">
-                  {section.links.map((link) => (
-                    <Link
-                      href={link.href}
-                      target={link.newTab ? "_blank" : undefined}
-                      rel={link.newTab ? "noopener noreferrer" : undefined}
-                      class="t-xs"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))
-          }
-        </div>
-        <div class="flex flex-col gap-10">
-          <h4>Company</h4>
-          <div class="flex flex-col gap-5">
-            {
-              i18n.bottomLinks.map((link) => (
+      
+      <div class="container-content border-t pt-8 mt-12!">
+        <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          {i18n.bottomLinks && i18n.bottomLinks.length > 0 && (
+            <div class="flex flex-wrap gap-6">
+              {i18n.bottomLinks.map((link) => (
                 <Link href={link.href} class="t-xs">
                   {link.label}
                 </Link>
-              ))
-            }
-          </div>
-        </div>
-        <div class="flex flex-col gap-10">
-          <h4>Contact</h4>
-          <div class="flex flex-col gap-5">
-            <Link href={`mailto:${i18n.contact.email}`} class="t-xs">
-              {i18n.contact.email}
-            </Link>
-            <Link href={`tel:${i18n.contact.phone}`} class="t-xs">
-              {i18n.contact.phone}
-            </Link>
-            <p class="t-xs !w-full">
-              {i18n.contact.address}
+              ))}
+            </div>
+          )}
+          
+          {i18n.copyright && (
+            <p class="t-xs">
+              {i18n.copyright}
             </p>
-          </div>
+          )}
         </div>
-      </div> -->
+      </div>
     </div>
   </footer>
   <svg

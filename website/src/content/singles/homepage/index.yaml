@@ -6,65 +6,72 @@ metadata:
     comics.
 hero:
   title:
-    text: Get paid for your passion and pay
-    emphasized: 10x less fees
-  description: >-
-    Patron is a Patreon alternative designed specifically for creators who
-    publish ongoing *sequential content* like books, podcasts, and comics.
+    text: Patron is a Patreon Alternative Designed for
+    emphasized: Sequential Content
+  description: Join for weekly updates and lifetime 1% fees
   ctaButtonText: Join the waitlist
   emailPlaceholder: Enter your email
   overrideActions: []
 features:
-  title: Everything you need in one platform.
+  title: We care about this being great
   features:
     - title: Open Source
       description: >-
-        Gain complete control with a transparent, open-source platform that you
-        can even self-host for ultimate flexibility.
+        Built with transparency and creator freedom in mind. Access the full
+        source code, contribute to development, customize your experience, and
+        even self-host for complete control.
     - title: Empowering Creators
       description: >-
-        Gain complete control with a transparent, open-source platform that you
-        can even self-host for ultimate flexibility.
+        Purpose-built for creators publishing ongoing series like webcomics,
+        podcasts, book chapters, and serialized stories with advanced content
+        organization and release scheduling.
     - title: Low Fees
       description: >-
-        Built from the ground up as a robust alternative to existing platforms,
-        with your success at its core.
+        We don't need to be a massive corporation to serve creators well. By
+        staying lean and focused, we can keep fees low while you keep more of
+        what you earn.
 steps:
-  title: How it works
+  title: Rolling Paywalls Made Simple
   steps:
-    - title: Create Your Page
+    - title: Create Your Creator Page
       description: >-
-        Easily set up and brand your unique creator page. Showcase your work and
-        define your offerings.
-    - title: Define Tiers
+        Set up your branded creator page for your ongoing series. Whether you're
+        running one serial or multiple, organize your sequential
+        content with professional presentation and easy navigation.
+    - title: Configure Rolling Paywalls
       description: >-
-        Design various membership tiers and specify the exclusive content and
-        benefits each tier receives.
-    - title: Publish Content
+        Set up flexible release rules for your content. Choose when new pieces
+        become available to different supporter tiers and when they eventually
+        drip out to free readers, creating a sustainable discovery funnel.
+    - title: Publish & Organize
       description: >-
-        Effortlessly publish exclusive content - videos, articles, audio, and
-        more - directly to your paying supporters.
-    - title: Get Paid
+        Release new episodes that start gated to supporters and automatically
+        become free over time based on your schedule. Single series creators
+        get streamlined publishing, while multi-series creators can manage
+        different release windows and tier access.
+    - title: Earn Sustainably
       description: >-
-        Receive payments directly from your fans. Our transparent system ensures
-        you'll get paid seamlessly.
+        Build recurring revenue as supporters get early access to your newest
+        content. The rolling release system creates value for supporters while
+        building a free archive that helps new readers discover your work.
 faq:
   title: Frequently Asked Questions
   items:
-    - question: What is Patron?
-      answer: Patron is a open-source Patreon alternative with radically low fees.
+    - question: Who is building this and why?
+      answer: Hi, name is Nick. I go by <a class="underline" href="https://x.com/skeptrune">skeptrune</a> on RoyalRoad and other platforms. I have been using Patreon for over a decade, primarily for serialized content, and I think it should be better. It's used for serialized content but doesn't support it well. Using the like button as a bookmark is frustrating. Not having a way to download content for a roadtrip or flight is annoying. The platform doesn't support its new and successful creators with marketing opportunities and fun live events, which is disappointing. I think I use it enough to really understand how it works and how to build a better version. It's going to be the same, just with a lot more care about getting it right.
+    - question: How are you going to keep fees low?
+      answer: We are going to be ruthless about keeping the infrastructure simple and cheap so our operating costs remain low. Those savings will be passed on to creators in the form of lower fees. I don't have plans to
     - question: How does Patron compare to Patreon?
-      answer: Patron is a open-source Patreon alternative with radically low fees.
-    - question: How does Patron compare to Patreon?
-      answer: Patron is a open-source Patreon alternative with radically low fees.
-    - question: How does Patron compare to Patreon?
-      answer: Patron is a open-source Patreon alternative with radically low fees.
+      answer: Patron is purpose-built for creators publishing sequential content like webcomics, serialized novels, podcasts, and ongoing series. While Patreon is a general-purpose platform, we focus specifically on the unique needs of serial creators with features like rolling paywalls, advanced content organization, and release scheduling. Plus, we're open source with lifetime 1% fees instead of 5-12%, so you keep more of what you earn while getting tools designed specifically for your sequential content workflow.
+    - question: Are you going to have a discord integration, emails, and community chat?
+      answer: Yes, absolutely. We will be at feature parity with Patreon and aren't cutting any existing functionality. You'll have Discord integration, email systems, community chat, and all the core features you expect. We're just expanding the feature set specifically for serial content creators, not removing anything that already works well.
+    - question: What happens to my existing Patreon supporters if I switch?
+      answer: Nothing! Just post in both places at once and direct your new subs to Patron so you get to keep more of their support. Eventually, once most people have swapped over, maybe consider shutting down your old Patreon.
 testimonials:
   title: What our creators say
 cta:
   title: Join the waitlist and get 1% fees forever.
   description: >-
-    Start creating content you love for users together with 500.000+ other
-    creators.
+    Start creating content you love
   emailPlaceholder: Enter your email
   overrideActions: []

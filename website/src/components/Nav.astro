@@ -5,6 +5,7 @@ import Button from "./Button.astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import Link from "./Link.astro";
 import KeystaticImage from "./KeystaticImage.astro";
+import { Icon } from "astro-icon/components";
 
 const i18n = await keystatic.singletons.nav.read({
   resolveLinkedFiles: true,
@@ -50,15 +51,33 @@ invariant(i18n, "No homepage content found");
           ))
         }
       </div>
-      {
-        i18n.ctaButton.enabled && (
-          <Button shadow={false} as="button" type="button" id="nav-cta-button">
-            <span class="inline sm:hidden">{i18n.ctaButton.shortLabel}</span>
-            <span class="hidden sm:inline">{i18n.ctaButton.label}</span>
-            <ArrowRight />
-          </Button>
-        )
-      }
+      
+      <div class="flex items-center space-x-4">
+        <Button
+          href="https://github.com/patroninc/patron"
+          as="a"
+          color="secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+          shadow={false}
+        >
+          <Icon name='simple-icons:github' class="h-6 w-6" />
+
+          <span id="star-count">
+            <span class="skeleton-loader animate-pulse bg-gray-300 rounded h-4 w-5 inline-block"></span>
+          </span>
+        </Button>
+        
+        {
+          i18n.ctaButton.enabled && (
+            <Button shadow={false} as="button" type="button" id="nav-cta-button">
+              <span class="inline sm:hidden">{i18n.ctaButton.shortLabel}</span>
+              <span class="hidden sm:inline">{i18n.ctaButton.label}</span>
+              <ArrowRight />
+            </Button>
+          )
+        }
+      </div>
     </nav>
     <div class="flex h-full w-[10px] items-center justify-center">
       <div
@@ -115,4 +134,34 @@ invariant(i18n, "No homepage content found");
       }
     });
   }
+
+  async function fetchGitHubStars() {
+    try {
+      const response = await fetch('https://api.github.com/repos/patroninc/patron');
+      if (response.ok) {
+        const data = await response.json();
+        const starCount = data.stargazers_count;
+        
+        const formatStarCount = (count: number): string => {
+          if (count >= 1000) {
+            return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+          }
+          return count.toString();
+        };
+        
+        const starCountElement = document.getElementById('star-count');
+        if (starCountElement) {
+          starCountElement.textContent = formatStarCount(starCount);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch GitHub star count:', error);
+      const starCountElement = document.getElementById('star-count');
+      if (starCountElement) {
+        starCountElement.textContent = '★';
+      }
+    }
+  }
+
+  fetchGitHubStars();
 </script>
