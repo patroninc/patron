@@ -21,7 +21,7 @@ const categories = await getCollection("blogCategories");
 const site = Astro.site;
 
 const { entry } = Astro.props;
-const { Content, headings } = await render(entry);
+const { Content } = await render(entry);
 
 const i18n = entry.data;
 const ogImage = new URL(i18n.coverImage.src, site).href;
@@ -49,7 +49,7 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
       color="black"
       pixelated={true}
       shadow={true}
-      class="max-w-container mx-auto font-serif"
+      class="max-w-container mx-auto"
     >
       <p class="font-semibold">{`Written by ${i18n.author}`}</p>
       <div class="flex w-full flex-col text-xs">
