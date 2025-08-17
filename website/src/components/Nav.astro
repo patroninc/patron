@@ -3,6 +3,8 @@ import invariant from "tiny-invariant";
 import { keystatic } from "@lib/keystatic/client";
 import Button from "./Button.astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
+import Menu from "@lucide/astro/icons/menu";
+import X from "@lucide/astro/icons/x";
 import Link from "./Link.astro";
 import KeystaticImage from "./KeystaticImage.astro";
 import { Icon } from "astro-icon/components";
@@ -37,7 +39,8 @@ invariant(i18n, "No homepage content found");
         </a>
       </div>
 
-      <div class="hidden items-center space-x-[50px]">
+      <!-- Desktop Navigation Links -->
+      <div class="hidden lg:flex items-center space-x-[50px]">
         {
           i18n.navigationLinks.map((link) => (
             <Link
@@ -52,7 +55,9 @@ invariant(i18n, "No homepage content found");
         }
       </div>
       
+      <!-- Desktop CTA + GitHub Button + Mobile Menu Button -->
       <div class="flex items-center space-x-4">
+        <!-- GitHub Button -->
         <Button
           href="https://github.com/patroninc/patron"
           as="a"
@@ -62,17 +67,27 @@ invariant(i18n, "No homepage content found");
           shadow={false}
         >
           <Icon name='simple-icons:github' class="h-6 w-6" />
-
           <span id="star-count">
             <span class="skeleton-loader animate-pulse bg-gray-300 rounded h-4 w-5 inline-block"></span>
           </span>
         </Button>
         
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-button"
+          class="lg:hidden flex items-center justify-center w-10 h-10"
+          aria-label="Toggle mobile menu"
+          aria-expanded="false"
+        >
+          <Menu id="menu-icon" class="h-6 w-6" />
+          <X id="close-icon" class="h-6 w-6 hidden" />
+        </button>
+        
+        <!-- Desktop CTA Button (hidden on mobile) -->
         {
           i18n.ctaButton.enabled && (
-            <Button shadow={false} as="button" type="button" id="nav-cta-button">
-              <span class="inline sm:hidden">{i18n.ctaButton.shortLabel}</span>
-              <span class="hidden sm:inline">{i18n.ctaButton.label}</span>
+            <Button shadow={false} as="button" type="button" id="nav-cta-button" class="hidden lg:flex">
+              {i18n.ctaButton.label}
               <ArrowRight />
             </Button>
           )
@@ -88,9 +103,152 @@ invariant(i18n, "No homepage content found");
     </div>
   </div>
 </div>
+<!-- Mobile Menu Overlay -->
+<div
+  id="mobile-menu"
+  class="lg:hidden fixed inset-0 z-[55] bg-black bg-opacity-50 hidden"
+  aria-hidden="true"
+>
+  <div class="fixed right-0 top-0 h-full w-80 bg-white border-l-5 border-l-black transform translate-x-full transition-transform duration-300 ease-in-out">
+    <div class="flex flex-col h-full">
+      <!-- Mobile menu header -->
+      <div class="flex items-center justify-between p-6 border-b-5 border-b-black">
+        <h2 class="text-lg font-bold">Menu</h2>
+        <button
+          id="mobile-menu-close"
+          class="flex items-center justify-center w-8 h-8"
+          aria-label="Close mobile menu"
+        >
+          <X class="h-6 w-6" />
+        </button>
+      </div>
+      
+      <!-- Mobile navigation links -->
+      <div class="flex-1 px-6 py-4">
+        <nav class="flex flex-col space-y-4">
+          {
+            i18n.navigationLinks.map((link) => (
+              <Link
+                href={link.href}
+                target={link.newTab ? "_blank" : undefined}
+                rel={link.newTab ? "noopener noreferrer" : undefined}
+                class="t-lg py-3 border-b border-gray-200 mobile-nav-link"
+              >
+                {link.label}
+              </Link>
+            ))
+          }
+        </nav>
+      </div>
+      
+      <!-- Mobile CTA Button at bottom -->
+      {
+        i18n.ctaButton.enabled && (
+          <div class="p-6 border-t-5 border-t-black">
+            <Button
+              shadow={false}
+              as="button"
+              type="button"
+              id="mobile-nav-cta-button"
+              class="w-full"
+            >
+              {i18n.ctaButton.label}
+              <ArrowRight />
+            </Button>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</div>
 
 <script>
   const navCtaButton = document.getElementById("nav-cta-button");
+  const mobileNavCtaButton = document.getElementById("mobile-nav-cta-button");
+
+  // Mobile menu functionality
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const mobileMenuClose = document.getElementById("mobile-menu-close");
+  const menuIcon = document.getElementById("menu-icon");
+  const closeIcon = document.getElementById("close-icon");
+  const mobileNavLinks = document.querySelectorAll(".mobile-nav-link");
+
+  function openMobileMenu() {
+    if (mobileMenu) {
+      mobileMenu.classList.remove("hidden");
+      mobileMenu.setAttribute("aria-hidden", "false");
+      const menuPanel = mobileMenu.querySelector("div");
+      if (menuPanel) {
+        setTimeout(() => {
+          menuPanel.classList.remove("translate-x-full");
+        }, 10);
+      }
+      document.body.style.overflow = "hidden";
+      
+      if (mobileMenuButton) {
+        mobileMenuButton.setAttribute("aria-expanded", "true");
+      }
+      if (menuIcon) menuIcon.classList.add("hidden");
+      if (closeIcon) closeIcon.classList.remove("hidden");
+    }
+  }
+
+  function closeMobileMenu() {
+    if (mobileMenu) {
+      const menuPanel = mobileMenu.querySelector("div");
+      if (menuPanel) {
+        menuPanel.classList.add("translate-x-full");
+        setTimeout(() => {
+          mobileMenu.classList.add("hidden");
+          mobileMenu.setAttribute("aria-hidden", "true");
+        }, 300);
+      }
+      document.body.style.overflow = "";
+      
+      if (mobileMenuButton) {
+        mobileMenuButton.setAttribute("aria-expanded", "false");
+      }
+      if (menuIcon) menuIcon.classList.remove("hidden");
+      if (closeIcon) closeIcon.classList.add("hidden");
+    }
+  }
+
+  if (mobileMenuButton) {
+    mobileMenuButton.addEventListener("click", () => {
+      const isExpanded = mobileMenuButton.getAttribute("aria-expanded") === "true";
+      if (isExpanded) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    });
+  }
+
+  if (mobileMenuClose) {
+    mobileMenuClose.addEventListener("click", closeMobileMenu);
+  }
+
+  // Close mobile menu when clicking overlay
+  if (mobileMenu) {
+    mobileMenu.addEventListener("click", (e) => {
+      if (e.target === mobileMenu) {
+        closeMobileMenu();
+      }
+    });
+  }
+
+  // Close mobile menu when clicking nav links
+  mobileNavLinks.forEach(link => {
+    link.addEventListener("click", closeMobileMenu);
+  });
+
+  // Close mobile menu on escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && mobileMenu && !mobileMenu.classList.contains("hidden")) {
+      closeMobileMenu();
+    }
+  });
 
   function getPageY(el: Element) {
     const rect = el.getBoundingClientRect();
@@ -123,15 +281,24 @@ invariant(i18n, "No homepage content found");
     return nearest;
   }
 
-  if (navCtaButton) {
-    navCtaButton.addEventListener("click", () => {
-      const targetInput = findNearestEmailInput();
+  function handleCtaClick() {
+    const targetInput = findNearestEmailInput();
 
-      if (targetInput) {
-        targetInput.scrollIntoView({ behavior: "smooth", block: "center" });
-        setTimeout(() => targetInput.focus(), 600);
-        return;
-      }
+    if (targetInput) {
+      targetInput.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => targetInput.focus(), 600);
+      return;
+    }
+  }
+
+  if (navCtaButton) {
+    navCtaButton.addEventListener("click", handleCtaClick);
+  }
+
+  if (mobileNavCtaButton) {
+    mobileNavCtaButton.addEventListener("click", () => {
+      closeMobileMenu();
+      handleCtaClick();
     });
   }
 

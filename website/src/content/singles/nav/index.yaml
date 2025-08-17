@@ -3,12 +3,8 @@ logo:
   alt: Patron Logo
   image: /src/assets/images/logo.svg
 navigationLinks:
-  - label: Features
-    href: /features
-  - label: Pricing
-    href: /pricing
-  - label: About
-    href: /about
+  - label: Blog
+    href: /blog
 ctaButton:
   enabled: true
   label: Join the waitlist
