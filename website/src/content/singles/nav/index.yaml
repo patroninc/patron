@@ -1,14 +1,15 @@
 logo:
-  href: /
+  image: /src/assets/images/logo/image.svg
   alt: Patron Logo
-  image: /src/assets/images/logo.svg
+  href: /
 navigationLinks:
   - label: Blog
-    href: /blog
+    href: /blog/
+    newTab: false
 ctaButton:
   enabled: true
   label: Join the waitlist
   shortLabel: Join
+  id: nav-cta-button
   newTab: false
   variant: primary
-  id: nav-cta-button

@@ -100,8 +100,8 @@ const features = featuresData.features.map((feature) => ({
             <Star1 class="absolute top-0 -right-9 size-[30px]" />
           </span>
           <span
-            class="text-orange relative inline md:hidden"
-            style="-webkit-text-stroke: 1px black;"
+            class="text-orange relative inline md:hidden tracking-wider"
+            style="text-shadow: 1.5px 1.5px 0 black, -1.5px -1.5px 0 black, 1.5px -1.5px 0 black, -1.5px 1.5px 0 black;"
           >
             <span set:html={marked.parseInline(hero.title.emphasized)} />
             <Star1 class="absolute bottom-0 -left-6 size-[22px]" />

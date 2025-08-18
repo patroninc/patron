@@ -33,7 +33,7 @@ const POSTS_PER_LOAD = 6;
           key={post.id}
           class={`post-card ${idx >= POSTS_PER_LOAD ? "hidden" : ""}`}
         >
-          <a href={`/blog/post/${post.id}`}>
+          <a href={`/blog/post/${post.id}/`}>
             <div
               class={`flex h-full flex-col gap-4 p-5 sm:p-[30px] bg-${bgColor}`}
             >
