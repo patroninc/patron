@@ -1,7 +1,7 @@
 logo:
+  image: /src/assets/images/logo/image.svg
   alt: Patron Logo
-  image: /src/assets/images/logo.svg
-tagline: "Create more. Keep more of the support you earn."
+tagline: Create more. Keep more of the support you earn.
 navigationSections:
   - title: Resources
     links:
@@ -28,7 +28,7 @@ socialMedia:
     url: https://www.youtube.com/@patroninc
   - platform: discord
     url: https://discord.gg/3vtTNMZbjG
+copyright: © 2025 Patron Inc. All rights reserved.
 bottomLinks:
   - label: Blog
     href: /blog
-copyright: © 2025 Patron Inc. All rights reserved.
