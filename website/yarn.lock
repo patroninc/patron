@@ -227,6 +227,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@astrojs/rss@npm:^4.0.12":
+  version: 4.0.12
+  resolution: "@astrojs/rss@npm:4.0.12"
+  dependencies:
+    fast-xml-parser: "npm:^5.2.0"
+    kleur: "npm:^4.1.5"
+  checksum: 10c0/f7541a39adf3572489b87c45569833df111f9bef672b116191f228860e6f410f0bdc899f6124c3d6cf14a51b745cbfa415d4ed4649d7966070e155363019749c
+  languageName: node
+  linkType: hard
+
 "@astrojs/sitemap@npm:3.5.0":
   version: 3.5.0
   resolution: "@astrojs/sitemap@npm:3.5.0"
@@ -4018,7 +4028,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/linkify-it@npm:*":
+"@types/linkify-it@npm:*, @types/linkify-it@npm:^5":
   version: 5.0.0
   resolution: "@types/linkify-it@npm:5.0.0"
   checksum: 10c0/7bbbf45b9dde17bf3f184fee585aef0e7342f6954f0377a24e4ff42ab5a85d5b806aaa5c8d16e2faf2a6b87b2d94467a196b7d2b85c9c7de2f0eaac5487aaab8
@@ -4042,6 +4052,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/markdown-it@npm:^14":
+  version: 14.1.2
+  resolution: "@types/markdown-it@npm:14.1.2"
+  dependencies:
+    "@types/linkify-it": "npm:^5"
+    "@types/mdurl": "npm:^2"
+  checksum: 10c0/34f709f0476bd4e7b2ba7c3341072a6d532f1f4cb6f70aef371e403af8a08a7c372ba6907ac426bc618d356dab660c5b872791ff6c1ead80c483e0d639c6f127
+  languageName: node
+  linkType: hard
+
 "@types/mdast@npm:^4.0.0":
   version: 4.0.4
   resolution: "@types/mdast@npm:4.0.4"
@@ -4051,7 +4071,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mdurl@npm:*":
+"@types/mdurl@npm:*, @types/mdurl@npm:^2":
   version: 2.0.0
   resolution: "@types/mdurl@npm:2.0.0"
   checksum: 10c0/cde7bb571630ed1ceb3b92a28f7b59890bb38b8f34cd35326e2df43eebfc74985e6aa6fd4184e307393bad8a9e0783a519a3f9d13c8e03788c0f98e5ec869c5e
@@ -4128,6 +4148,15 @@ __metadata:
   dependencies:
     csstype: "npm:^3.0.2"
   checksum: 10c0/fb583deacd0a815e2775dc1b9f764532d8cacb748ddd2c2914805a46c257ce6c237b4078f44009692074db212ab61a390301c6470f07f5aa5bfdeb78a2acfda1
+  languageName: node
+  linkType: hard
+
+"@types/sanitize-html@npm:^2":
+  version: 2.16.0
+  resolution: "@types/sanitize-html@npm:2.16.0"
+  dependencies:
+    htmlparser2: "npm:^8.0.0"
+  checksum: 10c0/1d5ff68e07815d86a6832fba9b86f21af1824fd1080b765485688dc2777e03c22c6058ae12ba67ac3ee1aa1731f99626ed465e914ed6982bfe7c6c7144b79d45
   languageName: node
   linkType: hard
 
@@ -5114,6 +5143,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"deepmerge@npm:^4.2.2":
+  version: 4.3.1
+  resolution: "deepmerge@npm:4.3.1"
+  checksum: 10c0/e53481aaf1aa2c4082b5342be6b6d8ad9dfe387bc92ce197a66dea08bd4265904a087e75e464f14d1347cf2ac8afe1e4c16b266e0561cc5df29382d3c5f80044
+  languageName: node
+  linkType: hard
+
 "defu@npm:^6.1.4":
   version: 6.1.4
   resolution: "defu@npm:6.1.4"
@@ -5801,6 +5837,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-xml-parser@npm:^5.2.0":
+  version: 5.2.5
+  resolution: "fast-xml-parser@npm:5.2.5"
+  dependencies:
+    strnum: "npm:^2.1.0"
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: 10c0/d1057d2e790c327ccfc42b872b91786a4912a152d44f9507bf053f800102dfb07ece3da0a86b33ff6a0caa5a5cad86da3326744f6ae5efb0c6c571d754fe48cd
+  languageName: node
+  linkType: hard
+
 "fd-slicer@npm:~1.1.0":
   version: 1.1.0
   resolution: "fd-slicer@npm:1.1.0"
@@ -6307,7 +6354,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"htmlparser2@npm:^8.0.1":
+"htmlparser2@npm:^8.0.0, htmlparser2@npm:^8.0.1":
   version: 8.0.2
   resolution: "htmlparser2@npm:8.0.2"
   dependencies:
@@ -6827,6 +6874,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"linkify-it@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "linkify-it@npm:5.0.0"
+  dependencies:
+    uc.micro: "npm:^2.0.0"
+  checksum: 10c0/ff4abbcdfa2003472fc3eb4b8e60905ec97718e11e33cca52059919a4c80cc0e0c2a14d23e23d8c00e5402bc5a885cdba8ca053a11483ab3cc8b3c7a52f88e2d
+  languageName: node
+  linkType: hard
+
 "lite-youtube-embed@npm:^0.3.3":
   version: 0.3.3
   resolution: "lite-youtube-embed@npm:0.3.3"
@@ -6956,6 +7012,22 @@ __metadata:
   version: 2.0.0
   resolution: "markdown-extensions@npm:2.0.0"
   checksum: 10c0/406139da2aa0d5ebad86195c8e8c02412f873c452b4c087ae7bc767af37956141be449998223bb379eea179b5fd38dfa610602b6f29c22ddab5d51e627a7e41d
+  languageName: node
+  linkType: hard
+
+"markdown-it@npm:^14.1.0":
+  version: 14.1.0
+  resolution: "markdown-it@npm:14.1.0"
+  dependencies:
+    argparse: "npm:^2.0.1"
+    entities: "npm:^4.4.0"
+    linkify-it: "npm:^5.0.0"
+    mdurl: "npm:^2.0.0"
+    punycode.js: "npm:^2.3.1"
+    uc.micro: "npm:^2.1.0"
+  bin:
+    markdown-it: bin/markdown-it.mjs
+  checksum: 10c0/9a6bb444181d2db7016a4173ae56a95a62c84d4cbfb6916a399b11d3e6581bf1cc2e4e1d07a2f022ae72c25f56db90fbe1e529fca16fbf9541659dc53480d4b4
   languageName: node
   linkType: hard
 
@@ -7244,6 +7316,13 @@ __metadata:
   version: 2.12.2
   resolution: "mdn-data@npm:2.12.2"
   checksum: 10c0/b22443b71d70f72ccc3c6ba1608035431a8fc18c3c8fc53523f06d20e05c2ac10f9b53092759a2ca85cf02f0d37036f310b581ce03e7b99ac74d388ef8152ade
+  languageName: node
+  linkType: hard
+
+"mdurl@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "mdurl@npm:2.0.0"
+  checksum: 10c0/633db522272f75ce4788440669137c77540d74a83e9015666a9557a152c02e245b192edc20bc90ae953bbab727503994a53b236b4d9c99bdaee594d0e7dd2ce0
   languageName: node
   linkType: hard
 
@@ -8170,6 +8249,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-srcset@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "parse-srcset@npm:1.0.2"
+  checksum: 10c0/2f268e3d110d4c53d06ed2a8e8ee61a7da0cee13bf150819a6da066a8ca9b8d15b5600d6e6cae8be940e2edc50ee7c1e1052934d6ec858324065ecef848f0497
+  languageName: node
+  linkType: hard
+
 "parse5-htmlparser2-tree-adapter@npm:^7.0.0":
   version: 7.1.0
   resolution: "parse5-htmlparser2-tree-adapter@npm:7.1.0"
@@ -8265,6 +8351,7 @@ __metadata:
   dependencies:
     "@astrojs/mdx": "npm:4.3.4"
     "@astrojs/react": "npm:4.3.0"
+    "@astrojs/rss": "npm:^4.0.12"
     "@astrojs/sitemap": "npm:3.5.0"
     "@iconify-json/bi": "npm:1.2.6"
     "@iconify-json/simple-icons": "npm:1.2.48"
@@ -8274,17 +8361,21 @@ __metadata:
     "@lucide/astro": "npm:0.539.0"
     "@tailwindcss/typography": "npm:0.5.16"
     "@tailwindcss/vite": "npm:^4.1.12"
+    "@types/markdown-it": "npm:^14"
     "@types/react": "npm:^19.1.10"
     "@types/react-dom": "npm:19.1.7"
+    "@types/sanitize-html": "npm:^2"
     astro: "npm:5.13.2"
     astro-embed: "npm:0.9.0"
     astro-icon: "npm:1.1.5"
+    markdown-it: "npm:^14.1.0"
     marked: "npm:16.1.2"
     prettier: "npm:3.6.2"
     prettier-plugin-astro: "npm:0.14.1"
     prettier-plugin-tailwindcss: "npm:^0.6.14"
     react: "npm:^19.1.1"
     react-dom: "npm:^19.1.1"
+    sanitize-html: "npm:^2.17.0"
     tailwindcss: "npm:4.1.12"
     tiny-invariant: "npm:1.3.3"
     vite-plugin-devtools-json: "npm:1.0.0"
@@ -8352,7 +8443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.5.3":
+"postcss@npm:^8.3.11, postcss@npm:^8.5.3":
   version: 8.5.6
   resolution: "postcss@npm:8.5.6"
   dependencies:
@@ -8595,6 +8686,13 @@ __metadata:
     end-of-stream: "npm:^1.1.0"
     once: "npm:^1.3.1"
   checksum: 10c0/ada5cdf1d813065bbc99aa2c393b8f6beee73b5de2890a8754c9f488d7323ffd2ca5f5a0943b48934e3fcbd97637d0337369c3c631aeb9614915db629f1c75c9
+  languageName: node
+  linkType: hard
+
+"punycode.js@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "punycode.js@npm:2.3.1"
+  checksum: 10c0/1d12c1c0e06127fa5db56bd7fdf698daf9a78104456a6b67326877afc21feaa821257b171539caedd2f0524027fa38e67b13dd094159c8d70b6d26d2bea4dfdb
   languageName: node
   linkType: hard
 
@@ -9042,6 +9140,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sanitize-html@npm:^2.17.0":
+  version: 2.17.0
+  resolution: "sanitize-html@npm:2.17.0"
+  dependencies:
+    deepmerge: "npm:^4.2.2"
+    escape-string-regexp: "npm:^4.0.0"
+    htmlparser2: "npm:^8.0.0"
+    is-plain-object: "npm:^5.0.0"
+    parse-srcset: "npm:^1.0.2"
+    postcss: "npm:^8.3.11"
+  checksum: 10c0/361f71f70a12f0e7d26c73cae31c926a2a5cf0757bab16faf663b07f723823780fa2642a688eff93ad2d2346baaefc31961b1f22e791f5a4b043778e20c180f4
+  languageName: node
+  linkType: hard
+
 "sass-formatter@npm:^0.7.6":
   version: 0.7.9
   resolution: "sass-formatter@npm:0.7.9"
@@ -9436,6 +9548,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"strnum@npm:^2.1.0":
+  version: 2.1.1
+  resolution: "strnum@npm:2.1.1"
+  checksum: 10c0/1f9bd1f9b4c68333f25c2b1f498ea529189f060cd50aa59f1876139c994d817056de3ce57c12c970f80568d75df2289725e218bd9e3cdf73cd1a876c9c102733
+  languageName: node
+  linkType: hard
+
 "style-to-js@npm:^1.0.0":
   version: 1.1.17
   resolution: "style-to-js@npm:1.1.17"
@@ -9671,6 +9790,13 @@ __metadata:
   version: 4.41.0
   resolution: "type-fest@npm:4.41.0"
   checksum: 10c0/f5ca697797ed5e88d33ac8f1fec21921839871f808dc59345c9cf67345bfb958ce41bd821165dbf3ae591cedec2bf6fe8882098dfdd8dc54320b859711a2c1e4
+  languageName: node
+  linkType: hard
+
+"uc.micro@npm:^2.0.0, uc.micro@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "uc.micro@npm:2.1.0"
+  checksum: 10c0/8862eddb412dda76f15db8ad1c640ccc2f47cdf8252a4a30be908d535602c8d33f9855dfcccb8b8837855c1ce1eaa563f7fa7ebe3c98fd0794351aab9b9c55fa
   languageName: node
   linkType: hard
 
