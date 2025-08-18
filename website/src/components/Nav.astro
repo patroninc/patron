@@ -326,8 +326,12 @@ invariant(i18n, "No homepage content found");
   async function fetchGitHubStars() {
     try {
       const response = await fetch(
-        "https://api.github.com/repos/patroninc/patron",
-      );
+        "https://api.github.com/repos/patroninc/patron", {
+        headers: {
+          Accept: "application/vnd.github+json",
+          Authorization: "Bearer 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",
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         const starCount = data.stargazers_count;
