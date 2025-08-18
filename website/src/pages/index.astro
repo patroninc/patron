@@ -389,6 +389,7 @@ const features = featuresData.features.map((feature) => ({
   }
 
   async function sendWelcomeEmail(email: string): Promise<void> {
+    // trigger build
     try {
       const response = await fetch("https://listmonk.skeptrune.com/api/tx", {
         method: "POST",
