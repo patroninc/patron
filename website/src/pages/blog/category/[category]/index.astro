@@ -22,7 +22,10 @@ const { entries, category } = Astro.props;
 const POSTS_PER_LOAD = 6;
 ---
 
-<Layout title=`${category.name} posts - Patron Blog`>
+<Layout
+  title=`${category.name} posts - Patron Blog`
+  ogDescription={category.description}
+>
   <section
     class="bg-green cube-bg px-base mx-auto pt-[150px] pb-[80px] sm:pt-[200px] sm:pb-[160px]"
   >

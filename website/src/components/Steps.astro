@@ -71,7 +71,9 @@ const icons = [Create, Tiers, Upload, Dollar];
     steps.map((step) => {
       return (
         <div class="flex flex-col items-center justify-start gap-4">
-          <p class="lg:text-h4 font-bold lg:leading-h4 text-h5 leading-h5">{step.title}</p>
+          <p class="lg:text-h4 lg:leading-h4 text-h5 leading-h5 font-bold">
+            {step.title}
+          </p>
           <p class="t-base">{step.description}</p>
         </div>
       );

@@ -11,5 +11,9 @@ export const blogCategories = collection({
         validation: { isRequired: true },
       },
     }),
+    description: fields.text({
+      label: "Description",
+      validation: { isRequired: true },
+    }),
   },
 });

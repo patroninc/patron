@@ -20,7 +20,9 @@ const { testimonial } = Astro.props;
         )
       }
       <div>
-        <p class="lg:text-h4 font-bold lg:leading-h4 text-h5 leading-h5">{testimonial.author}</p>
+        <p class="lg:text-h4 lg:leading-h4 text-h5 leading-h5 font-bold">
+          {testimonial.author}
+        </p>
       </div>
     </div>
     <p class="t-base">"{testimonial.quote}"</p>
