@@ -2,15 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch astrobits dev server",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/astrobits",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"]
-    },
-    {
-      "name": "Launch website dev server", 
+      "name": "Launch website dev server",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/website",

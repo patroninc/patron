@@ -1,12 +1,12 @@
 {
   "folders": [
     {
-      "name": "astrobits",
-      "path": "./astrobits"
-    },
-    {
       "name": "website",
       "path": "./website"
+    },
+    {
+      "name": "client",
+      "path": "./client"
     }
   ],
   "settings": {
