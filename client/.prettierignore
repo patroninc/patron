@@ -1,0 +1,11 @@
+node_modules
+public
+dist
+build
+.react-router
+.yarn
+.vscode
+.gitignore
+.prettierignore
+.prettierrc
+.env
