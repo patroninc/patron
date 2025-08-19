@@ -135,17 +135,29 @@ const features = featuresData.features.map((feature) => ({
               <div
                 class="bg-orange t-xl flex h-[50px] w-full items-center justify-center gap-2 select-none md:h-[58px]"
               >
-                Joined
+                <span class="success-text">Joined</span>
                 <Check class="size-6" />
+              </div>
+            </div>
+            <div
+              class="error-message absolute -top-[58px] left-0 flex w-full flex-col items-center transition-all duration-300 ease-in-out"
+            >
+              <div
+                class="bg-red-500 t-xl flex h-[50px] w-full items-center justify-center gap-2 select-none text-white md:h-[58px]"
+              >
+                <span class="error-text">Try again</span>
               </div>
             </div>
             <button
               type="submit"
               aria-label="Join the waitlist"
-              class="bg-blue t-xl button-animated-bg flex h-[50px] w-full cursor-pointer items-center justify-center gap-2 text-white outline-none md:h-[58px]"
+              class="bg-blue t-xl button-animated-bg flex h-[50px] w-full cursor-pointer items-center justify-center gap-2 text-white outline-none md:h-[58px] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {hero.ctaButtonText}
-              <ArrowRight class="size-5 md:size-[28px] lg:size-[34px]" />
+              <span class="button-text">{hero.ctaButtonText}</span>
+              <ArrowRight class="button-arrow size-5 md:size-[28px] lg:size-[34px]" />
+              <div class="loading-spinner hidden">
+                <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent md:h-6 md:w-6"></div>
+              </div>
             </button>
           </Box>
         </form>
@@ -426,24 +438,85 @@ const features = featuresData.features.map((feature) => ({
       e.preventDefault();
 
       const successMessage = heroForm.querySelector(
-        "form#hero .success-message",
+        ".success-message",
+      ) as HTMLDivElement | null;
+      
+      const errorMessage = heroForm.querySelector(
+        ".error-message",
       ) as HTMLDivElement | null;
 
       const input = heroForm.querySelector(
-        'form#hero input[type="email"]',
+        'input[type="email"]',
       ) as HTMLInputElement | null;
 
-      if (input && input.value) {
+      const button = heroForm.querySelector(
+        'button[type="submit"]',
+      ) as HTMLButtonElement | null;
+
+      const buttonText = button?.querySelector('.button-text') as HTMLElement | null;
+      const buttonArrow = button?.querySelector('.button-arrow') as HTMLElement | null;
+      const loadingSpinner = button?.querySelector('.loading-spinner') as HTMLElement | null;
+
+      if (!input || !input.value || !button) return;
+
+      // Reset any previous messages
+      successMessage?.classList.remove("top-0");
+      successMessage?.classList.add("-top-[58px]");
+      errorMessage?.classList.remove("top-0");
+      errorMessage?.classList.add("-top-[58px]");
+
+      // Show loading state
+      button.disabled = true;
+      buttonText!.textContent = "Joining...";
+      buttonArrow?.classList.add("hidden");
+      loadingSpinner?.classList.remove("hidden");
+
+      try {
         const success = await subscribeToMailingList(input.value);
 
         if (success) {
+          // Show success message
           successMessage?.classList.add("top-0");
-          successMessage?.classList.remove("top-[-58px]");
-
+          successMessage?.classList.remove("-top-[58px]");
+          
+          // Clear input
           input.value = "";
+          
+          // Auto-hide success message after 4 seconds
+          setTimeout(() => {
+            successMessage?.classList.remove("top-0");
+            successMessage?.classList.add("-top-[58px]");
+          }, 4000);
+          
         } else {
-          console.error("Subscription failed");
+          // Show error message
+          errorMessage?.classList.add("top-0");
+          errorMessage?.classList.remove("-top-[58px]");
+          
+          // Auto-hide error message after 3 seconds
+          setTimeout(() => {
+            errorMessage?.classList.remove("top-0");
+            errorMessage?.classList.add("-top-[58px]");
+          }, 3000);
         }
+      } catch (error) {
+        console.error("Subscription error:", error);
+        
+        // Show error message
+        errorMessage?.classList.add("top-0");
+        errorMessage?.classList.remove("-top-[58px]");
+        
+        // Auto-hide error message after 3 seconds
+        setTimeout(() => {
+          errorMessage?.classList.remove("top-0");
+          errorMessage?.classList.add("-top-[58px]");
+        }, 3000);
+      } finally {
+        // Reset button state
+        button.disabled = false;
+        buttonText!.textContent = "Join Waitlist";
+        buttonArrow?.classList.remove("hidden");
+        loadingSpinner?.classList.add("hidden");
       }
     });
   }
