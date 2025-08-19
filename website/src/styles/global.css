@@ -246,6 +246,7 @@
 @media (width <= 1280px) {
   .container-content {
     width: 100%;
+    max-width: 90%;
   }
 }
 
