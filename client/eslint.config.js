@@ -33,6 +33,12 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "no-empty-pattern": "off",
+      "prettier/prettier": [
+        "error",
+        {
+          endOfLine: "auto",
+        },
+      ],
     },
   },
 );
