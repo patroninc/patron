@@ -21,7 +21,7 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
 
 <div class={`px-base ${positionClass} top-[15px] right-0 left-0 z-50`}>
   <div
-    class="max-w-container mx-auto flex h-[90px] w-full items-center justify-between"
+    class="max-w-container mx-auto flex h-20 w-full items-center justify-between sm:h-[90px]"
   >
     <div class="flex h-full w-[10px] items-center justify-center">
       <div class="h-full max-h-[calc(100%-20px)] w-[5px] bg-black"></div>
@@ -31,36 +31,38 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
       </div>
     </div>
     <nav
-      class="flex h-full w-full items-center justify-between border-y-5 border-y-black bg-white p-[15px]"
+      class="flex h-full w-full items-center justify-between border-y-5 border-y-black bg-white p-[10px] sm:p-[15px] sm:px-[20px]"
     >
-      <div class="lg:w-[227px]">
-        <a href={i18n.logo.href} aria-label="Go to homepage">
-          <KeystaticImage
-            src={i18n.logo.image}
-            alt={i18n.logo.alt ?? ""}
-            class="h-[50px]"
-          />
-        </a>
-      </div>
+      <div class="flex items-center justify-between gap-14">
+        <div>
+          <a href={i18n.logo.href} aria-label="Go to homepage">
+            <KeystaticImage
+              src={i18n.logo.image}
+              alt={i18n.logo.alt ?? ""}
+              class="h-[40px] sm:h-[50px]"
+            />
+          </a>
+        </div>
 
-      <!-- Desktop Navigation Links -->
-      <div class="hidden items-center space-x-[50px] sm:flex">
-        {
-          i18n.navigationLinks.map((link) => (
-            <Link
-              href={link.href}
-              target={link.newTab ? "_blank" : undefined}
-              rel={link.newTab ? "noopener noreferrer" : undefined}
-              class="text-lg font-semibold"
-            >
-              {link.label}
-            </Link>
-          ))
-        }
+        <!-- Desktop Navigation Links -->
+        <div class="hidden items-center space-x-[50px] sm:flex">
+          {
+            i18n.navigationLinks.map((link) => (
+              <Link
+                href={link.href}
+                target={link.newTab ? "_blank" : undefined}
+                rel={link.newTab ? "noopener noreferrer" : undefined}
+                class="text-lg font-semibold"
+              >
+                {link.label}
+              </Link>
+            ))
+          }
+        </div>
       </div>
 
       <!-- Desktop CTA + GitHub Button + Mobile Menu Button -->
-      <div class="flex items-center space-x-4" transition:persist>
+      <div class="flex items-center gap-3 sm:gap-4" transition:persist>
         <!-- GitHub Button -->
         <Button
           href="https://github.com/patroninc/patron"
@@ -69,8 +71,9 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
           target="_blank"
           rel="noopener noreferrer"
           shadow={false}
+          class="w-max"
         >
-          <Icon name="simple-icons:github" class="h-6 w-6" />
+          <Icon name="simple-icons:github" class="size-5 sm:size-6" />
           <span id="star-count">
             <span
               class="skeleton-loader inline-block h-4 w-5 animate-pulse rounded bg-gray-300"
@@ -79,15 +82,17 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
         </Button>
 
         <!-- Mobile Menu Button -->
-        <button
+        <Button
+          color="secondary"
+          shadow={false}
           id="mobile-menu-button"
-          class="flex h-10 w-10 items-center justify-center sm:hidden"
+          class="flex items-center justify-center sm:hidden"
           aria-label="Toggle mobile menu"
           aria-expanded="false"
         >
           <Menu id="menu-icon" class="h-6 w-6" />
           <X id="close-icon" class="hidden h-6 w-6" />
-        </button>
+        </Button>
 
         <!-- Desktop CTA Button (hidden on mobile) -->
         {
@@ -118,37 +123,36 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
 <!-- Mobile Menu Overlay -->
 <div
   id="mobile-menu"
-  class="bg-opacity-50 fixed inset-0 z-[55] hidden bg-black lg:hidden"
+  class="fixed inset-0 z-[55] hidden bg-black/50 lg:hidden"
   aria-hidden="true"
 >
   <div
-    class="fixed top-0 right-0 h-full w-80 translate-x-full transform border-l-5 border-l-black bg-white transition-transform duration-300 ease-in-out"
+    class="bg-green fixed top-0 right-0 h-full w-[250px] translate-x-full transform border-l-5 border-l-black transition-transform duration-300 ease-in-out"
   >
     <div class="flex h-full flex-col">
       <!-- Mobile menu header -->
-      <div
-        class="flex items-center justify-between border-b-5 border-b-black p-6"
-      >
-        <h2 class="text-lg font-bold">Menu</h2>
-        <button
+      <div class="flex items-center justify-end p-5">
+        <Button
+          color="secondary"
+          shadow={false}
           id="mobile-menu-close"
-          class="flex h-8 w-8 items-center justify-center"
+          class="flex items-center justify-center"
           aria-label="Close mobile menu"
         >
           <X class="h-6 w-6" />
-        </button>
+        </Button>
       </div>
 
       <!-- Mobile navigation links -->
-      <div class="flex-1 px-6 py-4">
-        <nav class="flex flex-col space-y-4">
+      <div class="flex-1 p-5">
+        <nav class="flex flex-col items-center space-y-4">
           {
             i18n.navigationLinks.map((link) => (
               <Link
                 href={link.href}
                 target={link.newTab ? "_blank" : undefined}
                 rel={link.newTab ? "noopener noreferrer" : undefined}
-                class="t-lg mobile-nav-link border-b border-gray-200 py-3"
+                class="t-2xl py-3"
               >
                 {link.label}
               </Link>
@@ -160,13 +164,12 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
       <!-- Mobile CTA Button at bottom -->
       {
         i18n.ctaButton.enabled && (
-          <div class="border-t-5 border-t-black p-6">
+          <div class="flex items-center justify-center p-5">
             <Button
               shadow={false}
               as="button"
               type="button"
               id="mobile-nav-cta-button"
-              class="w-full"
             >
               {i18n.ctaButton.label}
               <ArrowRight />

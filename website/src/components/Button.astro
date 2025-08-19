@@ -20,19 +20,11 @@ const {
 
 <Tag
   class:list={[
-    "group relative flex h-[52px] cursor-pointer items-center justify-center overflow-hidden outline-none",
+    "group relative flex h-[52px] items-center justify-center outline-none",
     className,
   ]}
   {...props}
 >
-  {
-    shadow && (
-      <>
-        <div class="absolute top-[10px] right-[-5px] z-0 h-[calc(100%-10px)] w-[10px] bg-black" />
-        <div class="absolute bottom-[-5px] left-[10px] z-0 h-[10px] w-[calc(100%-10px)] bg-black" />
-      </>
-    )
-  }
   <div
     class:list={[
       "z-[1] flex h-full items-center justify-center transition-transform duration-150",
@@ -45,11 +37,11 @@ const {
     </div>
     <div
       class:list={[
-        "t-lg button-animated-bg flex h-full items-center justify-center gap-2 border-y-5 border-y-black",
+        "t-lg flex h-full items-center justify-center gap-2 border-y-5 border-y-black",
         color === "primary" ? "bg-blue text-white" : "bg-white text-black",
         size === "icon"
           ? "max-w-[42px] overflow-hidden px-2 py-2"
-          : "w-[unset] px-5 py-[7px]",
+          : "w-[unset] px-3 py-[7px] sm:px-5",
       ]}
     >
       <slot />
@@ -59,4 +51,13 @@ const {
     >
     </div>
   </div>
+
+  {
+    shadow && (
+      <>
+        <div class="absolute top-[10px] right-[-5px] h-[calc(100%-10px)] w-[10px] bg-black" />
+        <div class="absolute bottom-[-5px] left-[10px] h-[10px] w-[calc(100%-10px)] bg-black" />
+      </>
+    )
+  }
 </Tag>

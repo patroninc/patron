@@ -81,12 +81,12 @@ const features = featuresData.features.map((feature) => ({
   ogImage="/og.png"
 >
   <section
-    class="bg-green cube-bg px-base flex min-h-[700px] w-full flex-col items-center justify-center pt-[160px] pb-[80px] sm:py-[100px] sm:pt-[unset] sm:pb-[unset] lg:min-h-[800px] xl:min-h-[850px]"
+    class="bg-green cube-bg px-base flex min-h-[700px] w-full flex-col items-center justify-center pt-[160px] pb-[80px] sm:py-[100px] sm:pt-[unset] sm:pb-[unset] lg:min-h-[900px] xl:min-h-[850px]"
   >
     <div
       class="container-content flex items-center justify-center xl:justify-between"
     >
-      <div class="flex w-[750px] flex-col items-center gap-8 xl:items-start">
+      <div class="flex w-[750px] flex-col items-center gap-10 xl:items-start">
         <h1
           class="flex w-full max-w-[420px] flex-col items-center text-center md:block md:max-w-full xl:text-left"
         >
@@ -100,12 +100,16 @@ const features = featuresData.features.map((feature) => ({
             <Star1 class="absolute top-0 -right-9 size-[30px]" />
           </span>
           <span
-            class="text-orange relative inline tracking-wider md:hidden"
+            class="text-orange relative inline tracking-wider sm:w-max md:hidden"
             style="text-shadow: 1.5px 1.5px 0 black, -1.5px -1.5px 0 black, 1.5px -1.5px 0 black, -1.5px 1.5px 0 black;"
           >
             <span set:html={marked.parseInline(hero.title.emphasized)} />
-            <Star1 class="absolute bottom-0 -left-6 size-[22px]" />
-            <Star1 class="absolute top-0 -right-6 size-[22px]" />
+            <Star1
+              class="absolute bottom-0 -left-6 hidden size-[22px] sm:inline-block"
+            />
+            <Star1
+              class="absolute top-0 -right-6 hidden size-[22px] sm:inline-block"
+            />
           </span>
         </h1>
         <p
@@ -188,7 +192,7 @@ const features = featuresData.features.map((feature) => ({
             return (
               <div class="lg:flex-1">
                 <Box shadow>
-                  <div class="bg-green relative p-5 sm:p-8 xl:p-10">
+                  <div class="bg-green relative p-6 sm:p-8 xl:p-10">
                     <div class="flex flex-col items-center justify-start gap-[25px]">
                       <div class="flex flex-col items-center justify-start gap-[25px]">
                         <IconComponent class="size-[80px] xl:size-[100px]" />

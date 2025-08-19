@@ -42,11 +42,8 @@ export default defineConfig({
         provider: fontProviders.google(),
         name: "Albert Sans",
         cssVariable: "--font-albert-sans",
-      },
-      {
-        provider: fontProviders.google(),
-        name: "Lora",
-        cssVariable: "--font-lora",
+        weights: [500, 700],
+        fallbacks: ["sans-serif"],
       },
     ],
   },

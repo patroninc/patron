@@ -1,5 +1,6 @@
 ---
 import "@styles/global.css";
+import { Font } from "astro:assets";
 import Footer from "@components/Footer.astro";
 import Nav from "@components/Nav.astro";
 import { ClientRouter } from "astro:transitions";
@@ -44,6 +45,7 @@ const {
 
 <html lang="en">
   <head>
+    <Font cssVariable="--font-albert-sans" preload />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
@@ -120,9 +122,7 @@ const {
       <slot />
     </main>
     <Footer />
-  </body>
-
-  <script>
+  </body><script>
     document.addEventListener("DOMContentLoaded", () => {});
   </script>
 </html>

@@ -27,7 +27,7 @@ const socialIconMap = {
 ---
 
 <EndCta cta={cta} />
-<div class="font-display border-t-5 border-black bg-white">
+<div class="border-t-5 border-black bg-white">
   <footer class="px-base pt-[80px] pb-[140px] sm:pt-[100px] sm:pb-[200px]">
     <div class="container-content">
       <div class="flex flex-col justify-between gap-12 sm:flex-row sm:gap-10">
@@ -93,9 +93,11 @@ const socialIconMap = {
         </div>
       </div>
 
-      <div class="container-content mt-12! border-t pt-8">
+      <div
+        class="container-content mt-8! border-t-3 border-t-black pt-8 sm:mt-12!"
+      >
         <div
-          class="flex flex-col items-center justify-between gap-4 sm:flex-row"
+          class="flex flex-col items-baseline justify-between gap-4 sm:flex-row sm:items-center"
         >
           {
             i18n.bottomLinks && i18n.bottomLinks.length > 0 && (
