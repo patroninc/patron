@@ -143,7 +143,7 @@ const features = featuresData.features.map((feature) => ({
               class="error-message absolute -top-[58px] left-0 flex w-full flex-col items-center transition-all duration-300 ease-in-out"
             >
               <div
-                class="bg-red-500 t-xl flex h-[50px] w-full items-center justify-center gap-2 select-none text-white md:h-[58px]"
+                class="t-xl flex h-[50px] w-full items-center justify-center gap-2 bg-red-500 text-white select-none md:h-[58px]"
               >
                 <span class="error-text">Try again</span>
               </div>
@@ -151,12 +151,17 @@ const features = featuresData.features.map((feature) => ({
             <button
               type="submit"
               aria-label="Join the waitlist"
-              class="bg-blue t-xl button-animated-bg flex h-[50px] w-full cursor-pointer items-center justify-center gap-2 text-white outline-none md:h-[58px] disabled:opacity-50 disabled:cursor-not-allowed"
+              class="bg-blue t-xl button-animated-bg flex h-[50px] w-full cursor-pointer items-center justify-center gap-2 text-white outline-none disabled:cursor-not-allowed md:h-[58px]"
             >
               <span class="button-text">{hero.ctaButtonText}</span>
-              <ArrowRight class="button-arrow size-5 md:size-[28px] lg:size-[34px]" />
+              <ArrowRight
+                class="button-arrow size-5 md:size-[28px] lg:size-[34px]"
+              />
               <div class="loading-spinner hidden">
-                <div class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent md:h-6 md:w-6"></div>
+                <div
+                  class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent md:h-6 md:w-6"
+                >
+                </div>
               </div>
             </button>
           </Box>
@@ -440,7 +445,7 @@ const features = featuresData.features.map((feature) => ({
       const successMessage = heroForm.querySelector(
         ".success-message",
       ) as HTMLDivElement | null;
-      
+
       const errorMessage = heroForm.querySelector(
         ".error-message",
       ) as HTMLDivElement | null;
@@ -453,9 +458,15 @@ const features = featuresData.features.map((feature) => ({
         'button[type="submit"]',
       ) as HTMLButtonElement | null;
 
-      const buttonText = button?.querySelector('.button-text') as HTMLElement | null;
-      const buttonArrow = button?.querySelector('.button-arrow') as HTMLElement | null;
-      const loadingSpinner = button?.querySelector('.loading-spinner') as HTMLElement | null;
+      const buttonText = button?.querySelector(
+        ".button-text",
+      ) as HTMLElement | null;
+      const buttonArrow = button?.querySelector(
+        ".button-arrow",
+      ) as HTMLElement | null;
+      const loadingSpinner = button?.querySelector(
+        ".loading-spinner",
+      ) as HTMLElement | null;
 
       if (!input || !input.value || !button) return;
 
@@ -475,24 +486,29 @@ const features = featuresData.features.map((feature) => ({
         const success = await subscribeToMailingList(input.value);
 
         if (success) {
+          // Remove loading state and re-enable button immediately
+          button.disabled = false;
+          buttonText!.textContent = "Success!";
+          buttonArrow?.classList.add("hidden");
+          loadingSpinner?.classList.add("hidden");
+
           // Show success message
           successMessage?.classList.add("top-0");
           successMessage?.classList.remove("-top-[58px]");
-          
+
           // Clear input
           input.value = "";
-          
-          // Auto-hide success message after 4 seconds
+
+          // Show success indicator for a moment before auto-hiding
           setTimeout(() => {
             successMessage?.classList.remove("top-0");
             successMessage?.classList.add("-top-[58px]");
           }, 4000);
-          
         } else {
           // Show error message
           errorMessage?.classList.add("top-0");
           errorMessage?.classList.remove("-top-[58px]");
-          
+
           // Auto-hide error message after 3 seconds
           setTimeout(() => {
             errorMessage?.classList.remove("top-0");
@@ -501,22 +517,31 @@ const features = featuresData.features.map((feature) => ({
         }
       } catch (error) {
         console.error("Subscription error:", error);
-        
+
         // Show error message
         errorMessage?.classList.add("top-0");
         errorMessage?.classList.remove("-top-[58px]");
-        
+
         // Auto-hide error message after 3 seconds
         setTimeout(() => {
           errorMessage?.classList.remove("top-0");
           errorMessage?.classList.add("-top-[58px]");
         }, 3000);
       } finally {
-        // Reset button state
-        button.disabled = false;
-        buttonText!.textContent = "Join Waitlist";
-        buttonArrow?.classList.remove("hidden");
-        loadingSpinner?.classList.add("hidden");
+        // Reset button state only if not successful
+        if (!buttonText!.textContent.includes("Success!")) {
+          button.disabled = false;
+          buttonText!.textContent = "Join Waitlist";
+          buttonArrow?.classList.remove("hidden");
+          loadingSpinner?.classList.add("hidden");
+        } else {
+          // For success case, reset after a brief delay
+          setTimeout(() => {
+            buttonText!.textContent = "Join Waitlist";
+            buttonArrow?.classList.remove("hidden");
+            loadingSpinner?.classList.add("hidden");
+          }, 2000);
+        }
       }
     });
   }
