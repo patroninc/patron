@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-sans:
@@ -9,8 +12,43 @@
 html,
 body {
   @apply bg-white dark:bg-gray-950;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+@theme inline {
+  --color-primary: oklch(46.36% 0.1058 251.87deg);
+  --color-secondary-primary: oklch(67.75% 0.1381 278.35deg);
+  --color-background: oklch(78.51% 0.1421 180.34deg);
+  --color-secondary-background: oklch(100% 0 0);
+  --color-accent: oklch(88.27% 0.1755 104.11deg);
+  --color-warning: oklch(69.06% 0.1963 45.33deg);
+  --color-destructive: oklch(47.95% 0.1968 29.23deg);
+  --color-border: oklch(0% 0 0);
+
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0a0a0a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0a0a0a;
+  --color-primary: #1a1a1a;
+  --color-primary-foreground: #fafafa;
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #1a1a1a;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #737373;
+  --color-accent: #f5f5f5;
+  --color-accent-foreground: #1a1a1a;
+  --color-destructive: #f97316;
+  --color-border: #e5e5e5;
+  --color-input: #e5e5e5;
+  --color-ring: #b3b3b3;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
