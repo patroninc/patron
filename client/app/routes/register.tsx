@@ -14,22 +14,31 @@ import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { Link } from "react-router";
+import { isValidEmail } from "~/lib/utils";
 
 // Step 1: Email Form Component
 function EmailStep({
   onNext,
   onGoogleAuth,
+  initialEmail = "",
 }: {
   onNext: (email: string) => void;
   onGoogleAuth: () => void;
+  initialEmail?: string;
 }) {
   const form = useForm<{ email: string }>({
-    defaultValues: { email: "" },
+    defaultValues: { email: initialEmail },
   });
 
   const handleSubmit = (data: { email: string }) => {
-    if (!data.email) return;
-    if (!data.email.includes("@")) {
+    if (!data.email) {
+      form.setError("email", {
+        message: "Email is required",
+      });
+      return;
+    }
+    if (!isValidEmail(data.email)) {
       form.setError("email", {
         message: "Please enter a valid email address",
       });
@@ -91,7 +100,7 @@ function EmailStep({
         </svg>
       </Button>
 
-      <p className="text-xs text-center mt-10">
+      <p className="text-xs text-center mt-5">
         By joining, you agree to our{" "}
         <a
           target="_blank"
@@ -117,6 +126,7 @@ function EmailStep({
 function UserDetailsStep({
   onNext,
   onBack,
+  initialData = { displayName: "", password: "", repeatPassword: "" },
 }: {
   onNext: (data: {
     displayName: string;
@@ -124,13 +134,18 @@ function UserDetailsStep({
     repeatPassword: string;
   }) => void;
   onBack: () => void;
+  initialData?: {
+    displayName: string;
+    password: string;
+    repeatPassword: string;
+  };
 }) {
   const form = useForm<{
     displayName: string;
     password: string;
     repeatPassword: string;
   }>({
-    defaultValues: { displayName: "", password: "", repeatPassword: "" },
+    defaultValues: initialData,
   });
 
   const handleSubmit = (data: {
@@ -232,12 +247,14 @@ function UserDetailsStep({
 function PageDetailsStep({
   onNext,
   onBack,
+  initialData = { pageName: "", pageUrl: "" },
 }: {
   onNext: (data: { pageName: string; pageUrl: string }) => void;
   onBack: () => void;
+  initialData?: { pageName: string; pageUrl: string };
 }) {
   const form = useForm<{ pageName: string; pageUrl: string }>({
-    defaultValues: { pageName: "", pageUrl: "" },
+    defaultValues: initialData,
   });
 
   const handleSubmit = (data: { pageName: string; pageUrl: string }) => {
@@ -282,8 +299,22 @@ function PageDetailsStep({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Page URL</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your page URL" {...field} />
+              <FormControl className="w-full">
+                <div className="flex items-center">
+                  <div className="flex relative z-[2] items-center h-full">
+                    <div className="h-[calc(100%-12px)] w-[3px] bg-black"></div>
+                    <div className="h-[calc(100%-6px)] w-[3px] bg-accent border-y-3 border-y-black"></div>
+                    <div className="text-sm bg-accent flex items-center h-full border-y-3 pl-[9px] pr-[12px] border-y-black">
+                      Patron.com/
+                    </div>
+                  </div>
+                  <Input
+                    roundedLeft={false}
+                    conatinerClassName="w-full"
+                    placeholder="Enter your page URL"
+                    {...field}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -307,12 +338,14 @@ function PageDetailsStep({
 function FinalDetailsStep({
   onSubmit,
   onBack,
+  initialData = { isNsfw: false },
 }: {
   onSubmit: (data: { isNsfw: boolean }) => void;
   onBack: () => void;
+  initialData?: { isNsfw: boolean };
 }) {
   const form = useForm<{ isNsfw: boolean }>({
-    defaultValues: { isNsfw: false },
+    defaultValues: initialData,
   });
 
   const handleSubmit = (data: { isNsfw: boolean }) => {
@@ -422,7 +455,7 @@ export default function Register() {
       case 3:
         return "Set up your page";
       case 4:
-        return "Final details";
+        return "NSFW?";
       default:
         return "Register";
     }
@@ -436,8 +469,6 @@ export default function Register() {
         return "Set up your account details and secure password.";
       case 3:
         return "Choose your page name and URL for your creator profile.";
-      case 4:
-        return "Configure your page settings and preferences.";
       default:
         return "";
     }
@@ -450,6 +481,7 @@ export default function Register() {
           <EmailStep
             onNext={handleEmailSubmit}
             onGoogleAuth={handleGoogleAuth}
+            initialEmail={formData.email || ""}
           />
         );
       case 2:
@@ -457,6 +489,11 @@ export default function Register() {
           <UserDetailsStep
             onNext={handleUserDetailsSubmit}
             onBack={handleBack}
+            initialData={{
+              displayName: formData.displayName || "",
+              password: formData.password || "",
+              repeatPassword: formData.repeatPassword || "",
+            }}
           />
         );
       case 3:
@@ -464,11 +501,21 @@ export default function Register() {
           <PageDetailsStep
             onNext={handlePageDetailsSubmit}
             onBack={handleBack}
+            initialData={{
+              pageName: formData.pageName || "",
+              pageUrl: formData.pageUrl || "",
+            }}
           />
         );
       case 4:
         return (
-          <FinalDetailsStep onSubmit={handleFinalSubmit} onBack={handleBack} />
+          <FinalDetailsStep
+            onSubmit={handleFinalSubmit}
+            onBack={handleBack}
+            initialData={{
+              isNsfw: formData.isNsfw || false,
+            }}
+          />
         );
       default:
         return null;
@@ -477,13 +524,23 @@ export default function Register() {
 
   return (
     <Layout>
-      <FormCard
-        className={currentStep === 4 ? "bg-warning" : ""}
-        title={getStepTitle()}
-        description={getStepDescription()}
-      >
-        {renderCurrentStep()}
-      </FormCard>
+      <div className="flex flex-col gap-10">
+        <FormCard
+          className={currentStep === 4 ? "bg-warning" : ""}
+          title={getStepTitle()}
+          description={getStepDescription()}
+        >
+          {renderCurrentStep()}
+        </FormCard>
+
+        {currentStep === 1 && (
+          <div className="px-10">
+            <Button variant="secondary" className="w-full">
+              <Link to="/login">Join as a fan</Link>
+            </Button>
+          </div>
+        )}
+      </div>
     </Layout>
   );
 }
