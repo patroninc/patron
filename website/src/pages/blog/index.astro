@@ -16,7 +16,7 @@ invariant(i18n, "No Blog content found");
 
 const allPosts = await getCollection("blogPosts").then((posts) =>
   posts
-    .filter((e) => !e.data.isDraft)
+    .filter((e) => !e.data.isDraft && !e.data.categories?.includes("changelog"))
     .toSorted(
       (a, b) =>
         (b.data.createdAt?.getTime() ?? 0) - (a.data.createdAt?.getTime() ?? 0),

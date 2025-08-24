@@ -50,7 +50,10 @@ const { cta } = Astro.props;
                 aria-label="Join the waitlist"
                 class="bg-blue button-animated-bg flex size-[50px] cursor-pointer items-center justify-center outline-none"
               >
-                <ArrowRight class="arrow-icon size-[34px] transition-opacity duration-300" color="white" />
+                <ArrowRight
+                  class="arrow-icon size-[34px] transition-opacity duration-300"
+                  color="white"
+                />
               </button>
             </Box>
           </div>
@@ -190,9 +193,9 @@ const { cta } = Astro.props;
         const success = await subscribeToMailingList(endCtaInput.value);
 
         if (success) {
-          const arrowIcon = endCtaButton?.querySelector('.arrow-icon');
+          const arrowIcon = endCtaButton?.querySelector(".arrow-icon");
           if (arrowIcon) {
-            arrowIcon.classList.add('opacity-0');
+            arrowIcon.classList.add("opacity-0");
           }
 
           successMessage?.classList.add("top-[-5px]");
@@ -203,9 +206,9 @@ const { cta } = Astro.props;
           setTimeout(() => {
             successMessage?.classList.remove("top-[-5px]");
             successMessage?.classList.add("top-[-65px]");
-            
+
             if (arrowIcon) {
-              arrowIcon.classList.remove('opacity-0');
+              arrowIcon.classList.remove("opacity-0");
             }
           }, 2000);
         } else {
