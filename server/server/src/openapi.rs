@@ -1,21 +1,9 @@
 #![allow(clippy::needless_for_each)]
-use crate::handlers::{
-    auth::{
-        ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse,
-        LogoutResponse, RegisterRequest, RegisterResponse, ResetPasswordRequest,
-        ResetPasswordResponse,
-    },
-    characters::{CharactersResponse, ClipsResponse},
-    generation::{
-        AudioGenerationRequest, AudioGenerationResponse, VideoGenerationRequest,
-        VideoGenerationResponse,
-    },
-    webhook::{LatentSyncWebhookRequest, WebhookResponse},
+use crate::handlers::auth::{
+    ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, LogoutResponse,
+    RegisterRequest, RegisterResponse, ResetPasswordRequest, ResetPasswordResponse,
 };
-use shared::models::{
-    audio_clip::AudioClip, auth::{AuthCallbackQuery, UserInfo, UserInfoResponse}, character::Character, clips::Clip,
-    generation::Generation,
-};
+use shared::models::auth::{AuthCallbackQuery, UserInfo, UserInfoResponse};
 use utoipa::OpenApi;
 
 #[derive(OpenApi)]
@@ -34,10 +22,6 @@ use utoipa::OpenApi;
         )
     ),
     paths(
-        crate::handlers::generation::generate_audio_clip,
-        crate::handlers::generation::generate_video_with_lip_sync,
-        crate::handlers::generation::list_user_generations,
-        crate::handlers::generation::get_video_generation_status,
         crate::handlers::auth::google_auth_redirect,
         crate::handlers::auth::google_auth_callback,
         crate::handlers::auth::register,
@@ -47,18 +31,9 @@ use utoipa::OpenApi;
         crate::handlers::auth::get_me,
         crate::handlers::auth::forgot_password,
         crate::handlers::auth::reset_password,
-        crate::handlers::webhook::latentsync,
-        crate::handlers::characters::get_all_characters,
-        crate::handlers::characters::get_clips_for_character,
     ),
     components(
         schemas(
-            AudioGenerationRequest,
-            AudioGenerationResponse,
-            VideoGenerationRequest,
-            VideoGenerationResponse,
-            AudioClip,
-            Generation,
             AuthCallbackQuery,
             RegisterRequest,
             RegisterResponse,
@@ -70,13 +45,7 @@ use utoipa::OpenApi;
             ForgotPasswordRequest,
             ForgotPasswordResponse,
             ResetPasswordRequest,
-            ResetPasswordResponse,
-            LatentSyncWebhookRequest,
-            WebhookResponse,
-            Character,
-            Clip,
-            CharactersResponse,
-            ClipsResponse,
+            ResetPasswordResponse
         )
     ),
     tags(

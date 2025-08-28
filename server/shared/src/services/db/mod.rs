@@ -2,11 +2,6 @@ use diesel_async::{pooled_connection::bb8::Pool, AsyncPgConnection};
 
 use crate::errors::ServiceError;
 
-mod audio_clip;
-mod character;
-mod generation;
-mod video_clip;
-
 #[derive(Clone)]
 pub struct DbService {
     pool: Pool<AsyncPgConnection>,

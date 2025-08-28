@@ -13,8 +13,8 @@ use actix_web::{
 };
 pub use openapi::ApiDoc;
 use shared::services::{
-    auth::GoogleOAuthService, config::ConfigService, db::DbService, elevenlabs::ElevenLabsService,
-    email::EmailService, latentsync::LatentSyncService, s3::S3Service,
+    auth::GoogleOAuthService, config::ConfigService, db::DbService, email::EmailService,
+    s3::S3Service,
 };
 use tracing::level_filters::LevelFilter;
 use tracing_actix_web::TracingLogger;
@@ -39,12 +39,6 @@ pub async fn main() -> std::io::Result<()> {
     let s3_service = S3Service::new(config.s3_config().unwrap())
         .await
         .expect("Failed to create S3 service");
-
-    let elevenlabs_service = ElevenLabsService::new(config.elevenlabs_config().unwrap())
-        .expect("Failed to create ElevenLabs service");
-
-    let latentsync_service = LatentSyncService::new(&config.latentsync_config().unwrap())
-        .expect("Failed to create LatentSync service");
 
     let google_oauth_service = GoogleOAuthService::new(config.google_oauth_config().unwrap());
 
@@ -87,95 +81,52 @@ pub async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(config.clone()))
             .app_data(web::Data::new(s3_service.clone()))
             .app_data(web::Data::new(db_service.clone()))
-            .app_data(web::Data::new(elevenlabs_service.clone()))
-            .app_data(web::Data::new(latentsync_service.clone()))
             .app_data(web::Data::new(google_oauth_service.clone()))
             .app_data(web::Data::new(email_service.clone()))
             .service(Redoc::with_url("/redoc", openapi::ApiDoc::openapi()))
             .service(
-                web::scope("/api")
-                    .service(
-                        web::scope("/generate")
-                            .service(
-                                web::scope("/video")
-                                    .service(
-                                        web::resource("").route(web::post().to(
-                                            handlers::generation::generate_video_with_lip_sync,
-                                        )),
-                                    )
-                                    .service(
-                                        web::resource("/{id}").route(
-                                            web::get().to(
-                                                handlers::generation::get_video_generation_status,
-                                            ),
-                                        ),
-                                    ),
-                            )
-                            .service(
-                                web::resource("/audio").route(
-                                    web::post().to(handlers::generation::generate_audio_clip),
-                                ),
-                            ),
-                    )
-                    .service(
-                        web::scope("/webhook")
-                            .route("/latentsync", web::post().to(handlers::webhook::latentsync)),
-                    )
-                    .service(
-                        web::scope("/auth")
-                            .service(
-                                web::resource("/google")
-                                    // redirects to Google for authentication
-                                    .route(web::get().to(handlers::auth::google_auth_redirect)),
-                            )
-                            .service(
-                                web::resource("/google/callback")
-                                    // handles the callback from Google after authentication
-                                    .route(web::get().to(handlers::auth::google_auth_callback)),
-                            )
-                            .service(
-                                web::resource("/register")
-                                    // creates a new user account with email and password
-                                    .route(web::post().to(handlers::auth::register)),
-                            )
-                            .service(
-                                web::resource("/login")
-                                    // authenticates user with email and password
-                                    .route(web::post().to(handlers::auth::login)),
-                            )
-                            .service(
-                                web::resource("/verify-email")
-                                    // verifies user's email address and sets session cookie
-                                    .route(web::get().to(handlers::auth::verify_email)),
-                            )
-                            .service(
-                                web::resource("/logout")
-                                    .route(web::get().to(handlers::auth::logout)),
-                            )
-                            .service(
-                                web::resource("/me").route(web::get().to(handlers::auth::get_me)),
-                            )
-                            .service(
-                                web::resource("/forgot-password")
-                                    // sends password reset email
-                                    .route(web::post().to(handlers::auth::forgot_password)),
-                            )
-                            .service(
-                                web::resource("/reset-password")
-                                    // resets password using token
-                                    .route(web::post().to(handlers::auth::reset_password)),
-                            ),
-                    )
-                    .service(
-                        web::scope("/characters")
-                            .service(
-                                web::resource("")
-                                    .route(web::get().to(handlers::characters::get_all_characters)),
-                            )
-                            .service(web::resource("/{character_id}/clips").route(
-                                web::get().to(handlers::characters::get_clips_for_character),
-                            )),
-                    ),
+                web::scope("/api").service(
+                    web::scope("/auth")
+                        .service(
+                            web::resource("/google")
+                                // redirects to Google for authentication
+                                .route(web::get().to(handlers::auth::google_auth_redirect)),
+                        )
+                        .service(
+                            web::resource("/google/callback")
+                                // handles the callback from Google after authentication
+                                .route(web::get().to(handlers::auth::google_auth_callback)),
+                        )
+                        .service(
+                            web::resource("/register")
+                                // creates a new user account with email and password
+                                .route(web::post().to(handlers::auth::register)),
+                        )
+                        .service(
+                            web::resource("/login")
+                                // authenticates user with email and password
+                                .route(web::post().to(handlers::auth::login)),
+                        )
+                        .service(
+                            web::resource("/verify-email")
+                                // verifies user's email address and sets session cookie
+                                .route(web::get().to(handlers::auth::verify_email)),
+                        )
+                        .service(
+                            web::resource("/logout").route(web::get().to(handlers::auth::logout)),
+                        )
+                        .service(web::resource("/me").route(web::get().to(handlers::auth::get_me)))
+                        .service(
+                            web::resource("/forgot-password")
+                                // sends password reset email
+                                .route(web::post().to(handlers::auth::forgot_password)),
+                        )
+                        .service(
+                            web::resource("/reset-password")
+                                // resets password using token
+                                .route(web::post().to(handlers::auth::reset_password)),
+                        ),
+                ),
             )
     })
     .bind(("0.0.0.0", 8080))?
