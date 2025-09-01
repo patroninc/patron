@@ -1,0 +1,48 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2021"
+default-run = "server"
+
+[lib]
+name = "backend"
+path = "src/lib.rs"
+
+[[bin]]
+name = "server"
+path = "src/main.rs"
+
+[[bin]]
+name = "redoc_ci"
+path = "src/bin/redoc_ci.rs"
+
+
+[dependencies]
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
+tracing-actix-web = "0.7.18"
+tracing = { workspace = true }
+diesel_migrations = "2.1"
+shared = { workspace = true }
+uuid = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+actix-web = { workspace = true }
+diesel-async.workspace = true
+dotenvy = "0.15.7"
+reqwest = { workspace = true }
+diesel.workspace = true
+utoipa = { workspace = true }
+utoipa-redoc = { workspace = true }
+base64 = "0.22"
+aes-gcm = "0.10"
+rand = "0.8"
+chrono = { version = "0.4", features = ["serde"] }
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+actix-cors = "0.7.1"
+actix-session = { workspace = true }
+argon2 = { workspace = true }
+
+[lints]
+workspace = true

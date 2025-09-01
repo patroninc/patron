@@ -1,0 +1,19 @@
+# Maximum strict clippy configuration
+# This enables the most pedantic lints for highest code quality
+
+msrv = "1.70"
+avoid-breaking-exported-api = false
+
+# Complexity thresholds
+cognitive-complexity-threshold = 20
+too-many-arguments-threshold = 5  
+too-many-lines-threshold = 80
+type-complexity-threshold = 200
+
+# Performance thresholds
+trivial-copy-size-limit = 128
+pass-by-value-size-limit = 64
+
+# Style configuration
+max-suggested-slice-pattern-length = 2
+doc-valid-idents = ["API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", "JSON", "LHS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SQL", "SSH", "TCP", "TLS", "TTL", "UDP", "UI", "UID", "UUID", "URI", "URL", "UTF8", "VM", "XML", "XMPP", "XSRF", "XSS"]

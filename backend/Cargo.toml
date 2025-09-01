@@ -1,0 +1,155 @@
+[workspace]
+resolver = "3"
+members = ["server", "urlencoding", "shared"]
+
+[workspace.lints.clippy]
+# Correctness lints (enabled by default, but explicit for clarity)
+correctness = { level = "deny", priority = -1 }
+
+# Suspicious lints - likely bugs
+suspicious = { level = "deny", priority = -1 }
+empty_loop = "deny"
+mixed_read_write_in_expression = "deny"
+float_cmp = "deny"
+mut_mut = "deny"
+
+# Complexity lints - overly complex code
+complexity = { level = "warn", priority = -1 }
+cognitive_complexity = "warn"
+too_many_arguments = "warn"
+type_complexity = "warn"
+
+# Performance lints - performance issues  
+perf = { level = "warn", priority = -1 }
+large_enum_variant = "warn"
+large_types_passed_by_value = "warn"
+redundant_allocation = "warn"
+single_char_pattern = "warn"
+
+# Style lints - code style consistency
+style = { level = "warn", priority = -1 }
+doc_markdown = "warn"
+
+# Pedantic lints - very strict best practices
+pedantic = { level = "warn", priority = -1 }
+
+# Restriction lints - extremely pedantic, prevent problematic patterns
+as_conversions = "warn"
+assertions_on_result_states = "warn"
+dbg_macro = "warn"
+decimal_literal_representation = "warn"
+default_numeric_fallback = "warn"
+disallowed_script_idents = "warn"
+else_if_without_else = "warn"
+empty_drop = "warn"
+empty_structs_with_brackets = "warn"
+exit = "warn"
+expect_used = "warn"
+filetype_is_file = "warn"
+float_arithmetic = "warn"
+fn_to_numeric_cast_any = "warn"
+format_push_string = "warn"
+get_unwrap = "warn"
+host_endian_bytes = "warn"
+if_then_some_else_none = "warn"
+impl_trait_in_params = "warn"
+indexing_slicing = "warn"
+inline_asm_x86_att_syntax = "warn"
+inline_asm_x86_intel_syntax = "warn"
+arithmetic_side_effects = "warn"
+integer_division = "warn"
+let_underscore_must_use = "warn"
+map_err_ignore = "warn"
+missing_inline_in_public_items = "warn"
+mod_module_files = "warn"
+modulo_arithmetic = "warn"
+multiple_inherent_impl = "warn"
+panic = "warn"
+panic_in_result_fn = "warn"
+partial_pub_fields = "warn"
+pattern_type_mismatch = "warn"
+print_stderr = "warn"
+print_stdout = "warn"
+pub_use = "warn"
+rc_buffer = "warn"
+rc_mutex = "warn"
+rest_pat_in_fully_bound_structs = "warn"
+same_name_method = "warn"
+self_named_module_files = "warn"
+semicolon_outside_block = "warn"
+shadow_reuse = "warn"
+shadow_same = "warn"
+shadow_unrelated = "warn"
+single_char_lifetime_names = "warn"
+str_to_string = "warn"
+string_slice = "warn"
+string_to_string = "warn"
+todo = "warn"
+try_err = "warn"
+undocumented_unsafe_blocks = "warn"
+unnecessary_safety_comment = "warn"
+unnecessary_safety_doc = "warn"
+unreachable = "warn"
+unseparated_literal_suffix = "warn"
+unwrap_in_result = "warn"
+unwrap_used = "warn"
+use_debug = "warn"
+verbose_file_reads = "warn"
+wildcard_enum_match_arm = "warn"
+
+# Cargo lints
+cargo = { level = "warn", priority = -1 }
+cargo_common_metadata = "warn"
+multiple_crate_versions = "warn"
+redundant_feature_names = "warn"
+wildcard_dependencies = "warn"
+
+# Nursery lints (experimental but useful)
+nursery = { level = "warn", priority = -1 }
+
+[workspace.lints.rust]
+# Rust compiler lints
+unsafe_code = "warn"
+missing_docs = "warn"
+missing_debug_implementations = "warn"
+missing_copy_implementations = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+unused_import_braces = "warn"
+unused_qualifications = "warn"
+unused_results = "warn"
+variant_size_differences = "warn"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+
+[workspace.dependencies]
+shared = { path = "shared" }
+uuid = { version = "1.13", features = ["v4", "serde"] }
+diesel = { version = "2.2", features = [
+    "postgres",
+    "chrono",
+    "serde_json",
+    "uuid",
+] }
+diesel-async = { version = "0.5", features = ["postgres", "bb8"] }
+bb8 = "0.9.0"
+chrono = { version = "0.4.41", features = ["serde"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+actix-web = "4"
+reqwest = { version = "0.12.20", features = ["json", "stream"] }
+thiserror = "2.0.12"
+aws-config = { version = "1", features = ["behavior-version-latest"] }
+aws-sdk-s3 = "1"
+tracing = "0.1"
+bytes = "1"
+urlencoding = { version = "2.1.3" }
+utoipa = { version = "5.2", features = ["actix_extras", "chrono", "uuid"] }
+utoipa-redoc = { version = "5.0", features = ["actix-web"] }
+actix-session = { version = "0.10", features = ["redis-session-rustls"] }
+redis = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
+argon2 = "0.5"
+zxcvbn = "3.1"
+hex = "0.4"

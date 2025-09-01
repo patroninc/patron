@@ -1,0 +1,29 @@
+[package]
+name = "shared"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+diesel-async = { workspace = true }
+bb8 = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+derive_more = { version = "2.0.1", features = ["display"] }
+actix-web = { workspace = true }
+thiserror = { workspace = true }
+reqwest = { workspace = true }
+aws-config = { workspace = true }
+aws-sdk-s3 = { workspace = true }
+tracing = { workspace = true }
+bytes = { workspace = true }
+urlencoding = { workspace = true }
+diesel = { workspace = true }
+utoipa.workspace = true
+lettre = { version = "0.11", features = ["builder", "smtp-transport"] }
+tokio = { version = "1.0", features = ["rt", "rt-multi-thread"] }
+actix-session = { workspace = true }
+
+[lints]
+workspace = true
