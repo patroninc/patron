@@ -9,8 +9,8 @@ sources:
             - 1.0.0
     Patron API:
         sourceNamespace: patron-api
-        sourceRevisionDigest: sha256:688cf55f4178c5a269c30092638a184857c6341e737d429a31bc7e3fd2620696
-        sourceBlobDigest: sha256:719334317b311e76cd32d6718734c1179c0a4387c07d89494e9bd5398f2d174f
+        sourceRevisionDigest: sha256:3b1e55e00d2cf0b7c61927c66b6b679363c570f16e9d04b1896b6378e22c2b8d
+        sourceBlobDigest: sha256:a723d9e1a842ce658b0ae17fa594ffba7bc4bab24606c18158b11dbece46b39e
         tags:
             - latest
             - 1.0.0
@@ -18,10 +18,10 @@ targets:
     patron-ts-sdk:
         source: Patron API
         sourceNamespace: patron-api
-        sourceRevisionDigest: sha256:688cf55f4178c5a269c30092638a184857c6341e737d429a31bc7e3fd2620696
-        sourceBlobDigest: sha256:719334317b311e76cd32d6718734c1179c0a4387c07d89494e9bd5398f2d174f
+        sourceRevisionDigest: sha256:3b1e55e00d2cf0b7c61927c66b6b679363c570f16e9d04b1896b6378e22c2b8d
+        sourceBlobDigest: sha256:a723d9e1a842ce658b0ae17fa594ffba7bc4bab24606c18158b11dbece46b39e
         codeSamplesNamespace: celeb-ai-video-generation-api-typescript-code-samples
-        codeSamplesRevisionDigest: sha256:2322063148616308f881fdb2458227a23d4c3abc643e56e1ac857284267b299d
+        codeSamplesRevisionDigest: sha256:fe03d48a288da34a09950c99049cf94f3a7406f4e46f66fc2765c73955be0179
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
@@ -29,6 +29,8 @@ workflow:
         Patron API:
             inputs:
                 - location: openapi.json
+            overlays:
+                - location: .speakeasy/speakeasy-modifications-overlay.yaml
             output: .speakeasy/out.openapi.yaml
             registry:
                 location: registry.speakeasyapi.dev/patron/ts-sdk/patron-api

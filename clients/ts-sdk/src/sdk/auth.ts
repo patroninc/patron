@@ -3,9 +3,9 @@
  */
 
 import { authForgotPassword } from "../funcs/authForgotPassword.js";
-import { authGetMe } from "../funcs/authGetMe.js";
-import { authGoogleAuthCallback } from "../funcs/authGoogleAuthCallback.js";
-import { authGoogleAuthRedirect } from "../funcs/authGoogleAuthRedirect.js";
+import { authGetCurrentUser } from "../funcs/authGetCurrentUser.js";
+import { authGoogleCallback } from "../funcs/authGoogleCallback.js";
+import { authGoogleRedirect } from "../funcs/authGoogleRedirect.js";
 import { authLogin } from "../funcs/authLogin.js";
 import { authLogout } from "../funcs/authLogout.js";
 import { authRegister } from "../funcs/authRegister.js";
@@ -34,10 +34,10 @@ export class Auth extends ClientSDK {
   /**
    * Google OAuth redirect
    */
-  async googleAuthRedirect(
+  async googleRedirect(
     options?: RequestOptions,
   ): Promise<void> {
-    return unwrapAsync(authGoogleAuthRedirect(
+    return unwrapAsync(authGoogleRedirect(
       this,
       options,
     ));
@@ -46,11 +46,11 @@ export class Auth extends ClientSDK {
   /**
    * Google OAuth callback
    */
-  async googleAuthCallback(
+  async googleCallback(
     request: operations.GoogleAuthCallbackRequest,
     options?: RequestOptions,
   ): Promise<void> {
-    return unwrapAsync(authGoogleAuthCallback(
+    return unwrapAsync(authGoogleCallback(
       this,
       request,
       options,
@@ -86,10 +86,10 @@ export class Auth extends ClientSDK {
   /**
    * Get current user info
    */
-  async getMe(
+  async getCurrentUser(
     options?: RequestOptions,
   ): Promise<models.UserInfoResponse> {
-    return unwrapAsync(authGetMe(
+    return unwrapAsync(authGetCurrentUser(
       this,
       options,
     ));

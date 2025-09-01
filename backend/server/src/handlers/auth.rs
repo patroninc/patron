@@ -5,7 +5,7 @@ use diesel::prelude::*;
 use diesel_async::RunQueryDsl;
 use serde::{Deserialize, Serialize};
 use shared::{
-    errors::ServiceError,
+    errors::{ErrorResponse, ServiceError},
     models::auth::{AuthCallbackQuery, User, UserInfo, UserInfoResponse},
     services::{auth::GoogleOAuthService, email::EmailService},
 };
@@ -163,6 +163,14 @@ fn verify_password(password: &str, hash: &str) -> Result<bool, ServiceError> {
     }
 }
 
+/// Helper function to create a JSON error response
+fn json_error(message: &str) -> HttpResponse {
+    HttpResponse::BadRequest().json(ErrorResponse {
+        error: message.to_string(),
+        code: None,
+    })
+}
+
 /// Helper function to set user session
 fn set_user_session(session: &Session, user: &User) -> Result<(), ServiceError> {
     session
@@ -179,7 +187,7 @@ fn set_user_session(session: &Session, user: &User) -> Result<(), ServiceError> 
     tag = "Auth",
     responses(
         (status = 302, description = "Redirect to Google OAuth consent screen"),
-        (status = 500, description = "Internal server error", body = String),
+        (status = 500, description = "Internal server error", body = ErrorResponse),
     )
 )]
 pub async fn google_auth_redirect(
@@ -214,8 +222,8 @@ pub async fn google_auth_redirect(
     ),
     responses(
         (status = 302, description = "Redirect to frontend application"),
-        (status = 400, description = "Invalid authorization code or state", body = String),
-        (status = 500, description = "Internal server error", body = String),
+        (status = 400, description = "Invalid authorization code or state", body = ErrorResponse),
+        (status = 500, description = "Internal server error", body = ErrorResponse),
     )
 )]
 pub async fn google_auth_callback(
@@ -235,11 +243,11 @@ pub async fn google_auth_callback(
     })?;
 
     let Some(stored_state) = stored_state else {
-        return Ok(HttpResponse::BadRequest().json("Invalid OAuth state"));
+        return Ok(json_error("Invalid OAuth state"));
     };
 
     if stored_state != query.state {
-        return Ok(HttpResponse::BadRequest().json("OAuth state mismatch"));
+        return Ok(json_error("OAuth state mismatch"));
     }
 
     let redirect_uri: String = session
@@ -343,8 +351,8 @@ pub async fn google_auth_callback(
     request_body(content = RegisterRequest, description = "User registration data including email and password"),
     responses(
         (status = 200, description = "Registration successful", body = RegisterResponse),
-        (status = 400, description = "Invalid input or email already exists", body = String),
-        (status = 500, description = "Internal server error", body = String),
+        (status = 400, description = "Invalid input or email already exists", body = ErrorResponse),
+        (status = 500, description = "Internal server error", body = ErrorResponse),
     )
 )]
 pub async fn register(
@@ -358,10 +366,10 @@ pub async fn register(
 
     // Validate input
     if body.email.is_empty() {
-        return Ok(HttpResponse::BadRequest().json("Email is required"));
+        return Ok(json_error("Email is required"));
     }
     if let Err(msg) = validate_password(&body.password) {
-        return Ok(HttpResponse::BadRequest().json(msg));
+        return Ok(json_error(msg));
     }
 
     let pool = db_service.pool();
@@ -374,7 +382,7 @@ pub async fn register(
         .await
         .is_ok()
     {
-        return Ok(HttpResponse::BadRequest().json("Email address already registered"));
+        return Ok(json_error("Email address already registered"));
     }
 
     // Hash password
@@ -456,8 +464,8 @@ pub async fn register(
     ),
     responses(
         (status = 302, description = "Redirect to frontend after verification"),
-        (status = 400, description = "Invalid or expired token", body = String),
-        (status = 500, description = "Internal server error", body = String),
+        (status = 400, description = "Invalid or expired token", body = ErrorResponse),
+        (status = 500, description = "Internal server error", body = ErrorResponse),
     )
 )]
 pub async fn verify_email(
@@ -469,7 +477,7 @@ pub async fn verify_email(
     use shared::schema::users::dsl as users_dsl;
 
     let Some(token) = query.get("token") else {
-        return Ok(HttpResponse::BadRequest().json("Token is required"));
+        return Ok(json_error("Token is required"));
     };
 
     // Get verification data from session
@@ -483,14 +491,14 @@ pub async fn verify_email(
         .map_err(|e| ServiceError::Unknown(format!("Failed to get user ID from session: {e}")))?;
 
     let Some(stored_token) = stored_token else {
-        return Ok(HttpResponse::BadRequest().json("Invalid or expired verification token"));
+        return Ok(json_error("Invalid or expired verification token"));
     };
     let Some(user_id) = user_id else {
-        return Ok(HttpResponse::BadRequest().json("Invalid verification session"));
+        return Ok(json_error("Invalid verification session"));
     };
 
     if stored_token != *token {
-        return Ok(HttpResponse::BadRequest().json("Invalid verification token"));
+        return Ok(json_error("Invalid verification token"));
     }
 
     let pool = db_service.pool();
@@ -550,8 +558,8 @@ pub async fn verify_email(
     request_body(content = LoginRequest, description = "User login credentials including email and password"),
     responses(
         (status = 200, description = "Login successful", body = LoginResponse),
-        (status = 400, description = "Invalid credentials or email not verified", body = String),
-        (status = 500, description = "Internal server error", body = String),
+        (status = 400, description = "Invalid credentials or email not verified", body = ErrorResponse),
+        (status = 500, description = "Internal server error", body = ErrorResponse),
     )
 )]
 pub async fn login(
@@ -572,27 +580,28 @@ pub async fn login(
     {
         Ok(user) => user,
         Err(diesel::result::Error::NotFound) => {
-            return Ok(HttpResponse::BadRequest().json("Invalid email or password"));
+            return Ok(json_error("Invalid email or password"));
         }
         Err(e) => return Err(ServiceError::from(e).into()),
     };
 
     // Check if user has password (not OAuth-only)
     let Some(password_hash) = &user.password_hash else {
-        return Ok(HttpResponse::BadRequest()
-            .json("This account uses Google sign-in. Please use the Google login button."));
+        return Ok(json_error(
+            "This account uses Google sign-in. Please use the Google login button.",
+        ));
     };
 
     // Verify password
     if !verify_password(&body.password, password_hash)? {
-        return Ok(HttpResponse::BadRequest().json("Invalid email or password"));
+        return Ok(json_error("Invalid email or password"));
     }
 
     // Check if email is verified
     if !user.email_verified {
-        return Ok(
-            HttpResponse::BadRequest().json("Please verify your email address before logging in")
-        );
+        return Ok(json_error(
+            "Please verify your email address before logging in",
+        ));
     }
 
     // Update last login
@@ -627,7 +636,7 @@ pub async fn login(
                 "created_at": "2023-01-01T00:00:00"
             })
         ),
-        (status = 401, description = "Not authenticated", body = String),
+        (status = 401, description = "Not authenticated", body = ErrorResponse),
     )
 )]
 pub async fn get_me(user: User) -> Result<HttpResponse, actix_web::Error> {
@@ -660,6 +669,7 @@ pub async fn logout(session: Session) -> Result<HttpResponse, actix_web::Error> 
     request_body(content = ForgotPasswordRequest, description = "Email address for password reset request"),
     responses(
         (status = 200, description = "Password reset email sent", body = ForgotPasswordResponse),
+        (status = 500, description = "Internal server error", body = ErrorResponse),
     )
 )]
 pub async fn forgot_password(
@@ -743,7 +753,8 @@ pub async fn forgot_password(
     request_body(content = ResetPasswordRequest, description = "Password reset token and new password"),
     responses(
         (status = 200, description = "Password reset successful", body = ResetPasswordResponse),
-        (status = 400, description = "Invalid token or password", body = String),
+        (status = 400, description = "Invalid token or password", body = ErrorResponse),
+        (status = 500, description = "Internal server error", body = ErrorResponse),
     )
 )]
 pub async fn reset_password(
@@ -755,7 +766,7 @@ pub async fn reset_password(
 
     // Validate new password
     if let Err(msg) = validate_password(&body.new_password) {
-        return Ok(HttpResponse::BadRequest().json(msg));
+        return Ok(json_error(msg));
     }
 
     // Get reset data from session
@@ -767,14 +778,14 @@ pub async fn reset_password(
         .map_err(|e| ServiceError::Unknown(format!("Failed to get user ID from session: {e}")))?;
 
     let Some(stored_token) = stored_token else {
-        return Ok(HttpResponse::BadRequest().json("Invalid or expired password reset token"));
+        return Ok(json_error("Invalid or expired password reset token"));
     };
     let Some(user_id) = user_id else {
-        return Ok(HttpResponse::BadRequest().json("Invalid reset session"));
+        return Ok(json_error("Invalid reset session"));
     };
 
     if stored_token != body.token {
-        return Ok(HttpResponse::BadRequest().json("Invalid password reset token"));
+        return Ok(json_error("Invalid password reset token"));
     }
 
     let pool = db_service.pool();

@@ -4,6 +4,8 @@ sources:
     Patron API:
         inputs:
             - location: openapi.json
+        overlays:
+            - location: .speakeasy/speakeasy-modifications-overlay.yaml
         output: .speakeasy/out.openapi.yaml
         registry:
             location: registry.speakeasyapi.dev/patron/ts-sdk/patron-api
