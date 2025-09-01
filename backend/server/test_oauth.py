@@ -63,7 +63,7 @@ def test_oauth_flow():
 
     # Configuration
     BACKEND_URL = "http://localhost:8080"
-    CALLBACK_PORT = 8080
+    CALLBACK_PORT = 8090
     CALLBACK_URL = f"http://localhost:{CALLBACK_PORT}/oauth/callback"
 
     print("🔧 Setting up OAuth test...")
@@ -123,9 +123,10 @@ def test_oauth_flow():
                 # Debug: Print the exact URL being called
                 print(f"📋 Debug: Callback URL: {callback_url}")
                 print(f"📋 Debug: Params: {callback_params}")
-                
+
                 # Construct the full URL manually to see what we're sending
                 import urllib.parse
+
                 full_url = f"{callback_url}?{urllib.parse.urlencode(callback_params)}"
                 print(f"📋 Debug: Full URL: {full_url}")
 
