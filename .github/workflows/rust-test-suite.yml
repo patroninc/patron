@@ -57,7 +57,10 @@ jobs:
           node-version: lts/*
           registry-url: https://registry.npmjs.org
           cache: yarn
-          cache-dependency-path: yarn.lock
+          cache-dependency-path: |
+            website/yarn.lock
+            clients/react-server/yarn.lock
+            clients/ts-sdk/yarn.lock
       - name: Caching Rust Dep
         uses: useblacksmith/cache@v5
         with:
@@ -68,7 +71,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: rustup update 1.87
       - run: rustup default 1.87
-      - name: Installing Vaccum
+      - name: Installing Vacuum
         run: npm install -g @quobix/vacuum
       - name: Generating OpenAPI spec
         run: cargo run --manifest-path backend/server/Cargo.toml --bin redoc_ci > openapi.json
