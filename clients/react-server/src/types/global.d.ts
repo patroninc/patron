@@ -5,4 +5,3 @@ declare global {
     __INITIAL_DATA__?: unknown;
   }
 }
-

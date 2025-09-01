@@ -1,18 +1,21 @@
-import { useState } from 'react'
+import { JSX, useState } from 'react';
 
-function Card() {
-  const [count, setCount] = useState(0)
+/**
+ * Demonstration card with a local counter.
+ *
+ * @returns {JSX.Element} Interactive counter card.
+ */
+function Card(): JSX.Element {
+  const [count, setCount] = useState(0);
 
   return (
     <div className="card">
-      <button onClick={() => setCount((count) => count + 1)}>
-        count is {count}
-      </button>
+      <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
       <p>
         Edit <code>src/App.tsx</code> and save to test HMR
       </p>
     </div>
-  )
+  );
 }
 
-export default Card
+export default Card;
