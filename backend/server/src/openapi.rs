@@ -8,12 +8,12 @@ use utoipa::OpenApi;
 #[derive(OpenApi)]
 #[openapi(
     info(
-        title = "CelebAI Video Generation API",
+        title = "Patron API",
         version = "1.0.0",
-        description = "AI-powered celebrity video generation platform that creates personalized videos with lip-sync technology",
+        description = "An open source Patreon alternative with lower fees designed for creators who publish ongoing sequential content like books, podcasts, and comics.",
         contact(
-            name = "CelebAI Team",
-            email = "support@celebai.com"
+            name = "Patron Team",
+            email = "support@patron.com"
         ),
         license(
             name = "MIT",
@@ -47,16 +47,13 @@ use utoipa::OpenApi;
         )
     ),
     tags(
-        (name = "Generation", description = "Audio and video generation endpoints"),
         (name = "Auth", description = "Authentication and authorization endpoints"),
-        (name = "Webhook", description = "Webhook endpoints for external service callbacks"),
-        (name = "Characters", description = "Character and video clip management endpoints")
     ),
     servers(
         (url = "http://localhost:8080", description = "Local development server"),
-        (url = "https://api.celebai.com", description = "Production server")
+        (url = "https://api.patron.com", description = "Production server")
     ),
 )]
-/// OpenAPI documentation marker struct for CelebAI Video Generation API.
+/// OpenAPI documentation marker struct for Patron API.
 #[derive(Debug, Clone, Copy)]
 pub struct ApiDoc;
