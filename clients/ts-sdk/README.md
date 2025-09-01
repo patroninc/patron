@@ -17,7 +17,7 @@ Developer-friendly & type-safe Typescript SDK specifically catered to leverage *
 <!-- Start Summary [summary] -->
 ## Summary
 
-CelebAI Video Generation API: AI-powered celebrity video generation platform that creates personalized videos with lip-sync technology
+Patron API: An open source Patreon alternative with lower fees designed for creators who publish ongoing sequential content like books, podcasts, and comics.
 <!-- End Summary [summary] -->
 
 <!-- Start Table of Contents [toc] -->
@@ -293,10 +293,10 @@ run();
 
 You can override the default server globally by passing a server index to the `serverIdx: number` optional parameter when initializing the SDK client instance. The selected server will then be used as the default on the operations that use it. This table lists the indexes associated with the available servers:
 
-| #   | Server                    | Description              |
-| --- | ------------------------- | ------------------------ |
-| 0   | `http://localhost:8080`   | Local development server |
-| 1   | `https://api.celebai.com` | Production server        |
+| #   | Server                   | Description              |
+| --- | ------------------------ | ------------------------ |
+| 0   | `http://localhost:8080`  | Local development server |
+| 1   | `https://api.patron.com` | Production server        |
 
 #### Example
 
@@ -326,7 +326,7 @@ The default server can also be overridden globally by passing a URL to the `serv
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  serverURL: "https://api.celebai.com",
+  serverURL: "https://api.patron.com",
 });
 
 async function run() {

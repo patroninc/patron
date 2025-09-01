@@ -2,6 +2,6 @@
 
 ## Overview
 
-CelebAI Video Generation API: AI-powered celebrity video generation platform that creates personalized videos with lip-sync technology
+Patron API: An open source Patreon alternative with lower fees designed for creators who publish ongoing sequential content like books, podcasts, and comics.
 
 ### Available Operations
