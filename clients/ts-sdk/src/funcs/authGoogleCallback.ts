@@ -4,8 +4,10 @@
 
 import * as z from "zod";
 import { PatrontsCore } from "../core.js";
+import { encodeFormQuery } from "../lib/encodings.js";
 import * as M from "../lib/matchers.js";
 import { compactMap } from "../lib/primitives.js";
+import { safeParse } from "../lib/schemas.js";
 import { RequestOptions } from "../lib/sdks.js";
 import { pathToFunc } from "../lib/url.js";
 import {
@@ -15,21 +17,25 @@ import {
   RequestTimeoutError,
   UnexpectedClientError,
 } from "../models/errors/httpclienterrors.js";
+import * as errors from "../models/errors/index.js";
 import { PatrontsError } from "../models/errors/patrontserror.js";
 import { ResponseValidationError } from "../models/errors/responsevalidationerror.js";
 import { SDKValidationError } from "../models/errors/sdkvalidationerror.js";
+import * as operations from "../models/operations/index.js";
 import { APICall, APIPromise } from "../types/async.js";
 import { Result } from "../types/fp.js";
 
 /**
- * Google OAuth redirect
+ * Google OAuth callback
  */
-export function authGoogleAuthRedirect(
+export function authGoogleCallback(
   client: PatrontsCore,
+  request: operations.GoogleAuthCallbackRequest,
   options?: RequestOptions,
 ): APIPromise<
   Result<
     void,
+    | errors.ErrorResponse
     | PatrontsError
     | ResponseValidationError
     | ConnectionError
@@ -42,17 +48,20 @@ export function authGoogleAuthRedirect(
 > {
   return new APIPromise($do(
     client,
+    request,
     options,
   ));
 }
 
 async function $do(
   client: PatrontsCore,
+  request: operations.GoogleAuthCallbackRequest,
   options?: RequestOptions,
 ): Promise<
   [
     Result<
       void,
+      | errors.ErrorResponse
       | PatrontsError
       | ResponseValidationError
       | ConnectionError
@@ -65,16 +74,32 @@ async function $do(
     APICall,
   ]
 > {
-  const path = pathToFunc("/api/auth/google")();
+  const parsed = safeParse(
+    request,
+    (value) => operations.GoogleAuthCallbackRequest$outboundSchema.parse(value),
+    "Input validation failed",
+  );
+  if (!parsed.ok) {
+    return [parsed, { status: "invalid" }];
+  }
+  const payload = parsed.value;
+  const body = null;
+
+  const path = pathToFunc("/api/auth/google/callback")();
+
+  const query = encodeFormQuery({
+    "code": payload.code,
+    "state": payload.state,
+  });
 
   const headers = new Headers(compactMap({
-    Accept: "*/*",
+    Accept: "application/json",
   }));
 
   const context = {
     options: client._options,
     baseURL: options?.serverURL ?? client._baseURL ?? "",
-    operationID: "google_auth_redirect",
+    operationID: "google_auth_callback",
     oAuth2Scopes: [],
 
     resolvedSecurity: null,
@@ -91,6 +116,8 @@ async function $do(
     baseURL: options?.serverURL,
     path: path,
     headers: headers,
+    query: query,
+    body: body,
     userAgent: client._options.userAgent,
     timeoutMs: options?.timeoutMs || client._options.timeoutMs || -1,
   }, options);
@@ -101,7 +128,7 @@ async function $do(
 
   const doResult = await client._do(req, {
     context,
-    errorCodes: ["4XX", "500", "5XX"],
+    errorCodes: ["400", "4XX", "500", "5XX"],
     retryConfig: context.retryConfig,
     retryCodes: context.retryCodes,
   });
@@ -110,8 +137,13 @@ async function $do(
   }
   const response = doResult.value;
 
+  const responseFields = {
+    HttpMeta: { Response: response, Request: req },
+  };
+
   const [result] = await M.match<
     void,
+    | errors.ErrorResponse
     | PatrontsError
     | ResponseValidationError
     | ConnectionError
@@ -122,9 +154,11 @@ async function $do(
     | SDKValidationError
   >(
     M.nil(302, z.void()),
+    M.jsonErr(400, errors.ErrorResponse$inboundSchema),
+    M.jsonErr(500, errors.ErrorResponse$inboundSchema),
     M.fail("4XX"),
-    M.fail([500, "5XX"]),
-  )(response, req);
+    M.fail("5XX"),
+  )(response, req, { extraFields: responseFields });
   if (!result.ok) {
     return [result, { status: "complete", request: req, response }];
   }

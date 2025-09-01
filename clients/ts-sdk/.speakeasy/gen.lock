@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 11efa393-c988-4373-8218-92c74dd65551
 management:
-  docChecksum: 5a4c351945c3cd4c1f25df64a3f6961c
+  docChecksum: 700fedba4d80405c16dab166a26a4509
   docVersion: 1.0.0
   speakeasyVersion: 1.606.10
   generationVersion: 2.687.13
-  releaseVersion: 0.0.3
-  configChecksum: e0c1dff037bac050d9809e4141af6326
+  releaseVersion: 0.1.1
+  configChecksum: 193d2cb5ffd0c1e14c2b7899b37f4921
 features:
   typescript:
     additionalDependencies: 0.1.0
@@ -18,6 +18,7 @@ features:
     globalSecurityCallbacks: 0.1.0
     globalServerURLs: 2.82.5
     methodArguments: 0.1.2
+    nameOverrides: 2.81.2
     nullables: 0.1.1
     responseFormat: 0.2.3
     retries: 2.83.0
@@ -33,6 +34,7 @@ generatedFiles:
   - USAGE.md
   - docs/lib/utils/retryconfig.md
   - docs/models/authprovider.md
+  - docs/models/errors/errorresponse.md
   - docs/models/forgotpasswordrequest.md
   - docs/models/forgotpasswordresponse.md
   - docs/models/loginrequest.md
@@ -57,9 +59,9 @@ generatedFiles:
   - package.json
   - src/core.ts
   - src/funcs/authForgotPassword.ts
-  - src/funcs/authGetMe.ts
-  - src/funcs/authGoogleAuthCallback.ts
-  - src/funcs/authGoogleAuthRedirect.ts
+  - src/funcs/authGetCurrentUser.ts
+  - src/funcs/authGoogleCallback.ts
+  - src/funcs/authGoogleRedirect.ts
   - src/funcs/authLogin.ts
   - src/funcs/authLogout.ts
   - src/funcs/authRegister.ts
@@ -86,6 +88,7 @@ generatedFiles:
   - src/lib/security.ts
   - src/lib/url.ts
   - src/models/authprovider.ts
+  - src/models/errors/errorresponse.ts
   - src/models/errors/httpclienterrors.ts
   - src/models/errors/index.ts
   - src/models/errors/patrontsdefaulterror.ts
@@ -128,13 +131,24 @@ examples:
       responses:
         "200":
           application/json: {"message": "If the email exists in our system, a password reset link has been sent."}
-  google_auth_redirect: {}
+        "500":
+          application/json: {"error": "<value>"}
+  google_auth_redirect:
+    speakeasy-default-google-auth-redirect:
+      responses:
+        "500":
+          application/json: {"error": "<value>"}
   google_auth_callback:
     speakeasy-default-google-auth-callback:
       parameters:
         query:
           code: "<value>"
           state: "Alaska"
+      responses:
+        "400":
+          application/json: {"error": "<value>"}
+        "500":
+          application/json: {"error": "<value>"}
   login:
     speakeasy-default-login:
       requestBody:
@@ -142,6 +156,10 @@ examples:
       responses:
         "200":
           application/json: {"message": "Login successful", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+        "400":
+          application/json: {"error": "<value>"}
+        "500":
+          application/json: {"error": "<value>"}
   logout:
     speakeasy-default-logout:
       responses:
@@ -152,6 +170,8 @@ examples:
       responses:
         "200":
           application/json: {"created_at": "2023-01-01T00:00:00", "email": "user@example.com", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+        "401":
+          application/json: {"error": "<value>"}
   register:
     speakeasy-default-register:
       requestBody:
@@ -159,6 +179,10 @@ examples:
       responses:
         "200":
           application/json: {"message": "Registration successful. Please check your email for verification.", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+        "400":
+          application/json: {"error": "<value>"}
+        "500":
+          application/json: {"error": "<value>"}
   reset_password:
     speakeasy-default-reset-password:
       requestBody:
@@ -166,9 +190,18 @@ examples:
       responses:
         "200":
           application/json: {"message": "Password has been reset successfully"}
+        "400":
+          application/json: {"error": "<value>"}
+        "500":
+          application/json: {"error": "<value>"}
   verify_email:
     speakeasy-default-verify-email:
       parameters:
         query:
           token: "<value>"
+      responses:
+        "400":
+          application/json: {"error": "<value>"}
+        "500":
+          application/json: {"error": "<value>"}
 examplesVersion: 1.0.2

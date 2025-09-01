@@ -118,11 +118,11 @@ run();
 ### [auth](docs/sdks/auth/README.md)
 
 * [forgotPassword](docs/sdks/auth/README.md#forgotpassword) - Forgot password
-* [googleAuthRedirect](docs/sdks/auth/README.md#googleauthredirect) - Google OAuth redirect
-* [googleAuthCallback](docs/sdks/auth/README.md#googleauthcallback) - Google OAuth callback
+* [googleRedirect](docs/sdks/auth/README.md#googleredirect) - Google OAuth redirect
+* [googleCallback](docs/sdks/auth/README.md#googlecallback) - Google OAuth callback
 * [login](docs/sdks/auth/README.md#login) - User login
 * [logout](docs/sdks/auth/README.md#logout) - Logout
-* [getMe](docs/sdks/auth/README.md#getme) - Get current user info
+* [getCurrentUser](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
 * [register](docs/sdks/auth/README.md#register) - User registration
 * [resetPassword](docs/sdks/auth/README.md#resetpassword) - Reset password
 * [verifyEmail](docs/sdks/auth/README.md#verifyemail) - Email verification
@@ -147,9 +147,9 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 <summary>Available standalone functions</summary>
 
 - [`authForgotPassword`](docs/sdks/auth/README.md#forgotpassword) - Forgot password
-- [`authGetMe`](docs/sdks/auth/README.md#getme) - Get current user info
-- [`authGoogleAuthCallback`](docs/sdks/auth/README.md#googleauthcallback) - Google OAuth callback
-- [`authGoogleAuthRedirect`](docs/sdks/auth/README.md#googleauthredirect) - Google OAuth redirect
+- [`authGetCurrentUser`](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
+- [`authGoogleCallback`](docs/sdks/auth/README.md#googlecallback) - Google OAuth callback
+- [`authGoogleRedirect`](docs/sdks/auth/README.md#googleredirect) - Google OAuth redirect
 - [`authLogin`](docs/sdks/auth/README.md#login) - User login
 - [`authLogout`](docs/sdks/auth/README.md#logout) - Logout
 - [`authRegister`](docs/sdks/auth/README.md#register) - User registration
@@ -228,13 +228,14 @@ run();
 
 [`PatrontsError`](./src/models/errors/patrontserror.ts) is the base class for all HTTP error responses. It has the following properties:
 
-| Property            | Type       | Description                                            |
-| ------------------- | ---------- | ------------------------------------------------------ |
-| `error.message`     | `string`   | Error message                                          |
-| `error.statusCode`  | `number`   | HTTP response status code eg `404`                     |
-| `error.headers`     | `Headers`  | HTTP response headers                                  |
-| `error.body`        | `string`   | HTTP body. Can be empty string if no body is returned. |
-| `error.rawResponse` | `Response` | Raw HTTP response                                      |
+| Property            | Type       | Description                                                                             |
+| ------------------- | ---------- | --------------------------------------------------------------------------------------- |
+| `error.message`     | `string`   | Error message                                                                           |
+| `error.statusCode`  | `number`   | HTTP response status code eg `404`                                                      |
+| `error.headers`     | `Headers`  | HTTP response headers                                                                   |
+| `error.body`        | `string`   | HTTP body. Can be empty string if no body is returned.                                  |
+| `error.rawResponse` | `Response` | Raw HTTP response                                                                       |
+| `error.data$`       |            | Optional. Some errors may contain structured data. [See Error Classes](#error-classes). |
 
 ### Example
 ```typescript
@@ -251,11 +252,18 @@ async function run() {
 
     console.log(result);
   } catch (error) {
+    // The base class for HTTP error responses
     if (error instanceof errors.PatrontsError) {
       console.log(error.message);
       console.log(error.statusCode);
       console.log(error.body);
       console.log(error.headers);
+
+      // Depending on the method different errors may be thrown
+      if (error instanceof errors.ErrorResponse) {
+        console.log(error.data$.code); // string
+        console.log(error.data$.error); // string
+      }
     }
   }
 }
@@ -265,8 +273,9 @@ run();
 ```
 
 ### Error Classes
-**Primary error:**
+**Primary errors:**
 * [`PatrontsError`](./src/models/errors/patrontserror.ts): The base class for HTTP error responses.
+  * [`ErrorResponse`](./src/models/errors/errorresponse.ts): Standard JSON error response structure for API endpoints. *
 
 <details><summary>Less common errors (6)</summary>
 
@@ -284,6 +293,8 @@ run();
 * [`ResponseValidationError`](./src/models/errors/responsevalidationerror.ts): Type mismatch between the data returned from the server and the structure expected by the SDK. See `error.rawValue` for the raw value and `error.pretty()` for a nicely formatted multi-line string.
 
 </details>
+
+\* Check [the method documentation](#available-resources-and-operations) to see if the error is applicable.
 <!-- End Error Handling [errors] -->
 
 <!-- Start Server Selection [server] -->

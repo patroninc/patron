@@ -1,5 +1,16 @@
 use actix_web::{HttpResponse, ResponseError};
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
+
+/// Standard JSON error response structure for API endpoints.
+#[derive(Debug, Serialize, Deserialize, utoipa::ToSchema)]
+pub struct ErrorResponse {
+    /// Error message describing what went wrong
+    pub error: String,
+    /// Optional error code for programmatic handling
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+}
 
 /// Represents all possible errors that can occur in the service layer.
 #[derive(Debug, Error)]
@@ -72,6 +83,15 @@ impl From<diesel::result::Error> for ServiceError {
 
 impl ResponseError for ServiceError {
     fn error_response(&self) -> HttpResponse {
-        HttpResponse::InternalServerError().body(self.to_string())
+        let error_response = ErrorResponse {
+            error: self.to_string(),
+            code: None,
+        };
+        
+        match self {
+            ServiceError::NotFound(_) => HttpResponse::NotFound().json(error_response),
+            ServiceError::Config(_) => HttpResponse::BadRequest().json(error_response),
+            _ => HttpResponse::InternalServerError().json(error_response),
+        }
     }
 }
