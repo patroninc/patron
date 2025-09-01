@@ -15,8 +15,10 @@ use utoipa::ToSchema;
 }))]
 pub struct AuthCallbackQuery {
     /// Authorization code from OAuth provider
+    #[schema(example = "4/P7q7W91a-oMsCeLvIaQm6bTrgtp7")]
     pub code: String,
     /// State parameter for CSRF protection
+    #[schema(example = "3d6f3e72-7e68-4f53-a8e7-2c5e8f7b3f1a")]
     pub state: String,
 }
 
@@ -157,10 +159,13 @@ impl From<User> for UserInfo {
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct UserInfoResponse {
     /// Unique user identifier
+    #[schema(example = "d290f1ee-6c54-4b01-90e6-d701748f0851")]
     pub id: uuid::Uuid,
     /// User's email address
+    #[schema(example = "user@example.com")]
     pub email: String,
     /// Timestamp when user was created
+    #[schema(example = "2023-01-01T00:00:00")]
     pub created_at: Option<NaiveDateTime>,
 }
 

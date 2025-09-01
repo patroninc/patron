@@ -66,7 +66,8 @@ pub struct LoginRequest {
         "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
         "email": "user@example.com",
         "display_name": "John Doe",
-        "auth_provider": "email"
+        "auth_provider": "email",
+        "email_verified": true
     }
 }))]
 pub struct LoginResponse {
@@ -93,6 +94,7 @@ pub struct LogoutResponse {
 }))]
 pub struct ForgotPasswordRequest {
     /// User's email address
+    #[schema(example = "user@example.com")]
     pub email: String,
 }
 
@@ -338,7 +340,7 @@ pub async fn google_auth_callback(
     path = "/auth/register",
     context_path = "/api",
     tag = "Auth",
-    request_body = RegisterRequest,
+    request_body(content = RegisterRequest, description = "User registration data including email and password"),
     responses(
         (status = 200, description = "Registration successful", body = RegisterResponse),
         (status = 400, description = "Invalid input or email already exists", body = String),
@@ -545,7 +547,7 @@ pub async fn verify_email(
     path = "/auth/login",
     context_path = "/api",
     tag = "Auth",
-    request_body = LoginRequest,
+    request_body(content = LoginRequest, description = "User login credentials including email and password"),
     responses(
         (status = 200, description = "Login successful", body = LoginResponse),
         (status = 400, description = "Invalid credentials or email not verified", body = String),
@@ -618,7 +620,13 @@ pub async fn login(
     context_path = "/api",
     tag = "Auth",
     responses(
-        (status = 200, description = "Current user information", body = UserInfoResponse),
+        (status = 200, description = "Current user information", body = UserInfoResponse,
+            example = json!({
+                "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+                "email": "user@example.com",
+                "created_at": "2023-01-01T00:00:00"
+            })
+        ),
         (status = 401, description = "Not authenticated", body = String),
     )
 )]
@@ -649,7 +657,7 @@ pub async fn logout(session: Session) -> Result<HttpResponse, actix_web::Error> 
     path = "/auth/forgot-password",
     context_path = "/api",
     tag = "Auth",
-    request_body = ForgotPasswordRequest,
+    request_body(content = ForgotPasswordRequest, description = "Email address for password reset request"),
     responses(
         (status = 200, description = "Password reset email sent", body = ForgotPasswordResponse),
     )
@@ -732,7 +740,7 @@ pub async fn forgot_password(
     path = "/auth/reset-password",
     context_path = "/api",
     tag = "Auth",
-    request_body = ResetPasswordRequest,
+    request_body(content = ResetPasswordRequest, description = "Password reset token and new password"),
     responses(
         (status = 200, description = "Password reset successful", body = ResetPasswordResponse),
         (status = 400, description = "Invalid token or password", body = String),

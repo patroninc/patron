@@ -1,0 +1,174 @@
+lockVersion: 2.0.0
+id: 11efa393-c988-4373-8218-92c74dd65551
+management:
+  docChecksum: acff38cbdb8bc3287d42d1c9ba8591dd
+  docVersion: 1.0.0
+  speakeasyVersion: 1.606.9
+  generationVersion: 2.687.13
+  releaseVersion: 0.0.1
+  configChecksum: 50e43b714994e3e2b6abc63d878b57c9
+features:
+  typescript:
+    additionalDependencies: 0.1.0
+    core: 3.21.20
+    defaultEnabledRetries: 0.1.0
+    devContainers: 2.90.0
+    enumUnions: 0.1.0
+    envVarSecurityUsage: 0.1.2
+    globalSecurityCallbacks: 0.1.0
+    globalServerURLs: 2.82.5
+    methodArguments: 0.1.2
+    nullables: 0.1.1
+    responseFormat: 0.2.3
+    retries: 2.83.0
+    sdkHooks: 0.3.0
+generatedFiles:
+  - .devcontainer/README.md
+  - .devcontainer/devcontainer.json
+  - .devcontainer/setup.sh
+  - .gitattributes
+  - .npmignore
+  - FUNCTIONS.md
+  - RUNTIMES.md
+  - USAGE.md
+  - docs/lib/utils/retryconfig.md
+  - docs/models/authprovider.md
+  - docs/models/forgotpasswordrequest.md
+  - docs/models/forgotpasswordresponse.md
+  - docs/models/loginrequest.md
+  - docs/models/loginresponse.md
+  - docs/models/logoutresponse.md
+  - docs/models/operations/googleauthcallbackrequest.md
+  - docs/models/operations/verifyemailrequest.md
+  - docs/models/registerrequest.md
+  - docs/models/registerresponse.md
+  - docs/models/resetpasswordrequest.md
+  - docs/models/resetpasswordresponse.md
+  - docs/models/userinfo.md
+  - docs/models/userinforesponse.md
+  - docs/sdks/auth/README.md
+  - docs/sdks/patronts/README.md
+  - eslint.config.mjs
+  - examples/.env.template
+  - examples/README.md
+  - examples/authForgotPassword.example.ts
+  - examples/package.json
+  - jsr.json
+  - package.json
+  - src/core.ts
+  - src/funcs/authForgotPassword.ts
+  - src/funcs/authGetMe.ts
+  - src/funcs/authGoogleAuthCallback.ts
+  - src/funcs/authGoogleAuthRedirect.ts
+  - src/funcs/authLogin.ts
+  - src/funcs/authLogout.ts
+  - src/funcs/authRegister.ts
+  - src/funcs/authResetPassword.ts
+  - src/funcs/authVerifyEmail.ts
+  - src/hooks/hooks.ts
+  - src/hooks/index.ts
+  - src/hooks/types.ts
+  - src/index.ts
+  - src/lib/base64.ts
+  - src/lib/config.ts
+  - src/lib/dlv.ts
+  - src/lib/encodings.ts
+  - src/lib/env.ts
+  - src/lib/files.ts
+  - src/lib/http.ts
+  - src/lib/is-plain-object.ts
+  - src/lib/logger.ts
+  - src/lib/matchers.ts
+  - src/lib/primitives.ts
+  - src/lib/retries.ts
+  - src/lib/schemas.ts
+  - src/lib/sdks.ts
+  - src/lib/security.ts
+  - src/lib/url.ts
+  - src/models/authprovider.ts
+  - src/models/errors/httpclienterrors.ts
+  - src/models/errors/index.ts
+  - src/models/errors/patrontsdefaulterror.ts
+  - src/models/errors/patrontserror.ts
+  - src/models/errors/responsevalidationerror.ts
+  - src/models/errors/sdkvalidationerror.ts
+  - src/models/forgotpasswordrequest.ts
+  - src/models/forgotpasswordresponse.ts
+  - src/models/index.ts
+  - src/models/loginrequest.ts
+  - src/models/loginresponse.ts
+  - src/models/logoutresponse.ts
+  - src/models/operations/googleauthcallback.ts
+  - src/models/operations/index.ts
+  - src/models/operations/verifyemail.ts
+  - src/models/registerrequest.ts
+  - src/models/registerresponse.ts
+  - src/models/resetpasswordrequest.ts
+  - src/models/resetpasswordresponse.ts
+  - src/models/userinfo.ts
+  - src/models/userinforesponse.ts
+  - src/sdk/auth.ts
+  - src/sdk/index.ts
+  - src/sdk/sdk.ts
+  - src/types/async.ts
+  - src/types/blobs.ts
+  - src/types/constdatetime.ts
+  - src/types/enums.ts
+  - src/types/fp.ts
+  - src/types/index.ts
+  - src/types/operations.ts
+  - src/types/rfcdate.ts
+  - src/types/streams.ts
+  - tsconfig.json
+examples:
+  forgot_password:
+    speakeasy-default-forgot-password:
+      requestBody:
+        application/json: {"email": "user@example.com"}
+      responses:
+        "200":
+          application/json: {"message": "If the email exists in our system, a password reset link has been sent."}
+  google_auth_redirect: {}
+  google_auth_callback:
+    speakeasy-default-google-auth-callback:
+      parameters:
+        query:
+          code: "<value>"
+          state: "Alaska"
+  login:
+    speakeasy-default-login:
+      requestBody:
+        application/json: {"email": "user@example.com", "password": "password123"}
+      responses:
+        "200":
+          application/json: {"message": "Login successful", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+  logout:
+    speakeasy-default-logout:
+      responses:
+        "200":
+          application/json: {"message": "Logged out successfully"}
+  get_me:
+    speakeasy-default-get-me:
+      responses:
+        "200":
+          application/json: {"created_at": "2023-01-01T00:00:00", "email": "user@example.com", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+  register:
+    speakeasy-default-register:
+      requestBody:
+        application/json: {"email": "user@example.com", "password": "password123"}
+      responses:
+        "200":
+          application/json: {"message": "Registration successful. Please check your email for verification.", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+  reset_password:
+    speakeasy-default-reset-password:
+      requestBody:
+        application/json: {"new_password": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000"}
+      responses:
+        "200":
+          application/json: {"message": "Password has been reset successfully"}
+  verify_email:
+    speakeasy-default-verify-email:
+      parameters:
+        query:
+          token: "<value>"
+examplesVersion: 1.0.2

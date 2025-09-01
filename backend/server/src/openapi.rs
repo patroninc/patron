@@ -2,7 +2,7 @@ use crate::handlers::auth::{
     ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, LogoutResponse,
     RegisterRequest, RegisterResponse, ResetPasswordRequest, ResetPasswordResponse,
 };
-use shared::models::auth::{AuthCallbackQuery, UserInfo, UserInfoResponse};
+use shared::models::auth::{UserInfo, UserInfoResponse};
 use utoipa::OpenApi;
 
 #[derive(OpenApi)]
@@ -33,7 +33,6 @@ use utoipa::OpenApi;
     ),
     components(
         schemas(
-            AuthCallbackQuery,
             RegisterRequest,
             RegisterResponse,
             LoginRequest,
