@@ -1,4 +1,4 @@
-speakeasyVersion: 1.606.9
+speakeasyVersion: 1.606.10
 sources:
     CelebAI Video Generation API:
         sourceNamespace: celeb-ai-video-generation-api
@@ -7,34 +7,38 @@ sources:
         tags:
             - latest
             - 1.0.0
+    Patron API:
+        sourceNamespace: patron-api
+        sourceRevisionDigest: sha256:688cf55f4178c5a269c30092638a184857c6341e737d429a31bc7e3fd2620696
+        sourceBlobDigest: sha256:719334317b311e76cd32d6718734c1179c0a4387c07d89494e9bd5398f2d174f
+        tags:
+            - latest
+            - 1.0.0
 targets:
     patron-ts-sdk:
-        source: CelebAI Video Generation API
-        sourceNamespace: celeb-ai-video-generation-api
-        sourceRevisionDigest: sha256:950b4beab948e2b2517084f43d02d950f8185594f91fb1d2e476da148dab3ad4
-        sourceBlobDigest: sha256:6e0ac47eb0d21ff0e854ad42229fed2d65118d6d58e9b9160414a7c0ec4caf7d
+        source: Patron API
+        sourceNamespace: patron-api
+        sourceRevisionDigest: sha256:688cf55f4178c5a269c30092638a184857c6341e737d429a31bc7e3fd2620696
+        sourceBlobDigest: sha256:719334317b311e76cd32d6718734c1179c0a4387c07d89494e9bd5398f2d174f
         codeSamplesNamespace: celeb-ai-video-generation-api-typescript-code-samples
-        codeSamplesRevisionDigest: sha256:02ef429af7a74ab71be5fd692af497ef77095b75ddea7f7f22c532264edccc83
+        codeSamplesRevisionDigest: sha256:2322063148616308f881fdb2458227a23d4c3abc643e56e1ac857284267b299d
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
     sources:
-        CelebAI Video Generation API:
+        Patron API:
             inputs:
                 - location: openapi.json
             output: .speakeasy/out.openapi.yaml
             registry:
-                location: registry.speakeasyapi.dev/patron/ts-sdk/celeb-ai-video-generation-api
+                location: registry.speakeasyapi.dev/patron/ts-sdk/patron-api
     targets:
         patron-ts-sdk:
             target: typescript
-            source: CelebAI Video Generation API
+            source: Patron API
             codeSamples:
                 registry:
                     location: registry.speakeasyapi.dev/patron/ts-sdk/celeb-ai-video-generation-api-typescript-code-samples
                 labelOverride:
                     fixedValue: Typescript (SDK)
                 blocking: false
-        patronts:
-            target: ""
-            source: ""

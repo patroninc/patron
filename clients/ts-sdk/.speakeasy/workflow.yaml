@@ -1,22 +1,19 @@
 workflowVersion: 1.0.0
 speakeasyVersion: latest
 sources:
-    CelebAI Video Generation API:
+    Patron API:
         inputs:
             - location: openapi.json
         output: .speakeasy/out.openapi.yaml
         registry:
-            location: registry.speakeasyapi.dev/patron/ts-sdk/celeb-ai-video-generation-api
+            location: registry.speakeasyapi.dev/patron/ts-sdk/patron-api
 targets:
     patron-ts-sdk:
         target: typescript
-        source: CelebAI Video Generation API
+        source: Patron API
         codeSamples:
             registry:
                 location: registry.speakeasyapi.dev/patron/ts-sdk/celeb-ai-video-generation-api-typescript-code-samples
             labelOverride:
                 fixedValue: Typescript (SDK)
             blocking: false
-    patronts:
-        target: ""
-        source: ""
