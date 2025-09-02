@@ -23,7 +23,7 @@ WORKDIR /app
 # Install runtime dependencies
 RUN apt-get update && apt-get install -y libpq-dev ca-certificates && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/target/release/backend /app/backend
+COPY --from=builder /app/target/release/server /app/backend
 COPY ./migrations/ /app/migrations
 COPY diesel.toml .
 
