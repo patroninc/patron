@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 11efa393-c988-4373-8218-92c74dd65551
 management:
-  docChecksum: 4ac6971f18d0703b515089f7b26a2cbe
+  docChecksum: cf07e1e2c603914e85ece1e99517d169
   docVersion: 1.0.0
   speakeasyVersion: 1.606.10
   generationVersion: 2.687.13
-  releaseVersion: 0.1.2
-  configChecksum: 62ebc9109e0bfce8a7ea0ee109283511
+  releaseVersion: 0.2.1
+  configChecksum: f8b83f556dd8bbf2d2ea7239e5b5ccad
 features:
   typescript:
     additionalDependencies: 0.1.0
@@ -15,7 +15,9 @@ features:
     devContainers: 2.90.0
     enumUnions: 0.1.0
     envVarSecurityUsage: 0.1.2
+    globalSecurity: 2.82.13
     globalSecurityCallbacks: 0.1.0
+    globalSecurityFlattening: 0.1.0
     globalServerURLs: 2.82.5
     methodArguments: 0.1.2
     nameOverrides: 2.81.2
@@ -46,6 +48,7 @@ generatedFiles:
   - docs/models/registerresponse.md
   - docs/models/resetpasswordrequest.md
   - docs/models/resetpasswordresponse.md
+  - docs/models/security.md
   - docs/models/userinfo.md
   - docs/models/userinforesponse.md
   - docs/sdks/auth/README.md
@@ -108,6 +111,7 @@ generatedFiles:
   - src/models/registerresponse.ts
   - src/models/resetpasswordrequest.ts
   - src/models/resetpasswordresponse.ts
+  - src/models/security.ts
   - src/models/userinfo.ts
   - src/models/userinforesponse.ts
   - src/sdk/auth.ts
@@ -169,7 +173,7 @@ examples:
     speakeasy-default-get-me:
       responses:
         "200":
-          application/json: {"created_at": "2023-01-01T00:00:00", "email": "user@example.com", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+          application/json: {"created_at": "2023-01-01T00:00:00Z", "email": "user@example.com", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   register:

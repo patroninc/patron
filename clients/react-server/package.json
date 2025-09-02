@@ -18,6 +18,7 @@
     "@tailwindcss/vite": "^4.1.12",
     "compression": "^1.8.1",
     "express": "^5.1.0",
+    "patronts": "../ts-sdk",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "sirv": "^3.0.1",

@@ -24,7 +24,9 @@ import { authForgotPassword } from "patronts/funcs/authForgotPassword.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authForgotPassword(patronts, {

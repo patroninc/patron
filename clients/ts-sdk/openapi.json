@@ -243,7 +243,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
       }
     },
     "/api/auth/me": {
@@ -284,7 +289,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
       }
     },
     "/api/auth/register": {
@@ -712,7 +722,7 @@
             ],
             "format": "date-time",
             "description": "User account creation timestamp",
-            "example": "2023-01-01T00:00:00"
+            "example": "2023-01-01T00:00:00Z"
           },
           "display_name": {
             "type": [
@@ -745,7 +755,7 @@
             ],
             "format": "date-time",
             "description": "Timestamp of user's last login",
-            "example": "2023-01-02T12:00:00"
+            "example": "2023-01-02T12:00:00Z"
           }
         },
         "example": {
@@ -774,7 +784,7 @@
             ],
             "format": "date-time",
             "description": "Registration date and time",
-            "example": "2023-01-01T00:00:00"
+            "example": "2023-01-01T00:00:00Z"
           },
           "email": {
             "type": "string",
@@ -788,6 +798,13 @@
             "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid"
       }
     }
   },

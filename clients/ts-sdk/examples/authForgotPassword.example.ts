@@ -13,7 +13,9 @@ dotenv.config();
 
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function main() {
   const result = await patronts.forgotPassword({

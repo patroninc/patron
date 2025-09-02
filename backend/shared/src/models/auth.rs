@@ -1,11 +1,46 @@
-use crate::schema::users;
+use crate::schema::{users, email_verification_tokens};
 use actix_session::Session;
 use actix_web::{dev::Payload, error::Error, FromRequest, HttpRequest};
-use chrono::NaiveDateTime;
+use chrono::{NaiveDateTime, DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::future::{ready, Ready};
 use utoipa::ToSchema;
+
+/// Custom serde module for optional NaiveDateTime to RFC3339 string conversion
+pub mod optional_datetime_format {
+    use chrono::{DateTime, NaiveDateTime, Utc};
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+    pub fn serialize<S>(dt: &Option<NaiveDateTime>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match dt {
+            Some(dt) => {
+                let utc_dt: DateTime<Utc> = DateTime::from_naive_utc_and_offset(*dt, Utc);
+                utc_dt.to_rfc3339().serialize(serializer)
+            }
+            None => serializer.serialize_none(),
+        }
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<NaiveDateTime>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let opt_string: Option<String> = Option::deserialize(deserializer)?;
+        match opt_string {
+            Some(s) => {
+                let dt = DateTime::parse_from_rfc3339(&s)
+                    .map_err(serde::de::Error::custom)?
+                    .naive_utc();
+                Ok(Some(dt))
+            }
+            None => Ok(None),
+        }
+    }
+}
 
 /// `OAuth` callback query parameters from Google `OAuth` flow
 #[derive(Debug, Deserialize, ToSchema)]
@@ -125,10 +160,12 @@ pub struct UserInfo {
     #[schema(example = true)]
     pub email_verified: bool,
     /// User account creation timestamp
-    #[schema(example = "2023-01-01T00:00:00")]
+    #[schema(example = "2023-01-01T00:00:00Z")]
+    #[serde(with = "optional_datetime_format")]
     pub created_at: Option<NaiveDateTime>,
     /// Timestamp of user's last login
-    #[schema(example = "2023-01-02T12:00:00")]
+    #[schema(example = "2023-01-02T12:00:00Z")]
+    #[serde(with = "optional_datetime_format")]
     pub last_login: Option<NaiveDateTime>,
 }
 
@@ -167,7 +204,21 @@ impl From<User> for UserInfo {
     }
 }
 
-// Removed: Email verification and password reset tokens are now handled via actix-session
+/// Email verification token for validating user email addresses
+#[derive(Debug, Clone, Serialize, Deserialize, Insertable, Queryable, Selectable)]
+#[diesel(table_name = email_verification_tokens)]
+pub struct EmailVerificationToken {
+    /// Unique token identifier
+    pub id: uuid::Uuid,
+    /// User ID this token belongs to
+    pub user_id: uuid::Uuid,
+    /// The verification token string
+    pub token: String,
+    /// When this token expires
+    pub expires_at: NaiveDateTime,
+    /// When this token was created
+    pub created_at: NaiveDateTime,
+}
 
 /// Simplified user information for public API responses
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
@@ -179,7 +230,8 @@ pub struct UserInfoResponse {
     #[schema(example = "user@example.com")]
     pub email: String,
     /// Registration date and time
-    #[schema(example = "2023-01-01T00:00:00")]
+    #[schema(example = "2023-01-01T00:00:00Z")]
+    #[serde(with = "optional_datetime_format")]
     pub created_at: Option<NaiveDateTime>,
 }
 

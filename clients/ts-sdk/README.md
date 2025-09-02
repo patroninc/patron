@@ -27,6 +27,7 @@ Patron API: An open source Patreon alternative with lower fees designed for crea
   * [SDK Installation](#sdk-installation)
   * [Requirements](#requirements)
   * [SDK Example Usage](#sdk-example-usage)
+  * [Authentication](#authentication)
   * [Available Resources and Operations](#available-resources-and-operations)
   * [Standalone functions](#standalone-functions)
   * [Retries](#retries)
@@ -94,7 +95,9 @@ For supported JavaScript runtimes, please consult [RUNTIMES.md](RUNTIMES.md).
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.forgotPassword({
@@ -108,6 +111,38 @@ run();
 
 ```
 <!-- End SDK Example Usage [usage] -->
+
+<!-- Start Authentication [security] -->
+## Authentication
+
+### Per-Client Security Schemes
+
+This SDK supports the following security scheme globally:
+
+| Name         | Type   | Scheme  | Environment Variable   |
+| ------------ | ------ | ------- | ---------------------- |
+| `cookieAuth` | apiKey | API key | `PATRONTS_COOKIE_AUTH` |
+
+To authenticate with the API the `cookieAuth` parameter must be set when initializing the SDK client instance. For example:
+```typescript
+import { Patronts } from "patronts";
+
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
+
+async function run() {
+  const result = await patronts.auth.forgotPassword({
+    email: "user@example.com",
+  });
+
+  console.log(result);
+}
+
+run();
+
+```
+<!-- End Authentication [security] -->
 
 <!-- Start Available Resources and Operations [operations] -->
 ## Available Resources and Operations
@@ -168,7 +203,9 @@ To change the default retry strategy for a single API call, simply provide a ret
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.forgotPassword({
@@ -208,6 +245,7 @@ const patronts = new Patronts({
     },
     retryConnectionErrors: false,
   },
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
 });
 
 async function run() {
@@ -242,7 +280,9 @@ run();
 import { Patronts } from "patronts";
 import * as errors from "patronts/models/errors";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   try {
@@ -316,6 +356,7 @@ import { Patronts } from "patronts";
 
 const patronts = new Patronts({
   serverIdx: 1,
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
 });
 
 async function run() {
@@ -338,6 +379,7 @@ import { Patronts } from "patronts";
 
 const patronts = new Patronts({
   serverURL: "https://api.patron.com",
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
 });
 
 async function run() {

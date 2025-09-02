@@ -28,7 +28,9 @@ Returns an error if database operations fail or email service fails.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.forgotPassword({
@@ -51,7 +53,9 @@ import { authForgotPassword } from "patronts/funcs/authForgotPassword.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authForgotPassword(patronts, {
@@ -99,7 +103,9 @@ Returns an error if session operations fail or `OAuth` service configuration is 
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   await patronts.auth.googleRedirect();
@@ -120,7 +126,9 @@ import { authGoogleRedirect } from "patronts/funcs/authGoogleRedirect.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authGoogleRedirect(patronts);
@@ -165,7 +173,9 @@ Returns an error if `OAuth` state verification fails, token exchange fails, or d
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   await patronts.auth.googleCallback({
@@ -189,7 +199,9 @@ import { authGoogleCallback } from "patronts/funcs/authGoogleCallback.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authGoogleCallback(patronts, {
@@ -239,7 +251,9 @@ Returns an error if credentials are invalid, email is not verified, or database 
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.login({
@@ -263,7 +277,9 @@ import { authLogin } from "patronts/funcs/authLogin.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authLogin(patronts, {
@@ -313,7 +329,9 @@ Returns an error if session operations fail.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.logout();
@@ -334,7 +352,9 @@ import { authLogout } from "patronts/funcs/authLogout.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authLogout(patronts);
@@ -378,7 +398,9 @@ Returns an error if user is not authenticated or serialization fails.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.getCurrentUser();
@@ -399,7 +421,9 @@ import { authGetCurrentUser } from "patronts/funcs/authGetCurrentUser.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authGetCurrentUser(patronts);
@@ -444,7 +468,9 @@ Returns an error if input validation fails, user already exists, or database ope
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.register({
@@ -468,7 +494,9 @@ import { authRegister } from "patronts/funcs/authRegister.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authRegister(patronts, {
@@ -518,7 +546,9 @@ Returns an error if token is invalid, password validation fails, or database ope
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.resetPassword({
@@ -542,7 +572,9 @@ import { authResetPassword } from "patronts/funcs/authResetPassword.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authResetPassword(patronts, {
@@ -592,7 +624,9 @@ Returns an error if token is invalid, expired, or database operations fail.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   await patronts.auth.verifyEmail({
@@ -615,7 +649,9 @@ import { authVerifyEmail } from "patronts/funcs/authVerifyEmail.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const res = await authVerifyEmail(patronts, {

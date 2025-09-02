@@ -1,7 +1,15 @@
 // @generated automatically by Diesel CLI.
 
-#![allow(clippy::all)]
-#![allow(warnings)]
+diesel::table! {
+    email_verification_tokens (id) {
+        id -> Uuid,
+        user_id -> Uuid,
+        #[max_length = 255]
+        token -> Varchar,
+        expires_at -> Timestamp,
+        created_at -> Timestamp,
+    }
+}
 
 diesel::table! {
     users (id) {
@@ -19,3 +27,10 @@ diesel::table! {
         last_login -> Nullable<Timestamp>,
     }
 }
+
+diesel::joinable!(email_verification_tokens -> users (user_id));
+
+diesel::allow_tables_to_appear_in_same_query!(
+    email_verification_tokens,
+    users,
+);

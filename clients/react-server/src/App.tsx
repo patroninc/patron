@@ -1,51 +1,116 @@
-import { JSX, Suspense, lazy } from 'react';
-import reactLogo from './assets/react.svg';
+import { JSX, useState, useEffect } from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Login from './components/Login';
+import Register from './components/Register';
+import UserProfile from './components/UserProfile';
+import EmailVerification from './components/EmailVerification';
+import { getURLParam } from './utils/urlParams';
 
-// Works also with SSR as expected
-const Card = lazy(() => import('./Card'));
-
-/**
- * Root application component.
- *
- * @param {object} props - Component props.
- * @param {unknown} [props.initialData] - Initial server-fetched data for SSR/hydration.
- * @returns {JSX.Element} Rendered application.
- */
 type AppProps = {
   initialData?: unknown;
 };
 
+type View = 'login' | 'register' | 'verify-email';
+
 /**
- * Root application component.
+ * Component that handles authenticated app state and routing.
  *
- * @param {{ initialData?: unknown }} props - Component props.
- * @returns {JSX.Element} Rendered application.
+ * @returns {JSX.Element} The authenticated app component
  */
-function App({ initialData }: AppProps): JSX.Element {
-  return (
-    <main>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+function AuthenticatedApp(): JSX.Element {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="border-blue mx-auto h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
       </div>
-      <h1>Vite + React</h1>
+    );
+  }
 
-      <Suspense fallback={<p>Loading card component...</p>}>
-        <Card />
-      </Suspense>
+  if (user) {
+    return <UserProfile />;
+  }
 
-      {initialData ? (
-        <pre style={{ textAlign: 'left', background: '#111', padding: 12 }}>
-          {JSON.stringify(initialData, null, 2)}
-        </pre>
-      ) : null}
+  return <UnauthenticatedApp />;
+}
 
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </main>
+/**
+ * Component that handles unauthenticated app state and routing.
+ *
+ * @returns {JSX.Element} The unauthenticated app component
+ */
+function UnauthenticatedApp(): JSX.Element {
+  const [currentView, setCurrentView] = useState<View>('login');
+  const [verificationToken, setVerificationToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = getURLParam('token');
+    if (token) {
+      setVerificationToken(token);
+      setCurrentView('verify-email');
+      // Clear the token from URL without reloading
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  /**
+   * Switches the view to registration.
+   *
+   * @returns {void}
+   */
+  const handleSwitchToRegister = (): void => setCurrentView('register');
+  /**
+   * Switches the view to login.
+   *
+   * @returns {void}
+   */
+  const handleSwitchToLogin = (): void => setCurrentView('login');
+
+  /**
+   * Handles completion of email verification.
+   *
+   * @returns {void}
+   */
+  const handleVerificationComplete = (): void => {
+    setVerificationToken(null);
+    setCurrentView('login');
+  };
+
+  switch (currentView) {
+    case 'verify-email':
+      return verificationToken ? (
+        <EmailVerification
+          token={verificationToken}
+          onVerificationComplete={handleVerificationComplete}
+        />
+      ) : (
+        <Login onSwitchToRegister={handleSwitchToRegister} />
+      );
+    case 'register':
+      return <Register onSwitchToLogin={handleSwitchToLogin} />;
+    case 'login':
+    default:
+      return <Login onSwitchToRegister={handleSwitchToRegister} />;
+  }
+}
+
+/**
+ * Main App component that wraps the application with authentication provider.
+ *
+ * @param {AppProps} props - The component props
+ * @param {unknown} props.initialData - Initial server-fetched data for SSR/hydration
+ * @returns {JSX.Element} The main app component
+ */
+// eslint-disable-next-line no-unused-vars
+function App({ initialData: _initialData }: AppProps): JSX.Element {
+  return (
+    <AuthProvider>
+      <AuthenticatedApp />
+    </AuthProvider>
   );
 }
 

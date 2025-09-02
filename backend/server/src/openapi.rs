@@ -3,7 +3,11 @@ use crate::handlers::auth::{
     RegisterRequest, RegisterResponse, ResetPasswordRequest, ResetPasswordResponse,
 };
 use shared::models::auth::{UserInfo, UserInfoResponse};
-use utoipa::OpenApi;
+use utoipa::{
+    OpenApi, Modify,
+    openapi::security::{ApiKey, ApiKeyValue, SecurityScheme}
+};
+use utoipa::openapi::OpenApiBuilder;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -46,6 +50,7 @@ use utoipa::OpenApi;
             ResetPasswordResponse
         )
     ),
+    modifiers(&SecurityAddon),
     tags(
         (name = "Auth", description = "Authentication and authorization endpoints"),
     ),
@@ -57,3 +62,15 @@ use utoipa::OpenApi;
 /// `OpenAPI` documentation marker struct for Patron API.
 #[derive(Debug, Clone, Copy)]
 pub struct ApiDoc;
+
+struct SecurityAddon;
+
+impl Modify for SecurityAddon {
+    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        let components = openapi.components.as_mut().unwrap();
+        components.add_security_scheme(
+            "cookieAuth",
+            SecurityScheme::ApiKey(ApiKey::Cookie(ApiKeyValue::new("sessionid"))),
+        );
+    }
+}

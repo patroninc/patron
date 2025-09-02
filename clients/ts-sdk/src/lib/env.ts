@@ -7,10 +7,14 @@ import { dlv } from "./dlv.js";
 import * as z from "zod";
 
 export interface Env {
+  PATRONTS_COOKIE_AUTH?: string | undefined;
+
   PATRONTS_DEBUG?: boolean | undefined;
 }
 
 export const envSchema: z.ZodType<Env, z.ZodTypeDef, unknown> = z.object({
+  PATRONTS_COOKIE_AUTH: z.string().optional(),
+
   PATRONTS_DEBUG: z.coerce.boolean().optional(),
 });
 

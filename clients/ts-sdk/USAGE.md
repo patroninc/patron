@@ -2,7 +2,9 @@
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
 
 async function run() {
   const result = await patronts.auth.forgotPassword({
