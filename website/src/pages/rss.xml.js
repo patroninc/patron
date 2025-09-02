@@ -6,18 +6,20 @@ const parser = new MarkdownIt();
 
 export async function GET(context) {
   const blog = await getCollection("blogPosts");
+  const sortedBlog = blog.sort(
+    (a, b) => new Date(b.data.lastUpdatedAt) - new Date(a.data.lastUpdatedAt),
+  );
   return rss({
     title: "Patron.com Blog",
     description:
       "The latest updates, insights, and stories from Patron - the creator-first platform empowering artists, writers, and creators with low fees and open-source transparency.",
     site: context.site,
-    items: blog
+    items: sortedBlog
       .filter(
         (post) =>
           !(post.data.isDraft ?? false) &&
           !post.data.categories?.includes("changelog"),
       )
-      .sort((a, b) => new Date(b.data.date) - new Date(a.data.date))
       .map((post) => ({
         link: `/blog/${post.id}/`,
         content: sanitizeHtml(parser.render(post.body), {

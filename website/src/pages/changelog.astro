@@ -8,16 +8,16 @@ import { Icon } from "astro-icon/components";
 const allPosts = await getCollection("blogPosts");
 const changelogPosts = allPosts
   .filter(
-    (post) => post.data.categories?.includes("changelog") && !post.data.isDraft,
+    (post) => post.data.categories?.includes("changelog") && !post.data.isDraft
   )
   .sort(
     (a, b) =>
-      (b.data.createdAt?.getTime() ?? 0) - (a.data.createdAt?.getTime() ?? 0),
+      (b.data.createdAt?.getTime() ?? 0) - (a.data.createdAt?.getTime() ?? 0)
   );
 
 // Get changelog category description
 const changelogCategory = await getCollection("blogCategories").then((cats) =>
-  cats.find((cat) => cat.id === "changelog"),
+  cats.find((cat) => cat.id === "changelog")
 );
 ---
 
@@ -40,10 +40,10 @@ const changelogCategory = await getCollection("blogCategories").then((cats) =>
           >
             <Icon name="simple-icons:rss" class="h-6 w-6" />
           </a>
-          <p class="text-lg">
-            {changelogCategory?.data.description}
-          </p>
         </div>
+        <p class="text-lg">
+          {changelogCategory?.data.description}
+        </p>
 
         <Posts posts={changelogPosts} />
 

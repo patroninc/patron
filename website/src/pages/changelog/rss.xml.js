@@ -6,12 +6,12 @@ const parser = new MarkdownIt();
 
 export async function GET(context) {
   const allPosts = await getCollection("blogPosts");
-  const changelogPosts = allPosts
+  const sortedPosts = allPosts.sort((a, b) => new Date(b.data.lastUpdatedAt) - new Date(a.data.lastUpdatedAt));
+  const changelogPosts = sortedPosts
     .filter(
       (post) =>
         post.data.categories?.includes("changelog") && !post.data.isDraft,
-    )
-    .sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
+    );
 
   return rss({
     title: "Patron.com Changelog",
