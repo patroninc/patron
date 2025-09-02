@@ -4,10 +4,9 @@ use crate::handlers::auth::{
 };
 use shared::models::auth::{UserInfo, UserInfoResponse};
 use utoipa::{
-    OpenApi, Modify,
-    openapi::security::{ApiKey, ApiKeyValue, SecurityScheme}
+    openapi::security::{ApiKey, ApiKeyValue, SecurityScheme},
+    Modify, OpenApi,
 };
-use utoipa::openapi::OpenApiBuilder;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -67,10 +66,14 @@ struct SecurityAddon;
 
 impl Modify for SecurityAddon {
     fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
-        let components = openapi.components.as_mut().unwrap();
-        components.add_security_scheme(
-            "cookieAuth",
-            SecurityScheme::ApiKey(ApiKey::Cookie(ApiKeyValue::new("sessionid"))),
-        );
+        if let Some(components) = openapi.components.as_mut() {
+            components.add_security_scheme(
+                "cookieAuth",
+                SecurityScheme::ApiKey(ApiKey::Cookie(ApiKeyValue::new("sessionid"))),
+            );
+        } else {
+            // Optionally log or handle the missing components case
+            // e.g., log::warn!("OpenAPI components are missing, cannot add security scheme.");
+        }
     }
 }

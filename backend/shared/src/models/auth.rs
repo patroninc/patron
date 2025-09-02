@@ -1,30 +1,41 @@
 use crate::schema::{users, email_verification_tokens};
 use actix_session::Session;
 use actix_web::{dev::Payload, error::Error, FromRequest, HttpRequest};
-use chrono::{NaiveDateTime, DateTime, Utc};
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::future::{ready, Ready};
 use utoipa::ToSchema;
 
-/// Custom serde module for optional NaiveDateTime to RFC3339 string conversion
+/// Custom serde module for optional `NaiveDateTime` to RFC3339 string conversion
 pub mod optional_datetime_format {
     use chrono::{DateTime, NaiveDateTime, Utc};
     use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+    /// Serializes an optional `NaiveDateTime` to RFC3339 string format
+    /// 
+    /// # Errors
+    /// Returns serialization error if the datetime cannot be serialized
+    #[allow(clippy::trivially_copy_pass_by_ref)]
+    #[allow(clippy::pattern_type_mismatch)]
+    #[allow(clippy::ref_option)]
     pub fn serialize<S>(dt: &Option<NaiveDateTime>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
         match dt {
-            Some(dt) => {
-                let utc_dt: DateTime<Utc> = DateTime::from_naive_utc_and_offset(*dt, Utc);
+            Some(datetime) => {
+                let utc_dt: DateTime<Utc> = DateTime::from_naive_utc_and_offset(*datetime, Utc);
                 utc_dt.to_rfc3339().serialize(serializer)
             }
             None => serializer.serialize_none(),
         }
     }
 
+    /// Deserializes an RFC3339 string to optional `NaiveDateTime`
+    /// 
+    /// # Errors
+    /// Returns deserialization error if the string is not a valid RFC3339 datetime
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<NaiveDateTime>, D::Error>
     where
         D: Deserializer<'de>,

@@ -1,5 +1,8 @@
 // @generated automatically by Diesel CLI.
 
+#![allow(clippy::pub_use)]
+#![allow(clippy::single_char_lifetime_names)]
+
 diesel::table! {
     email_verification_tokens (id) {
         id -> Uuid,

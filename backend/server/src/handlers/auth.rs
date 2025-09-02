@@ -8,7 +8,7 @@ use diesel_async::RunQueryDsl;
 use serde::{Deserialize, Serialize};
 use shared::{
     errors::{ErrorResponse, ServiceError},
-    models::auth::{AuthCallbackQuery, User, UserInfo, UserInfoResponse, EmailVerificationToken},
+    models::auth::{AuthCallbackQuery, EmailVerificationToken, User, UserInfo, UserInfoResponse},
     services::{auth::GoogleOAuthService, email::EmailService},
 };
 use std::collections::HashMap;
@@ -430,6 +430,7 @@ pub async fn register(
     google_oauth_service: web::Data<GoogleOAuthService>,
     body: web::Json<RegisterRequest>,
 ) -> Result<HttpResponse, actix_web::Error> {
+    use shared::schema::email_verification_tokens::dsl as tokens_dsl;
     use shared::schema::users::dsl as users_dsl;
 
     // Validate input
@@ -476,11 +477,12 @@ pub async fn register(
         .await
         .map_err(ServiceError::from)?;
 
-    // Create email verification token in database
-    use shared::schema::email_verification_tokens::dsl as tokens_dsl;
     let verification_token = Uuid::new_v4().to_string();
-    let expires_at = Utc::now().naive_utc() + chrono::Duration::hours(24);
-    
+    let expires_at = Utc::now()
+        .naive_utc()
+        .checked_add_signed(chrono::Duration::hours(24))
+        .ok_or_else(|| ServiceError::Unknown("Failed to compute expiration time".to_owned()))?;
+
     let new_verification_token = EmailVerificationToken {
         id: Uuid::new_v4(),
         user_id: new_user.id,
@@ -488,7 +490,7 @@ pub async fn register(
         expires_at,
         created_at: Utc::now().naive_utc(),
     };
-    
+
     let _ = diesel::insert_into(tokens_dsl::email_verification_tokens)
         .values(&new_verification_token)
         .execute(&mut conn)
@@ -560,6 +562,7 @@ pub async fn verify_email(
     google_oauth_service: web::Data<GoogleOAuthService>,
     query: web::Query<HashMap<String, String>>,
 ) -> Result<HttpResponse, actix_web::Error> {
+    use shared::schema::email_verification_tokens::dsl as tokens_dsl;
     use shared::schema::users::dsl as users_dsl;
 
     let Some(token) = query.get("token") else {
@@ -570,8 +573,7 @@ pub async fn verify_email(
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
     // Get verification token from database
-    use shared::schema::email_verification_tokens::dsl as tokens_dsl;
-    
+
     let verification_token: EmailVerificationToken = match tokens_dsl::email_verification_tokens
         .filter(tokens_dsl::token.eq(token))
         .first(&mut conn)
@@ -583,13 +585,18 @@ pub async fn verify_email(
         }
         Err(e) => return Err(ServiceError::from(e).into()),
     };
-    
+
     // Check if token has expired
     if verification_token.expires_at < Utc::now().naive_utc() {
         // Clean up expired token
-        let _ = diesel::delete(tokens_dsl::email_verification_tokens.filter(tokens_dsl::id.eq(&verification_token.id)))
-            .execute(&mut conn)
-            .await;
+        if let Err(e) = diesel::delete(
+            tokens_dsl::email_verification_tokens.filter(tokens_dsl::id.eq(&verification_token.id)),
+        )
+        .execute(&mut conn)
+        .await
+        {
+            tracing::warn!("Failed to clean up expired verification token: {}", e);
+        }
         return Ok(json_error("Invalid or expired verification token"));
     }
 
@@ -624,9 +631,14 @@ pub async fn verify_email(
     set_user_session(&session, &user)?;
 
     // Clean up verification token from database
-    let _ = diesel::delete(tokens_dsl::email_verification_tokens.filter(tokens_dsl::id.eq(&verification_token.id)))
-        .execute(&mut conn)
-        .await;
+    if let Err(e) = diesel::delete(
+        tokens_dsl::email_verification_tokens.filter(tokens_dsl::id.eq(&verification_token.id)),
+    )
+    .execute(&mut conn)
+    .await
+    {
+        tracing::warn!("Failed to clean up verification token: {}", e);
+    }
 
     // Redirect to frontend
     let redirect_url = format!(

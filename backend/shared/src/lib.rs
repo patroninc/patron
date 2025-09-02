@@ -7,6 +7,7 @@ pub mod errors;
 pub mod models;
 
 /// Database schema definitions.
+#[allow(clippy::all, missing_docs)]
 pub mod schema;
 
 /// Business logic and service layer.

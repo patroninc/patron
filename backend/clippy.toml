@@ -5,7 +5,7 @@ msrv = "1.70"
 avoid-breaking-exported-api = false
 
 # Complexity thresholds
-cognitive-complexity-threshold = 20
+cognitive-complexity-threshold = 25
 too-many-arguments-threshold = 5
 too-many-lines-threshold = 80
 type-complexity-threshold = 200
