@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="1000"><style>
+    #light-icon {
+      display: inline;
+    }
+    #dark-icon {
+      display: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      #light-icon {
+        display: none;
+      }
+      #dark-icon {
+        display: inline;
+      }
+    }
+  </style><g id="light-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="1000"><g clip-path="url(#SvgjsClipPath1119)"><rect width="1000" height="1000" fill="#ffffff"></rect><g transform="matrix(14,0,0,14,150,150)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50"><svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_281_1279)">
+<path d="M41.6667 8.33333H50V25H41.6667V33.3333H16.6667V50H0V0H41.6667V8.33333ZM16.6667 25H33.3333V8.33333H16.6667V25Z" fill="black"></path>
+</g>
+<defs>
+<clipPath id="clip0_281_1279">
+<rect width="50" height="50" fill="white"></rect>
+</clipPath>
+<clipPath id="SvgjsClipPath1119"><rect width="1000" height="1000" x="0" y="0" rx="0" ry="0"></rect></clipPath></defs>
+</svg></svg></g></g></svg></g><g id="dark-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="1000"><g><g transform="matrix(20,0,0,20,0,0)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50"><svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_281_1279)">
+<path d="M41.6667 8.33333H50V25H41.6667V33.3333H16.6667V50H0V0H41.6667V8.33333ZM16.6667 25H33.3333V8.33333H16.6667V25Z" fill="white"></path>
+</g>
+<defs>
+<clipPath id="clip0_281_1279">
+<rect width="50" height="50" fill="white"></rect>
+</clipPath>
+</defs>
+</svg></svg></g></g></svg></g></svg>
