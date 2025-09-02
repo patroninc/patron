@@ -18,7 +18,7 @@ import {
  */
 export type LoginResponse = {
   /**
-   * Success message
+   * Login success message
    */
   message: string;
   /**

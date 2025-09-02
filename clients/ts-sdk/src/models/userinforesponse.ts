@@ -13,15 +13,15 @@ import { SDKValidationError } from "./errors/sdkvalidationerror.js";
  */
 export type UserInfoResponse = {
   /**
-   * Timestamp when user was created
+   * Registration date and time
    */
   createdAt?: Date | null | undefined;
   /**
-   * User's email address
+   * User's current email address
    */
   email: string;
   /**
-   * Unique user identifier
+   * User identifier for API responses
    */
   id: string;
 };

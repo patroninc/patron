@@ -53,8 +53,8 @@ jobs:
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:cache
+        cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:cache,mode=max
         platforms: linux/amd64,linux/arm64
 
   build-react-server:
@@ -97,6 +97,6 @@ jobs:
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REACT_SERVER_IMAGE_NAME }}:cache
+        cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REACT_SERVER_IMAGE_NAME }}:cache,mode=max
         platforms: linux/amd64,linux/arm64

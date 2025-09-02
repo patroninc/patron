@@ -19,6 +19,10 @@ import { unwrapAsync } from "../types/fp.js";
 export class Auth extends ClientSDK {
   /**
    * Forgot password
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if database operations fail or email service fails.
    */
   async forgotPassword(
     request: models.ForgotPasswordRequest,
@@ -32,7 +36,11 @@ export class Auth extends ClientSDK {
   }
 
   /**
-   * Google OAuth redirect
+   * Google `OAuth` redirect
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if session operations fail or `OAuth` service configuration is invalid.
    */
   async googleRedirect(
     options?: RequestOptions,
@@ -44,7 +52,11 @@ export class Auth extends ClientSDK {
   }
 
   /**
-   * Google OAuth callback
+   * Google `OAuth` callback
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if `OAuth` state verification fails, token exchange fails, or database operations fail.
    */
   async googleCallback(
     request: operations.GoogleAuthCallbackRequest,
@@ -59,6 +71,10 @@ export class Auth extends ClientSDK {
 
   /**
    * User login
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if credentials are invalid, email is not verified, or database operations fail.
    */
   async login(
     request: models.LoginRequest,
@@ -73,6 +89,10 @@ export class Auth extends ClientSDK {
 
   /**
    * Logout
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if session operations fail.
    */
   async logout(
     options?: RequestOptions,
@@ -85,6 +105,10 @@ export class Auth extends ClientSDK {
 
   /**
    * Get current user info
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if user is not authenticated or serialization fails.
    */
   async getCurrentUser(
     options?: RequestOptions,
@@ -97,6 +121,10 @@ export class Auth extends ClientSDK {
 
   /**
    * User registration
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if input validation fails, user already exists, or database operations fail.
    */
   async register(
     request: models.RegisterRequest,
@@ -111,6 +139,10 @@ export class Auth extends ClientSDK {
 
   /**
    * Reset password
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if token is invalid, password validation fails, or database operations fail.
    */
   async resetPassword(
     request: models.ResetPasswordRequest,
@@ -125,6 +157,10 @@ export class Auth extends ClientSDK {
 
   /**
    * Email verification
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if token is invalid, expired, or database operations fail.
    */
   async verifyEmail(
     request: operations.VerifyEmailRequest,

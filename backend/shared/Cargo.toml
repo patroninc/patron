@@ -2,6 +2,12 @@
 name = "shared"
 version.workspace = true
 edition.workspace = true
+description = "Shared utilities and types for the patron application"
+license = "MIT"
+repository = "https://github.com/patroninc/patron"
+readme = "../README.md"
+keywords = ["utilities", "shared", "types"]
+categories = ["data-structures", "development-tools"]
 
 [dependencies]
 diesel-async = { workspace = true }

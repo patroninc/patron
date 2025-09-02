@@ -24,6 +24,10 @@ import { Result } from "../types/fp.js";
 
 /**
  * Get current user info
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if user is not authenticated or serialization fails.
  */
 export function authGetCurrentUser(
   client: PatrontsCore,

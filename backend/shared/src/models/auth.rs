@@ -7,14 +7,14 @@ use serde::{Deserialize, Serialize};
 use std::future::{ready, Ready};
 use utoipa::ToSchema;
 
-/// OAuth callback query parameters from Google OAuth flow
+/// `OAuth` callback query parameters from Google `OAuth` flow
 #[derive(Debug, Deserialize, ToSchema)]
 #[schema(example = json!({
     "code": "4/P7q7W91a-oMsCeLvIaQm6bTrgtp7",
     "state": "3d6f3e72-7e68-4f53-a8e7-2c5e8f7b3f1a"
 }))]
 pub struct AuthCallbackQuery {
-    /// Authorization code from OAuth provider
+    /// Authorization code from `OAuth` provider
     #[schema(example = "4/P7q7W91a-oMsCeLvIaQm6bTrgtp7")]
     pub code: String,
     /// State parameter for CSRF protection
@@ -31,12 +31,10 @@ pub struct UserSession {
     pub exp: i64,
 }
 
-// Removed: OAuth sessions and provider associations are now handled via actix-session
-
 /// Authentication provider types supported by the system
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, ToSchema)]
 pub enum AuthProvider {
-    /// Google OAuth authentication
+    /// Google `OAuth` authentication
     #[serde(rename = "google")]
     Google,
     /// Email/password authentication
@@ -97,22 +95,40 @@ pub struct User {
 
 /// User information for API responses and internal use
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[schema(example = json!({
+    "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+    "email": "user@example.com",
+    "display_name": "John Doe",
+    "avatar_url": "https://example.com/avatar.jpg",
+    "auth_provider": "email",
+    "email_verified": true,
+    "created_at": "2023-01-01T00:00:00",
+    "last_login": "2023-01-02T12:00:00"
+}))]
 pub struct UserInfo {
-    /// Unique user identifier
+    /// User's unique identifier
+    #[schema(example = "d290f1ee-6c54-4b01-90e6-d701748f0851")]
     pub id: uuid::Uuid,
-    /// User's email address
+    /// User's registered email address
+    #[schema(example = "user@example.com")]
     pub email: String,
     /// User's display name
+    #[schema(example = "John Doe")]
     pub display_name: Option<String>,
     /// URL to user's avatar image
+    #[schema(example = "https://example.com/avatar.jpg")]
     pub avatar_url: Option<String>,
     /// Authentication provider used by the user
+    #[schema(example = "email")]
     pub auth_provider: AuthProvider,
     /// Whether the user's email has been verified
+    #[schema(example = true)]
     pub email_verified: bool,
-    /// Timestamp when user was created
+    /// User account creation timestamp
+    #[schema(example = "2023-01-01T00:00:00")]
     pub created_at: Option<NaiveDateTime>,
     /// Timestamp of user's last login
+    #[schema(example = "2023-01-02T12:00:00")]
     pub last_login: Option<NaiveDateTime>,
 }
 
@@ -123,17 +139,15 @@ impl FromRequest for User {
     #[inline]
     fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
         let session_result = Session::from_request(req, payload).into_inner();
-        
-        ready(match session_result {
-            Ok(session) => {
-                match session.get::<Self>("user") {
-                    Ok(Some(user)) => Ok(user),
-                    Ok(None) => Err(actix_web::error::ErrorUnauthorized("Not authenticated")),
-                    Err(_) => Err(actix_web::error::ErrorUnauthorized("Invalid session")),
-                }
+
+        ready(session_result.map_or_else(
+            |_| Err(actix_web::error::ErrorUnauthorized("Session error")),
+            |session| match session.get::<Self>("user") {
+                Ok(Some(user)) => Ok(user),
+                Ok(None) => Err(actix_web::error::ErrorUnauthorized("Not authenticated")),
+                Err(_) => Err(actix_web::error::ErrorUnauthorized("Invalid session")),
             },
-            Err(_) => Err(actix_web::error::ErrorUnauthorized("Session error")),
-        })
+        ))
     }
 }
 
@@ -158,13 +172,13 @@ impl From<User> for UserInfo {
 /// Simplified user information for public API responses
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct UserInfoResponse {
-    /// Unique user identifier
+    /// User identifier for API responses
     #[schema(example = "d290f1ee-6c54-4b01-90e6-d701748f0851")]
     pub id: uuid::Uuid,
-    /// User's email address
+    /// User's current email address
     #[schema(example = "user@example.com")]
     pub email: String,
-    /// Timestamp when user was created
+    /// Registration date and time
     #[schema(example = "2023-01-01T00:00:00")]
     pub created_at: Option<NaiveDateTime>,
 }

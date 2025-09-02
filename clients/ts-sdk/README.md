@@ -118,8 +118,8 @@ run();
 ### [auth](docs/sdks/auth/README.md)
 
 * [forgotPassword](docs/sdks/auth/README.md#forgotpassword) - Forgot password
-* [googleRedirect](docs/sdks/auth/README.md#googleredirect) - Google OAuth redirect
-* [googleCallback](docs/sdks/auth/README.md#googlecallback) - Google OAuth callback
+* [googleRedirect](docs/sdks/auth/README.md#googleredirect) - Google `OAuth` redirect
+* [googleCallback](docs/sdks/auth/README.md#googlecallback) - Google `OAuth` callback
 * [login](docs/sdks/auth/README.md#login) - User login
 * [logout](docs/sdks/auth/README.md#logout) - Logout
 * [getCurrentUser](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
@@ -148,8 +148,8 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 
 - [`authForgotPassword`](docs/sdks/auth/README.md#forgotpassword) - Forgot password
 - [`authGetCurrentUser`](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
-- [`authGoogleCallback`](docs/sdks/auth/README.md#googlecallback) - Google OAuth callback
-- [`authGoogleRedirect`](docs/sdks/auth/README.md#googleredirect) - Google OAuth redirect
+- [`authGoogleCallback`](docs/sdks/auth/README.md#googlecallback) - Google `OAuth` callback
+- [`authGoogleRedirect`](docs/sdks/auth/README.md#googleredirect) - Google `OAuth` redirect
 - [`authLogin`](docs/sdks/auth/README.md#login) - User login
 - [`authLogout`](docs/sdks/auth/README.md#logout) - Logout
 - [`authRegister`](docs/sdks/auth/README.md#register) - User registration

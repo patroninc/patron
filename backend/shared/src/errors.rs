@@ -4,11 +4,17 @@ use thiserror::Error;
 
 /// Standard JSON error response structure for API endpoints.
 #[derive(Debug, Serialize, Deserialize, utoipa::ToSchema)]
+#[schema(example = json!({
+    "error": "Invalid email or password",
+    "code": "AUTH_INVALID_CREDENTIALS"
+}))]
 pub struct ErrorResponse {
     /// Error message describing what went wrong
+    #[schema(example = "Invalid email or password")]
     pub error: String,
     /// Optional error code for programmatic handling
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[schema(example = "AUTH_INVALID_CREDENTIALS")]
     pub code: Option<String>,
 }
 
@@ -50,7 +56,7 @@ pub enum ServiceError {
 
 impl From<aws_sdk_s3::Error> for ServiceError {
     fn from(e: aws_sdk_s3::Error) -> Self {
-        ServiceError::AwsSdk(e.to_string())
+        Self::AwsSdk(e.to_string())
     }
 }
 
@@ -62,36 +68,49 @@ where
         match err {
             aws_sdk_s3::error::SdkError::ServiceError(context) => {
                 let service_error = context.into_err();
-                ServiceError::AwsSdk(format!("Service error: {service_error}"))
+                Self::AwsSdk(format!("Service error: {service_error}"))
             }
-            _ => ServiceError::AwsSdk(err.to_string()),
+            aws_sdk_s3::error::SdkError::ConstructionFailure(_)
+            | aws_sdk_s3::error::SdkError::TimeoutError(_)
+            | aws_sdk_s3::error::SdkError::DispatchFailure(_)
+            | aws_sdk_s3::error::SdkError::ResponseError(_)
+            | _ => Self::AwsSdk(err.to_string()),
         }
     }
 }
 
 impl From<diesel_async::pooled_connection::bb8::RunError> for ServiceError {
     fn from(e: diesel_async::pooled_connection::bb8::RunError) -> Self {
-        ServiceError::Database(e.to_string())
+        Self::Database(e.to_string())
     }
 }
 
 impl From<diesel::result::Error> for ServiceError {
     fn from(e: diesel::result::Error) -> Self {
-        ServiceError::Database(e.to_string())
+        Self::Database(e.to_string())
     }
 }
 
 impl ResponseError for ServiceError {
+    /// Convert `ServiceError` into an HTTP response
+    ///
+    /// # Returns
+    /// Returns an HTTP response with appropriate status code and error message
     fn error_response(&self) -> HttpResponse {
         let error_response = ErrorResponse {
             error: self.to_string(),
             code: None,
         };
-        
-        match self {
-            ServiceError::NotFound(_) => HttpResponse::NotFound().json(error_response),
-            ServiceError::Config(_) => HttpResponse::BadRequest().json(error_response),
-            _ => HttpResponse::InternalServerError().json(error_response),
+
+        match *self {
+            Self::NotFound(_) => HttpResponse::NotFound().json(error_response),
+            Self::Config(_) => HttpResponse::BadRequest().json(error_response),
+            Self::AwsSdk(_)
+            | Self::Http(_)
+            | Self::Unknown(_)
+            | Self::SerdeJson(_)
+            | Self::Io(_)
+            | Self::Database(_) => HttpResponse::InternalServerError().json(error_response),
         }
     }
 }

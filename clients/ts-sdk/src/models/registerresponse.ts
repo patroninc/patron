@@ -13,7 +13,7 @@ import { SDKValidationError } from "./errors/sdkvalidationerror.js";
  */
 export type RegisterResponse = {
   /**
-   * Success message
+   * Registration confirmation message
    */
   message: string;
   /**

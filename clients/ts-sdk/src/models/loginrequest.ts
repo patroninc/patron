@@ -12,7 +12,7 @@ import { SDKValidationError } from "./errors/sdkvalidationerror.js";
  */
 export type LoginRequest = {
   /**
-   * User's email address
+   * Email address for login authentication
    */
   email: string;
   /**

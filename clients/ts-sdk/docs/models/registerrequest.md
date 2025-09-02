@@ -15,7 +15,7 @@ let value: RegisterRequest = {
 
 ## Fields
 
-| Field                                  | Type                                   | Required                               | Description                            |
-| -------------------------------------- | -------------------------------------- | -------------------------------------- | -------------------------------------- |
-| `email`                                | *string*                               | :heavy_check_mark:                     | User's email address                   |
-| `password`                             | *string*                               | :heavy_check_mark:                     | User's password (minimum 8 characters) |
+| Field                                   | Type                                    | Required                                | Description                             |
+| --------------------------------------- | --------------------------------------- | --------------------------------------- | --------------------------------------- |
+| `email`                                 | *string*                                | :heavy_check_mark:                      | Email address for new user registration |
+| `password`                              | *string*                                | :heavy_check_mark:                      | User's password (minimum 8 characters)  |

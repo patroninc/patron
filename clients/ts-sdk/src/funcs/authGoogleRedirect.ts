@@ -23,7 +23,11 @@ import { APICall, APIPromise } from "../types/async.js";
 import { Result } from "../types/fp.js";
 
 /**
- * Google OAuth redirect
+ * Google `OAuth` redirect
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if session operations fail or `OAuth` service configuration is invalid.
  */
 export function authGoogleRedirect(
   client: PatrontsCore,

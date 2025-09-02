@@ -26,6 +26,10 @@ import { Result } from "../types/fp.js";
 
 /**
  * User registration
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if input validation fails, user already exists, or database operations fail.
  */
 export function authRegister(
   client: PatrontsCore,

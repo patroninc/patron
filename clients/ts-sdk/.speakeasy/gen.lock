@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 11efa393-c988-4373-8218-92c74dd65551
 management:
-  docChecksum: 700fedba4d80405c16dab166a26a4509
+  docChecksum: 4ac6971f18d0703b515089f7b26a2cbe
   docVersion: 1.0.0
   speakeasyVersion: 1.606.10
   generationVersion: 2.687.13
-  releaseVersion: 0.1.1
-  configChecksum: 193d2cb5ffd0c1e14c2b7899b37f4921
+  releaseVersion: 0.1.2
+  configChecksum: 62ebc9109e0bfce8a7ea0ee109283511
 features:
   typescript:
     additionalDependencies: 0.1.0
@@ -132,12 +132,12 @@ examples:
         "200":
           application/json: {"message": "If the email exists in our system, a password reset link has been sent."}
         "500":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   google_auth_redirect:
     speakeasy-default-google-auth-redirect:
       responses:
         "500":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   google_auth_callback:
     speakeasy-default-google-auth-callback:
       parameters:
@@ -146,9 +146,9 @@ examples:
           state: "Alaska"
       responses:
         "400":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   login:
     speakeasy-default-login:
       requestBody:
@@ -157,9 +157,9 @@ examples:
         "200":
           application/json: {"message": "Login successful", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
         "400":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   logout:
     speakeasy-default-logout:
       responses:
@@ -171,7 +171,7 @@ examples:
         "200":
           application/json: {"created_at": "2023-01-01T00:00:00", "email": "user@example.com", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
         "401":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   register:
     speakeasy-default-register:
       requestBody:
@@ -180,9 +180,9 @@ examples:
         "200":
           application/json: {"message": "Registration successful. Please check your email for verification.", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
         "400":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   reset_password:
     speakeasy-default-reset-password:
       requestBody:
@@ -191,9 +191,9 @@ examples:
         "200":
           application/json: {"message": "Password has been reset successfully"}
         "400":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   verify_email:
     speakeasy-default-verify-email:
       parameters:
@@ -201,7 +201,7 @@ examples:
           token: "<value>"
       responses:
         "400":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
-          application/json: {"error": "<value>"}
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
 examplesVersion: 1.0.2

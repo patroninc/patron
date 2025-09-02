@@ -12,7 +12,7 @@ import { SDKValidationError } from "./errors/sdkvalidationerror.js";
  */
 export type LogoutResponse = {
   /**
-   * Success message
+   * Logout confirmation message
    */
   message: string;
 };

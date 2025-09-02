@@ -16,24 +16,20 @@ impl<Str: AsRef<[u8]>> Encoded<Str> {
     /// Long way of writing `Encoded(data)`
     ///
     /// Takes any string-like type or a slice of bytes, either owned or borrowed.
-    #[inline(always)]
-    pub fn new(string: Str) -> Self {
+    pub const fn new(string: Str) -> Self {
         Self(string)
     }
 
-    #[inline(always)]
     /// Returns the percent-encoded representation of the input as a `Cow<str>`.
     pub fn to_str(&self) -> Cow<'_, str> {
         encode_binary(self.0.as_ref())
     }
 
-    /// Perform urlencoding to a string
-    #[inline]
-    pub fn to_string(&self) -> String {
-        self.to_str().into_owned()
-    }
-
     /// Perform urlencoding into a writer
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if writing to the provided writer fails.
     #[inline]
     pub fn write<W: io::Write>(&self, writer: &mut W) -> io::Result<()> {
         let _ = encode_into(self.0.as_ref(), false, |s| writer.write_all(s.as_bytes()))?;
@@ -50,9 +46,8 @@ impl<Str: AsRef<[u8]>> Encoded<Str> {
 impl<'str_ref> Encoded<&'str_ref str> {
     /// Same as new, but hints a more specific type, so you can avoid errors about `AsRef<[u8]>` not implemented
     /// on references-to-references.
-    #[inline(always)]
     #[must_use]
-    pub fn str(string: &'str_ref str) -> Self {
+    pub const fn str(string: &'str_ref str) -> Self {
         Self(string)
     }
 }
@@ -67,7 +62,6 @@ impl<String: AsRef<[u8]>> fmt::Display for Encoded<String> {
 /// Percent-encodes every byte except alphanumerics and `-`, `_`, `.`, `~`. Assumes UTF-8 encoding.
 ///
 /// Call `.into_owned()` if you need a `String`
-#[inline(always)]
 #[must_use]
 pub fn encode(data: &str) -> Cow<'_, str> {
     encode_binary(data.as_bytes())
@@ -79,10 +73,12 @@ pub fn encode(data: &str) -> Cow<'_, str> {
 pub fn encode_binary(data: &[u8]) -> Cow<'_, str> {
     // add maybe extra capacity, but try not to exceed allocator's bucket size
     let mut escaped = String::new();
-    let _ = escaped.try_reserve(data.len() | 15);
+    // Ignore allocation errors, as String will panic on OOM anyway
+    let _ = escaped.try_reserve(data.len() | 15).ok();
     let unmodified = append_string(data, &mut escaped, true);
     if unmodified {
         #[allow(unsafe_code)]
+        // SAFETY: encode_into has checked that `data` contains only ASCII characters, which are valid UTF-8.
         return Cow::Borrowed(unsafe {
             // encode_into has checked it's ASCII
             str::from_utf8_unchecked(data)
@@ -110,7 +106,7 @@ fn encode_into<E>(
         let ascii_len = data.iter()
             .take_while(|&&c| matches!(c, b'0'..=b'9' | b'A'..=b'Z' | b'a'..=b'z' |  b'-' | b'.' | b'_' | b'~')).count();
 
-        let (safe, rest) = if ascii_len >= data.len() {
+        let (safe, rest_slice) = if ascii_len >= data.len() {
             if !pushed && may_skip_write {
                 return Ok(true);
             }
@@ -121,16 +117,19 @@ fn encode_into<E>(
         pushed = true;
         if !safe.is_empty() {
             #[allow(unsafe_code)]
+            // SAFETY: `safe` contains only ASCII bytes, which are valid UTF-8.
             push_str(unsafe { str::from_utf8_unchecked(safe) })?;
         }
-        if rest.is_empty() {
+        if rest_slice.is_empty() {
             break;
         }
 
-        match rest.split_first() {
+        #[allow(non_snake_case)]
+        match rest_slice.split_first() {
             Some((byte, rest)) => {
                 let enc = &[b'%', to_hex_digit(byte >> 4), to_hex_digit(byte & 15)];
                 #[allow(unsafe_code)]
+                // SAFETY: `enc` is always a 3-byte ASCII sequence (b'%', hex digit, hex digit), which is valid UTF-8.
                 push_str(unsafe { str::from_utf8_unchecked(enc) })?;
                 data = rest;
             }
@@ -141,9 +140,9 @@ fn encode_into<E>(
 }
 
 #[inline]
-fn to_hex_digit(digit: u8) -> u8 {
+const fn to_hex_digit(digit: u8) -> u8 {
     match digit {
-        0..=9 => b'0' + digit,
-        10..=255 => b'A' - 10 + digit,
+        0..=9 => b'0'.wrapping_add(digit),
+        10..=255 => b'A'.wrapping_sub(10).wrapping_add(digit),
     }
 }

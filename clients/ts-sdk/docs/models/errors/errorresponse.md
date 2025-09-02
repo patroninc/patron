@@ -12,7 +12,7 @@ import { ErrorResponse } from "patronts/models/errors";
 
 ## Fields
 
-| Field                                         | Type                                          | Required                                      | Description                                   |
-| --------------------------------------------- | --------------------------------------------- | --------------------------------------------- | --------------------------------------------- |
-| `code`                                        | *string*                                      | :heavy_minus_sign:                            | Optional error code for programmatic handling |
-| `error`                                       | *string*                                      | :heavy_check_mark:                            | Error message describing what went wrong      |
+| Field                                         | Type                                          | Required                                      | Description                                   | Example                                       |
+| --------------------------------------------- | --------------------------------------------- | --------------------------------------------- | --------------------------------------------- | --------------------------------------------- |
+| `code`                                        | *string*                                      | :heavy_minus_sign:                            | Optional error code for programmatic handling | AUTH_INVALID_CREDENTIALS                      |
+| `error`                                       | *string*                                      | :heavy_check_mark:                            | Error message describing what went wrong      | Invalid email or password                     |

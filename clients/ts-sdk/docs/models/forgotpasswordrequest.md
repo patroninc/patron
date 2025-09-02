@@ -14,6 +14,6 @@ let value: ForgotPasswordRequest = {
 
 ## Fields
 
-| Field                | Type                 | Required             | Description          | Example              |
-| -------------------- | -------------------- | -------------------- | -------------------- | -------------------- |
-| `email`              | *string*             | :heavy_check_mark:   | User's email address | user@example.com     |
+| Field                                        | Type                                         | Required                                     | Description                                  | Example                                      |
+| -------------------------------------------- | -------------------------------------------- | -------------------------------------------- | -------------------------------------------- | -------------------------------------------- |
+| `email`                                      | *string*                                     | :heavy_check_mark:                           | Email address to send password reset link to | user@example.com                             |

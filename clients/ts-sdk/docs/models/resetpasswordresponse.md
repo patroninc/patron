@@ -14,6 +14,6 @@ let value: ResetPasswordResponse = {
 
 ## Fields
 
-| Field              | Type               | Required           | Description        |
-| ------------------ | ------------------ | ------------------ | ------------------ |
-| `message`          | *string*           | :heavy_check_mark: | Success message    |
+| Field                               | Type                                | Required                            | Description                         |
+| ----------------------------------- | ----------------------------------- | ----------------------------------- | ----------------------------------- |
+| `message`                           | *string*                            | :heavy_check_mark:                  | Password reset confirmation message |

@@ -26,7 +26,7 @@ export type UserInfo = {
    */
   avatarUrl?: string | null | undefined;
   /**
-   * Timestamp when user was created
+   * User account creation timestamp
    */
   createdAt?: Date | null | undefined;
   /**
@@ -34,7 +34,7 @@ export type UserInfo = {
    */
   displayName?: string | null | undefined;
   /**
-   * User's email address
+   * User's registered email address
    */
   email: string;
   /**
@@ -42,7 +42,7 @@ export type UserInfo = {
    */
   emailVerified: boolean;
   /**
-   * Unique user identifier
+   * User's unique identifier
    */
   id: string;
   /**

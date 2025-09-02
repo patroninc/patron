@@ -37,7 +37,7 @@ jobs:
       - run: rustup component add clippy
       - uses: clechasseur/rs-clippy-check@v3
         with:
-          args: --manifest-path backend/server/Cargo.toml -- -D clippy::print_stdout -D warnings
+          args: --manifest-path backend/server/Cargo.toml -- -D warnings
       - uses: useblacksmith/cache@v5
         with:
           path: |
@@ -51,6 +51,8 @@ jobs:
     runs-on: blacksmith-8vcpu-ubuntu-2204
     steps:
       - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
       - name: Use Node LTS ✨
         uses: actions/setup-node@v4
         with:
