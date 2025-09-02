@@ -1,0 +1,18 @@
+[package]
+name = "urlencoding"
+version.workspace = true
+edition.workspace = true
+description = "URL encoding and decoding utilities"
+license = "MIT"
+repository = "https://github.com/patroninc/patron"
+readme = "../README.md"
+keywords = ["url", "encoding", "decode", "percent-encoding"]
+categories = ["encoding", "web-programming"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+
+[lints]
+workspace = true

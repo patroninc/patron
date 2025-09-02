@@ -1,0 +1,96 @@
+name: rust test suite
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "backend/server/**"
+
+jobs:
+  cargo-fmt:
+    runs-on: blacksmith-2vcpu-ubuntu-2204
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup update 1.87
+      - run: rustup default 1.87
+      - run: rustup component add rustfmt
+      - name: Cargo fmt
+        run: cargo fmt --manifest-path=./backend/server/Cargo.toml -- --check
+
+  clippy_check:
+    runs-on: blacksmith-8vcpu-ubuntu-2204
+    steps:
+      - uses: actions/checkout@v4
+      - name: Caching Rust Dep
+        uses: useblacksmith/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - run: rustup update 1.87
+      - run: rustup default 1.87
+      - run: rustup component add clippy
+      - uses: clechasseur/rs-clippy-check@v3
+        with:
+          args: --manifest-path backend/server/Cargo.toml -- -D warnings
+      - uses: useblacksmith/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.labels }}-rust-${{ matrix.rust }}-
+  redoc:
+    runs-on: blacksmith-8vcpu-ubuntu-2204
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Use Node LTS ✨
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org
+          cache: yarn
+          cache-dependency-path: |
+            website/yarn.lock
+            clients/react-server/yarn.lock
+            clients/ts-sdk/yarn.lock
+      - name: Caching Rust Dep
+        uses: useblacksmith/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - run: rustup update 1.87
+      - run: rustup default 1.87
+      - name: Installing Vacuum
+        run: npm install -g @quobix/vacuum
+      - name: Generating OpenAPI spec
+        run: cargo run --manifest-path backend/server/Cargo.toml --bin redoc_ci > openapi.json
+      - name: Vaccum lint
+        run: vacuum lint openapi.json -r '.github/rules.yaml' -d --fail-severity warn
+      - name: Check OpenAPI spec matches SDK version
+        run: |
+          if ! diff -q openapi.json ./clients/ts-sdk/openapi.json > /dev/null; then
+            echo "❌ Generated OpenAPI spec differs from clients/ts-sdk/openapi.json"
+            echo "Please run: cargo run --manifest-path backend/server/Cargo.toml --bin redoc_ci > openapi.json"
+            echo "Then copy the file: cp openapi.json ./clients/ts-sdk/openapi.json"
+            echo ""
+            echo "Differences:"
+            diff openapi.json ./clients/ts-sdk/openapi.json || true
+            exit 1
+          else
+            echo "✅ OpenAPI spec matches SDK version"
+          fi
+      - name: Copy OpenAPI spec to sdk folder
+        run: cp openapi.json ./clients/ts-sdk/openapi.json

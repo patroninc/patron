@@ -1,0 +1,64 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Speakeasy Modifications
+  version: 0.0.2
+  x-speakeasy-metadata:
+    after: ""
+    before: ""
+    type: speakeasy-modifications
+actions:
+  - target: $["paths"]["/api/auth/forgot-password"]["post"]
+    update:
+      x-speakeasy-name-override: forgotPassword
+    x-speakeasy-metadata:
+      after: sdk.auth.forgotPassword()
+      before: sdk.Auth.forgot_password()
+      created_at: 1756752998342
+      reviewed_at: 1756753003826
+      type: method-name
+  - target: $["paths"]["/api/auth/me"]["get"]
+    update:
+      x-speakeasy-name-override: getCurrentUser
+    x-speakeasy-metadata:
+      after: sdk.auth.getCurrentUser()
+      before: sdk.Auth.get_me()
+      created_at: 1756752998342
+      reviewed_at: 1756753003826
+      type: method-name
+  - target: $["paths"]["/api/auth/reset-password"]["post"]
+    update:
+      x-speakeasy-name-override: resetPassword
+    x-speakeasy-metadata:
+      after: sdk.auth.resetPassword()
+      before: sdk.Auth.reset_password()
+      created_at: 1756752998342
+      reviewed_at: 1756753003826
+      type: method-name
+  - target: $["paths"]["/api/auth/verify-email"]["get"]
+    update:
+      x-speakeasy-name-override: verifyEmail
+    x-speakeasy-metadata:
+      after: sdk.auth.verifyEmail()
+      before: sdk.Auth.verify_email()
+      created_at: 1756752998342
+      reviewed_at: 1756753003826
+      type: method-name
+  - target: $["paths"]["/api/auth/google"]["get"]
+    update:
+      x-speakeasy-name-override: googleRedirect
+    x-speakeasy-metadata:
+      after: sdk.auth.googleRedirect()
+      before: sdk.Auth.google_auth_redirect()
+      created_at: 1756752998342
+      reviewed_at: 1756753003826
+      type: method-name
+  - target: $["paths"]["/api/auth/google/callback"]["get"]
+    update:
+      x-speakeasy-name-override: googleCallback
+    x-speakeasy-metadata:
+      after: sdk.auth.googleCallback()
+      before: sdk.Auth.google_auth_callback()
+      created_at: 1756752998342
+      reviewed_at: 1756753003826
+      type: method-name

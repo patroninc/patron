@@ -3,8 +3,6 @@ import EndCtaGrid from "@components/EndCtaGrid.astro";
 import Box from "@components/Box.astro";
 import Check from "@lucide/astro/icons/check";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
-import Input from "./Input.astro";
-import button from "./Button.astro";
 
 const { cta } = Astro.props;
 ---
@@ -52,7 +50,10 @@ const { cta } = Astro.props;
                 aria-label="Join the waitlist"
                 class="bg-blue button-animated-bg flex size-[50px] cursor-pointer items-center justify-center outline-none"
               >
-                <ArrowRight class="size-[34px]" color="white" />
+                <ArrowRight
+                  class="arrow-icon size-[34px] transition-opacity duration-300"
+                  color="white"
+                />
               </button>
             </Box>
           </div>
@@ -192,10 +193,24 @@ const { cta } = Astro.props;
         const success = await subscribeToMailingList(endCtaInput.value);
 
         if (success) {
+          const arrowIcon = endCtaButton?.querySelector(".arrow-icon");
+          if (arrowIcon) {
+            arrowIcon.classList.add("opacity-0");
+          }
+
           successMessage?.classList.add("top-[-5px]");
           successMessage?.classList.remove("top-[-60px]");
 
           endCtaInput.value = "";
+
+          setTimeout(() => {
+            successMessage?.classList.remove("top-[-5px]");
+            successMessage?.classList.add("top-[-65px]");
+
+            if (arrowIcon) {
+              arrowIcon.classList.remove("opacity-0");
+            }
+          }, 2000);
         } else {
           console.error("Subscription failed");
         }

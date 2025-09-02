@@ -6,6 +6,9 @@ navigationLinks:
   - label: Blog
     href: /blog/
     newTab: false
+  - label: Changelog
+    href: /changelog/
+    newTab: false
 ctaButton:
   enabled: true
   label: Join the waitlist

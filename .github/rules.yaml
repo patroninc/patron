@@ -1,0 +1,8 @@
+extends: spectral:oas
+rules:
+  operation-description: true
+  operation-operationId: true
+  operation-parameters: true
+  operation-tag-defined: true
+  path-keys-no-trailing-slash: true
+  typed-enum: true

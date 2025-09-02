@@ -1,0 +1,817 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Patron API",
+    "description": "An open source Patreon alternative with lower fees designed for creators who publish ongoing sequential content like books, podcasts, and comics.",
+    "contact": {
+      "name": "Patron Team",
+      "email": "support@patron.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local development server"
+    },
+    {
+      "url": "https://api.patron.com",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/api/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Forgot password",
+        "description": "# Errors\nReturns an error if database operations fail or email service fails.",
+        "operationId": "forgot_password",
+        "requestBody": {
+          "description": "Email address for password reset request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotPasswordResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Password reset service error or email delivery failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "EMAIL_SERVICE_ERROR",
+                  "error": "Email service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Google `OAuth` redirect",
+        "description": "# Errors\nReturns an error if session operations fail or `OAuth` service configuration is invalid.",
+        "operationId": "google_auth_redirect",
+        "responses": {
+          "302": {
+            "description": "Redirect to Google OAuth consent screen"
+          },
+          "500": {
+            "description": "OAuth initialization failed or session storage error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "OAUTH_SESSION_ERROR",
+                  "error": "Failed to initialize OAuth session"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Google `OAuth` callback",
+        "description": "# Errors\nReturns an error if `OAuth` state verification fails, token exchange fails, or database operations fail.",
+        "operationId": "google_auth_callback",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Authorization code from Google",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "State parameter for CSRF protection",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to frontend application"
+          },
+          "400": {
+            "description": "Invalid authorization code or state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "OAUTH_INVALID_CODE",
+                  "error": "Invalid authorization code"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "OAuth service error or database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "OAUTH_PROVIDER_ERROR",
+                  "error": "OAuth provider connection failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User login",
+        "description": "# Errors\nReturns an error if credentials are invalid, email is not verified, or database operations fail.",
+        "operationId": "login",
+        "requestBody": {
+          "description": "User login credentials including email and password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials or email not verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_INVALID_CREDENTIALS",
+                  "error": "Invalid email or password"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Login service error or database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_SERVICE_ERROR",
+                  "error": "Authentication service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout",
+        "description": "# Errors\nReturns an error if session operations fail.",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Successfully logged out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get current user info",
+        "description": "# Errors\nReturns an error if user is not authenticated or serialization fails.",
+        "operationId": "get_me",
+        "responses": {
+          "200": {
+            "description": "Current user information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoResponse"
+                },
+                "example": {
+                  "created_at": "2023-01-01T00:00:00",
+                  "email": "user@example.com",
+                  "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_REQUIRED",
+                  "error": "Not authenticated"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User registration",
+        "description": "# Errors\nReturns an error if input validation fails, user already exists, or database operations fail.",
+        "operationId": "register",
+        "requestBody": {
+          "description": "User registration data including email and password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Registration successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_EMAIL_EXISTS",
+                  "error": "Email address already registered"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Registration service error or email delivery failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "DATABASE_ERROR",
+                  "error": "Database connection failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset password",
+        "description": "# Errors\nReturns an error if token is invalid, password validation fails, or database operations fail.",
+        "operationId": "reset_password",
+        "requestBody": {
+          "description": "Password reset token and new password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetPasswordResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid token or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_INVALID_RESET_TOKEN",
+                  "error": "Invalid or expired password reset token"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Password update service error or database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "RESET_SERVICE_ERROR",
+                  "error": "Password reset service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/verify-email": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Email verification",
+        "description": "# Errors\nReturns an error if token is invalid, expired, or database operations fail.",
+        "operationId": "verify_email",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Email verification token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to frontend after verification"
+          },
+          "400": {
+            "description": "Invalid or expired token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_INVALID_VERIFICATION_TOKEN",
+                  "error": "Invalid or expired verification token"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Email verification service error or database failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "VERIFICATION_SERVICE_ERROR",
+                  "error": "Email verification service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthProvider": {
+        "type": "string",
+        "description": "Authentication provider types supported by the system",
+        "enum": [
+          "google",
+          "email",
+          "both"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Standard JSON error response structure for API endpoints.",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional error code for programmatic handling",
+            "example": "AUTH_INVALID_CREDENTIALS"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "Invalid email or password"
+          }
+        },
+        "example": {
+          "code": "AUTH_INVALID_CREDENTIALS",
+          "error": "Invalid email or password"
+        }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "description": "Request body for password reset",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to send password reset link to",
+            "example": "user@example.com"
+          }
+        },
+        "example": {
+          "email": "user@example.com"
+        }
+      },
+      "ForgotPasswordResponse": {
+        "type": "object",
+        "description": "Response for password reset request",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Password reset request status message"
+          }
+        },
+        "example": {
+          "message": "If the email exists in our system, a password reset link has been sent."
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "description": "Request body for user login",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address for login authentication"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password"
+          }
+        },
+        "example": {
+          "email": "user@example.com",
+          "password": "password123"
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "description": "Response for successful user login",
+        "required": [
+          "message",
+          "user"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Login success message"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserInfo",
+            "description": "User information"
+          }
+        },
+        "example": {
+          "message": "Login successful",
+          "user": {
+            "auth_provider": "email",
+            "display_name": "John Doe",
+            "email": "user@example.com",
+            "email_verified": true,
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          }
+        }
+      },
+      "LogoutResponse": {
+        "type": "object",
+        "description": "Response for successful logout",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Logout confirmation message"
+          }
+        },
+        "example": {
+          "message": "Logged out successfully"
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "description": "Request body for user registration.",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address for new user registration"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (minimum 8 characters)"
+          }
+        },
+        "example": {
+          "email": "user@example.com",
+          "password": "password123"
+        }
+      },
+      "RegisterResponse": {
+        "type": "object",
+        "description": "Response for successful user registration",
+        "required": [
+          "message",
+          "user_id"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Registration confirmation message"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the registered user"
+          }
+        },
+        "example": {
+          "message": "Registration successful. Please check your email for verification.",
+          "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        }
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "description": "Request body for password reset confirmation",
+        "required": [
+          "token",
+          "new_password"
+        ],
+        "properties": {
+          "new_password": {
+            "type": "string",
+            "description": "New password (minimum 8 characters)"
+          },
+          "token": {
+            "type": "string",
+            "description": "Password reset token"
+          }
+        },
+        "example": {
+          "new_password": "newpassword123",
+          "token": "550e8400-e29b-41d4-a716-446655440000"
+        }
+      },
+      "ResetPasswordResponse": {
+        "type": "object",
+        "description": "Response for successful password reset",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Password reset confirmation message"
+          }
+        },
+        "example": {
+          "message": "Password has been reset successfully"
+        }
+      },
+      "UserInfo": {
+        "type": "object",
+        "description": "User information for API responses and internal use",
+        "required": [
+          "id",
+          "email",
+          "auth_provider",
+          "email_verified"
+        ],
+        "properties": {
+          "auth_provider": {
+            "$ref": "#/components/schemas/AuthProvider",
+            "description": "Authentication provider used by the user"
+          },
+          "avatar_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "URL to user's avatar image",
+            "example": "https://example.com/avatar.jpg"
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "User account creation timestamp",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "display_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "User's display name",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's registered email address",
+            "example": "user@example.com"
+          },
+          "email_verified": {
+            "type": "boolean",
+            "description": "Whether the user's email has been verified",
+            "example": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User's unique identifier",
+            "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "last_login": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Timestamp of user's last login",
+            "example": "2023-01-02T12:00:00Z"
+          }
+        },
+        "example": {
+          "auth_provider": "email",
+          "avatar_url": "https://example.com/avatar.jpg",
+          "created_at": "2023-01-01T00:00:00",
+          "display_name": "John Doe",
+          "email": "user@example.com",
+          "email_verified": true,
+          "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+          "last_login": "2023-01-02T12:00:00"
+        }
+      },
+      "UserInfoResponse": {
+        "type": "object",
+        "description": "Simplified user information for public API responses",
+        "required": [
+          "id",
+          "email"
+        ],
+        "properties": {
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Registration date and time",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's current email address",
+            "example": "user@example.com"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User identifier for API responses",
+            "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication and authorization endpoints"
+    }
+  ]
+}

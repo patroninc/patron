@@ -1,0 +1,57 @@
+name: React Server Lint and Format
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "clients/react-server/**"
+  push:
+    branches: [ main ]
+    paths:
+      - "clients/react-server/**"
+
+jobs:
+  eslint:
+    runs-on: blacksmith-2vcpu-ubuntu-2204
+    defaults:
+      run:
+        working-directory: ./clients/react-server
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Use Node LTS ✨
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org
+          cache: yarn
+          cache-dependency-path: clients/react-server/yarn.lock
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run ESLint
+        run: yarn lint
+
+  prettier:
+    runs-on: blacksmith-2vcpu-ubuntu-2204
+    defaults:
+      run:
+        working-directory: ./clients/react-server
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Use Node LTS ✨
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org
+          cache: yarn
+          cache-dependency-path: clients/react-server/yarn.lock
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Check Prettier formatting
+        run: yarn format:check

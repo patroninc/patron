@@ -102,7 +102,7 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
               as="button"
               type="button"
               id="nav-cta-button"
-              class="hidden sm:flex"
+              class="hidden cursor-pointer sm:flex"
             >
               {i18n.ctaButton.label}
               <ArrowRight />
@@ -125,6 +125,7 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
   id="mobile-menu"
   class="fixed inset-0 z-[55] hidden bg-black/50 lg:hidden"
   aria-hidden="true"
+  transition:persist
 >
   <div
     class="bg-green fixed top-0 right-0 h-full w-[250px] translate-x-full transform border-l-5 border-l-black transition-transform duration-300 ease-in-out"
