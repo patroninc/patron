@@ -9,7 +9,7 @@ COPY ts-sdk/ ../ts-sdk/
 
 # Build ts-sdk first
 WORKDIR /ts-sdk
-RUN yarn install --frozen-lockfile && yarn build
+RUN yarn add axios && yarn install --frozen-lockfile && yarn build
 
 # Go back to app directory and copy package files
 WORKDIR /app
