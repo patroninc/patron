@@ -12,7 +12,11 @@ export async function GET(context) {
       "The latest updates, insights, and stories from Patron - the creator-first platform empowering artists, writers, and creators with low fees and open-source transparency.",
     site: context.site,
     items: blog
-      .filter((post) => !(post.data.isDraft ?? false) && !post.data.categories?.includes("changelog"))
+      .filter(
+        (post) =>
+          !(post.data.isDraft ?? false) &&
+          !post.data.categories?.includes("changelog"),
+      )
       .sort((a, b) => new Date(b.data.date) - new Date(a.data.date))
       .map((post) => ({
         link: `/blog/${post.id}/`,

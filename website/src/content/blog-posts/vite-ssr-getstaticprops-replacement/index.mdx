@@ -1,7 +1,9 @@
 ---
-title: Building SSR with Vite: A Custom getStaticProps Replacement
+title: 'Building SSR with Vite: A Custom getStaticProps Replacement'
 summary: >-
-  A step-by-step guide to implementing server-side rendering with Vite and creating a custom data loading system that replaces Next.js getStaticProps, based on our real-world implementation at Patron.
+  A step-by-step guide to implementing server-side rendering with Vite and
+  creating a custom data loading system that replaces Next.js getStaticProps,
+  based on our real-world implementation at Patron.
 author: Nick Khami (skeptrune)
 authorTwitter: https://x.com/skeptrune
 authorLinkedIn: https://www.linkedin.com/in/nkhami/
@@ -9,13 +11,11 @@ createdAt: 2025-09-02T00:00:00.000Z
 lastUpdatedAt: 2025-09-02T00:00:00.000Z
 isDraft: false
 categories:
-  - technology
+  - technical
 coverImage: >-
   /src/assets/images/blog-posts/vite-ssr-getstaticprops-replacement/coverImage.png
 ogSection: Technology
 ---
-
-# Building SSR with Vite: A Custom getStaticProps Replacement
 
 When migrating from Next.js to a custom Vite setup, one of the biggest challenges is replacing Next.js's `getStaticProps` and `getServerSideProps` functions. These functions make server-side data fetching elegant and straightforward. But with a custom Vite SSR setup, you need to build this functionality yourself.
 
@@ -45,17 +45,17 @@ Our SSR system consists of three main components:
 Let's start with the core server setup. Create a `server.js` file in your project root:
 
 ```javascript
-import fs from 'node:fs/promises';
-import express from 'express';
+import fs from "node:fs/promises";
+import express from "express";
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 5173;
-const base = process.env.BASE || '/';
+const base = process.env.BASE || "/";
 const ABORT_DELAY = 10000;
 
-const templateHtml = isProduction 
-  ? await fs.readFile('./dist/client/index.html', 'utf-8') 
-  : '';
+const templateHtml = isProduction
+  ? await fs.readFile("./dist/client/index.html", "utf-8")
+  : "";
 
 const app = express();
 ```
@@ -70,18 +70,18 @@ Next, integrate Vite's dev server for development mode:
 /** @type {import('vite').ViteDevServer | undefined} */
 let vite;
 if (!isProduction) {
-  const { createServer } = await import('vite');
+  const { createServer } = await import("vite");
   vite = await createServer({
     server: { middlewareMode: true },
-    appType: 'custom',
+    appType: "custom",
     base,
   });
   app.use(vite.middlewares);
 } else {
-  const compression = (await import('compression')).default;
-  const sirv = (await import('sirv')).default;
+  const compression = (await import("compression")).default;
+  const sirv = (await import("sirv")).default;
   app.use(compression());
-  app.use(base, sirv('./dist/client', { extensions: [] }));
+  app.use(base, sirv("./dist/client", { extensions: [] }));
 }
 ```
 
@@ -98,36 +98,37 @@ Here's where the magic happens. Instead of Next.js's `getStaticProps`, we create
  */
 async function loadDataForUrl(url, req) {
   // Route-based data loading
-  if (url.startsWith('/api-demo')) {
+  if (url.startsWith("/api-demo")) {
     // Example: call internal APIs, databases, etc.
     // const response = await fetch(process.env.INTERNAL_API_URL + '/data');
     // return await response.json();
-    
+
     return {
       route: url,
-      userAgent: req.headers['user-agent'],
-      message: 'Hello from the server-only loader',
+      userAgent: req.headers["user-agent"],
+      message: "Hello from the server-only loader",
       now: new Date().toISOString(),
     };
   }
-  
-  if (url.startsWith('/profile')) {
+
+  if (url.startsWith("/profile")) {
     // Example: load user data
     // const user = await getUserFromDatabase(req.session.userId);
     // return { user };
   }
-  
+
   // Return null for routes that don't need server data
   return null;
 }
 ```
 
 This function gives you complete control over data loading patterns. You can:
-- Call databases directly
-- Make internal API requests
-- Access request headers and session data
-- Implement route-based data loading logic
-- Return different data shapes for different routes
+
+* Call databases directly
+* Make internal API requests
+* Access request headers and session data
+* Implement route-based data loading logic
+* Return different data shapes for different routes
 
 ## Step 4: Server-Side Rendering Pipeline
 
@@ -136,38 +137,38 @@ Now we connect everything together in the main request handler:
 ```javascript
 app.use(async (req, res) => {
   try {
-    const url = req.originalUrl.replace(base, '');
+    const url = req.originalUrl.replace(base, "");
 
     // Load template and render function
     let template;
     let render;
     if (!isProduction) {
-      template = await fs.readFile('./index.html', 'utf-8');
+      template = await fs.readFile("./index.html", "utf-8");
       template = await vite.transformIndexHtml(url, template);
-      render = (await vite.ssrLoadModule('/src/entry-server.tsx')).render;
+      render = (await vite.ssrLoadModule("/src/entry-server.tsx")).render;
     } else {
       template = templateHtml;
-      render = (await import('./dist/server/entry-server.js')).render;
+      render = (await import("./dist/server/entry-server.js")).render;
     }
 
     // 1. Load server-side data (our getStaticProps replacement)
     const initialData = await loadDataForUrl(url, req);
 
     // 2. Safely serialize and inject data into HTML
-    const serialized = JSON.stringify(initialData).replace(/</g, '\\u003c');
+    const serialized = JSON.stringify(initialData).replace(/</g, "\\u003c");
     template = template.replace(
-      '<!--app-head-->',
+      "<!--app-head-->",
       `<script>window.__INITIAL_DATA__ = ${serialized}</script>`,
     );
 
     // 3. Set up streaming SSR
-    const [htmlStart, htmlEnd] = template.split('<!--app-html-->');
+    const [htmlStart, htmlEnd] = template.split("<!--app-html-->");
 
     let didError = false;
     const stream = render(url, initialData, {
       onShellReady() {
         res.status(didError ? 500 : 200);
-        res.set({ 'Content-Type': 'text/html' });
+        res.set({ "Content-Type": "text/html" });
         res.write(htmlStart);
         stream.pipe(res);
       },
@@ -188,6 +189,7 @@ app.use(async (req, res) => {
 ```
 
 The critical steps here are:
+
 1. **Data Loading**: Call our custom data loader
 2. **Data Serialization**: Safely inject data into the HTML template
 3. **Streaming**: Use React 18's streaming SSR for optimal performance
@@ -197,13 +199,13 @@ The critical steps here are:
 Create `src/entry-server.tsx`:
 
 ```tsx
-import { StrictMode } from 'react';
+import { StrictMode } from "react";
 import {
   type RenderToPipeableStreamOptions,
   type PipeableStream,
   renderToPipeableStream,
-} from 'react-dom/server';
-import App from './App';
+} from "react-dom/server";
+import App from "./App";
 
 export function render(
   _url: string,
@@ -226,12 +228,12 @@ This is your server-side React rendering entry point. The `initialData` paramete
 Create `src/entry-client.tsx`:
 
 ```tsx
-import { StrictMode } from 'react';
-import { hydrateRoot } from 'react-dom/client';
-import App from './App';
+import { StrictMode } from "react";
+import { hydrateRoot } from "react-dom/client";
+import App from "./App";
 
 hydrateRoot(
-  document.getElementById('root') as HTMLElement,
+  document.getElementById("root") as HTMLElement,
   <StrictMode>
     <App initialData={(window as any).__INITIAL_DATA__} />
   </StrictMode>,
@@ -251,14 +253,12 @@ type AppProps = {
 
 function App({ initialData }: AppProps) {
   // Use your server data however you need
-  console.log('Data from server:', initialData);
-  
+  console.log("Data from server:", initialData);
+
   return (
     <div>
       <h1>My SSR App</h1>
-      {initialData && (
-        <pre>{JSON.stringify(initialData, null, 2)}</pre>
-      )}
+      {initialData && <pre>{JSON.stringify(initialData, null, 2)}</pre>}
     </div>
   );
 }
@@ -271,8 +271,8 @@ export default App;
 Don't forget your `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
@@ -304,18 +304,18 @@ You can implement sophisticated routing patterns:
 ```javascript
 async function loadDataForUrl(url, req) {
   const routes = {
-    '/dashboard': () => loadDashboardData(req.session.userId),
-    '/profile/(.+)': (match) => loadUserProfile(match[1]),
-    '/api/posts': () => loadAllPosts(),
+    "/dashboard": () => loadDashboardData(req.session.userId),
+    "/profile/(.+)": (match) => loadUserProfile(match[1]),
+    "/api/posts": () => loadAllPosts(),
   };
-  
+
   for (const [pattern, loader] of Object.entries(routes)) {
     const match = url.match(new RegExp(pattern));
     if (match) {
       return await loader(match);
     }
   }
-  
+
   return null;
 }
 ```
@@ -329,7 +329,7 @@ function App({ initialData }: AppProps) {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  
+
   // Client-side data fetching for navigation
   const loadData = async (url: string) => {
     setLoading(true);
@@ -343,7 +343,7 @@ function App({ initialData }: AppProps) {
       setLoading(false);
     }
   };
-  
+
   return (
     <ErrorBoundary>
       {loading && <LoadingSpinner />}
@@ -364,18 +364,18 @@ Implement intelligent caching in your data loader:
 const cache = new Map();
 
 async function loadDataForUrl(url, req) {
-  const cacheKey = `${url}-${req.session?.userId || 'anonymous'}`;
-  
+  const cacheKey = `${url}-${req.session?.userId || "anonymous"}`;
+
   if (cache.has(cacheKey)) {
     return cache.get(cacheKey);
   }
-  
+
   const data = await fetchDataForRoute(url, req);
-  
+
   // Cache for 5 minutes
   cache.set(cacheKey, data);
   setTimeout(() => cache.delete(cacheKey), 5 * 60 * 1000);
-  
+
   return data;
 }
 ```
@@ -400,14 +400,14 @@ Set up proper environment handling:
 const config = {
   apiUrl: process.env.API_URL,
   dbUrl: process.env.DATABASE_URL,
-  cacheEnabled: process.env.CACHE_ENABLED === 'true',
+  cacheEnabled: process.env.CACHE_ENABLED === "true",
 };
 
 async function loadDataForUrl(url, req) {
   if (config.cacheEnabled) {
     // Use caching logic
   }
-  
+
   // Use config.apiUrl for API calls
 }
 ```
@@ -434,14 +434,14 @@ CMD ["node", "server.js"]
 
 ## Comparison with Next.js
 
-| Feature | Next.js | Custom Vite SSR |
-|---------|---------|-----------------|
-| Dev Speed | Good | Excellent |
-| Build Speed | Good | Excellent |
+| Feature      | Next.js                               | Custom Vite SSR         |
+| ------------ | ------------------------------------- | ----------------------- |
+| Dev Speed    | Good                                  | Excellent               |
+| Build Speed  | Good                                  | Excellent               |
 | Data Loading | `getStaticProps`/`getServerSideProps` | Custom `loadDataForUrl` |
-| Flexibility | Framework constraints | Complete control |
-| Complexity | Low | Medium |
-| Ecosystem | Large | Growing |
+| Flexibility  | Framework constraints                 | Complete control        |
+| Complexity   | Low                                   | Medium                  |
+| Ecosystem    | Large                                 | Growing                 |
 
 ## Conclusion
 

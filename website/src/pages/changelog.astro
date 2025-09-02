@@ -35,25 +35,26 @@ const changelogCategory = await getCollection("blogCategories").then((cats) =>
           <h1>Changelog</h1>
           <a
             href="/changelog/rss.xml"
-            class="flex items-center gap-2 text-sm text-black fill-black"
+            class="flex items-center gap-2 fill-black text-sm text-black"
             title="Subscribe to changelog RSS feed"
           >
             <Icon name="simple-icons:rss" class="h-6 w-6" />
+          </a>
+          <p class="text-lg">
+            {changelogCategory?.data.description}
+          </p>
         </div>
-        <p class="text-lg">
-          {changelogCategory?.data.description}
-        </p>
+
+        <Posts posts={changelogPosts} />
+
+        {
+          changelogPosts.length === 0 && (
+            <div class="py-10 text-center text-gray-500">
+              <p>No changelog entries found.</p>
+            </div>
+          )
+        }
       </div>
-
-      <Posts posts={changelogPosts} />
-
-      {
-        changelogPosts.length === 0 && (
-          <div class="py-10 text-center text-gray-500">
-            <p>No changelog entries found.</p>
-          </div>
-        )
-      }
     </div>
   </section>
 </Layout>
