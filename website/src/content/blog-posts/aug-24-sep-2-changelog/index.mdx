@@ -1,0 +1,60 @@
+---
+title: Aug 24 - Sep 2 Changelog
+summary: >-
+  Major updates: new React client application with authentication, CI/CD
+  infrastructure, Speakeasy SDK integration, and significant server improvements
+  with Docker containerization.
+author: Nick Khami
+authorTwitter: https://x.com/skeptrune
+authorLinkedIn: https://www.linkedin.com/in/nkhami/
+createdAt: 2025-09-02T15:23:00.000Z
+lastUpdatedAt: 2025-09-02T15:23:00.000Z
+isDraft: false
+categories:
+  - changelog
+coverImage: /src/assets/images/blog-posts/aug-24-sep-2-changelog/coverImage.png
+ogSection: Technology
+---
+***TL;DR: We built a comprehensive React client application with shadcn/ui components and authentication, established robust CI/CD pipelines, integrated Speakeasy SDK generation, and containerized the entire stack with Docker while cleaning up legacy code.***
+
+#### 🌐 Website
+
+* **Changelog System**: Added dedicated changelog page to the website for better transparency
+* **SEO Improvements**: Fixed dead social links and optimized RSS feed structure
+* **Content Updates**: Updated FAQ copy and website package dependencies
+* **Service Worker**: Added sw\.js route support for better PWA functionality
+
+#### 💻 Client (New React Application)
+
+* **Application Scaffold**: Brand new React application with Prettier and ESLint configuration
+* **shadcn/ui Integration**: Complete component library setup with modern UI components
+* **Authentication System**: Full login and registration pages with external email validation
+* **Component Library**: Added new UI components including form elements and layout components
+* **Styling System**: Integrated Tailwind CSS with custom configuration
+* **Code Quality**: Strict Prettier and ESLint rules with JSDoc documentation requirements
+* **SSR Configuration**: Server-side rendering toggle implementation
+* **OG Meta Tags**: Proper Open Graph information for social media sharing
+
+#### 🔧 Server
+
+* **Authentication Backend**: Fully working username/password authentication system
+* **Code Cleanup**: Removed legacy code not relevant to Patron's core functionality
+* **Rust Improvements**: Fixed nearly all Clippy warnings with maximum strictness enabled
+* **Docker Integration**: Complete containerization with build optimizations
+* **Python Scripts**: Fixed OAuth testing script issues
+
+#### 🚀 DevOps & CI/CD
+
+* **Speakeasy SDK**: Automated SDK generation with CI integration
+* **OpenAPI Pipeline**: Automated OpenAPI specification generation and deployment
+* **Docker Builds**: Container build actions with cache optimization
+* **Lint & Format**: Automated code quality checks for React server
+* **Build Optimization**: Fixed cache dependency issues and Docker build problems
+* **RedDoc Integration**: API documentation generation pipeline
+
+#### 🛠️ Developer Experience
+
+* **SDK Tooling**: Convenience scripts for OpenAPI and SDK regeneration
+* **Error Handling**: Fixed SDK issues with text/plain to application/json error conversion
+* **Documentation**: Updated README to reflect latest development progress
+* **Daily Updates**: Cleaned up markdown files and streamlined documentation
