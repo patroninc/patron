@@ -26,6 +26,10 @@ import { Result } from "../types/fp.js";
 
 /**
  * Forgot password
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if database operations fail or email service fails.
  */
 export function authForgotPassword(
   client: PatrontsCore,

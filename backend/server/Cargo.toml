@@ -3,6 +3,12 @@ name = "backend"
 version = "0.1.0"
 edition = "2021"
 default-run = "server"
+description = "Backend server and shared utilities for the patron application"
+license = "MIT"
+repository = "https://github.com/patroninc/patron"
+readme = "../README.md"
+keywords = ["api", "backend", "web-server"]
+categories = ["web-programming", "api-bindings"]
 
 [lib]
 name = "backend"

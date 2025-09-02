@@ -1,3 +1,5 @@
+#![allow(clippy::unused_async)]
+
 use actix_session::Session;
 use actix_web::{web, HttpResponse, Result};
 use chrono::Utc;
@@ -26,7 +28,7 @@ use argon2::{
     "password": "password123"
 }))]
 pub struct RegisterRequest {
-    /// User's email address
+    /// Email address for new user registration
     pub email: String,
     /// User's password (minimum 8 characters)
     pub password: String,
@@ -39,7 +41,7 @@ pub struct RegisterRequest {
     "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
 }))]
 pub struct RegisterResponse {
-    /// Success message
+    /// Registration confirmation message
     pub message: String,
     /// Unique identifier of the registered user
     pub user_id: Uuid,
@@ -52,7 +54,7 @@ pub struct RegisterResponse {
     "password": "password123"
 }))]
 pub struct LoginRequest {
-    /// User's email address
+    /// Email address for login authentication
     pub email: String,
     /// User's password
     pub password: String,
@@ -71,7 +73,7 @@ pub struct LoginRequest {
     }
 }))]
 pub struct LoginResponse {
-    /// Success message
+    /// Login success message
     pub message: String,
     /// User information
     pub user: UserInfo,
@@ -83,7 +85,7 @@ pub struct LoginResponse {
     "message": "Logged out successfully"
 }))]
 pub struct LogoutResponse {
-    /// Success message
+    /// Logout confirmation message
     pub message: String,
 }
 
@@ -93,7 +95,7 @@ pub struct LogoutResponse {
     "email": "user@example.com"
 }))]
 pub struct ForgotPasswordRequest {
-    /// User's email address
+    /// Email address to send password reset link to
     #[schema(example = "user@example.com")]
     pub email: String,
 }
@@ -104,7 +106,7 @@ pub struct ForgotPasswordRequest {
     "message": "If the email exists in our system, a password reset link has been sent."
 }))]
 pub struct ForgotPasswordResponse {
-    /// Status message
+    /// Password reset request status message
     pub message: String,
 }
 
@@ -127,12 +129,12 @@ pub struct ResetPasswordRequest {
     "message": "Password has been reset successfully"
 }))]
 pub struct ResetPasswordResponse {
-    /// Success message
+    /// Password reset confirmation message
     pub message: String,
 }
 
 /// Helper function to validate password (simple 8+ character check)
-fn validate_password(password: &str) -> Result<(), &'static str> {
+const fn validate_password(password: &str) -> Result<(), &'static str> {
     if password.len() < 8 {
         return Err("Password must be at least 8 characters long");
     }
@@ -166,7 +168,7 @@ fn verify_password(password: &str, hash: &str) -> Result<bool, ServiceError> {
 /// Helper function to create a JSON error response
 fn json_error(message: &str) -> HttpResponse {
     HttpResponse::BadRequest().json(ErrorResponse {
-        error: message.to_string(),
+        error: message.to_owned(),
         code: None,
     })
 }
@@ -179,7 +181,98 @@ fn set_user_session(session: &Session, user: &User) -> Result<(), ServiceError> 
     Ok(())
 }
 
-/// Google OAuth redirect
+/// Helper function to verify `OAuth` state
+fn verify_oauth_state(session: &Session, received_state: &str) -> Result<(), HttpResponse> {
+    let stored_state: Option<String> = session
+        .get("oauth_state")
+        .map_err(|e| json_error(&format!("Failed to get OAuth state from session: {e}")))
+        .map_err(|_session_err| json_error("Session error"))?;
+
+    let Some(stored_oauth_state) = stored_state else {
+        return Err(json_error("Invalid OAuth state"));
+    };
+
+    if stored_oauth_state != received_state {
+        return Err(json_error("OAuth state mismatch"));
+    }
+
+    Ok(())
+}
+
+/// Helper function to update existing user with Google info
+async fn update_existing_user_with_google_info(
+    mut existing_user: User,
+    google_user_info: &shared::services::auth::GoogleUserInfo,
+    conn: &mut diesel_async::AsyncPgConnection,
+) -> Result<User, ServiceError> {
+    use shared::schema::users::dsl as users_dsl;
+
+    // Update user with Google info if missing
+    if existing_user.display_name.is_none() && !google_user_info.name.is_empty() {
+        existing_user.display_name = Some(google_user_info.name.clone());
+    }
+    if existing_user.avatar_url.is_none() && !google_user_info.picture.is_empty() {
+        existing_user.avatar_url = Some(google_user_info.picture.clone());
+    }
+
+    // Update auth provider
+    let new_auth_provider = match existing_user.auth_provider.as_str() {
+        "email" => "both".to_owned(),
+        _ => existing_user.auth_provider.clone(),
+    };
+
+    let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&existing_user.id)))
+        .set((
+            users_dsl::display_name.eq(&existing_user.display_name),
+            users_dsl::avatar_url.eq(&existing_user.avatar_url),
+            users_dsl::auth_provider.eq(&new_auth_provider),
+            users_dsl::email_verified.eq(true),
+            users_dsl::last_login.eq(Some(Utc::now().naive_utc())),
+        ))
+        .execute(conn)
+        .await
+        .map_err(ServiceError::from)?;
+
+    existing_user.auth_provider = new_auth_provider;
+    existing_user.email_verified = true;
+    existing_user.last_login = Some(Utc::now().naive_utc());
+
+    Ok(existing_user)
+}
+
+/// Helper function to create new user from Google info
+async fn create_new_user_from_google_info(
+    google_user_info: &shared::services::auth::GoogleUserInfo,
+    conn: &mut diesel_async::AsyncPgConnection,
+) -> Result<User, ServiceError> {
+    use shared::schema::users::dsl as users_dsl;
+
+    let new_user = User {
+        id: Uuid::new_v4(),
+        email: google_user_info.email.clone(),
+        display_name: Some(google_user_info.name.clone()),
+        avatar_url: Some(google_user_info.picture.clone()),
+        auth_provider: "google".to_owned(),
+        email_verified: true,
+        password_hash: None,
+        created_at: None,
+        updated_at: None,
+        last_login: Some(Utc::now().naive_utc()),
+    };
+
+    let _ = diesel::insert_into(users_dsl::users)
+        .values(&new_user)
+        .execute(conn)
+        .await
+        .map_err(ServiceError::from)?;
+
+    Ok(new_user)
+}
+
+/// Google `OAuth` redirect
+///
+/// # Errors
+/// Returns an error if session operations fail or `OAuth` service configuration is invalid.
 #[utoipa::path(
     get,
     path = "/auth/google",
@@ -187,7 +280,12 @@ fn set_user_session(session: &Session, user: &User) -> Result<(), ServiceError> 
     tag = "Auth",
     responses(
         (status = 302, description = "Redirect to Google OAuth consent screen"),
-        (status = 500, description = "Internal server error", body = ErrorResponse),
+        (status = 500, description = "OAuth initialization failed or session storage error", body = ErrorResponse,
+            example = json!({
+                "error": "Failed to initialize OAuth session",
+                "code": "OAUTH_SESSION_ERROR"
+            })
+        ),
     )
 )]
 pub async fn google_auth_redirect(
@@ -210,7 +308,10 @@ pub async fn google_auth_redirect(
         .finish())
 }
 
-/// Google OAuth callback
+/// Google `OAuth` callback
+///
+/// # Errors
+/// Returns an error if `OAuth` state verification fails, token exchange fails, or database operations fail.
 #[utoipa::path(
     get,
     path = "/auth/google/callback",
@@ -222,8 +323,18 @@ pub async fn google_auth_redirect(
     ),
     responses(
         (status = 302, description = "Redirect to frontend application"),
-        (status = 400, description = "Invalid authorization code or state", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse),
+        (status = 400, description = "Invalid authorization code or state", body = ErrorResponse,
+            example = json!({
+                "error": "Invalid authorization code",
+                "code": "OAUTH_INVALID_CODE"
+            })
+        ),
+        (status = 500, description = "OAuth service error or database connection failed", body = ErrorResponse,
+            example = json!({
+                "error": "OAuth provider connection failed",
+                "code": "OAUTH_PROVIDER_ERROR"
+            })
+        ),
     )
 )]
 pub async fn google_auth_callback(
@@ -234,20 +345,9 @@ pub async fn google_auth_callback(
 ) -> Result<HttpResponse, actix_web::Error> {
     use shared::schema::users::dsl as users_dsl;
 
-    let pool = db_service.pool();
-    let mut conn = pool.get().await.map_err(ServiceError::from)?;
-
-    // Verify the state parameter from session
-    let stored_state: Option<String> = session.get("oauth_state").map_err(|e| {
-        ServiceError::Unknown(format!("Failed to get OAuth state from session: {e}"))
-    })?;
-
-    let Some(stored_state) = stored_state else {
-        return Ok(json_error("Invalid OAuth state"));
-    };
-
-    if stored_state != query.state {
-        return Ok(json_error("OAuth state mismatch"));
+    // Verify OAuth state
+    if let Err(response) = verify_oauth_state(&session, &query.state) {
+        return Ok(response);
     }
 
     let redirect_uri: String = session
@@ -265,66 +365,21 @@ pub async fn google_auth_callback(
         .get_user_info(&token_response.access_token)
         .await?;
 
+    let pool = db_service.pool();
+    let mut conn = pool.get().await.map_err(ServiceError::from)?;
+
     // Find or create user
     let user = match users_dsl::users
         .filter(users_dsl::email.eq(&google_user_info.email))
         .first::<User>(&mut conn)
         .await
     {
-        Ok(mut existing_user) => {
-            // Update user with Google info if missing
-            if existing_user.display_name.is_none() && !google_user_info.name.is_empty() {
-                existing_user.display_name = Some(google_user_info.name.clone());
-            }
-            if existing_user.avatar_url.is_none() && !google_user_info.picture.is_empty() {
-                existing_user.avatar_url = Some(google_user_info.picture.clone());
-            }
-
-            // Update auth provider
-            let new_auth_provider = match existing_user.auth_provider.as_str() {
-                "email" => "both".to_string(),
-                _ => existing_user.auth_provider.clone(),
-            };
-
-            let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&existing_user.id)))
-                .set((
-                    users_dsl::display_name.eq(&existing_user.display_name),
-                    users_dsl::avatar_url.eq(&existing_user.avatar_url),
-                    users_dsl::auth_provider.eq(&new_auth_provider),
-                    users_dsl::email_verified.eq(true),
-                    users_dsl::last_login.eq(Some(Utc::now().naive_utc())),
-                ))
-                .execute(&mut conn)
-                .await
-                .map_err(ServiceError::from)?;
-
-            existing_user.auth_provider = new_auth_provider;
-            existing_user.email_verified = true;
-            existing_user.last_login = Some(Utc::now().naive_utc());
-            existing_user
+        Ok(existing_user) => {
+            update_existing_user_with_google_info(existing_user, &google_user_info, &mut conn)
+                .await?
         }
         Err(diesel::result::Error::NotFound) => {
-            // Create new user
-            let new_user = User {
-                id: Uuid::new_v4(),
-                email: google_user_info.email.clone(),
-                display_name: Some(google_user_info.name.clone()),
-                avatar_url: Some(google_user_info.picture.clone()),
-                auth_provider: "google".to_string(),
-                email_verified: true,
-                password_hash: None,
-                created_at: None,
-                updated_at: None,
-                last_login: Some(Utc::now().naive_utc()),
-            };
-
-            let _ = diesel::insert_into(users_dsl::users)
-                .values(&new_user)
-                .execute(&mut conn)
-                .await
-                .map_err(ServiceError::from)?;
-
-            new_user
+            create_new_user_from_google_info(&google_user_info, &mut conn).await?
         }
         Err(e) => return Err(ServiceError::from(e).into()),
     };
@@ -343,6 +398,9 @@ pub async fn google_auth_callback(
 }
 
 /// User registration
+///
+/// # Errors
+/// Returns an error if input validation fails, user already exists, or database operations fail.
 #[utoipa::path(
     post,
     path = "/auth/register",
@@ -351,8 +409,18 @@ pub async fn google_auth_callback(
     request_body(content = RegisterRequest, description = "User registration data including email and password"),
     responses(
         (status = 200, description = "Registration successful", body = RegisterResponse),
-        (status = 400, description = "Invalid input or email already exists", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse),
+        (status = 400, description = "Invalid input or email already exists", body = ErrorResponse,
+            example = json!({
+                "error": "Email address already registered",
+                "code": "AUTH_EMAIL_EXISTS"
+            })
+        ),
+        (status = 500, description = "Registration service error or email delivery failed", body = ErrorResponse,
+            example = json!({
+                "error": "Database connection failed",
+                "code": "DATABASE_ERROR"
+            })
+        ),
     )
 )]
 pub async fn register(
@@ -394,7 +462,7 @@ pub async fn register(
         email: body.email.clone(),
         display_name: None,
         avatar_url: None,
-        auth_provider: "email".to_string(),
+        auth_provider: "email".to_owned(),
         email_verified: false,
         password_hash: Some(password_hash),
         created_at: None,
@@ -434,26 +502,26 @@ pub async fn register(
     );
 
     // Send email (don't fail registration if email fails)
-    if let Err(e) = email_service
-        .send_html_email(
-            &body.email,
-            "Please verify your email address",
-            &email_body,
-            None,
-            None,
-        )
-        .await
-    {
-        tracing::warn!("Failed to send verification email: {}", e);
-    }
+    email_service
+        .send_html_email(shared::services::email::HtmlEmailContent {
+            to: &body.email,
+            subject: "Please verify your email address",
+            html_body: &email_body,
+            text_body: None,
+            from: None,
+        })
+        .await?;
 
     Ok(HttpResponse::Ok().json(RegisterResponse {
-        message: "Registration successful. Please check your email for verification.".to_string(),
+        message: "Registration successful. Please check your email for verification.".to_owned(),
         user_id: new_user.id,
     }))
 }
 
 /// Email verification
+///
+/// # Errors
+/// Returns an error if token is invalid, expired, or database operations fail.
 #[utoipa::path(
     get,
     path = "/auth/verify-email",
@@ -464,10 +532,21 @@ pub async fn register(
     ),
     responses(
         (status = 302, description = "Redirect to frontend after verification"),
-        (status = 400, description = "Invalid or expired token", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse),
+        (status = 400, description = "Invalid or expired token", body = ErrorResponse,
+            example = json!({
+                "error": "Invalid or expired verification token",
+                "code": "AUTH_INVALID_VERIFICATION_TOKEN"
+            })
+        ),
+        (status = 500, description = "Email verification service error or database failure", body = ErrorResponse,
+            example = json!({
+                "error": "Email verification service unavailable",
+                "code": "VERIFICATION_SERVICE_ERROR"
+            })
+        ),
     )
 )]
+#[allow(clippy::implicit_hasher)]
 pub async fn verify_email(
     session: Session,
     db_service: web::Data<shared::services::db::DbService>,
@@ -490,14 +569,14 @@ pub async fn verify_email(
         .get("email_verification_user_id")
         .map_err(|e| ServiceError::Unknown(format!("Failed to get user ID from session: {e}")))?;
 
-    let Some(stored_token) = stored_token else {
+    let Some(stored_verification_token) = stored_token else {
         return Ok(json_error("Invalid or expired verification token"));
     };
-    let Some(user_id) = user_id else {
+    let Some(verification_user_id) = user_id else {
         return Ok(json_error("Invalid verification session"));
     };
 
-    if stored_token != *token {
+    if stored_verification_token != *token {
         return Ok(json_error("Invalid verification token"));
     }
 
@@ -506,7 +585,7 @@ pub async fn verify_email(
 
     // Get and update user
     let mut user: User = users_dsl::users
-        .filter(users_dsl::id.eq(&user_id))
+        .filter(users_dsl::id.eq(&verification_user_id))
         .first(&mut conn)
         .await
         .map_err(ServiceError::from)?;
@@ -550,6 +629,9 @@ pub async fn verify_email(
 }
 
 /// User login
+///
+/// # Errors
+/// Returns an error if credentials are invalid, email is not verified, or database operations fail.
 #[utoipa::path(
     post,
     path = "/auth/login",
@@ -558,8 +640,18 @@ pub async fn verify_email(
     request_body(content = LoginRequest, description = "User login credentials including email and password"),
     responses(
         (status = 200, description = "Login successful", body = LoginResponse),
-        (status = 400, description = "Invalid credentials or email not verified", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse),
+        (status = 400, description = "Invalid credentials or email not verified", body = ErrorResponse,
+            example = json!({
+                "error": "Invalid email or password",
+                "code": "AUTH_INVALID_CREDENTIALS"
+            })
+        ),
+        (status = 500, description = "Login service error or database connection failed", body = ErrorResponse,
+            example = json!({
+                "error": "Authentication service unavailable",
+                "code": "AUTH_SERVICE_ERROR"
+            })
+        ),
     )
 )]
 pub async fn login(
@@ -586,7 +678,7 @@ pub async fn login(
     };
 
     // Check if user has password (not OAuth-only)
-    let Some(password_hash) = &user.password_hash else {
+    let Some(ref password_hash) = user.password_hash else {
         return Ok(json_error(
             "This account uses Google sign-in. Please use the Google login button.",
         ));
@@ -617,12 +709,15 @@ pub async fn login(
     set_user_session(&session, &user)?;
 
     Ok(HttpResponse::Ok().json(LoginResponse {
-        message: "Login successful".to_string(),
+        message: "Login successful".to_owned(),
         user: user.into(),
     }))
 }
 
 /// Get current user info
+///
+/// # Errors
+/// Returns an error if user is not authenticated or serialization fails.
 #[utoipa::path(
     get,
     path = "/auth/me",
@@ -636,7 +731,12 @@ pub async fn login(
                 "created_at": "2023-01-01T00:00:00"
             })
         ),
-        (status = 401, description = "Not authenticated", body = ErrorResponse),
+        (status = 401, description = "Not authenticated", body = ErrorResponse,
+            example = json!({
+                "error": "Not authenticated",
+                "code": "AUTH_REQUIRED"
+            })
+        ),
     )
 )]
 pub async fn get_me(user: User) -> Result<HttpResponse, actix_web::Error> {
@@ -644,6 +744,9 @@ pub async fn get_me(user: User) -> Result<HttpResponse, actix_web::Error> {
 }
 
 /// Logout
+///
+/// # Errors
+/// Returns an error if session operations fail.
 #[utoipa::path(
     get,
     path = "/auth/logout",
@@ -656,11 +759,14 @@ pub async fn get_me(user: User) -> Result<HttpResponse, actix_web::Error> {
 pub async fn logout(session: Session) -> Result<HttpResponse, actix_web::Error> {
     session.purge();
     Ok(HttpResponse::Ok().json(LogoutResponse {
-        message: "Logged out successfully".to_string(),
+        message: "Logged out successfully".to_owned(),
     }))
 }
 
 /// Forgot password
+///
+/// # Errors
+/// Returns an error if database operations fail or email service fails.
 #[utoipa::path(
     post,
     path = "/auth/forgot-password",
@@ -669,7 +775,12 @@ pub async fn logout(session: Session) -> Result<HttpResponse, actix_web::Error> 
     request_body(content = ForgotPasswordRequest, description = "Email address for password reset request"),
     responses(
         (status = 200, description = "Password reset email sent", body = ForgotPasswordResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse),
+        (status = 500, description = "Password reset service error or email delivery failed", body = ErrorResponse,
+            example = json!({
+                "error": "Email service unavailable",
+                "code": "EMAIL_SERVICE_ERROR"
+            })
+        ),
     )
 )]
 pub async fn forgot_password(
@@ -687,7 +798,7 @@ pub async fn forgot_password(
     // Always return same response to prevent user enumeration
     let response = ForgotPasswordResponse {
         message: "If the email exists in our system, a password reset link has been sent."
-            .to_string(),
+            .to_owned(),
     };
 
     // Check if user exists
@@ -727,24 +838,24 @@ pub async fn forgot_password(
             <p>This link will expire in 2 hours.</p>"
         );
 
-        if let Err(e) = email_service
-            .send_html_email(
-                &body.email,
-                "Password Reset Request",
-                &email_body,
-                None,
-                None,
-            )
-            .await
-        {
-            tracing::warn!("Failed to send password reset email: {}", e);
-        }
+        email_service
+            .send_html_email(shared::services::email::HtmlEmailContent {
+                to: &body.email,
+                subject: "Password Reset Request",
+                html_body: &email_body,
+                text_body: None,
+                from: None,
+            })
+            .await?;
     }
 
     Ok(HttpResponse::Ok().json(response))
 }
 
 /// Reset password
+///
+/// # Errors
+/// Returns an error if token is invalid, password validation fails, or database operations fail.
 #[utoipa::path(
     post,
     path = "/auth/reset-password",
@@ -753,8 +864,18 @@ pub async fn forgot_password(
     request_body(content = ResetPasswordRequest, description = "Password reset token and new password"),
     responses(
         (status = 200, description = "Password reset successful", body = ResetPasswordResponse),
-        (status = 400, description = "Invalid token or password", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse),
+        (status = 400, description = "Invalid token or password", body = ErrorResponse,
+            example = json!({
+                "error": "Invalid or expired password reset token",
+                "code": "AUTH_INVALID_RESET_TOKEN"
+            })
+        ),
+        (status = 500, description = "Password update service error or database connection failed", body = ErrorResponse,
+            example = json!({
+                "error": "Password reset service unavailable",
+                "code": "RESET_SERVICE_ERROR"
+            })
+        ),
     )
 )]
 pub async fn reset_password(
@@ -777,14 +898,14 @@ pub async fn reset_password(
         .get("password_reset_user_id")
         .map_err(|e| ServiceError::Unknown(format!("Failed to get user ID from session: {e}")))?;
 
-    let Some(stored_token) = stored_token else {
+    let Some(stored_reset_token) = stored_token else {
         return Ok(json_error("Invalid or expired password reset token"));
     };
-    let Some(user_id) = user_id else {
+    let Some(reset_user_id) = user_id else {
         return Ok(json_error("Invalid reset session"));
     };
 
-    if stored_token != body.token {
+    if stored_reset_token != body.token {
         return Ok(json_error("Invalid password reset token"));
     }
 
@@ -795,7 +916,7 @@ pub async fn reset_password(
     let password_hash = hash_password(&body.new_password)?;
 
     // Update user password
-    let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&user_id)))
+    let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&reset_user_id)))
         .set(users_dsl::password_hash.eq(password_hash))
         .execute(&mut conn)
         .await
@@ -803,7 +924,7 @@ pub async fn reset_password(
 
     // Get updated user and set session
     let user: User = users_dsl::users
-        .filter(users_dsl::id.eq(&user_id))
+        .filter(users_dsl::id.eq(&reset_user_id))
         .first(&mut conn)
         .await
         .map_err(ServiceError::from)?;
@@ -815,6 +936,6 @@ pub async fn reset_password(
     let _ = session.remove("password_reset_user_id");
 
     Ok(HttpResponse::Ok().json(ResetPasswordResponse {
-        message: "Password has been reset successfully".to_string(),
+        message: "Password has been reset successfully".to_owned(),
     }))
 }

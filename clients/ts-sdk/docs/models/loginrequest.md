@@ -15,7 +15,7 @@ let value: LoginRequest = {
 
 ## Fields
 
-| Field                | Type                 | Required             | Description          |
-| -------------------- | -------------------- | -------------------- | -------------------- |
-| `email`              | *string*             | :heavy_check_mark:   | User's email address |
-| `password`           | *string*             | :heavy_check_mark:   | User's password      |
+| Field                                  | Type                                   | Required                               | Description                            |
+| -------------------------------------- | -------------------------------------- | -------------------------------------- | -------------------------------------- |
+| `email`                                | *string*                               | :heavy_check_mark:                     | Email address for login authentication |
+| `password`                             | *string*                               | :heavy_check_mark:                     | User's password                        |

@@ -65,8 +65,24 @@ pub struct EmailService {
     smtp_config: Option<SmtpConfig>,
 }
 
+/// Struct to hold HTML email content
+#[derive(Debug)]
+pub struct HtmlEmailContent<'email_content> {
+    /// The recipient email address
+    pub to: &'email_content str,
+    /// The subject of the email
+    pub subject: &'email_content str,
+    /// The HTML body of the email
+    pub html_body: &'email_content str,
+    /// The text body of the email
+    pub text_body: Option<&'email_content str>,
+    /// The sender email address
+    pub from: Option<&'email_content str>,
+}
+
 impl EmailService {
-    /// Create a new EmailService from environment variables
+    /// Create a new `EmailService` from environment variables
+    #[must_use]
     pub fn from_env() -> Self {
         let smtp_config =
             if let (Ok(host), Ok(port_str), Ok(username), Ok(password), Ok(from_address)) = (
@@ -76,7 +92,7 @@ impl EmailService {
                 env::var("SMTP_PASSWORD"),
                 env::var("SMTP_FROM_ADDRESS"),
             ) {
-                if let Ok(port) = port_str.parse::<u16>() {
+                port_str.parse::<u16>().map_or(None, |port| {
                     Some(SmtpConfig {
                         host,
                         port,
@@ -84,9 +100,7 @@ impl EmailService {
                         password,
                         from_address,
                     })
-                } else {
-                    None
-                }
+                })
             } else {
                 None
             };
@@ -95,15 +109,21 @@ impl EmailService {
     }
 
     /// Get SMTP configuration or return an error if not configured
+    ///
+    /// # Errors
+    /// Returns a `ServiceError::Config` if SMTP configuration is not set
     pub fn smtp_config(&self) -> Result<&SmtpConfig, ServiceError> {
         self.smtp_config.as_ref().ok_or_else(|| {
             ServiceError::Config(
-                "SMTP configuration not set. Please set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, and SMTP_FROM_ADDRESS environment variables".to_string()
+                "SMTP configuration not set. Please set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, and SMTP_FROM_ADDRESS environment variables".to_owned()
             )
         })
     }
 
     /// Send a plain text email
+    ///
+    /// # Errors
+    /// Returns a `ServiceError` if SMTP configuration is missing, email addresses are invalid, or email sending fails
     pub async fn send_text_email(
         &self,
         to: &str,
@@ -124,36 +144,33 @@ impl EmailService {
                     .parse()
                     .map_err(|e| ServiceError::Config(format!("Invalid to email address: {e}")))?)
                 .subject(subject)
-                .body(body.to_string())
+                .body(body.to_owned())
                 .map_err(|e| ServiceError::Config(format!("Failed to build email: {e}")))?;
 
         self.send_email(email).await
     }
 
     /// Send an HTML email
-    pub async fn send_html_email(
-        &self,
-        to: &str,
-        subject: &str,
-        html_body: &str,
-        text_body: Option<&str>,
-        from: Option<&str>,
-    ) -> Result<(), ServiceError> {
+    ///
+    /// # Errors
+    /// Returns a `ServiceError` if SMTP configuration is missing, email addresses are invalid, or email sending fails
+    pub async fn send_html_email(&self, content: HtmlEmailContent<'_>) -> Result<(), ServiceError> {
         let config = self.smtp_config()?;
 
-        let from_email = from.unwrap_or(&config.from_address);
+        let from_email = content.from.unwrap_or(&config.from_address);
 
         let email_builder =
             Message::builder()
                 .from(from_email.parse().map_err(|e| {
                     ServiceError::Config(format!("Invalid from email address: {e}"))
                 })?)
-                .to(to
+                .to(content
+                    .to
                     .parse()
                     .map_err(|e| ServiceError::Config(format!("Invalid to email address: {e}")))?)
-                .subject(subject);
+                .subject(content.subject);
 
-        let email = if let Some(text) = text_body {
+        let email = if let Some(text) = content.text_body {
             // Send multipart email with both HTML and text
             email_builder
                 .multipart(
@@ -161,12 +178,12 @@ impl EmailService {
                         .singlepart(
                             SinglePart::builder()
                                 .header(header::ContentType::TEXT_PLAIN)
-                                .body(text.to_string()),
+                                .body(text.to_owned()),
                         )
                         .singlepart(
                             SinglePart::builder()
                                 .header(header::ContentType::TEXT_HTML)
-                                .body(html_body.to_string()),
+                                .body(content.html_body.to_owned()),
                         ),
                 )
                 .map_err(|e| {
@@ -176,7 +193,7 @@ impl EmailService {
             // Send HTML-only email
             email_builder
                 .header(header::ContentType::TEXT_HTML)
-                .body(html_body.to_string())
+                .body(content.html_body.to_owned())
                 .map_err(|e| ServiceError::Config(format!("Failed to build HTML email: {e}")))?
         };
 

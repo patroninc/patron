@@ -13,8 +13,11 @@ pub struct S3Service {
 }
 
 impl S3Service {
-    /// Create a new S3Service instance
-    pub async fn new(bucket: impl Into<String>) -> Result<Self, ServiceError> {
+    /// Create a new `S3Service` instance
+    /// 
+    /// # Errors
+    /// Returns a `ServiceError` if AWS configuration loading fails
+    pub async fn new<T: Into<String>>(bucket: T) -> Result<Self, ServiceError> {
         let config = aws_config::load_from_env().await;
         let client = Client::new(&config);
         Ok(Self {
@@ -24,6 +27,9 @@ impl S3Service {
     }
 
     /// Upload an object to S3 and return a presigned URL
+    /// 
+    /// # Errors
+    /// Returns a `ServiceError` if the S3 upload fails or presigned URL generation fails
     #[instrument(skip_all, fields(key = %key, bucket = %self.bucket))]
     pub async fn put_object(&self, key: &str, bytes: Vec<u8>) -> Result<String, ServiceError> {
         let _ = self
@@ -45,11 +51,14 @@ impl S3Service {
             )
             .await?
             .uri()
-            .to_string();
+            .to_owned();
         Ok(url)
     }
 
     /// Upload an audio clip to S3 and return the URL and key
+    /// 
+    /// # Errors
+    /// Returns a `ServiceError` if the S3 upload or presigned URL generation fails
     #[instrument(skip_all, fields(id = %id, bucket = %self.bucket))]
     pub async fn upload_audio_clip(
         &self,
@@ -62,6 +71,9 @@ impl S3Service {
     }
 
     /// Upload a video to S3 and return the URL and key
+    /// 
+    /// # Errors
+    /// Returns a `ServiceError` if the S3 upload or presigned URL generation fails
     #[instrument(skip_all, fields(id = %id, bucket = %self.bucket))]
     pub async fn upload_video(
         &self,
@@ -74,6 +86,9 @@ impl S3Service {
     }
 
     /// Generate a presigned URL for getting an object from S3
+    /// 
+    /// # Errors
+    /// Returns a `ServiceError` if presigned URL generation fails
     #[instrument(skip_all, fields(key = %key, bucket = %self.bucket))]
     pub async fn get_presigned_url(
         &self,
@@ -91,11 +106,14 @@ impl S3Service {
             )
             .await?
             .uri()
-            .to_string();
+            .to_owned();
         Ok(url)
     }
 
     /// Deletes an object from the bucket.
+    /// 
+    /// # Errors
+    /// Returns a `ServiceError` if the S3 delete operation fails
     #[instrument(skip_all, fields(key = %key, bucket = %self.bucket))]
     pub async fn delete_object(&self, key: &str) -> Result<(), ServiceError> {
         let _ = self

@@ -60,16 +60,15 @@ arithmetic_side_effects = "warn"
 integer_division = "warn"
 let_underscore_must_use = "warn"
 map_err_ignore = "warn"
-missing_inline_in_public_items = "warn"
-mod_module_files = "warn"
+missing_inline_in_public_items = "allow"
+mod_module_files = "allow"
 modulo_arithmetic = "warn"
 multiple_inherent_impl = "warn"
 panic = "warn"
 panic_in_result_fn = "warn"
 partial_pub_fields = "warn"
 pattern_type_mismatch = "warn"
-print_stderr = "warn"
-print_stdout = "warn"
+print_stdout = "allow"
 pub_use = "warn"
 rc_buffer = "warn"
 rc_mutex = "warn"
@@ -100,12 +99,13 @@ wildcard_enum_match_arm = "warn"
 # Cargo lints
 cargo = { level = "warn", priority = -1 }
 cargo_common_metadata = "warn"
-multiple_crate_versions = "warn"
+multiple_crate_versions = "allow"
 redundant_feature_names = "warn"
 wildcard_dependencies = "warn"
 
 # Nursery lints (experimental but useful)
 nursery = { level = "warn", priority = -1 }
+future_not_send = "allow"
 
 [workspace.lints.rust]
 # Rust compiler lints

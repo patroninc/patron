@@ -12,7 +12,7 @@ import { SDKValidationError } from "./errors/sdkvalidationerror.js";
  */
 export type RegisterRequest = {
   /**
-   * User's email address
+   * Email address for new user registration
    */
   email: string;
   /**

@@ -26,6 +26,10 @@ import { Result } from "../types/fp.js";
 
 /**
  * User login
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if credentials are invalid, email is not verified, or database operations fail.
  */
 export function authLogin(
   client: PatrontsCore,

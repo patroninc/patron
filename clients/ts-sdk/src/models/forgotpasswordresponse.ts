@@ -12,7 +12,7 @@ import { SDKValidationError } from "./errors/sdkvalidationerror.js";
  */
 export type ForgotPasswordResponse = {
   /**
-   * Status message
+   * Password reset request status message
    */
   message: string;
 };

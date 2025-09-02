@@ -26,7 +26,11 @@ import { APICall, APIPromise } from "../types/async.js";
 import { Result } from "../types/fp.js";
 
 /**
- * Google OAuth callback
+ * Google `OAuth` callback
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if `OAuth` state verification fails, token exchange fails, or database operations fail.
  */
 export function authGoogleCallback(
   client: PatrontsCore,

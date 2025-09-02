@@ -1,18 +1,19 @@
 use crate::{errors::ServiceError, services::config::GoogleOAuthConfig};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use std::fmt::Write as _;
 use tracing::instrument;
 
-/// Service for handling Google OAuth authentication.
+/// Service for handling Google `OAuth` authentication.
 #[derive(Clone, Debug)]
 pub struct GoogleOAuthService {
     /// HTTP client for making requests.
     pub client: Client,
-    /// Google OAuth client ID.
+    /// Google `OAuth` client ID.
     pub client_id: String,
-    /// Google OAuth client secret.
+    /// Google `OAuth` client secret.
     pub client_secret: String,
-    /// Redirect URI for OAuth callbacks.
+    /// Redirect URI for `OAuth` callbacks.
     pub redirect_uri: String,
     /// Secret key used for authentication.
     pub auth_secret_key: String,
@@ -22,7 +23,7 @@ pub struct GoogleOAuthService {
     pub backend_url: String,
 }
 
-/// Represents the response from Google's OAuth token endpoint.
+/// Represents the response from Google's `OAuth` token endpoint.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GoogleTokenResponse {
     /// Access token issued by Google.
@@ -40,7 +41,7 @@ pub struct GoogleTokenResponse {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-/// Represents user information returned by Google OAuth.
+/// Represents user information returned by Google `OAuth`.
 pub struct GoogleUserInfo {
     /// The unique identifier for the user.
     pub sub: String,
@@ -56,6 +57,7 @@ pub struct GoogleUserInfo {
 
 impl GoogleOAuthService {
     /// Creates a new instance of `GoogleOAuthService` with the provided configuration.
+    #[must_use]
     pub fn new(config: GoogleOAuthConfig) -> Self {
         Self {
             client: Client::new(),
@@ -68,7 +70,7 @@ impl GoogleOAuthService {
         }
     }
 
-    /// Generates the Google OAuth authorization URL with optional state parameter.
+    /// Generates the Google `OAuth` authorization URL with optional state parameter.
     ///
     /// # Arguments
     ///
@@ -77,6 +79,7 @@ impl GoogleOAuthService {
     /// # Returns
     ///
     /// A String containing the full authorization URL.
+    #[must_use]
     pub fn get_authorization_url(&self, state: Option<&str>) -> String {
         let mut url = format!(
             "https://accounts.google.com/o/oauth2/v2/auth?client_id={}&redirect_uri={}&response_type=code&scope=openid%20email%20profile",
@@ -85,13 +88,17 @@ impl GoogleOAuthService {
         );
 
         if let Some(state_value) = state {
-            url.push_str(&format!("&state={}", urlencoding::encode(state_value)));
+            write!(url, "&state={}", urlencoding::encode(state_value))
+                .expect("Failed to append state parameter");
         }
 
         url
     }
 
-    /// Exchanges an authorization code for a Google OAuth token response.
+    /// Exchanges an authorization code for a Google `OAuth` token response.
+    ///
+    /// # Errors
+    /// Returns a `ServiceError` if the HTTP request fails or Google returns an error
     #[instrument(skip(self))]
     pub async fn exchange_code_for_token(
         &self,
@@ -129,6 +136,9 @@ impl GoogleOAuthService {
     }
 
     /// Retrieves user information from Google using the provided ID token.
+    ///
+    /// # Errors
+    /// Returns a `ServiceError` if the HTTP request fails or Google returns an error
     #[instrument(skip(self))]
     pub async fn get_user_info(&self, id_token: &str) -> Result<GoogleUserInfo, ServiceError> {
         let resp = self

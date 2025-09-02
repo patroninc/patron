@@ -17,5 +17,5 @@ let value: RegisterResponse = {
 
 | Field                                    | Type                                     | Required                                 | Description                              |
 | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- |
-| `message`                                | *string*                                 | :heavy_check_mark:                       | Success message                          |
+| `message`                                | *string*                                 | :heavy_check_mark:                       | Registration confirmation message        |
 | `userId`                                 | *string*                                 | :heavy_check_mark:                       | Unique identifier of the registered user |

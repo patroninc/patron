@@ -1,3 +1,10 @@
+#![allow(clippy::all)]
+#![allow(clippy::pedantic)]
+#![allow(clippy::nursery)]
+#![allow(clippy::cargo)]
+#![allow(clippy::pub_use)]
+#![allow(clippy::expect_used)]
+
 //! To encode a string, do the following:
 //!
 //! ```rust
@@ -29,10 +36,12 @@
 //!
 //! This library returns [`Cow`](https://doc.rust-lang.org/stable/std/borrow/enum.Cow.html) to avoid allocating when decoding/encoding is not needed. Call `.into_owned()` on the `Cow` to get a `Vec` or `String`.
 
-mod enc;
-pub use enc::{encode, encode_binary, Encoded};
+/// URL encoding functionality
+pub mod enc;
+pub use enc::{encode, Encoded};
 
-mod dec;
+/// URL decoding functionality
+pub mod dec;
 pub use dec::{decode, decode_binary};
 
 #[cfg(test)]
@@ -57,57 +66,103 @@ mod tests {
     fn it_decodes_successfully() {
         let expected = String::from("this that");
         let encoded = "this%20that";
-        assert_eq!(expected, decode(encoded).unwrap());
+        assert_eq!(
+            expected,
+            decode(encoded).expect("failed to decode valid URL-encoded string")
+        );
     }
 
     #[test]
     fn it_decodes_successfully_emoji() {
         let expected = String::from("👾 Exterminate!");
         let encoded = "%F0%9F%91%BE%20Exterminate%21";
-        assert_eq!(expected, decode(encoded).unwrap());
+        assert_eq!(
+            expected,
+            decode(encoded).expect("failed to decode valid URL-encoded emoji string")
+        );
     }
 
     #[test]
     fn it_decodes_unsuccessfully_emoji() {
         let bad_encoded_string = "👾 Exterminate!";
 
-        assert_eq!(bad_encoded_string, decode(bad_encoded_string).unwrap());
+        assert_eq!(
+            bad_encoded_string,
+            decode(bad_encoded_string).expect("failed to decode already-decoded string")
+        );
     }
 
     #[test]
     fn misc() {
-        assert_eq!(3, from_hex_digit(b'3').unwrap());
-        assert_eq!(10, from_hex_digit(b'a').unwrap());
-        assert_eq!(15, from_hex_digit(b'F').unwrap());
+        assert_eq!(
+            3,
+            from_hex_digit(b'3').expect("failed to decode hex digit '3'")
+        );
+        assert_eq!(
+            10,
+            from_hex_digit(b'a').expect("failed to decode hex digit 'a'")
+        );
+        assert_eq!(
+            15,
+            from_hex_digit(b'F').expect("failed to decode hex digit 'F'")
+        );
         assert_eq!(None, from_hex_digit(b'G'));
         assert_eq!(None, from_hex_digit(9));
 
         assert_eq!("pureascii", encode("pureascii"));
-        assert_eq!("pureascii", decode("pureascii").unwrap());
+        assert_eq!(
+            "pureascii",
+            decode("pureascii").expect("failed to decode pure ASCII string")
+        );
         assert_eq!("", encode(""));
-        assert_eq!("", decode("").unwrap());
+        assert_eq!("", decode("").expect("failed to decode empty string"));
         assert_eq!("%26a%25b%21c.d%3Fe", encode("&a%b!c.d?e"));
         assert_eq!("%00", encode("\0"));
         assert_eq!("%00x", encode("\0x"));
         assert_eq!("x%00", encode("x\0"));
         assert_eq!("x%00x", encode("x\0x"));
         assert_eq!("aa%00%00bb", encode("aa\0\0bb"));
-        assert_eq!("\0", decode("\0").unwrap());
-        assert!(decode("%F0%0F%91%BE%20Hello%21").is_err());
-        assert_eq!("this that", decode("this%20that").unwrap());
-        assert_eq!("this that%", decode("this%20that%").unwrap());
-        assert_eq!("this that%2", decode("this%20that%2").unwrap());
-        assert_eq!("this that%%", decode("this%20that%%").unwrap());
-        assert_eq!("this that%2%", decode("this%20that%2%").unwrap());
-        assert_eq!("this%2that", decode("this%2that").unwrap());
-        assert_eq!("this%%2that", decode("this%%2that").unwrap());
-        assert_eq!("this%2x&that", decode("this%2x%26that").unwrap());
+        assert_eq!("\0", decode("\0").expect("failed to decode null character"));
+        let _error = decode("%F0%0F%91%BE%20Hello%21")
+            .expect_err("should fail to decode invalid UTF-8 sequence");
+        assert_eq!(
+            "this that",
+            decode("this%20that").expect("failed to decode space character")
+        );
+        assert_eq!(
+            "this that%",
+            decode("this%20that%").expect("failed to decode string with trailing %")
+        );
+        assert_eq!(
+            "this that%2",
+            decode("this%20that%2").expect("failed to decode string with incomplete escape")
+        );
+        assert_eq!(
+            "this that%%",
+            decode("this%20that%%").expect("failed to decode string with double %")
+        );
+        assert_eq!(
+            "this that%2%",
+            decode("this%20that%2%").expect("failed to decode string with partial escape")
+        );
+        assert_eq!(
+            "this%2that",
+            decode("this%2that").expect("failed to decode string with % in middle")
+        );
+        assert_eq!(
+            "this%%2that",
+            decode("this%%2that").expect("failed to decode string with %% sequence")
+        );
+        assert_eq!(
+            "this%2x&that",
+            decode("this%2x%26that").expect("failed to decode mixed encoding")
+        );
         // assert_eq!("this%2&that", decode("this%2%26that").unwrap());
     }
 
     #[test]
     fn lazy_writer() {
-        let mut s = "he".to_string();
+        let mut s = "he".to_owned();
         Encoded("llo").append_to(&mut s);
         assert_eq!("hello", s);
 

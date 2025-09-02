@@ -8,8 +8,8 @@ Authentication and authorization endpoints
 ### Available Operations
 
 * [forgotPassword](#forgotpassword) - Forgot password
-* [googleRedirect](#googleredirect) - Google OAuth redirect
-* [googleCallback](#googlecallback) - Google OAuth callback
+* [googleRedirect](#googleredirect) - Google `OAuth` redirect
+* [googleCallback](#googlecallback) - Google `OAuth` callback
 * [login](#login) - User login
 * [logout](#logout) - Logout
 * [getCurrentUser](#getcurrentuser) - Get current user info
@@ -19,7 +19,8 @@ Authentication and authorization endpoints
 
 ## forgotPassword
 
-Forgot password
+# Errors
+Returns an error if database operations fail or email service fails.
 
 ### Example Usage
 
@@ -89,7 +90,8 @@ run();
 
 ## googleRedirect
 
-Google OAuth redirect
+# Errors
+Returns an error if session operations fail or `OAuth` service configuration is invalid.
 
 ### Example Usage
 
@@ -154,7 +156,8 @@ run();
 
 ## googleCallback
 
-Google OAuth callback
+# Errors
+Returns an error if `OAuth` state verification fails, token exchange fails, or database operations fail.
 
 ### Example Usage
 
@@ -227,7 +230,8 @@ run();
 
 ## login
 
-User login
+# Errors
+Returns an error if credentials are invalid, email is not verified, or database operations fail.
 
 ### Example Usage
 
@@ -300,7 +304,8 @@ run();
 
 ## logout
 
-Logout
+# Errors
+Returns an error if session operations fail.
 
 ### Example Usage
 
@@ -364,7 +369,8 @@ run();
 
 ## getCurrentUser
 
-Get current user info
+# Errors
+Returns an error if user is not authenticated or serialization fails.
 
 ### Example Usage
 
@@ -429,7 +435,8 @@ run();
 
 ## register
 
-User registration
+# Errors
+Returns an error if input validation fails, user already exists, or database operations fail.
 
 ### Example Usage
 
@@ -502,7 +509,8 @@ run();
 
 ## resetPassword
 
-Reset password
+# Errors
+Returns an error if token is invalid, password validation fails, or database operations fail.
 
 ### Example Usage
 
@@ -575,7 +583,8 @@ run();
 
 ## verifyEmail
 
-Email verification
+# Errors
+Returns an error if token is invalid, expired, or database operations fail.
 
 ### Example Usage
 

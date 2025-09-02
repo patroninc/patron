@@ -27,6 +27,10 @@ import { Result } from "../types/fp.js";
 
 /**
  * Email verification
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if token is invalid, expired, or database operations fail.
  */
 export function authVerifyEmail(
   client: PatrontsCore,

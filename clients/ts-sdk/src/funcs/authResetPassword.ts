@@ -26,6 +26,10 @@ import { Result } from "../types/fp.js";
 
 /**
  * Reset password
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if token is invalid, password validation fails, or database operations fail.
  */
 export function authResetPassword(
   client: PatrontsCore,

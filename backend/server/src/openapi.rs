@@ -54,6 +54,6 @@ use utoipa::OpenApi;
         (url = "https://api.patron.com", description = "Production server")
     ),
 )]
-/// OpenAPI documentation marker struct for Patron API.
+/// `OpenAPI` documentation marker struct for Patron API.
 #[derive(Debug, Clone, Copy)]
 pub struct ApiDoc;

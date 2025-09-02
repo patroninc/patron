@@ -23,6 +23,10 @@ import { Result } from "../types/fp.js";
 
 /**
  * Logout
+ *
+ * @remarks
+ * # Errors
+ * Returns an error if session operations fail.
  */
 export function authLogout(
   client: PatrontsCore,

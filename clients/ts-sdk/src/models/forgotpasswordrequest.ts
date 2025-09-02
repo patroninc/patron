@@ -12,7 +12,7 @@ import { SDKValidationError } from "./errors/sdkvalidationerror.js";
  */
 export type ForgotPasswordRequest = {
   /**
-   * User's email address
+   * Email address to send password reset link to
    */
   email: string;
 };

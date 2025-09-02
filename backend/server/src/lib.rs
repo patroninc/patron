@@ -2,7 +2,7 @@
 
 /// Handlers module containing API endpoint implementations.
 pub mod handlers;
-/// OpenAPI documentation module for API specification and documentation.
+/// `OpenAPI` documentation module for API specification and documentation.
 pub mod openapi;
 
 use actix_cors::Cors;
@@ -13,7 +13,7 @@ use actix_web::{
     web::{self, PayloadConfig},
     App, HttpServer,
 };
-pub use openapi::ApiDoc;
+use openapi::ApiDoc;
 use shared::services::{
     auth::GoogleOAuthService, config::ConfigService, db::DbService, email::EmailService,
     s3::S3Service,
@@ -27,7 +27,8 @@ use utoipa_redoc::{Redoc, Servable};
 /// Entry point for the Patron backend server, sets up services and starts the HTTP server.
 #[actix_web::main]
 pub async fn main() -> std::io::Result<()> {
-    let _ = dotenvy::dotenv();
+    #[allow(unused_results)]
+    dotenvy::dotenv().ok();
 
     tracing_subscriber::fmt()
         .with_env_filter(
@@ -39,23 +40,83 @@ pub async fn main() -> std::io::Result<()> {
 
     let config = ConfigService::from_env();
 
-    let s3_service = S3Service::new(config.s3_config().unwrap())
-        .await
-        .expect("Failed to create S3 service");
+    let s3_config = match config.s3_config() {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            eprintln!("Failed to get S3 config: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to get S3 config",
+            ));
+        }
+    };
+    let s3_service = match S3Service::new(s3_config).await {
+        Ok(service) => service,
+        Err(e) => {
+            eprintln!("Failed to create S3 service: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to create S3 service",
+            ));
+        }
+    };
 
-    let google_oauth_service = GoogleOAuthService::new(config.google_oauth_config().unwrap());
+    let google_oauth_config = match config.google_oauth_config() {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            eprintln!("Failed to get Google OAuth config: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to get Google OAuth config",
+            ));
+        }
+    };
+    let google_oauth_service = GoogleOAuthService::new(google_oauth_config);
 
     let email_service = EmailService::from_env();
 
-    let db_service = DbService::new(config.database_config().unwrap())
-        .await
-        .expect("Failed to create DB service");
+    let db_config = match config.database_config() {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            eprintln!("Failed to get database config: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to get database config",
+            ));
+        }
+    };
+    let db_service = match DbService::new(db_config).await {
+        Ok(service) => service,
+        Err(e) => {
+            eprintln!("Failed to create DB service: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to create DB service",
+            ));
+        }
+    };
 
     // Create Redis session store
-    let redis_config = config.redis_config().expect("Redis config required");
-    let redis_store = RedisSessionStore::new(&redis_config.url)
-        .await
-        .expect("Failed to create Redis session store");
+    let redis_config = match config.redis_config() {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            eprintln!("Failed to get Redis config: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to get Redis config",
+            ));
+        }
+    };
+    let redis_store = match RedisSessionStore::new(&redis_config.url).await {
+        Ok(store) => store,
+        Err(e) => {
+            eprintln!("Failed to create Redis session store: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to create Redis session store",
+            ));
+        }
+    };
 
     // Generate session key from auth secret
     let session_key = Key::from(google_oauth_service.auth_secret_key.as_bytes());
@@ -67,15 +128,16 @@ pub async fn main() -> std::io::Result<()> {
                 "%a \"%r\" %s %b \"%{Referer}i\" \"%{User-Agent}i\" %T ms",
             ))
             .wrap(Cors::permissive())
-            .app_data(PayloadConfig::new(1_073_741_824))
+            .app_data(PayloadConfig::new(0x4000_0000))
             .wrap(
                 SessionMiddleware::builder(redis_store.clone(), session_key.clone())
-                    .cookie_name("session_id".to_string())
+                    .cookie_name("session_id".to_owned())
                     .cookie_secure(false) // Set to true in production with HTTPS
                     .cookie_http_only(true)
                     .cookie_same_site(actix_web::cookie::SameSite::Lax)
                     .session_lifecycle(PersistentSession::default().session_ttl(
                         actix_web::cookie::time::Duration::days(
+                            #[allow(clippy::unwrap_used)]
                             (redis_config.session_ttl_days).try_into().unwrap(),
                         ),
                     ))

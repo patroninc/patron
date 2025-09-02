@@ -20,6 +20,7 @@ paths:
       tags:
         - "Auth"
       summary: "Forgot password"
+      description: "# Errors\nReturns an error if database operations fail or email service fails."
       operationId: "forgot_password"
       requestBody:
         description: "Email address for password reset request"
@@ -34,31 +35,35 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ForgotPasswordResponse"}
         "500":
-          description: "Internal server error"
+          description: "Password reset service error or email delivery failed"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "EMAIL_SERVICE_ERROR", "error": "Email service unavailable"}
       x-speakeasy-name-override: "forgotPassword"
   "/api/auth/google":
     get:
       tags:
         - "Auth"
-      summary: "Google OAuth redirect"
+      summary: "Google `OAuth` redirect"
+      description: "# Errors\nReturns an error if session operations fail or `OAuth` service configuration is invalid."
       operationId: "google_auth_redirect"
       responses:
         "302":
           description: "Redirect to Google OAuth consent screen"
         "500":
-          description: "Internal server error"
+          description: "OAuth initialization failed or session storage error"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "OAUTH_SESSION_ERROR", "error": "Failed to initialize OAuth session"}
       x-speakeasy-name-override: "googleRedirect"
   "/api/auth/google/callback":
     get:
       tags:
         - "Auth"
-      summary: "Google OAuth callback"
+      summary: "Google `OAuth` callback"
+      description: "# Errors\nReturns an error if `OAuth` state verification fails, token exchange fails, or database operations fail."
       operationId: "google_auth_callback"
       parameters:
         - name: "code"
@@ -81,17 +86,20 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "OAUTH_INVALID_CODE", "error": "Invalid authorization code"}
         "500":
-          description: "Internal server error"
+          description: "OAuth service error or database connection failed"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "OAUTH_PROVIDER_ERROR", "error": "OAuth provider connection failed"}
       x-speakeasy-name-override: "googleCallback"
   "/api/auth/login":
     post:
       tags:
         - "Auth"
       summary: "User login"
+      description: "# Errors\nReturns an error if credentials are invalid, email is not verified, or database operations fail."
       operationId: "login"
       requestBody:
         description: "User login credentials including email and password"
@@ -110,16 +118,19 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
-          description: "Internal server error"
+          description: "Login service error or database connection failed"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_SERVICE_ERROR", "error": "Authentication service unavailable"}
   "/api/auth/logout":
     get:
       tags:
         - "Auth"
       summary: "Logout"
+      description: "# Errors\nReturns an error if session operations fail."
       operationId: "logout"
       responses:
         "200":
@@ -132,6 +143,7 @@ paths:
       tags:
         - "Auth"
       summary: "Get current user info"
+      description: "# Errors\nReturns an error if user is not authenticated or serialization fails."
       operationId: "get_me"
       responses:
         "200":
@@ -145,12 +157,14 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_REQUIRED", "error": "Not authenticated"}
       x-speakeasy-name-override: "getCurrentUser"
   "/api/auth/register":
     post:
       tags:
         - "Auth"
       summary: "User registration"
+      description: "# Errors\nReturns an error if input validation fails, user already exists, or database operations fail."
       operationId: "register"
       requestBody:
         description: "User registration data including email and password"
@@ -169,16 +183,19 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_EMAIL_EXISTS", "error": "Email address already registered"}
         "500":
-          description: "Internal server error"
+          description: "Registration service error or email delivery failed"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "DATABASE_ERROR", "error": "Database connection failed"}
   "/api/auth/reset-password":
     post:
       tags:
         - "Auth"
       summary: "Reset password"
+      description: "# Errors\nReturns an error if token is invalid, password validation fails, or database operations fail."
       operationId: "reset_password"
       requestBody:
         description: "Password reset token and new password"
@@ -197,17 +214,20 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_INVALID_RESET_TOKEN", "error": "Invalid or expired password reset token"}
         "500":
-          description: "Internal server error"
+          description: "Password update service error or database connection failed"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "RESET_SERVICE_ERROR", "error": "Password reset service unavailable"}
       x-speakeasy-name-override: "resetPassword"
   "/api/auth/verify-email":
     get:
       tags:
         - "Auth"
       summary: "Email verification"
+      description: "# Errors\nReturns an error if token is invalid, expired, or database operations fail."
       operationId: "verify_email"
       parameters:
         - name: "token"
@@ -224,11 +244,13 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_INVALID_VERIFICATION_TOKEN", "error": "Invalid or expired verification token"}
         "500":
-          description: "Internal server error"
+          description: "Email verification service error or database failure"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "VERIFICATION_SERVICE_ERROR", "error": "Email verification service unavailable"}
       x-speakeasy-name-override: "verifyEmail"
 components:
   schemas:
@@ -250,9 +272,12 @@ components:
             - "string"
             - "null"
           description: "Optional error code for programmatic handling"
+          example: "AUTH_INVALID_CREDENTIALS"
         "error":
           type: "string"
           description: "Error message describing what went wrong"
+          example: "Invalid email or password"
+      example: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
     "ForgotPasswordRequest":
       type: "object"
       description: "Request body for password reset"
@@ -261,7 +286,7 @@ components:
       properties:
         "email":
           type: "string"
-          description: "User's email address"
+          description: "Email address to send password reset link to"
           example: "user@example.com"
       example: {"email": "user@example.com"}
     "ForgotPasswordResponse":
@@ -272,7 +297,7 @@ components:
       properties:
         "message":
           type: "string"
-          description: "Status message"
+          description: "Password reset request status message"
       example: {"message": "If the email exists in our system, a password reset link has been sent."}
     "LoginRequest":
       type: "object"
@@ -283,7 +308,7 @@ components:
       properties:
         "email":
           type: "string"
-          description: "User's email address"
+          description: "Email address for login authentication"
         "password":
           type: "string"
           description: "User's password"
@@ -297,7 +322,7 @@ components:
       properties:
         "message":
           type: "string"
-          description: "Success message"
+          description: "Login success message"
         "user": {"$ref": "#/components/schemas/UserInfo", "description": "User information"}
       example: {"message": "Login successful", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
     "LogoutResponse":
@@ -308,7 +333,7 @@ components:
       properties:
         "message":
           type: "string"
-          description: "Success message"
+          description: "Logout confirmation message"
       example: {"message": "Logged out successfully"}
     "RegisterRequest":
       type: "object"
@@ -319,7 +344,7 @@ components:
       properties:
         "email":
           type: "string"
-          description: "User's email address"
+          description: "Email address for new user registration"
         "password":
           type: "string"
           description: "User's password (minimum 8 characters)"
@@ -333,7 +358,7 @@ components:
       properties:
         "message":
           type: "string"
-          description: "Success message"
+          description: "Registration confirmation message"
         "user_id":
           type: "string"
           format: "uuid"
@@ -361,7 +386,7 @@ components:
       properties:
         "message":
           type: "string"
-          description: "Success message"
+          description: "Password reset confirmation message"
       example: {"message": "Password has been reset successfully"}
     "UserInfo":
       type: "object"
@@ -378,33 +403,41 @@ components:
             - "string"
             - "null"
           description: "URL to user's avatar image"
+          example: "https://example.com/avatar.jpg"
         "created_at":
           type:
             - "string"
             - "null"
           format: "date-time"
-          description: "Timestamp when user was created"
+          description: "User account creation timestamp"
+          example: "2023-01-01T00:00:00"
         "display_name":
           type:
             - "string"
             - "null"
           description: "User's display name"
+          example: "John Doe"
         "email":
           type: "string"
-          description: "User's email address"
+          description: "User's registered email address"
+          example: "user@example.com"
         "email_verified":
           type: "boolean"
           description: "Whether the user's email has been verified"
+          example: true
         "id":
           type: "string"
           format: "uuid"
-          description: "Unique user identifier"
+          description: "User's unique identifier"
+          example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
         "last_login":
           type:
             - "string"
             - "null"
           format: "date-time"
           description: "Timestamp of user's last login"
+          example: "2023-01-02T12:00:00"
+      example: {"auth_provider": "email", "avatar_url": "https://example.com/avatar.jpg", "created_at": "2023-01-01T00:00:00", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "last_login": "2023-01-02T12:00:00"}
     "UserInfoResponse":
       type: "object"
       description: "Simplified user information for public API responses"
@@ -417,16 +450,16 @@ components:
             - "string"
             - "null"
           format: "date-time"
-          description: "Timestamp when user was created"
+          description: "Registration date and time"
           example: "2023-01-01T00:00:00"
         "email":
           type: "string"
-          description: "User's email address"
+          description: "User's current email address"
           example: "user@example.com"
         "id":
           type: "string"
           format: "uuid"
-          description: "Unique user identifier"
+          description: "User identifier for API responses"
           example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
 tags:
   - name: "Auth"
