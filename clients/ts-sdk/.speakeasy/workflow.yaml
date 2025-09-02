@@ -13,6 +13,9 @@ targets:
     patron-ts-sdk:
         target: typescript
         source: Patron API
+        publish:
+            npm:
+                token: $npm_token
         codeSamples:
             registry:
                 location: registry.speakeasyapi.dev/patron/ts-sdk/celeb-ai-video-generation-api-typescript-code-samples
