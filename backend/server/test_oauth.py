@@ -86,10 +86,13 @@ def test_oauth_flow():
     print(f"\n🌐 Started temporary callback server on port {CALLBACK_PORT}")
 
     try:
+        # Create a session to maintain cookies
+        session = requests.Session()
+        
         # Step 1: Get the authorization URL
         print("\n📋 Step 1: Getting authorization URL from backend...")
-        auth_response = requests.get(
-            f"{BACKEND_URL}/api/auth/google-auth", allow_redirects=False
+        auth_response = session.get(
+            f"{BACKEND_URL}/api/auth/google", allow_redirects=False
         )
         # print the response for debugging
         print(f"Response status: {auth_response.status_code}")
@@ -114,7 +117,7 @@ def test_oauth_flow():
             if server.should_shutdown and server.oauth_code:
                 # Step 4: Test the callback endpoint
                 print("\n📞 Step 4: Testing callback endpoint...")
-                callback_url = f"{BACKEND_URL}/api/auth/google-callback"
+                callback_url = f"{BACKEND_URL}/api/auth/google/callback"
                 callback_params = {
                     "code": server.oauth_code,
                     "state": server.oauth_state,
@@ -130,7 +133,7 @@ def test_oauth_flow():
                 full_url = f"{callback_url}?{urllib.parse.urlencode(callback_params)}"
                 print(f"📋 Debug: Full URL: {full_url}")
 
-                callback_response = requests.get(callback_url, params=callback_params)
+                callback_response = session.get(callback_url, params=callback_params)
 
                 if callback_response.status_code == 302:
                     redirect_location = callback_response.headers.get("Location")
@@ -144,11 +147,18 @@ def test_oauth_flow():
                         print(f"👤 User ID: {redirect_params['user_id'][0]}")
                     if "success" in redirect_params:
                         print("🎉 OAuth authentication successful!")
+                elif callback_response.status_code == 200:
+                    # Check if we got the frontend HTML page (successful redirect)
+                    if "<!doctype html>" in callback_response.text.lower() or "<html" in callback_response.text.lower():
+                        print("✅ OAuth flow completed! Successfully redirected to frontend application")
+                        print("🎉 OAuth authentication successful!")
+                    else:
+                        print(f"❌ Unexpected 200 response: {callback_response.text[:200]}...")
                 else:
                     print(
                         f"❌ Callback failed with status: {callback_response.status_code}"
                     )
-                    print(f"Response: {callback_response.text}")
+                    print(f"Response: {callback_response.text[:200]}...")
             else:
                 print("⏰ Timeout waiting for OAuth callback or user cancelled")
 
