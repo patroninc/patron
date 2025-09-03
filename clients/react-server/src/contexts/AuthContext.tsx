@@ -88,8 +88,6 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
 
       const response = await patronClient.auth.login({ email: userEmail, password: userPassword });
 
-      console.log('Login successful:', response);
-
       setUser({
         id: response.user.id,
         email: response.user.email,
@@ -114,7 +112,6 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
         email: userEmail,
         password: userPassword,
       });
-      console.log('Registration successful, please verify email');
     } catch {
       throw new Error('Registration failed');
     }
