@@ -1,3 +1,6 @@
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
 /**
  * Parses URL search parameters and returns them as an object.
  *
@@ -25,3 +28,24 @@ export function getURLParam(paramName: string): string | null {
   const params = parseURLParams(window.location.search);
   return params[paramName] || null;
 }
+
+/**
+ * Merges multiple class values into a single string.
+ *
+ * @param {ClassValue[]} inputs - The class values to merge
+ * @returns {string} The merged class string
+ */
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+
+/**
+ * Validates an email address.
+ *
+ * @param {string} email - The email address to validate
+ * @returns {boolean} True if the email is valid, false otherwise
+ */
+export const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email);
+};
