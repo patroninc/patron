@@ -1,0 +1,43 @@
+speakeasyVersion: 1.608.0
+sources:
+    Patron API:
+        sourceNamespace: patron-api
+        sourceRevisionDigest: sha256:bf018c34d882f43908213fa4cdaced41f8c110d40446c2ced24163b2d9c93a4b
+        sourceBlobDigest: sha256:3791af8438207f9988d6ace06bfaabac73a9651c9b8f966502fe68ac4c9e0f63
+        tags:
+            - latest
+            - speakeasy-sdk-regen-1756911578
+            - 1.0.0
+targets:
+    patron-ts-sdk:
+        source: Patron API
+        sourceNamespace: patron-api
+        sourceRevisionDigest: sha256:bf018c34d882f43908213fa4cdaced41f8c110d40446c2ced24163b2d9c93a4b
+        sourceBlobDigest: sha256:3791af8438207f9988d6ace06bfaabac73a9651c9b8f966502fe68ac4c9e0f63
+        codeSamplesNamespace: celeb-ai-video-generation-api-typescript-code-samples
+        codeSamplesRevisionDigest: sha256:cb2f4ed45663e462f4edb4bdeaca56ef7d69ac3429c85e2fc87ee49e681e997f
+workflow:
+    workflowVersion: 1.0.0
+    speakeasyVersion: latest
+    sources:
+        Patron API:
+            inputs:
+                - location: openapi.json
+            overlays:
+                - location: .speakeasy/speakeasy-modifications-overlay.yaml
+            output: .speakeasy/out.openapi.yaml
+            registry:
+                location: registry.speakeasyapi.dev/patron/ts-sdk/patron-api
+    targets:
+        patron-ts-sdk:
+            target: typescript
+            source: Patron API
+            publish:
+                npm:
+                    token: $npm_token
+            codeSamples:
+                registry:
+                    location: registry.speakeasyapi.dev/patron/ts-sdk/celeb-ai-video-generation-api-typescript-code-samples
+                labelOverride:
+                    fixedValue: Typescript (SDK)
+                blocking: false

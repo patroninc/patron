@@ -1,6 +1,6 @@
 {
   "name": "patronts",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Speakeasy",
   "type": "module",
   "tshy": {
@@ -21,7 +21,7 @@
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/patroninc/patron",
+    "url": "https://github.com/patroninc/patron.git",
     "directory": "clients/ts-sdk"
   },
   "scripts": {

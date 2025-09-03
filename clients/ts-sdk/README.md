@@ -44,34 +44,30 @@ Patron API: An open source Patreon alternative with lower fees designed for crea
 <!-- Start SDK Installation [installation] -->
 ## SDK Installation
 
-> [!TIP]
-> To finish publishing your SDK to npm and others you must [run your first generation action](https://www.speakeasy.com/docs/github-setup#step-by-step-guide).
-
-
 The SDK can be installed with either [npm](https://www.npmjs.com/), [pnpm](https://pnpm.io/), [bun](https://bun.sh/) or [yarn](https://classic.yarnpkg.com/en/) package managers.
 
 ### NPM
 
 ```bash
-npm add <UNSET>
+npm add patronts
 ```
 
 ### PNPM
 
 ```bash
-pnpm add <UNSET>
+pnpm add patronts
 ```
 
 ### Bun
 
 ```bash
-bun add <UNSET>
+bun add patronts
 ```
 
 ### Yarn
 
 ```bash
-yarn add <UNSET> zod
+yarn add patronts zod
 
 # Note that Yarn does not install peer dependencies automatically. You will need
 # to install zod as shown above.
@@ -153,11 +149,11 @@ run();
 ### [auth](docs/sdks/auth/README.md)
 
 * [forgotPassword](docs/sdks/auth/README.md#forgotpassword) - Forgot password
-* [googleAuthRedirect](docs/sdks/auth/README.md#googleauthredirect) - Google `OAuth` redirect
-* [googleAuthCallback](docs/sdks/auth/README.md#googleauthcallback) - Google `OAuth` callback
+* [googleRedirect](docs/sdks/auth/README.md#googleredirect) - Google `OAuth` redirect
+* [googleCallback](docs/sdks/auth/README.md#googlecallback) - Google `OAuth` callback
 * [login](docs/sdks/auth/README.md#login) - User login
 * [logout](docs/sdks/auth/README.md#logout) - Logout
-* [getMe](docs/sdks/auth/README.md#getme) - Get current user info
+* [getCurrentUser](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
 * [register](docs/sdks/auth/README.md#register) - User registration
 * [resetPassword](docs/sdks/auth/README.md#resetpassword) - Reset password
 * [verifyEmail](docs/sdks/auth/README.md#verifyemail) - Email verification
@@ -182,9 +178,9 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 <summary>Available standalone functions</summary>
 
 - [`authForgotPassword`](docs/sdks/auth/README.md#forgotpassword) - Forgot password
-- [`authGetMe`](docs/sdks/auth/README.md#getme) - Get current user info
-- [`authGoogleAuthCallback`](docs/sdks/auth/README.md#googleauthcallback) - Google `OAuth` callback
-- [`authGoogleAuthRedirect`](docs/sdks/auth/README.md#googleauthredirect) - Google `OAuth` redirect
+- [`authGetCurrentUser`](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
+- [`authGoogleCallback`](docs/sdks/auth/README.md#googlecallback) - Google `OAuth` callback
+- [`authGoogleRedirect`](docs/sdks/auth/README.md#googleredirect) - Google `OAuth` redirect
 - [`authLogin`](docs/sdks/auth/README.md#login) - User login
 - [`authLogout`](docs/sdks/auth/README.md#logout) - Logout
 - [`authRegister`](docs/sdks/auth/README.md#register) - User registration

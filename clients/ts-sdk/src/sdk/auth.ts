@@ -3,9 +3,9 @@
  */
 
 import { authForgotPassword } from "../funcs/authForgotPassword.js";
-import { authGetMe } from "../funcs/authGetMe.js";
-import { authGoogleAuthCallback } from "../funcs/authGoogleAuthCallback.js";
-import { authGoogleAuthRedirect } from "../funcs/authGoogleAuthRedirect.js";
+import { authGetCurrentUser } from "../funcs/authGetCurrentUser.js";
+import { authGoogleCallback } from "../funcs/authGoogleCallback.js";
+import { authGoogleRedirect } from "../funcs/authGoogleRedirect.js";
 import { authLogin } from "../funcs/authLogin.js";
 import { authLogout } from "../funcs/authLogout.js";
 import { authRegister } from "../funcs/authRegister.js";
@@ -42,10 +42,10 @@ export class Auth extends ClientSDK {
    * # Errors
    * Returns an error if session operations fail or `OAuth` service configuration is invalid.
    */
-  async googleAuthRedirect(
+  async googleRedirect(
     options?: RequestOptions,
   ): Promise<void> {
-    return unwrapAsync(authGoogleAuthRedirect(
+    return unwrapAsync(authGoogleRedirect(
       this,
       options,
     ));
@@ -58,11 +58,11 @@ export class Auth extends ClientSDK {
    * # Errors
    * Returns an error if `OAuth` state verification fails, token exchange fails, or database operations fail.
    */
-  async googleAuthCallback(
+  async googleCallback(
     request: operations.GoogleAuthCallbackRequest,
     options?: RequestOptions,
   ): Promise<void> {
-    return unwrapAsync(authGoogleAuthCallback(
+    return unwrapAsync(authGoogleCallback(
       this,
       request,
       options,
@@ -110,10 +110,10 @@ export class Auth extends ClientSDK {
    * # Errors
    * Returns an error if user is not authenticated or serialization fails.
    */
-  async getMe(
+  async getCurrentUser(
     options?: RequestOptions,
   ): Promise<models.UserInfoResponse> {
-    return unwrapAsync(authGetMe(
+    return unwrapAsync(authGetCurrentUser(
       this,
       options,
     ));
