@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { Patronts, HTTPClient } from 'patronts';
 
 interface EmailVerificationProps {
@@ -16,7 +16,7 @@ const httpClient = new HTTPClient({
 });
 
 const patronClient = new Patronts({
-  serverURL: 'http://localhost:8080',
+  serverURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:8080',
   httpClient: httpClient,
 });
 
