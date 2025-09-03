@@ -2,9 +2,7 @@ import { JSX, useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Login';
 import Register from './components/Register';
-import UserProfile from './components/UserProfile';
-import EmailVerification from './components/EmailVerification';
-import { getURLParam } from './utils/urlParams';
+import { getURLParam } from './lib/utils';
 
 type AppProps = {
   initialData?: unknown;

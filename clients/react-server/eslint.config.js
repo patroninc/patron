@@ -47,7 +47,12 @@ export default [
     },
     rules: {
       // Prettier
-      'prettier/prettier': 'error',
+      'prettier/prettier': [
+        'error',
+        {
+          endOfLine: 'auto',
+        },
+      ],
       // Rely on TS for undefined names in TS files
       'no-undef': 'off',
 
@@ -103,7 +108,12 @@ export default [
     },
     plugins: { prettier, jsdoc },
     rules: {
-      'prettier/prettier': 'error',
+      'prettier/prettier': [
+        'error',
+        {
+          endOfLine: 'auto',
+        },
+      ],
       // JSDoc strictness on declared functions in JS
       'jsdoc/require-jsdoc': [
         'error',
