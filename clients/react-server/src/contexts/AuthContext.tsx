@@ -34,7 +34,7 @@ const httpClient = new HTTPClient({
 });
 
 const patronClient = new Patronts({
-  serverURL: 'http://localhost:8080',
+  serverURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:8080',
   httpClient: httpClient,
   // Don't set cookieAuth since browser handles cookies automatically
 });
