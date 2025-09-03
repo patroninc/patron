@@ -1,18 +1,13 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
-interface RegisterProps {
-  onSwitchToLogin: () => void;
-}
+import { Link } from 'react-router';
 
 /**
  * Register component that renders a registration form.
  *
- * @param {RegisterProps} props - The component props
- * @param {() => void} props.onSwitchToLogin - Callback to switch to login view
  * @returns {JSX.Element} The register component
  */
-export default function Register({ onSwitchToLogin }: RegisterProps): JSX.Element {
+export default function Register(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -57,7 +52,7 @@ export default function Register({ onSwitchToLogin }: RegisterProps): JSX.Elemen
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+    <div className="flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -121,16 +116,16 @@ export default function Register({ onSwitchToLogin }: RegisterProps): JSX.Elemen
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="focus:ring-blue focus:border-blue relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:outline-none sm:text-sm"
-                placeholder="Create a password"
+                placeholder="Enter your password"
               />
             </div>
             <div>
-              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                 Confirm Password
               </label>
               <input
-                id="confirm-password"
-                name="confirm-password"
+                id="confirmPassword"
+                name="confirmPassword"
                 type="password"
                 autoComplete="new-password"
                 required
@@ -146,20 +141,16 @@ export default function Register({ onSwitchToLogin }: RegisterProps): JSX.Elemen
             <button
               type="submit"
               disabled={isLoading}
-              className="group bg-green focus:ring-green button-animated-bg relative flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="group bg-blue focus:ring-blue button-animated-bg relative flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoading ? 'Creating account...' : 'Create account'}
             </button>
           </div>
 
           <div className="text-center">
-            <button
-              type="button"
-              onClick={onSwitchToLogin}
-              className="text-green text-sm font-medium hover:text-green-700"
-            >
+            <Link to="/login" className="text-blue text-sm font-medium hover:text-blue-700">
               Already have an account? Sign in
-            </button>
+            </Link>
           </div>
         </form>
       </div>

@@ -1,18 +1,13 @@
 import { JSX, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
-interface LoginProps {
-  onSwitchToRegister: () => void;
-}
+import { Link } from 'react-router';
 
 /**
  * Login component that renders a login form.
  *
- * @param {LoginProps} props - The component props
- * @param {() => void} props.onSwitchToRegister - Callback to switch to registration view
  * @returns {JSX.Element} The login component
  */
-export default function Login({ onSwitchToRegister }: LoginProps): JSX.Element {
+export default function Login(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -40,7 +35,7 @@ export default function Login({ onSwitchToRegister }: LoginProps): JSX.Element {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+    <div className="flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -99,13 +94,9 @@ export default function Login({ onSwitchToRegister }: LoginProps): JSX.Element {
           </div>
 
           <div className="text-center">
-            <button
-              type="button"
-              onClick={onSwitchToRegister}
-              className="text-blue text-sm font-medium hover:text-blue-700"
-            >
+            <Link to="/register" className="text-blue text-sm font-medium hover:text-blue-700">
               Don't have an account? Sign up
-            </button>
+            </Link>
           </div>
         </form>
       </div>
