@@ -1,16 +1,18 @@
 lockVersion: 2.0.0
-id: 11efa393-c988-4373-8218-92c74dd65551
+id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: cf07e1e2c603914e85ece1e99517d169
+  docChecksum: 2df89c063301b75f3bc07d533d618786
   docVersion: 1.0.0
-  speakeasyVersion: 1.606.10
-  generationVersion: 2.687.13
-  releaseVersion: 0.2.2
-  configChecksum: 9ba3e97146db0046ac6f341ac35c0188
+  speakeasyVersion: 1.608.0
+  generationVersion: 2.691.6
+  releaseVersion: 0.3.0
+  configChecksum: 660b46ad522690b677e94b6a9789334d
+  repoURL: https://github.com/patroninc/patron
+  repoSubDirectory: clients/ts-sdk
 features:
   typescript:
     additionalDependencies: 0.1.0
-    core: 3.21.20
+    core: 3.21.22
     defaultEnabledRetries: 0.1.0
     devContainers: 2.90.0
     enumUnions: 0.1.0
@@ -20,7 +22,6 @@ features:
     globalSecurityFlattening: 0.1.0
     globalServerURLs: 2.82.5
     methodArguments: 0.1.2
-    nameOverrides: 2.81.2
     nullables: 0.1.1
     responseFormat: 0.2.3
     retries: 2.83.0
@@ -62,9 +63,9 @@ generatedFiles:
   - package.json
   - src/core.ts
   - src/funcs/authForgotPassword.ts
-  - src/funcs/authGetCurrentUser.ts
-  - src/funcs/authGoogleCallback.ts
-  - src/funcs/authGoogleRedirect.ts
+  - src/funcs/authGetMe.ts
+  - src/funcs/authGoogleAuthCallback.ts
+  - src/funcs/authGoogleAuthRedirect.ts
   - src/funcs/authLogin.ts
   - src/funcs/authLogout.ts
   - src/funcs/authRegister.ts

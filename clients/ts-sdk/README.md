@@ -153,11 +153,11 @@ run();
 ### [auth](docs/sdks/auth/README.md)
 
 * [forgotPassword](docs/sdks/auth/README.md#forgotpassword) - Forgot password
-* [googleRedirect](docs/sdks/auth/README.md#googleredirect) - Google `OAuth` redirect
-* [googleCallback](docs/sdks/auth/README.md#googlecallback) - Google `OAuth` callback
+* [googleAuthRedirect](docs/sdks/auth/README.md#googleauthredirect) - Google `OAuth` redirect
+* [googleAuthCallback](docs/sdks/auth/README.md#googleauthcallback) - Google `OAuth` callback
 * [login](docs/sdks/auth/README.md#login) - User login
 * [logout](docs/sdks/auth/README.md#logout) - Logout
-* [getCurrentUser](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
+* [getMe](docs/sdks/auth/README.md#getme) - Get current user info
 * [register](docs/sdks/auth/README.md#register) - User registration
 * [resetPassword](docs/sdks/auth/README.md#resetpassword) - Reset password
 * [verifyEmail](docs/sdks/auth/README.md#verifyemail) - Email verification
@@ -182,9 +182,9 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 <summary>Available standalone functions</summary>
 
 - [`authForgotPassword`](docs/sdks/auth/README.md#forgotpassword) - Forgot password
-- [`authGetCurrentUser`](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
-- [`authGoogleCallback`](docs/sdks/auth/README.md#googlecallback) - Google `OAuth` callback
-- [`authGoogleRedirect`](docs/sdks/auth/README.md#googleredirect) - Google `OAuth` redirect
+- [`authGetMe`](docs/sdks/auth/README.md#getme) - Get current user info
+- [`authGoogleAuthCallback`](docs/sdks/auth/README.md#googleauthcallback) - Google `OAuth` callback
+- [`authGoogleAuthRedirect`](docs/sdks/auth/README.md#googleauthredirect) - Google `OAuth` redirect
 - [`authLogin`](docs/sdks/auth/README.md#login) - User login
 - [`authLogout`](docs/sdks/auth/README.md#logout) - Logout
 - [`authRegister`](docs/sdks/auth/README.md#register) - User registration
