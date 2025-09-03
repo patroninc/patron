@@ -8,11 +8,11 @@ Authentication and authorization endpoints
 ### Available Operations
 
 * [forgotPassword](#forgotpassword) - Forgot password
-* [googleAuthRedirect](#googleauthredirect) - Google `OAuth` redirect
-* [googleAuthCallback](#googleauthcallback) - Google `OAuth` callback
+* [googleRedirect](#googleredirect) - Google `OAuth` redirect
+* [googleCallback](#googlecallback) - Google `OAuth` callback
 * [login](#login) - User login
 * [logout](#logout) - Logout
-* [getMe](#getme) - Get current user info
+* [getCurrentUser](#getcurrentuser) - Get current user info
 * [register](#register) - User registration
 * [resetPassword](#resetpassword) - Reset password
 * [verifyEmail](#verifyemail) - Email verification
@@ -92,7 +92,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## googleAuthRedirect
+## googleRedirect
 
 # Errors
 Returns an error if session operations fail or `OAuth` service configuration is invalid.
@@ -108,7 +108,7 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  await patronts.auth.googleAuthRedirect();
+  await patronts.auth.googleRedirect();
 
 
 }
@@ -122,7 +122,7 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { authGoogleAuthRedirect } from "patronts/funcs/authGoogleAuthRedirect.js";
+import { authGoogleRedirect } from "patronts/funcs/authGoogleRedirect.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
@@ -131,12 +131,12 @@ const patronts = new PatrontsCore({
 });
 
 async function run() {
-  const res = await authGoogleAuthRedirect(patronts);
+  const res = await authGoogleRedirect(patronts);
   if (res.ok) {
     const { value: result } = res;
     
   } else {
-    console.log("authGoogleAuthRedirect failed:", res.error);
+    console.log("authGoogleRedirect failed:", res.error);
   }
 }
 
@@ -162,7 +162,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## googleAuthCallback
+## googleCallback
 
 # Errors
 Returns an error if `OAuth` state verification fails, token exchange fails, or database operations fail.
@@ -178,7 +178,7 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  await patronts.auth.googleAuthCallback({
+  await patronts.auth.googleCallback({
     code: "<value>",
     state: "Alaska",
   });
@@ -195,7 +195,7 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { authGoogleAuthCallback } from "patronts/funcs/authGoogleAuthCallback.js";
+import { authGoogleCallback } from "patronts/funcs/authGoogleCallback.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
@@ -204,7 +204,7 @@ const patronts = new PatrontsCore({
 });
 
 async function run() {
-  const res = await authGoogleAuthCallback(patronts, {
+  const res = await authGoogleCallback(patronts, {
     code: "<value>",
     state: "Alaska",
   });
@@ -212,7 +212,7 @@ async function run() {
     const { value: result } = res;
     
   } else {
-    console.log("authGoogleAuthCallback failed:", res.error);
+    console.log("authGoogleCallback failed:", res.error);
   }
 }
 
@@ -387,7 +387,7 @@ run();
 | --------------------------- | --------------------------- | --------------------------- |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## getMe
+## getCurrentUser
 
 # Errors
 Returns an error if user is not authenticated or serialization fails.
@@ -403,7 +403,7 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.auth.getMe();
+  const result = await patronts.auth.getCurrentUser();
 
   console.log(result);
 }
@@ -417,7 +417,7 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { authGetMe } from "patronts/funcs/authGetMe.js";
+import { authGetCurrentUser } from "patronts/funcs/authGetCurrentUser.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
@@ -426,12 +426,12 @@ const patronts = new PatrontsCore({
 });
 
 async function run() {
-  const res = await authGetMe(patronts);
+  const res = await authGetCurrentUser(patronts);
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("authGetMe failed:", res.error);
+    console.log("authGetCurrentUser failed:", res.error);
   }
 }
 
