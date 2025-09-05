@@ -7,6 +7,7 @@ import Login from './pages/login';
 import Register from './pages/register';
 import ProtectedRoute from './components/ProtectedRoute';
 import VerifyEmailPage from './pages/verify-email';
+import ForgotPasswordPage from './pages/forgot-password';
 
 // Create the router configuration
 const router = createBrowserRouter([
@@ -42,6 +43,14 @@ const router = createBrowserRouter([
         Component: () => (
           <ProtectedRoute requireAuth={false}>
             <VerifyEmailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'forgot-password',
+        Component: () => (
+          <ProtectedRoute requireAuth={false}>
+            <ForgotPasswordPage />
           </ProtectedRoute>
         ),
       },
