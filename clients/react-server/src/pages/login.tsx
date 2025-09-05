@@ -81,7 +81,7 @@ function EmailStep({
           </Button>
         </form>
       </Form>
-
+      
       <p className="text-center text-sm">or</p>
 
       <Button onClick={tryGoogleAuth} className="flex w-full items-center justify-center gap-2">
