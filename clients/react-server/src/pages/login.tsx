@@ -10,20 +10,34 @@ import {
 } from '../components/ui/form';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../components/ui/alert-dialog"
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { isValidEmail } from '../lib/utils';
-import { Link } from 'react-router';
+import { useAuth } from '../contexts/AuthContext';
 
 function EmailStep({
   onNext,
-  onGoogleAuth,
   initialEmail = '',
 }: {
   onNext: (email: string) => void;
-  onGoogleAuth: () => void;
   initialEmail?: string;
 }) {
+
+  const { googleRedirect } = useAuth();
+
+  const tryGoogleAuth = () => {
+    googleRedirect();
+  };
+
   const form = useForm<{ email: string }>({
     defaultValues: { email: initialEmail },
   });
@@ -70,7 +84,7 @@ function EmailStep({
 
       <p className="text-center text-sm">or</p>
 
-      <Button onClick={onGoogleAuth} className="flex w-full items-center justify-center gap-2">
+      <Button onClick={tryGoogleAuth} className="flex w-full items-center justify-center gap-2">
         Continue with
         <svg
           className="size-4 fill-white"
@@ -98,50 +112,82 @@ function EmailStep({
 }
 function LoginPasswordStep({
   email,
-  onBack,
-  onSubmit,
   initialPassword = '',
 }: {
   email: string;
-  onBack: () => void;
-  onSubmit: (data: { password: string }) => void;
   initialPassword?: string;
 }) {
+  const { forgotPassword, login } = useAuth();
+
+  const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
+  const [forgotPasswordError, setForgotPasswordError] = useState<boolean>(false);
+
+  const tryForgotPassword = async () => {
+    try {
+      await forgotPassword(email);
+    } catch {
+      setForgotPasswordError(true);
+    }
+    setForgotPasswordModal(true);
+  };
+
   const form = useForm<{ password: string }>({
     defaultValues: { password: initialPassword },
   });
 
-  const handleSubmit = (data: { password: string }) => {
+  const handleSubmit = async (data: { password: string }) => {
     if (!data.password || data.password.length < 8) {
       form.setError('password', {
         message: 'Password must be at least 8 characters',
       });
       return;
     }
-    onSubmit(data);
+    
+    try {
+      await login(email, data.password);
+    } catch {
+      form.setError('password', {
+        message: 'Password is incorrect',
+      });
+    }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={(e) => void form.handleSubmit(handleSubmit)(e)} className="space-y-5">
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your password" type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex justify-between gap-2">
-          <Button type="button" variant="secondary" onClick={onBack}>
-            Back
-          </Button>
-          <Button type="submit" className="flex-1">
+      <form onSubmit={(e) => void form.handleSubmit(handleSubmit)(e)}>
+        <div className="flex flex-col gap-3">
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your password" type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <AlertDialog open={forgotPasswordModal}>
+            <AlertDialogTrigger onClick={tryForgotPassword} className="text-sm text-right hover:underline">Forgot password?</AlertDialogTrigger>
+            <AlertDialogContent contentClassName="sm:max-w-[450px]">
+              <AlertDialogHeader className="sm:!text-center">
+                <AlertDialogTitle>{forgotPasswordError ? 'Failed to send password reset email' : 'Forgot password?'}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {forgotPasswordError ? 'Please try again later.' : 'Password reset link has been sent to your email address.'}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="sm:!justify-center [&>div]:w-full">
+                <Button onClick={() => setForgotPasswordModal(false)} className="w-full">Continue</Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+
+        <div className="w-full mt-5">
+          <Button className="w-full" type="submit">
             Log in
           </Button>
         </div>
@@ -150,197 +196,41 @@ function LoginPasswordStep({
   );
 }
 
-function SignupDetailsStep({
-  email,
-  onBack,
-  onSubmit,
-  initialData = { displayName: '', password: '', repeatPassword: '' },
-}: {
-  email: string;
-  onBack: () => void;
-  onSubmit: (data: { displayName: string; password: string; repeatPassword: string }) => void;
-  initialData?: {
-    displayName: string;
-    password: string;
-    repeatPassword: string;
-  };
-}) {
-  const form = useForm<{
-    displayName: string;
-    password: string;
-    repeatPassword: string;
-  }>({
-    defaultValues: initialData,
-  });
-
-  const handleSubmit = (data: {
-    displayName: string;
-    password: string;
-    repeatPassword: string;
-  }) => {
-    if (!data.displayName || data.displayName.length < 2) {
-      form.setError('displayName', {
-        message: 'Display name must be at least 2 characters',
-      });
-      return;
-    }
-    if (!data.password || data.password.length < 8) {
-      form.setError('password', {
-        message: 'Password must be at least 8 characters',
-      });
-      return;
-    }
-    if (data.password !== data.repeatPassword) {
-      form.setError('repeatPassword', { message: "Passwords don't match" });
-      return;
-    }
-    onSubmit(data);
-  };
-
-  return (
-    <Form {...form}>
-      <form onSubmit={(e) => void form.handleSubmit(handleSubmit)(e)} className="space-y-5">
-        <FormField
-          control={form.control}
-          name="displayName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Display Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your display name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your password" type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="repeatPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Repeat Password</FormLabel>
-              <FormControl>
-                <Input placeholder="Repeat your password" type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex justify-between gap-2">
-          <Button type="button" variant="secondary" onClick={onBack}>
-            Back
-          </Button>
-          <Button type="submit" className="flex-1">
-            Sign up
-          </Button>
-        </div>
-      </form>
-    </Form>
-  );
-}
 type LoginFormData = {
   email: string;
-  displayName: string;
   password: string;
-  repeatPassword: string;
 };
 
 export default function Login() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<LoginFormData>>({});
   const [accountExists, setAccountExists] = useState<boolean>(false);
-
+  
   const handleEmailSubmit = (email: string) => {
     setFormData({ ...formData, email });
+    // Check if account exists (this would be an API call in real implementation)
+    setAccountExists(true);
     setCurrentStep(2);
   };
 
-  const handleGoogleAuth = () => {
-    // Intentionally no-op for now per requirements
-    console.log('Google auth clicked');
-  };
-
-  const handleBack = () => {
-    if (currentStep === 2) {
-      setCurrentStep(1);
-    }
-  };
-
-  const handleLoginSubmit = ({ password }: { password: string }) => {
-    console.log('Logging in with:', { email: formData.email, password });
-  };
-
-  const handleSignupSubmit = (data: {
-    displayName: string;
-    password: string;
-    repeatPassword: string;
-  }) => {
-    const complete = { ...formData, ...data } as LoginFormData;
-    console.log('Signing up with:', complete);
-  };
-
-  const title = currentStep === 1 ? 'Log in or Sign up' : accountExists ? 'Log in' : 'Sign up';
-  const description =
-    currentStep === 1
-      ? ''
-      : accountExists
-        ? `logging in as ${formData.email ?? ''}`
-        : `signing up as ${formData.email ?? ''}`;
+  const title = currentStep === 1 ? 'Log in or Sign up' : 'Log in';
+  const description = currentStep === 1 ? '' : `logging in as ${formData.email ?? ''}`;
 
   return (
     <Layout>
-      <div className="flex flex-col gap-10">
-        <FormCard title={title} description={description}>
-          {currentStep === 1 ? (
-            <EmailStep
-              onNext={handleEmailSubmit}
-              onGoogleAuth={handleGoogleAuth}
-              initialEmail={formData.email || ''}
-            />
-          ) : accountExists ? (
-            <LoginPasswordStep
-              email={formData.email ?? ''}
-              onBack={handleBack}
-              onSubmit={handleLoginSubmit}
-              initialPassword={formData.password || ''}
-            />
-          ) : (
-            <SignupDetailsStep
-              email={formData.email ?? ''}
-              onBack={handleBack}
-              onSubmit={handleSignupSubmit}
-              initialData={{
-                displayName: formData.displayName || '',
-                password: formData.password || '',
-                repeatPassword: formData.repeatPassword || '',
-              }}
-            />
-          )}
-        </FormCard>
-
-        {currentStep === 1 && (
-          <div className="px-10">
-            <Link to="/register">
-              <Button variant="secondary" className="w-full">
-                Join as a creator
-              </Button>
-            </Link>
-          </div>
+      <FormCard title={title} description={description}>
+        {currentStep === 1 ? (
+          <EmailStep
+            onNext={handleEmailSubmit}
+            initialEmail={formData.email || ''}
+          />
+        ) : (
+          <LoginPasswordStep
+            email={formData.email ?? ''}
+            initialPassword={formData.password || ''}
+          />
         )}
-      </div>
+      </FormCard>
     </Layout>
   );
 }
