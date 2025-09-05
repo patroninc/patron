@@ -15,6 +15,16 @@ interface AuthContextType {
   // eslint-disable-next-line no-unused-vars
   register: (userEmail: string, userPassword: string, userName: string) => Promise<void>;
   logout: () => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  forgotPassword: (email: string) => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  resetPassword: (newPassword: string, token: string) => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  verifyEmail: (token: string) => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  googleRedirect: () => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  googleCallback: (code: string, state: string) => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -104,15 +114,18 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
    *
    * @param {string} userEmail - User's email address
    * @param {string} userPassword - User's password
+   * @param {string} userName - User's display name
    * @returns {Promise<void>} Promise that resolves when registration is complete
    */
-  const register = async (userEmail: string, userPassword: string): Promise<void> => {
+  const register = async (userEmail: string, userPassword: string, userName: string): Promise<void> => {
     try {
       await patronClient.auth.register({
         email: userEmail,
         password: userPassword,
+        displayName: userName,
       });
-    } catch {
+    } catch (error) {
+      console.error('Registration error:', error);
       throw new Error('Registration failed');
     }
   };
@@ -131,12 +144,95 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     }
   };
 
+  /**
+   * Initiates password reset by sending a reset email.
+   *
+   * @param {string} email - User's email address
+   * @returns {Promise<void>} Promise that resolves when reset email is sent
+   */
+  const forgotPassword = async (email: string): Promise<void> => {
+    try {
+      await patronClient.auth.forgotPassword({ email });
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      throw new Error('Failed to send password reset email');
+    }
+  };
+
+  /**
+   * Resets user password using a reset token.
+   *
+   * @param {string} newPassword - New password
+   * @param {string} token - Password reset token
+   * @returns {Promise<void>} Promise that resolves when password is reset
+   */
+  const resetPassword = async (newPassword: string, token: string): Promise<void> => {
+    try {
+      await patronClient.auth.resetPassword({ newPassword, token });
+    } catch (error) {
+      console.error('Reset password error:', error);
+      throw new Error('Failed to reset password');
+    }
+  };
+
+  /**
+   * Verifies user email using a verification token.
+   *
+   * @param {string} token - Email verification token
+   * @returns {Promise<void>} Promise that resolves when email is verified
+   */
+  const verifyEmail = async (token: string): Promise<void> => {
+    try {
+      await patronClient.auth.verifyEmail({ token });
+    } catch (error) {
+      console.error('Email verification error:', error);
+      throw new Error('Failed to verify email');
+    }
+  };
+
+  /**
+   * Initiates Google OAuth flow by redirecting to Google's authorization page.
+   *
+   * @returns {Promise<void>} Promise that resolves when redirect is initiated
+   */
+  const googleRedirect = async (): Promise<void> => {
+    try {
+      await patronClient.auth.googleRedirect();
+    } catch (error) {
+      console.error('Google redirect error:', error);
+      throw new Error('Failed to initiate Google OAuth');
+    }
+  };
+
+  /**
+   * Handles Google OAuth callback with authorization code and state.
+   *
+   * @param {string} code - Authorization code from Google
+   * @param {string} state - State parameter for CSRF protection
+   * @returns {Promise<void>} Promise that resolves when OAuth callback is processed
+   */
+  const googleCallback = async (code: string, state: string): Promise<void> => {
+    try {
+      await patronClient.auth.googleCallback({ code, state });
+      // After successful OAuth callback, refresh user data
+      await checkAuthStatus();
+    } catch (error) {
+      console.error('Google callback error:', error);
+      throw new Error('Failed to complete Google OAuth');
+    }
+  };
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    forgotPassword,
+    resetPassword,
+    verifyEmail,
+    googleRedirect,
+    googleCallback,
     isAuthenticated: !!user,
   };
 
