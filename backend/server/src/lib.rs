@@ -190,6 +190,11 @@ pub async fn main() -> std::io::Result<()> {
                             web::resource("/reset-password")
                                 // resets password using token
                                 .route(web::post().to(handlers::auth::reset_password)),
+                        )
+                        .service(
+                            web::resource("/check-email")
+                                // checks if email exists in system
+                                .route(web::post().to(handlers::auth::check_email)),
                         ),
                 ),
             )

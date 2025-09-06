@@ -89,6 +89,17 @@ pub struct LogoutResponse {
     pub message: String,
 }
 
+/// Request body for checking if email exists
+#[derive(Deserialize, ToSchema, Debug)]
+#[schema(example = json!({
+    "email": "user@example.com"
+}))]
+pub struct CheckEmailRequest {
+    /// Email address to check
+    #[schema(example = "user@example.com")]
+    pub email: String,
+}
+
 /// Request body for password reset
 #[derive(Deserialize, ToSchema, Debug)]
 #[schema(example = json!({
@@ -966,4 +977,46 @@ pub async fn reset_password(
     Ok(HttpResponse::Ok().json(ResetPasswordResponse {
         message: "Password has been reset successfully".to_owned(),
     }))
+}
+
+/// Check if email exists
+///
+/// # Errors
+/// Returns 404 if email doesn't exist, 204 if it does exist, or 500 for database errors.
+#[utoipa::path(
+    post,
+    path = "/auth/check-email",
+    context_path = "/api",
+    tag = "Auth",
+    request_body(content = CheckEmailRequest, description = "Email address to check for registration"),
+    responses(
+        (status = 204, description = "Email exists in the system"),
+        (status = 404, description = "Email not found in the system"),
+        (status = 500, description = "Database connection failed", body = ErrorResponse,
+            example = json!({
+                "error": "Database connection failed",
+                "code": "DATABASE_ERROR"
+            })
+        ),
+    )
+)]
+pub async fn check_email(
+    db_service: web::Data<shared::services::db::DbService>,
+    body: web::Json<CheckEmailRequest>,
+) -> Result<HttpResponse, actix_web::Error> {
+    use shared::schema::users::dsl as users_dsl;
+
+    let pool = db_service.pool();
+    let mut conn = pool.get().await.map_err(ServiceError::from)?;
+
+    // Check if user exists
+    match users_dsl::users
+        .filter(users_dsl::email.eq(&body.email))
+        .first::<User>(&mut conn)
+        .await
+    {
+        Ok(_) => Ok(HttpResponse::NoContent().finish()),
+        Err(diesel::result::Error::NotFound) => Ok(HttpResponse::NotFound().finish()),
+        Err(e) => Err(ServiceError::from(e).into()),
+    }
 }

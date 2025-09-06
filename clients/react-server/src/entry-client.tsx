@@ -1,6 +1,6 @@
-import { StrictMode } from 'react';
+import { JSX, StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
-import { RouterProvider, createBrowserRouter, Navigate } from 'react-router';
+import { RouterProvider, createBrowserRouter } from 'react-router';
 import { AuthProvider } from './contexts/AuthContext';
 import Home from './pages/home';
 import Login from './pages/login';
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
  *
  * @returns {JSX.Element} The app component with providers
  */
-function App() {
+function App(): JSX.Element {
   return (
     <AuthProvider>
       <RouterProvider router={router} />

@@ -1,6 +1,6 @@
 use crate::handlers::auth::{
-    ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse, LogoutResponse,
-    RegisterRequest, RegisterResponse, ResetPasswordRequest, ResetPasswordResponse,
+    CheckEmailRequest, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse,
+    LogoutResponse, RegisterRequest, RegisterResponse, ResetPasswordRequest, ResetPasswordResponse,
 };
 use shared::models::auth::{UserInfo, UserInfoResponse};
 use utoipa::{
@@ -33,6 +33,7 @@ use utoipa::{
         crate::handlers::auth::get_me,
         crate::handlers::auth::forgot_password,
         crate::handlers::auth::reset_password,
+        crate::handlers::auth::check_email,
     ),
     components(
         schemas(
@@ -46,7 +47,8 @@ use utoipa::{
             ForgotPasswordRequest,
             ForgotPasswordResponse,
             ResetPasswordRequest,
-            ResetPasswordResponse
+            ResetPasswordResponse,
+            CheckEmailRequest
         )
     ),
     modifiers(&SecurityAddon),

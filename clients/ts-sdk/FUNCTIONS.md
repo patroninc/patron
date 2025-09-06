@@ -20,7 +20,7 @@ specific category of applications.
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { authForgotPassword } from "patronts/funcs/authForgotPassword.js";
+import { authCheckEmail } from "patronts/funcs/authCheckEmail.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
@@ -29,14 +29,14 @@ const patronts = new PatrontsCore({
 });
 
 async function run() {
-  const res = await authForgotPassword(patronts, {
+  const res = await authCheckEmail(patronts, {
     email: "user@example.com",
   });
   if (res.ok) {
     const { value: result } = res;
-    console.log(result);
+    
   } else {
-    console.log("authForgotPassword failed:", res.error);
+    console.log("authCheckEmail failed:", res.error);
   }
 }
 

@@ -7,11 +7,9 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.auth.forgotPassword({
+  await patronts.auth.checkEmail({
     email: "user@example.com",
   });
-
-  console.log(result);
 }
 
 run();

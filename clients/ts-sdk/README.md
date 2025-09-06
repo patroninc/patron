@@ -96,11 +96,9 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.auth.forgotPassword({
+  await patronts.auth.checkEmail({
     email: "user@example.com",
   });
-
-  console.log(result);
 }
 
 run();
@@ -128,11 +126,9 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.auth.forgotPassword({
+  await patronts.auth.checkEmail({
     email: "user@example.com",
   });
-
-  console.log(result);
 }
 
 run();
@@ -148,6 +144,7 @@ run();
 
 ### [auth](docs/sdks/auth/README.md)
 
+* [checkEmail](docs/sdks/auth/README.md#checkemail) - Check if email exists
 * [forgotPassword](docs/sdks/auth/README.md#forgotpassword) - Forgot password
 * [googleRedirect](docs/sdks/auth/README.md#googleredirect) - Google `OAuth` redirect
 * [googleCallback](docs/sdks/auth/README.md#googlecallback) - Google `OAuth` callback
@@ -177,6 +174,7 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 
 <summary>Available standalone functions</summary>
 
+- [`authCheckEmail`](docs/sdks/auth/README.md#checkemail) - Check if email exists
 - [`authForgotPassword`](docs/sdks/auth/README.md#forgotpassword) - Forgot password
 - [`authGetCurrentUser`](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
 - [`authGoogleCallback`](docs/sdks/auth/README.md#googlecallback) - Google `OAuth` callback
@@ -204,7 +202,7 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.auth.forgotPassword({
+  await patronts.auth.checkEmail({
     email: "user@example.com",
   }, {
     retries: {
@@ -218,8 +216,6 @@ async function run() {
       retryConnectionErrors: false,
     },
   });
-
-  console.log(result);
 }
 
 run();
@@ -245,11 +241,9 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.auth.forgotPassword({
+  await patronts.auth.checkEmail({
     email: "user@example.com",
   });
-
-  console.log(result);
 }
 
 run();
@@ -282,11 +276,9 @@ const patronts = new Patronts({
 
 async function run() {
   try {
-    const result = await patronts.auth.forgotPassword({
+    await patronts.auth.checkEmail({
       email: "user@example.com",
     });
-
-    console.log(result);
   } catch (error) {
     // The base class for HTTP error responses
     if (error instanceof errors.PatrontsError) {
@@ -356,11 +348,9 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.auth.forgotPassword({
+  await patronts.auth.checkEmail({
     email: "user@example.com",
   });
-
-  console.log(result);
 }
 
 run();
@@ -379,11 +369,9 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.auth.forgotPassword({
+  await patronts.auth.checkEmail({
     email: "user@example.com",
   });
-
-  console.log(result);
 }
 
 run();
