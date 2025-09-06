@@ -3,6 +3,7 @@
  */
 
 export * from "./authprovider.js";
+export * from "./checkemailrequest.js";
 export * from "./forgotpasswordrequest.js";
 export * from "./forgotpasswordresponse.js";
 export * from "./loginrequest.js";

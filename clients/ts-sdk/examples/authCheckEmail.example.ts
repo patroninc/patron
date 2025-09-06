@@ -8,7 +8,7 @@ dotenv.config();
  * Example usage of the patronts SDK
  *
  * To run this example from the examples directory:
- * npm run build && npx tsx authForgotPassword.example.ts
+ * npm run build && npx tsx authCheckEmail.example.ts
  */
 
 import { Patronts } from "patronts";
@@ -18,11 +18,9 @@ const patronts = new Patronts({
 });
 
 async function main() {
-  const result = await patronts.forgotPassword({
+  await patronts.checkEmail({
     email: "user@example.com",
   });
-
-  console.log(result);
 }
 
 main().catch(console.error);

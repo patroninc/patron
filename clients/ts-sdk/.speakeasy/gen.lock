@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: cf07e1e2c603914e85ece1e99517d169
+  docChecksum: 674b24b3a319be9106b9810b01c0be78
   docVersion: 1.0.0
-  speakeasyVersion: 1.608.0
-  generationVersion: 2.691.6
-  releaseVersion: 0.4.0
-  configChecksum: 8e9ab98cd385a9b61c3299671d3e2d4b
+  speakeasyVersion: 1.611.0
+  generationVersion: 2.694.1
+  releaseVersion: 0.4.3
+  configChecksum: 6d37f68bd05926ec8d5213cb61e33f08
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -40,6 +40,7 @@ generatedFiles:
   - USAGE.md
   - docs/lib/utils/retryconfig.md
   - docs/models/authprovider.md
+  - docs/models/checkemailrequest.md
   - docs/models/errors/errorresponse.md
   - docs/models/forgotpasswordrequest.md
   - docs/models/forgotpasswordresponse.md
@@ -60,11 +61,12 @@ generatedFiles:
   - eslint.config.mjs
   - examples/.env.template
   - examples/README.md
-  - examples/authForgotPassword.example.ts
+  - examples/authCheckEmail.example.ts
   - examples/package.json
   - jsr.json
   - package.json
   - src/core.ts
+  - src/funcs/authCheckEmail.ts
   - src/funcs/authForgotPassword.ts
   - src/funcs/authGetCurrentUser.ts
   - src/funcs/authGoogleCallback.ts
@@ -95,6 +97,7 @@ generatedFiles:
   - src/lib/security.ts
   - src/lib/url.ts
   - src/models/authprovider.ts
+  - src/models/checkemailrequest.ts
   - src/models/errors/errorresponse.ts
   - src/models/errors/httpclienterrors.ts
   - src/models/errors/index.ts
@@ -210,6 +213,13 @@ examples:
       responses:
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  check_email:
+    speakeasy-default-check-email:
+      requestBody:
+        application/json: {"email": "user@example.com"}
+      responses:
         "500":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
 examplesVersion: 1.0.2

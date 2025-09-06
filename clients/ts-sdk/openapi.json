@@ -24,6 +24,49 @@
     }
   ],
   "paths": {
+    "/api/auth/check-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Check if email exists",
+        "description": "# Errors\nReturns 404 if email doesn't exist, 204 if it does exist, or 500 for database errors.",
+        "operationId": "check_email",
+        "requestBody": {
+          "description": "Email address to check for registration",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckEmailRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Email exists in the system"
+          },
+          "404": {
+            "description": "Email not found in the system"
+          },
+          "500": {
+            "description": "Database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "DATABASE_ERROR",
+                  "error": "Database connection failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/forgot-password": {
       "post": {
         "tags": [
@@ -484,6 +527,23 @@
           "email",
           "both"
         ]
+      },
+      "CheckEmailRequest": {
+        "type": "object",
+        "description": "Request body for checking if email exists",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to check",
+            "example": "user@example.com"
+          }
+        },
+        "example": {
+          "email": "user@example.com"
+        }
       },
       "ErrorResponse": {
         "type": "object",

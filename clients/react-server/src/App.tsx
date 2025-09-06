@@ -13,16 +13,20 @@ type AppProps = {
 function Loading(): JSX.Element {
   const { loading } = useAuth();
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background cube-bg">
-        <div className="text-center">
-          <div className="border-blue mx-auto h-12 w-12 animate-spin rounded-full border-b-2"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
+  if (!loading) {
+    return <></>;
   }
+
+  return (
+    <div className="bg-background cube-bg flex min-h-screen items-center justify-center">
+      <div className="text-center">
+        <div className="border-blue mx-auto h-12 w-12 animate-spin rounded-full border-b-2"></div>
+        <p className="mt-4 text-gray-600">Loading...</p>
+      </div>
+    </div>
+  );
+
+  // Return an empty fragment or your main app content here
 }
 
 /**
