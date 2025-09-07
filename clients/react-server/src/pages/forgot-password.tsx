@@ -12,8 +12,8 @@ import {
   FormMessage,
 } from '../components/ui/form';
 import { Input } from '../components/ui/input';
-import { useAuth } from '../contexts/AuthContext';
 import { useForm } from 'react-hook-form';
+import { patronClient } from '@/lib/utils';
 
 /**
  * Password reset page that handles password reset with a token from URL parameters.
@@ -25,10 +25,12 @@ type ResetPasswordFormData = {
   confirmPassword: string;
 };
 
-export default function ForgotPasswordPage(): JSX.Element {
+/**
+ * @returns {JSX.Element} The ForgotPasswordPage component
+ */
+export const ForgotPasswordPage = (): JSX.Element => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { resetPassword } = useAuth();
   const [status, setStatus] = useState<'loading' | 'form' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,7 +85,7 @@ export default function ForgotPasswordPage(): JSX.Element {
     setMessage('');
 
     try {
-      await resetPassword(data.newPassword, token);
+      await patronClient.auth.resetPassword({ newPassword: data.newPassword, token });
       setStatus('success');
       setMessage(
         'Your password has been successfully reset! You can now log in with your new password.',
@@ -226,4 +228,4 @@ export default function ForgotPasswordPage(): JSX.Element {
       </FormCard>
     </Layout>
   );
-}
+};

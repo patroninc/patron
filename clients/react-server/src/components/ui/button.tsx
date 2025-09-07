@@ -3,6 +3,7 @@ import { Slot as RadixSlot } from 'radix-ui';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '../../lib/utils';
+import { JSX } from 'react';
 
 const buttonVariants = cva(
   "inline-flex items-center group peer relative justify-center gap-2 whitespace-nowrap text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none",
@@ -27,7 +28,17 @@ const buttonVariants = cva(
   },
 );
 
-function Button({
+/**
+ *
+ * @param {object} props - Props to be passed to the Button component.
+ * @param {string} props.className - Additional class names to be applied to the Button component.
+ * @param {string} props.variant - The variant of the button, which determines its styling. Can be 'default', 'destructive', or 'secondary'.
+ * @param {string} props.size - The size of the button, which determines its dimensions. Can be 'default', 'sm', 'lg', or 'icon'.
+ * @param {boolean} [props.asChild=false] - If true, the button will render as a child component using Radix's Slot. Defaults to false.
+ * @param {boolean} [props.shadow=true] - If true, the button will have a shadow effect. Defaults to true.
+ * @returns The Button component.
+ */
+const Button = ({
   className,
   variant,
   size,
@@ -38,7 +49,7 @@ function Button({
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     shadow?: boolean;
-  }) {
+  }): JSX.Element => {
   const Comp = asChild ? RadixSlot.Slot : 'button';
 
   const Btn = (
@@ -87,6 +98,6 @@ function Button({
   ) : (
     Btn
   );
-}
+};
 
 export { Button, buttonVariants };

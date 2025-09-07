@@ -1,19 +1,29 @@
 import * as React from 'react';
 
 import { cn } from '../../lib/utils';
+import { JSX } from 'react';
 
-function Input({
+/**
+ *
+ * @param {object} props - Props to be passed to the Input component.
+ * @param {string} props.className - Additional class names to be applied to the Input component.
+ * @param {string} props.containerClassName - Additional class names to be applied to the Input container.
+ * @param {boolean} props.roundedLeft - Whether the left side of the input should have rounded corners. Defaults to true.
+ * @param {string} props.type - The type of input element to render (e.g., "text", "password", "email").
+ * @returns The Input component.
+ */
+const Input = ({
   className,
-  conatinerClassName,
+  containerClassName,
   type,
   roundedLeft = true,
   ...props
 }: React.ComponentProps<'input'> & {
-  conatinerClassName?: string;
+  containerClassName?: string;
   roundedLeft?: boolean;
-}) {
+}): JSX.Element => {
   return (
-    <div className={cn('relative m-[3px]', !roundedLeft && 'ml-0', conatinerClassName)}>
+    <div className={cn('relative m-[3px]', !roundedLeft && 'ml-0', containerClassName)}>
       <input
         type={type}
         data-slot="input"
@@ -59,6 +69,6 @@ function Input({
       )}
     </div>
   );
-}
+};
 
 export { Input };

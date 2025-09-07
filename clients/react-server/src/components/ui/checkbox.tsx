@@ -3,8 +3,18 @@ import { Checkbox as CheckboxPrimitive } from 'radix-ui';
 import { CheckIcon } from 'lucide-react';
 
 import { cn } from '../../lib/utils';
+import { JSX } from 'react';
 
-function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the Checkbox component.
+ * @param {string} props.className - Additional class names to be applied to the Checkbox component.
+ * @returns The Checkbox component.
+ */
+const Checkbox = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof CheckboxPrimitive.Root>): JSX.Element => {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
@@ -36,6 +46,6 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );
-}
+};
 
 export { Checkbox };

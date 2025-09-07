@@ -3,45 +3,51 @@ import { AlertDialog as AlertDialogPrimitive } from 'radix-ui';
 
 import { cn } from '../../lib/utils';
 import { buttonVariants } from './button';
+import { JSX } from 'react';
 
 /**
  *
- * @param root0
+ * @param props - Props to be passed to the AlertDialog root component.
+ * @returns The AlertDialog root component.
  */
 const AlertDialog = ({
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogRoot>) => {
-  return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
+}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialog>): JSX.Element => {
+  return <AlertDialogPrimitive.AlertDialog data-slot="alert-dialog" {...props} />;
 };
 
 /**
  *
- * @param root0
+ * @param props - Props to be passed to the AlertDialog trigger component.
+ * @returns The AlertDialog trigger component.
  */
 const AlertDialogTrigger = ({
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogTrigger>) => {
+}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogTrigger>): JSX.Element => {
   return <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />;
 };
 
 /**
  *
- * @param root0
+ * @param props - Props to be passed to the AlertDialog portal component.
+ * @returns The AlertDialog portal component.
  */
 const AlertDialogPortal = ({
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogPortal>) => {
+}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogPortal>): JSX.Element => {
   return <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />;
 };
 
 /**
  *
- * @param root0
+ * @param {object} props - Props to be passed to the AlertDialog overlay component.
+ * @param {string} props.className - Additional class names to be applied to the AlertDialog overlay component.
+ * @returns The AlertDialog overlay component.
  */
 const AlertDialogOverlay = ({
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogOverlay>) => {
+}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogOverlay>): JSX.Element => {
   return (
     <AlertDialogPrimitive.Overlay
       data-slot="alert-dialog-overlay"
@@ -54,15 +60,24 @@ const AlertDialogOverlay = ({
   );
 };
 
+type AlertDialogContentProps = React.ComponentProps<
+  typeof AlertDialogPrimitive.AlertDialogContent
+> & {
+  contentClassName?: string;
+};
+
 /**
  *
- * @param root0
+ * @param {object} props - Props to be passed to the AlertDialog content component.
+ * @param {string} props.className - Additional class names to be applied to the inner content container of the AlertDialog.
+ * @param {string} props.contentClassName - Additional class names to be applied to the outer content container of the AlertDialog.
+ * @returns The AlertDialog content component.
  */
 const AlertDialogContent = ({
   className,
   contentClassName,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogContent>) => {
+}: AlertDialogContentProps): JSX.Element => {
   return (
     <AlertDialogPortal>
       <AlertDialogOverlay />
@@ -93,9 +108,11 @@ const AlertDialogContent = ({
 
 /**
  *
- * @param root0
+ * @param {object} props - Props to be passed to the AlertDialog header component.
+ * @param {string} props.className - Additional class names to be applied to the AlertDialog header component.
+ * @returns The AlertDialog header component.
  */
-const AlertDialogHeader = ({ className, ...props }: React.ComponentProps<'div'>) => {
+const AlertDialogHeader = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="alert-dialog-header"
@@ -107,9 +124,11 @@ const AlertDialogHeader = ({ className, ...props }: React.ComponentProps<'div'>)
 
 /**
  *
- * @param root0
+ * @param {object} props - Props to be passed to the AlertDialog footer component.
+ * @param {string} props.className - Additional class names to be applied to the AlertDialog footer component.
+ * @returns The AlertDialog footer component.
  */
-const AlertDialogFooter = ({ className, ...props }: React.ComponentProps<'div'>) => {
+const AlertDialogFooter = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="alert-dialog-footer"
@@ -121,12 +140,14 @@ const AlertDialogFooter = ({ className, ...props }: React.ComponentProps<'div'>)
 
 /**
  *
- * @param root0
+ * @param {object} props - Props to be passed to the AlertDialog title component.
+ * @param {string} props.className - Additional class names to be applied to the AlertDialog title component.
+ * @returns The AlertDialog title component.
  */
 const AlertDialogTitle = ({
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogTitle>) => {
+}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogTitle>): JSX.Element => {
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
@@ -138,12 +159,14 @@ const AlertDialogTitle = ({
 
 /**
  *
- * @param root0
+ * @param {object} props - Props to be passed to the AlertDialog description component.
+ * @param {string} props.className - Additional class names to be applied to the AlertDialog description component.
+ * @returns The AlertDialog description component.
  */
 const AlertDialogDescription = ({
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogDescription>) => {
+}: React.ComponentProps<typeof AlertDialogPrimitive.AlertDialogDescription>): JSX.Element => {
   return (
     <AlertDialogPrimitive.Description
       data-slot="alert-dialog-description"
@@ -155,23 +178,27 @@ const AlertDialogDescription = ({
 
 /**
  *
- * @param root0
+ * @param {object} props - Props to be passed to the AlertDialog action component.
+ * @param {string} props.className - Additional class names to be applied to the AlertDialog action component.
+ * @returns The AlertDialog action component.
  */
 const AlertDialogAction = ({
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Action>) => {
+}: React.ComponentProps<typeof AlertDialogPrimitive.Action>): JSX.Element => {
   return <AlertDialogPrimitive.Action className={cn(buttonVariants(), className)} {...props} />;
 };
 
 /**
  *
- * @param root0
+ * @param {object} props - Props to be passed to the AlertDialog cancel component.
+ * @param {string} props.className - Additional class names to be applied to the AlertDialog cancel component.
+ * @returns The AlertDialog cancel component.
  */
 const AlertDialogCancel = ({
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>) => {
+}: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>): JSX.Element => {
   return (
     <AlertDialogPrimitive.Cancel
       className={cn(buttonVariants({ variant: 'secondary' }), className)}

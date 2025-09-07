@@ -5,27 +5,60 @@ import { Dialog as SheetPrimitive } from 'radix-ui';
 import { XIcon } from 'lucide-react';
 
 import { cn } from '../../lib/utils';
+import { JSX } from 'react';
 
-function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the Sheet component.
+ * @returns The Sheet component.
+ */
+const Sheet = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>): JSX.Element => {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
-}
+};
 
-function SheetTrigger({ ...props }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetTrigger component.
+ * @returns The SheetTrigger component.
+ */
+const SheetTrigger = ({
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Trigger>): JSX.Element => {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
-}
+};
 
-function SheetClose({ ...props }: React.ComponentProps<typeof SheetPrimitive.Close>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetClose component.
+ * @returns The SheetClose component.
+ */
+const SheetClose = ({
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Close>): JSX.Element => {
   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
-}
+};
 
-function SheetPortal({ ...props }: React.ComponentProps<typeof SheetPrimitive.Portal>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetPortal component.
+ * @returns The SheetPortal component.
+ */
+const SheetPortal = ({
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Portal>): JSX.Element => {
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
-}
+};
 
-function SheetOverlay({
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetOverlay component.
+ * @param {string} props.className - Additional class names to be applied to the SheetOverlay component.
+ * @returns The SheetOverlay component.
+ */
+const SheetOverlay = ({
   className,
   ...props
-}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+}: React.ComponentProps<typeof SheetPrimitive.Overlay>): JSX.Element => {
   return (
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
@@ -36,16 +69,24 @@ function SheetOverlay({
       {...props}
     />
   );
-}
+};
 
-function SheetContent({
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetContent component.
+ * @param {string} props.className - Additional class names to be applied to the SheetContent component.
+ * @param {React.ReactNode} props.children - The content to be rendered inside the SheetContent component.
+ * @param {string} props.side - The side from which the sheet should appear. Can be 'top', 'right', 'bottom', or 'left'. Defaults to 'right'.
+ * @returns The SheetContent component.
+ */
+const SheetContent = ({
   className,
   children,
   side = 'right',
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: 'top' | 'right' | 'bottom' | 'left';
-}) {
+}): JSX.Element => {
   return (
     <SheetPortal>
       <SheetOverlay />
@@ -73,9 +114,15 @@ function SheetContent({
       </SheetPrimitive.Content>
     </SheetPortal>
   );
-}
+};
 
-function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetHeader component.
+ * @param {string} props.className - Additional class names to be applied to the SheetHeader component.
+ * @returns The SheetHeader component.
+ */
+const SheetHeader = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="sheet-header"
@@ -83,9 +130,15 @@ function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
       {...props}
     />
   );
-}
+};
 
-function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetFooter component.
+ * @param {string} props.className - Additional class names to be applied to the SheetFooter component.
+ * @returns The SheetFooter component.
+ */
+const SheetFooter = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="sheet-footer"
@@ -93,9 +146,18 @@ function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
       {...props}
     />
   );
-}
+};
 
-function SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Title>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetTitle component.
+ * @param {string} props.className - Additional class names to be applied to the SheetTitle component.
+ * @returns The SheetTitle component.
+ */
+const SheetTitle = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Title>): JSX.Element => {
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
@@ -103,12 +165,18 @@ function SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPr
       {...props}
     />
   );
-}
+};
 
-function SheetDescription({
+/**
+ *
+ * @param {object} props - Props to be passed to the SheetDescription component.
+ * @param {string} props.className - Additional class names to be applied to the SheetDescription component.
+ * @returns The SheetDescription component.
+ */
+const SheetDescription = ({
   className,
   ...props
-}: React.ComponentProps<typeof SheetPrimitive.Description>) {
+}: React.ComponentProps<typeof SheetPrimitive.Description>): JSX.Element => {
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
@@ -116,7 +184,7 @@ function SheetDescription({
       {...props}
     />
   );
-}
+};
 
 export {
   Sheet,

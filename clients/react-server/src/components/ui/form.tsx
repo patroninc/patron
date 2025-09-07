@@ -12,6 +12,7 @@ import {
 
 import { cn } from '../../lib/utils';
 import { Label } from '../../components/ui/label';
+import { JSX } from 'react';
 
 const Form = FormProvider;
 
@@ -22,14 +23,37 @@ type FormFieldContextValue<
   name: TName;
 };
 
+interface UseFormFieldReturn<TFieldValues extends FieldValues = FieldValues> {
+  id: string;
+  name: FieldPath<TFieldValues>;
+  formItemId: string;
+  formDescriptionId: string;
+  formMessageId: string;
+  invalid: boolean;
+  isDirty: boolean;
+  isTouched: boolean;
+  isValidating: boolean;
+  error?: {
+    type: string;
+    message?: string | undefined;
+    ref?: any;
+  };
+}
+
 const FormFieldContext = React.createContext<FormFieldContextValue>({} as FormFieldContextValue);
 
+/**
+ *
+ * @param {object} props - Props to be passed to the FormField component.
+ * @param {string} props.name - The name of the form field, which should match the corresponding field in the form's data model.
+ * @returns The FormField component.
+ */
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
   ...props
-}: ControllerProps<TFieldValues, TName>) => {
+}: ControllerProps<TFieldValues, TName>): JSX.Element => {
   return (
     <FormFieldContext.Provider value={{ name: props.name }}>
       <Controller {...props} />
@@ -37,7 +61,11 @@ const FormField = <
   );
 };
 
-const useFormField = () => {
+/**
+ *
+ * @returns {UseFormFieldReturn} - The form field state and identifiers.
+ */
+const useFormField = (): UseFormFieldReturn => {
   const fieldContext = React.useContext(FormFieldContext);
   const itemContext = React.useContext(FormItemContext);
   const { getFieldState } = useFormContext();
@@ -66,7 +94,13 @@ type FormItemContextValue = {
 
 const FormItemContext = React.createContext<FormItemContextValue>({} as FormItemContextValue);
 
-function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the FormItem component.
+ * @param {string} props.className - Additional class names to be applied to the FormItem component.
+ * @returns The FormItem component.
+ */
+const FormItem = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   const id = React.useId();
 
   return (
@@ -74,9 +108,18 @@ function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
       <div data-slot="form-item" className={cn('grid gap-2', className)} {...props} />
     </FormItemContext.Provider>
   );
-}
+};
 
-function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the FormLabel component.
+ * @param {string} props.className - Additional class names to be applied to the FormLabel component.
+ * @returns The FormLabel component.
+ */
+const FormLabel = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof LabelPrimitive.Root>): JSX.Element => {
   const { error, formItemId } = useFormField();
 
   return (
@@ -88,9 +131,14 @@ function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPri
       {...props}
     />
   );
-}
+};
 
-function FormControl({ ...props }: React.ComponentProps<typeof RadixSlot.Slot>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the FormControl component.
+ * @returns The FormControl component.
+ */
+const FormControl = ({ ...props }: React.ComponentProps<typeof RadixSlot.Slot>): JSX.Element => {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
   return (
@@ -103,9 +151,15 @@ function FormControl({ ...props }: React.ComponentProps<typeof RadixSlot.Slot>) 
       {...props}
     />
   );
-}
+};
 
-function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the FormDescription component.
+ * @param {string} props.className - Additional class names to be applied to the FormDescription component.
+ * @returns The FormDescription component.
+ */
+const FormDescription = ({ className, ...props }: React.ComponentProps<'p'>): JSX.Element => {
   const { formDescriptionId } = useFormField();
 
   return (
@@ -116,9 +170,15 @@ function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
       {...props}
     />
   );
-}
+};
 
-function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the FormMessage component.
+ * @param {string} props.className - Additional class names to be applied to the FormMessage component.
+ * @returns The FormMessage component.
+ */
+const FormMessage = ({ className, ...props }: React.ComponentProps<'p'>): JSX.Element | null => {
   const { error, formMessageId } = useFormField();
   const body = error ? String(error?.message ?? '') : props.children;
 
@@ -136,7 +196,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
       {body}
     </p>
   );
-}
+};
 
 export {
   useFormField,

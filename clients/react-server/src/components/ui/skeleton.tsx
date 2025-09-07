@@ -1,6 +1,13 @@
+import { JSX } from 'react';
 import { cn } from '../../lib/utils';
 
-function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props for the Skeleton component
+ * @param {string} props.className - Additional class names for styling
+ * @returns {JSX.Element} The Skeleton component
+ */
+const Skeleton = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="skeleton"
@@ -8,6 +15,6 @@ function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
       {...props}
     />
   );
-}
+};
 
 export { Skeleton };
