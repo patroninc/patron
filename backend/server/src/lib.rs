@@ -14,6 +14,7 @@ use actix_web::{
     App, HttpServer,
 };
 use openapi::ApiDoc;
+use redis::aio::ConnectionManager;
 use shared::services::{
     auth::GoogleOAuthService, config::ConfigService, db::DbService, email::EmailService,
     s3::S3Service,
@@ -118,6 +119,28 @@ pub async fn main() -> std::io::Result<()> {
         }
     };
 
+    // Create Redis connection manager for direct Redis operations
+    let redis_client = match redis::Client::open(redis_config.url.as_str()) {
+        Ok(client) => client,
+        Err(e) => {
+            eprintln!("Failed to create Redis client: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to create Redis client",
+            ));
+        }
+    };
+    let redis_manager = match ConnectionManager::new(redis_client).await {
+        Ok(manager) => manager,
+        Err(e) => {
+            eprintln!("Failed to create Redis connection manager: {e}");
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to create Redis connection manager",
+            ));
+        }
+    };
+
     // Generate session key from auth secret
     let session_key = Key::from(google_oauth_service.auth_secret_key.as_bytes());
 
@@ -148,6 +171,7 @@ pub async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(db_service.clone()))
             .app_data(web::Data::new(google_oauth_service.clone()))
             .app_data(web::Data::new(email_service.clone()))
+            .app_data(web::Data::new(redis_manager.clone()))
             .service(Redoc::with_url("/redoc", ApiDoc::openapi()))
             .service(
                 web::scope("/api").service(

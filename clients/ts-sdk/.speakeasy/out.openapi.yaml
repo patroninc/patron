@@ -413,6 +413,7 @@ components:
       description: "Request body for password reset confirmation"
       required:
         - "token"
+        - "user_id"
         - "new_password"
       properties:
         "new_password":
@@ -421,6 +422,10 @@ components:
         "token":
           type: "string"
           description: "Password reset token"
+        "user_id":
+          type: "string"
+          format: "uuid"
+          description: "User ID associated with the reset token"
       example: {"new_password": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000"}
     "ResetPasswordResponse":
       type: "object"
