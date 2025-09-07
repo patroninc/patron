@@ -56,7 +56,7 @@ export const Register = (): React.ReactElement => {
 
   useEffect(() => {
     if (!emailFromUrl || !isValidEmail(emailFromUrl)) {
-      navigate('/login');
+      navigate('/login', { viewTransition: true });
     }
   }, [emailFromUrl, navigate]);
 

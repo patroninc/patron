@@ -23,6 +23,7 @@ import { useForm } from 'react-hook-form';
 import { JSX, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { isValidEmail, patronClient } from '../lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Email step of the login form.
@@ -140,6 +141,8 @@ const LoginPasswordStep = ({
 }): React.ReactElement => {
   const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
   const [forgotPasswordError, setForgotPasswordError] = useState<boolean>(false);
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   /**
    *
@@ -172,7 +175,9 @@ const LoginPasswordStep = ({
     }
 
     try {
-      await patronClient.auth.login({ email, password: data.password });
+      const loginResp = await patronClient.auth.login({ email, password: data.password });
+      setUser(loginResp.user);
+      navigate('/home', { viewTransition: true });
     } catch {
       form.setError('password', {
         message: 'Password is incorrect',
@@ -264,7 +269,7 @@ export const Login = (): JSX.Element => {
       setCurrentStep(2);
     } catch {
       setFormData((prev) => ({ ...prev, email }));
-      navigate('/register', { state: { email } });
+      navigate('/register', { state: { email }, viewTransition: true });
     }
   };
 

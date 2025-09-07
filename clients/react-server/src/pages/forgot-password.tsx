@@ -91,7 +91,7 @@ export const ForgotPasswordPage = (): JSX.Element => {
         'Your password has been successfully reset! You can now log in with your new password.',
       );
       setTimeout(() => {
-        navigate('/login');
+        navigate('/login', { viewTransition: true });
       }, 3000);
     } catch (error) {
       setStatus('error');
@@ -164,7 +164,7 @@ export const ForgotPasswordPage = (): JSX.Element => {
                 <Button
                   type="button"
                   variant="secondary"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/login', { viewTransition: true })}
                   className="w-full"
                 >
                   Back to Login

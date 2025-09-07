@@ -38,7 +38,7 @@ export default function VerifyEmailPage(): JSX.Element {
         setStatus('success');
         setMessage('Your email has been successfully verified! Welcome to Patron.');
         setTimeout(() => {
-          navigate('/');
+          navigate('/', { viewTransition: true });
         }, 3000);
       } catch (error) {
         setStatus('error');

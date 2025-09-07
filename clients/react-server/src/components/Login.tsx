@@ -1,6 +1,6 @@
 import { JSX, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { patronClient } from '@/lib/utils';
 
 /**
@@ -14,6 +14,7 @@ export default function Login(): JSX.Element {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   /**
    * Handles form submission for login.
@@ -29,6 +30,7 @@ export default function Login(): JSX.Element {
     try {
       const loginResp = await patronClient.auth.login({ email, password });
       setUser(loginResp.user);
+      navigate('/home', { viewTransition: true });
     } catch {
       setError('Invalid email or password');
     } finally {
