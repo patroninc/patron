@@ -35,7 +35,7 @@ export const ForgotPasswordPage = (): JSX.Element => {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Get token from URL parameters
+  const userId = searchParams.get('user_id') || '';
   const token = searchParams.get('token');
 
   const form = useForm<ResetPasswordFormData>({
@@ -85,7 +85,7 @@ export const ForgotPasswordPage = (): JSX.Element => {
     setMessage('');
 
     try {
-      await patronClient.auth.resetPassword({ newPassword: data.newPassword, token });
+      await patronClient.auth.resetPassword({ newPassword: data.newPassword, token, userId });
       setStatus('success');
       setMessage(
         'Your password has been successfully reset! You can now log in with your new password.',
@@ -217,9 +217,9 @@ export const ForgotPasswordPage = (): JSX.Element => {
               </svg>
             </div>
             <h3 className="mt-4 text-lg font-semibold text-gray-900">Reset Failed</h3>
-            <p className="mt-2 text-gray-600">{message}</p>
-            <Link to="/login">
-              <Button variant="secondary" className="w-full">
+            <p className="mt-2 mb-6 text-gray-600">{message}</p>
+            <Link to="/login" viewTransition={true}>
+              <Button variant="default" className="w-full">
                 Return to login
               </Button>
             </Link>

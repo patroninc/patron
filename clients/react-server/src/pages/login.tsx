@@ -146,7 +146,7 @@ const LoginPasswordStep = ({
    */
   const tryForgotPassword = async (): Promise<void> => {
     try {
-      await patronClient.auth.forgotPassword({ email });
+      void patronClient.auth.forgotPassword({ email });
     } catch {
       setForgotPasswordError(true);
     }
@@ -201,11 +201,11 @@ const LoginPasswordStep = ({
           <AlertDialog open={forgotPasswordModal}>
             <AlertDialogTrigger
               onClick={tryForgotPassword}
-              className="text-right text-sm hover:underline"
+              className="text-right text-sm hover:cursor-pointer hover:underline"
             >
               Forgot password?
             </AlertDialogTrigger>
-            <AlertDialogContent className="sm:max-w-[450px]">
+            <AlertDialogContent contentClassName="sm:max-w-[450px]">
               <AlertDialogHeader className="sm:!text-center">
                 <AlertDialogTitle>
                   {forgotPasswordError ? 'Failed to send password reset email' : 'Forgot password?'}

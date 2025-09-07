@@ -47,7 +47,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'forgot-password',
+        path: 'reset-password',
         Component: () => (
           <ProtectedRoute requireAuth={false}>
             <ForgotPasswordPage />

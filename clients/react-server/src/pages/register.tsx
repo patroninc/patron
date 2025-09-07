@@ -43,7 +43,6 @@ export const Register = (): React.ReactElement => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
 
-  // Get email from URL parameters
   const emailFromUrl = searchParams.get('email');
 
   const form = useForm<RegisterFormData>({
@@ -56,7 +55,6 @@ export const Register = (): React.ReactElement => {
   });
 
   useEffect(() => {
-    // If no email in URL, redirect to login
     if (!emailFromUrl || !isValidEmail(emailFromUrl)) {
       navigate('/login');
     }
@@ -194,7 +192,7 @@ export const Register = (): React.ReactElement => {
       </FormCard>
 
       <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
-        <AlertDialogContent className="sm:max-w-[450px]">
+        <AlertDialogContent contentClassName="sm:max-w-[450px]">
           <AlertDialogHeader className="sm:!text-center">
             <AlertDialogTitle>{alertTitle}</AlertDialogTitle>
             <AlertDialogDescription>{alertMessage}</AlertDialogDescription>

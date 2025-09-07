@@ -16,7 +16,6 @@ export default function VerifyEmailPage(): JSX.Element {
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [message, setMessage] = useState('');
 
-  // Get token from URL parameters
   const token = searchParams.get('token');
 
   useEffect(() => {
@@ -113,9 +112,9 @@ export default function VerifyEmailPage(): JSX.Element {
               </svg>
             </div>
             <h3 className="mt-4 text-lg font-semibold text-gray-900">Verification Failed</h3>
-            <p className="mt-2 text-gray-600">{message}</p>
-            <Link to="/login">
-              <Button variant="secondary" className="w-full">
+            <p className="mt-2 mb-6 text-gray-600">{message}</p>
+            <Link to="/login" viewTransition={true}>
+              <Button variant="default" className="w-full">
                 Return to login
               </Button>
             </Link>
