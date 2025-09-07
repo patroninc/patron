@@ -10,7 +10,7 @@ type AppProps = {
  *
  * @returns {JSX.Element} The authenticated app component
  */
-function Loading(): JSX.Element {
+const Loading = (): JSX.Element => {
   const { loading } = useAuth();
 
   if (!loading) {
@@ -27,7 +27,7 @@ function Loading(): JSX.Element {
   );
 
   // Return an empty fragment or your main app content here
-}
+};
 
 /**
  * Main App component that wraps the application with authentication provider.
@@ -37,12 +37,12 @@ function Loading(): JSX.Element {
  * @returns {JSX.Element} The main app component
  */
 // eslint-disable-next-line no-unused-vars
-function App({ initialData: _initialData }: AppProps): JSX.Element {
+const App = ({ initialData: _initialData }: AppProps): JSX.Element => {
   return (
     <AuthProvider>
       <Loading />
     </AuthProvider>
   );
-}
+};
 
 export default App;

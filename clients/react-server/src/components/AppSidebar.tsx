@@ -1,4 +1,4 @@
-import { User, LayoutDashboard, Library, ChartBar, Users, DollarSign } from "lucide-react"
+import { User, LayoutDashboard, Library, ChartBar, Users, DollarSign } from 'lucide-react';
 
 import {
   Sidebar,
@@ -10,35 +10,35 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "../components/ui/sidebar"
+} from '../components/ui/sidebar';
 
 const items = [
   {
-    title: "Dashboard",
-    url: "/",
+    title: 'Dashboard',
+    url: '/',
     icon: LayoutDashboard,
   },
   {
-    title: "Content",
-    url: "/content",
+    title: 'Content',
+    url: '/content',
     icon: Library,
   },
   {
-    title: "Insights",
-    url: "/insights",
+    title: 'Insights',
+    url: '/insights',
     icon: ChartBar,
   },
   {
-    title: "Audience",
-    url: "/audience",
+    title: 'Audience',
+    url: '/audience',
     icon: Users,
   },
   {
-    title: "Payouts",
-    url: "/payouts",
+    title: 'Payouts',
+    url: '/payouts',
     icon: DollarSign,
   },
-]
+];
 
 export function AppSidebar() {
   return (
@@ -46,19 +46,19 @@ export function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu className="flex">
           <SidebarMenuItem className="w-max">
-            <SidebarMenuButton className="p-0 w-max rounded-none" size="icon">
+            <SidebarMenuButton className="w-max rounded-none p-0" size="icon">
               <img src="/logo.svg" alt="logo" className="size-8" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
-                const IconComponent = item.icon
+                const IconComponent = item.icon;
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
@@ -68,18 +68,18 @@ export function AppSidebar() {
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
+                );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      
+
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 <User className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -91,5 +91,5 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

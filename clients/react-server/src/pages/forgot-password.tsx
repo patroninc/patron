@@ -46,9 +46,7 @@ export default function ForgotPasswordPage(): JSX.Element {
   useEffect(() => {
     if (!token) {
       setStatus('error');
-      setMessage(
-        'No reset token provided. Please check your email for the password reset link.',
-      );
+      setMessage('No reset token provided. Please check your email for the password reset link.');
     } else {
       setStatus('form');
     }
@@ -87,15 +85,15 @@ export default function ForgotPasswordPage(): JSX.Element {
     try {
       await resetPassword(data.newPassword, token);
       setStatus('success');
-      setMessage('Your password has been successfully reset! You can now log in with your new password.');
+      setMessage(
+        'Your password has been successfully reset! You can now log in with your new password.',
+      );
       setTimeout(() => {
         navigate('/login');
       }, 3000);
     } catch (error) {
       setStatus('error');
-      setMessage(
-        'Invalid or expired reset token.',
-      );
+      setMessage('Invalid or expired reset token.');
       console.error('Password reset error:', error);
     } finally {
       setIsSubmitting(false);
@@ -114,55 +112,59 @@ export default function ForgotPasswordPage(): JSX.Element {
 
         {status === 'form' && (
           <Form {...form}>
-            <form className="space-y-5" onSubmit={(e) => void form.handleSubmit(handlePasswordReset)(e)}>
-                <FormField
-                  control={form.control}
-                  name="newPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>New Password</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Enter your new password" 
-                          type="password" 
-                          {...field} 
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <form
+              className="space-y-5"
+              onSubmit={(e) => void form.handleSubmit(handlePasswordReset)(e)}
+            >
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter your new password"
+                        type="password"
+                        {...field}
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Confirm your new password" 
-                          type="password" 
-                          {...field} 
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Confirm your new password"
+                        type="password"
+                        {...field}
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-              <div className="w-full flex flex-col gap-2 mt-5">
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isSubmitting}
-                >
+              <div className="mt-5 flex w-full flex-col gap-2">
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? 'Resetting Password...' : 'Reset Password'}
                 </Button>
 
-                <Button type="button" variant="secondary" onClick={() => navigate('/login')} className="w-full">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => navigate('/login')}
+                  className="w-full"
+                >
                   Back to Login
                 </Button>
               </div>

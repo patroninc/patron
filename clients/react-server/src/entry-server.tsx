@@ -21,15 +21,16 @@ import App from './App';
  * @param {RenderToPipeableStreamOptions} [options] - Streaming callbacks for shell and errors.
  * @returns {import('stream').Readable} Node read stream of the rendered HTML.
  */
-export function render(
+export const render = (
   _url: string,
   initialData: unknown,
   options?: RenderToPipeableStreamOptions,
-): PipeableStream {
+  // eslint-disable-next-line max-params
+): PipeableStream => {
   return renderToPipeableStream(
     <StrictMode>
       <App initialData={initialData} />
     </StrictMode>,
     options,
   );
-}
+};

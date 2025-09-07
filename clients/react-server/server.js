@@ -28,6 +28,8 @@ if (!isProduction) {
 }
 
 app.use(async (req, res) => {
+  console.log('Received request for:', req.originalUrl);
+
   try {
     const url = req.originalUrl.replace(base, '');
 
@@ -53,6 +55,8 @@ app.use(async (req, res) => {
       '<!--app-head-->',
       `<script>window.__INITIAL_DATA__ = ${serialized}</script>`,
     );
+
+    console.log('Starting React render to stream...');
 
     const [htmlStart, htmlEnd] = template.split('<!--app-html-->');
 

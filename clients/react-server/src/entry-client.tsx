@@ -3,8 +3,8 @@ import { hydrateRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router';
 import { AuthProvider } from './contexts/AuthContext';
 import Home from './pages/home';
-import Login from './pages/login';
-import Register from './pages/register';
+import { Login } from './pages/login';
+import { Register } from './pages/register';
 import ProtectedRoute from './components/ProtectedRoute';
 import VerifyEmailPage from './pages/verify-email';
 
@@ -54,13 +54,13 @@ const router = createBrowserRouter([
  *
  * @returns {JSX.Element} The app component with providers
  */
-function App(): JSX.Element {
+const App = (): JSX.Element => {
   return (
     <AuthProvider>
       <RouterProvider router={router} />
     </AuthProvider>
   );
-}
+};
 
 hydrateRoot(
   document.getElementById('root') as HTMLElement,

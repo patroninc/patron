@@ -28,7 +28,7 @@ export default function ProtectedRoute({
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-background cube-bg items-center justify-center">
+      <div className="bg-background cube-bg flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="border-blue mx-auto h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
