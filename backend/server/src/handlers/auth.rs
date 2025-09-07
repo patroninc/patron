@@ -712,11 +712,7 @@ pub async fn login(
         return Ok(json_error("Invalid email or password"));
     }
 
-    if !user.email_verified {
-        return Ok(json_error(
-            "Please verify your email address before logging in",
-        ));
-    }
+    // TODO! Send a fresh verification email if not verified
 
     let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&user.id)))
         .set(users_dsl::last_login.eq(Some(Utc::now().naive_utc())))
