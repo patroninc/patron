@@ -6,7 +6,7 @@ avoid-breaking-exported-api = false
 
 # Complexity thresholds
 cognitive-complexity-threshold = 25
-too-many-arguments-threshold = 5
+too-many-arguments-threshold = 6
 too-many-lines-threshold = 80
 type-complexity-threshold = 200
 

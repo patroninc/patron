@@ -727,6 +727,7 @@
         "description": "Request body for password reset confirmation",
         "required": [
           "token",
+          "user_id",
           "new_password"
         ],
         "properties": {
@@ -737,6 +738,11 @@
           "token": {
             "type": "string",
             "description": "Password reset token"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID associated with the reset token"
           }
         },
         "example": {

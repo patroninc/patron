@@ -21,6 +21,7 @@ use argon2::{
     Argon2,
 };
 use md5;
+use redis::{aio::ConnectionManager, AsyncCommands};
 
 /// Request body for user registration.
 #[derive(Debug, Deserialize, ToSchema)]
@@ -133,6 +134,8 @@ pub struct ForgotPasswordResponse {
 pub struct ResetPasswordRequest {
     /// Password reset token
     pub token: String,
+    /// User ID associated with the reset token
+    pub user_id: Uuid,
     /// New password (minimum 8 characters)
     pub new_password: String,
 }
@@ -193,14 +196,6 @@ fn generate_gravatar_url(email: &str) -> String {
     format!("https://www.gravatar.com/avatar/{email_hash}?d=identicon&s=200")
 }
 
-/// Helper function to set user session
-fn set_user_session(session: &Session, user: &User) -> Result<(), ServiceError> {
-    session
-        .insert("user", user)
-        .map_err(|e| ServiceError::Unknown(format!("Failed to set session: {e}")))?;
-    Ok(())
-}
-
 /// Helper function to verify `OAuth` state
 fn verify_oauth_state(session: &Session, received_state: &str) -> Result<(), HttpResponse> {
     let stored_state: Option<String> = session
@@ -227,20 +222,17 @@ async fn update_existing_user_with_google_info(
 ) -> Result<User, ServiceError> {
     use shared::schema::users::dsl as users_dsl;
 
-    // Update user with Google info if missing
     if existing_user.display_name.is_none() && !google_user_info.name.is_empty() {
         existing_user.display_name = Some(google_user_info.name.clone());
     }
     if existing_user.avatar_url.is_none() {
         if google_user_info.picture.is_empty() {
-            // Use Gravatar as fallback if no Google picture
             existing_user.avatar_url = Some(generate_gravatar_url(&existing_user.email));
         } else {
             existing_user.avatar_url = Some(google_user_info.picture.clone());
         }
     }
 
-    // Update auth provider
     let new_auth_provider = match existing_user.auth_provider.as_str() {
         "email" => "both".to_owned(),
         _ => existing_user.auth_provider.clone(),
@@ -324,7 +316,6 @@ pub async fn google_auth_redirect(
     let state = Uuid::new_v4().to_string();
     let auth_url = google_oauth_service.get_authorization_url(Some(&state));
 
-    // Store OAuth state in session
     session
         .insert("oauth_state", &state)
         .map_err(|e| ServiceError::Unknown(format!("Failed to store OAuth state: {e}")))?;
@@ -374,7 +365,6 @@ pub async fn google_auth_callback(
 ) -> Result<HttpResponse, actix_web::Error> {
     use shared::schema::users::dsl as users_dsl;
 
-    // Verify OAuth state
     if let Err(response) = verify_oauth_state(&session, &query.state) {
         return Ok(response);
     }
@@ -386,7 +376,6 @@ pub async fn google_auth_callback(
         })?
         .unwrap_or_else(|| google_oauth_service.frontend_url.clone());
 
-    // Exchange code for token and get user info
     let token_response = google_oauth_service
         .exchange_code_for_token(&query.code)
         .await?;
@@ -397,7 +386,6 @@ pub async fn google_auth_callback(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    // Find or create user
     let user = match users_dsl::users
         .filter(users_dsl::email.eq(&google_user_info.email))
         .first::<User>(&mut conn)
@@ -413,14 +401,13 @@ pub async fn google_auth_callback(
         Err(e) => return Err(ServiceError::from(e).into()),
     };
 
-    // Set user session
-    set_user_session(&session, &user)?;
+    session
+        .insert("user", user)
+        .map_err(|e| ServiceError::Unknown(format!("Failed to set session: {e}")))?;
 
-    // Clean up OAuth session data
     let _ = session.remove("oauth_state");
     let _ = session.remove("oauth_redirect_uri");
 
-    // Redirect to frontend
     Ok(HttpResponse::Found()
         .append_header(("Location", format!("{redirect_uri}/dashboard")))
         .finish())
@@ -462,7 +449,6 @@ pub async fn register(
     use shared::schema::email_verification_tokens::dsl as tokens_dsl;
     use shared::schema::users::dsl as users_dsl;
 
-    // Validate input
     if body.email.is_empty() {
         return Ok(json_error("Email is required"));
     }
@@ -473,7 +459,6 @@ pub async fn register(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    // Check if user already exists
     if users_dsl::users
         .filter(users_dsl::email.eq(&body.email))
         .first::<User>(&mut conn)
@@ -483,13 +468,10 @@ pub async fn register(
         return Ok(json_error("Email address already registered"));
     }
 
-    // Hash password
     let password_hash = hash_password(&body.password)?;
 
-    // Generate Gravatar URL as default avatar
     let avatar_url = generate_gravatar_url(&body.email);
 
-    // Create new user
     let new_user = User {
         id: Uuid::new_v4(),
         email: body.email.clone(),
@@ -529,7 +511,6 @@ pub async fn register(
         .await
         .map_err(ServiceError::from)?;
 
-    // Send verification email
     let verification_link = format!(
         "{}/api/auth/verify-email?token={}",
         google_oauth_service.backend_url, verification_token
@@ -542,7 +523,6 @@ pub async fn register(
         <p>This link will expire in 24 hours.</p>"
     );
 
-    // Send email (don't fail registration if email fails)
     email_service
         .send_html_email(shared::services::email::HtmlEmailContent {
             to: &body.email,
@@ -604,8 +584,6 @@ pub async fn verify_email(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    // Get verification token from database
-
     let verification_token: EmailVerificationToken = match tokens_dsl::email_verification_tokens
         .filter(tokens_dsl::token.eq(token))
         .first(&mut conn)
@@ -618,9 +596,7 @@ pub async fn verify_email(
         Err(e) => return Err(ServiceError::from(e).into()),
     };
 
-    // Check if token has expired
     if verification_token.expires_at < Utc::now().naive_utc() {
-        // Clean up expired token
         if let Err(e) = diesel::delete(
             tokens_dsl::email_verification_tokens.filter(tokens_dsl::id.eq(&verification_token.id)),
         )
@@ -632,14 +608,12 @@ pub async fn verify_email(
         return Ok(json_error("Invalid or expired verification token"));
     }
 
-    // Get and update user
     let mut user: User = users_dsl::users
         .filter(users_dsl::id.eq(&verification_token.user_id))
         .first(&mut conn)
         .await
         .map_err(ServiceError::from)?;
 
-    // Check if already verified
     if user.email_verified {
         let redirect_url = format!(
             "{}/login?verified=already",
@@ -650,7 +624,6 @@ pub async fn verify_email(
             .finish());
     }
 
-    // Update user
     let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&user.id)))
         .set(users_dsl::email_verified.eq(true))
         .execute(&mut conn)
@@ -659,10 +632,10 @@ pub async fn verify_email(
 
     user.email_verified = true;
 
-    // Set user session
-    set_user_session(&session, &user)?;
+    session
+        .insert("user", user)
+        .map_err(|e| ServiceError::Unknown(format!("Failed to set session: {e}")))?;
 
-    // Clean up verification token from database
     if let Err(e) = diesel::delete(
         tokens_dsl::email_verification_tokens.filter(tokens_dsl::id.eq(&verification_token.id)),
     )
@@ -672,7 +645,6 @@ pub async fn verify_email(
         tracing::warn!("Failed to clean up verification token: {}", e);
     }
 
-    // Redirect to frontend
     let redirect_url = format!(
         "{}/dashboard?verified=success",
         google_oauth_service.frontend_url
@@ -718,7 +690,6 @@ pub async fn login(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    // Find user
     let mut user: User = match users_dsl::users
         .filter(users_dsl::email.eq(&body.email))
         .first(&mut conn)
@@ -731,26 +702,22 @@ pub async fn login(
         Err(e) => return Err(ServiceError::from(e).into()),
     };
 
-    // Check if user has password (not OAuth-only)
     let Some(ref password_hash) = user.password_hash else {
         return Ok(json_error(
             "This account uses Google sign-in. Please use the Google login button.",
         ));
     };
 
-    // Verify password
     if !verify_password(&body.password, password_hash)? {
         return Ok(json_error("Invalid email or password"));
     }
 
-    // Check if email is verified
     if !user.email_verified {
         return Ok(json_error(
             "Please verify your email address before logging in",
         ));
     }
 
-    // Update last login
     let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&user.id)))
         .set(users_dsl::last_login.eq(Some(Utc::now().naive_utc())))
         .execute(&mut conn)
@@ -759,8 +726,9 @@ pub async fn login(
 
     user.last_login = Some(Utc::now().naive_utc());
 
-    // Set session
-    set_user_session(&session, &user)?;
+    session
+        .insert("user", user.clone())
+        .map_err(|e| ServiceError::Unknown(format!("Failed to set session: {e}")))?;
 
     Ok(HttpResponse::Ok().json(LoginResponse {
         message: "Login successful".to_owned(),
@@ -844,7 +812,7 @@ pub async fn logout(session: Session) -> Result<HttpResponse, actix_web::Error> 
     )
 )]
 pub async fn forgot_password(
-    session: Session,
+    redis_manager: web::Data<ConnectionManager>,
     email_service: web::Data<EmailService>,
     db_service: web::Data<shared::services::db::DbService>,
     google_oauth_service: web::Data<GoogleOAuthService>,
@@ -855,13 +823,11 @@ pub async fn forgot_password(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    // Always return same response to prevent user enumeration
     let response = ForgotPasswordResponse {
         message: "If the email exists in our system, a password reset link has been sent."
             .to_owned(),
     };
 
-    // Check if user exists
     let user: User = match users_dsl::users
         .filter(users_dsl::email.eq(&body.email))
         .first(&mut conn)
@@ -874,21 +840,20 @@ pub async fn forgot_password(
         Err(e) => return Err(ServiceError::from(e).into()),
     };
 
-    // Only send reset email if user has a password (not OAuth-only)
     if user.password_hash.is_some() {
-        // Store password reset token in session
         let reset_token = Uuid::new_v4().to_string();
-        session
-            .insert("password_reset_token", &reset_token)
-            .map_err(|e| ServiceError::Unknown(format!("Failed to store reset token: {e}")))?;
-        session
-            .insert("password_reset_user_id", user.id)
-            .map_err(|e| ServiceError::Unknown(format!("Failed to store user ID: {e}")))?;
 
-        // Send reset email
+        // Store token in Redis with 1 hour TTL
+        let mut con = redis_manager.get_ref().clone();
+        let key = format!("password-reset:{}", user.id);
+        let _: () = con
+            .set_ex(&key, &reset_token, 3600) // 1 hour TTL
+            .await
+            .map_err(|e| ServiceError::Unknown(format!("Failed to store token in Redis: {e}")))?;
+
         let reset_link = format!(
-            "{}/reset-password?token={}",
-            google_oauth_service.frontend_url, reset_token
+            "{}/reset-password?token={}&user_id={}",
+            google_oauth_service.frontend_url, reset_token, user.id
         );
 
         let email_body = format!(
@@ -940,60 +905,47 @@ pub async fn forgot_password(
 )]
 pub async fn reset_password(
     session: Session,
+    redis_manager: web::Data<ConnectionManager>,
     db_service: web::Data<shared::services::db::DbService>,
     body: web::Json<ResetPasswordRequest>,
 ) -> Result<HttpResponse, actix_web::Error> {
     use shared::schema::users::dsl as users_dsl;
 
-    // Validate new password
     if let Err(msg) = validate_password(&body.new_password) {
         return Ok(json_error(msg));
     }
 
-    // Get reset data from session
-    let stored_token: Option<String> = session.get("password_reset_token").map_err(|e| {
-        ServiceError::Unknown(format!("Failed to get reset token from session: {e}"))
-    })?;
-    let user_id: Option<Uuid> = session
-        .get("password_reset_user_id")
-        .map_err(|e| ServiceError::Unknown(format!("Failed to get user ID from session: {e}")))?;
+    let pool = db_service.pool();
+    let mut pg_conn = pool.get().await.map_err(ServiceError::from)?;
 
-    let Some(stored_reset_token) = stored_token else {
+    let mut redis_conn = redis_manager.get_ref().clone();
+    let stored_token = redis_conn
+        .get::<_, String>(format!("password-reset:{}", body.user_id))
+        .await;
+    let Some(actual_token) = stored_token.ok() else {
         return Ok(json_error("Invalid or expired password reset token"));
     };
-    let Some(reset_user_id) = user_id else {
-        return Ok(json_error("Invalid reset session"));
-    };
-
-    if stored_reset_token != body.token {
+    if actual_token != body.token {
         return Ok(json_error("Invalid password reset token"));
     }
 
-    let pool = db_service.pool();
-    let mut conn = pool.get().await.map_err(ServiceError::from)?;
-
-    // Hash new password
     let password_hash = hash_password(&body.new_password)?;
 
-    // Update user password
-    let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&reset_user_id)))
+    let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&body.user_id)))
         .set(users_dsl::password_hash.eq(password_hash))
-        .execute(&mut conn)
+        .execute(&mut pg_conn)
         .await
         .map_err(ServiceError::from)?;
 
-    // Get updated user and set session
     let user: User = users_dsl::users
-        .filter(users_dsl::id.eq(&reset_user_id))
-        .first(&mut conn)
+        .filter(users_dsl::id.eq(&body.user_id))
+        .first(&mut pg_conn)
         .await
         .map_err(ServiceError::from)?;
 
-    set_user_session(&session, &user)?;
-
-    // Clean up reset session data
-    let _ = session.remove("password_reset_token");
-    let _ = session.remove("password_reset_user_id");
+    session
+        .insert("user", user)
+        .map_err(|e| ServiceError::Unknown(format!("Failed to set session: {e}")))?;
 
     Ok(HttpResponse::Ok().json(ResetPasswordResponse {
         message: "Password has been reset successfully".to_owned(),
@@ -1030,7 +982,6 @@ pub async fn check_email(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    // Check if user exists
     match users_dsl::users
         .filter(users_dsl::email.eq(&body.email))
         .first::<User>(&mut conn)

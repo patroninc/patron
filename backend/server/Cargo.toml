@@ -48,6 +48,7 @@ sha2 = "0.10"
 hex = "0.4"
 actix-cors = "0.7.1"
 actix-session = { workspace = true }
+redis = { workspace = true }
 argon2 = { workspace = true }
 md5 = { workspace = true }
 

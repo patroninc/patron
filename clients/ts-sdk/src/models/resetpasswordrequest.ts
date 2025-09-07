@@ -20,6 +20,10 @@ export type ResetPasswordRequest = {
    * Password reset token
    */
   token: string;
+  /**
+   * User ID associated with the reset token
+   */
+  userId: string;
 };
 
 /** @internal */
@@ -30,9 +34,11 @@ export const ResetPasswordRequest$inboundSchema: z.ZodType<
 > = z.object({
   new_password: z.string(),
   token: z.string(),
+  user_id: z.string(),
 }).transform((v) => {
   return remap$(v, {
     "new_password": "newPassword",
+    "user_id": "userId",
   });
 });
 
@@ -40,6 +46,7 @@ export const ResetPasswordRequest$inboundSchema: z.ZodType<
 export type ResetPasswordRequest$Outbound = {
   new_password: string;
   token: string;
+  user_id: string;
 };
 
 /** @internal */
@@ -50,9 +57,11 @@ export const ResetPasswordRequest$outboundSchema: z.ZodType<
 > = z.object({
   newPassword: z.string(),
   token: z.string(),
+  userId: z.string(),
 }).transform((v) => {
   return remap$(v, {
     newPassword: "new_password",
+    userId: "user_id",
   });
 });
 
