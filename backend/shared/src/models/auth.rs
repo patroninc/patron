@@ -1,4 +1,4 @@
-use crate::schema::{users, email_verification_tokens};
+use crate::schema::{email_verification_tokens, users};
 use actix_session::Session;
 use actix_web::{dev::Payload, error::Error, FromRequest, HttpRequest};
 use chrono::NaiveDateTime;
@@ -13,7 +13,7 @@ pub mod optional_datetime_format {
     use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
     /// Serializes an optional `NaiveDateTime` to RFC3339 string format
-    /// 
+    ///
     /// # Errors
     /// Returns serialization error if the datetime cannot be serialized
     #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -33,7 +33,7 @@ pub mod optional_datetime_format {
     }
 
     /// Deserializes an RFC3339 string to optional `NaiveDateTime`
-    /// 
+    ///
     /// # Errors
     /// Returns deserialization error if the string is not a valid RFC3339 datetime
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<NaiveDateTime>, D::Error>
@@ -231,28 +231,5 @@ pub struct EmailVerificationToken {
     pub created_at: NaiveDateTime,
 }
 
-/// Simplified user information for public API responses
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-pub struct UserInfoResponse {
-    /// User identifier for API responses
-    #[schema(example = "d290f1ee-6c54-4b01-90e6-d701748f0851")]
-    pub id: uuid::Uuid,
-    /// User's current email address
-    #[schema(example = "user@example.com")]
-    pub email: String,
-    /// Registration date and time
-    #[schema(example = "2023-01-01T00:00:00Z")]
-    #[serde(with = "optional_datetime_format")]
-    pub created_at: Option<NaiveDateTime>,
-}
-
-impl From<UserInfo> for UserInfoResponse {
-    #[inline]
-    fn from(user: UserInfo) -> Self {
-        Self {
-            id: user.id,
-            email: user.email,
-            created_at: user.created_at,
-        }
-    }
-}
+/// Type alias for user information responses returned by the API.
+pub type UserInfoResponse = UserInfo;

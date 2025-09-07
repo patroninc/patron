@@ -15,4 +15,3 @@ export * from "./resetpasswordrequest.js";
 export * from "./resetpasswordresponse.js";
 export * from "./security.js";
 export * from "./userinfo.js";
-export * from "./userinforesponse.js";
