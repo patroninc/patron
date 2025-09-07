@@ -20,6 +20,7 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
+use md5;
 
 /// Request body for user registration.
 #[derive(Debug, Deserialize, ToSchema)]
@@ -32,6 +33,8 @@ pub struct RegisterRequest {
     pub email: String,
     /// User's password (minimum 8 characters)
     pub password: String,
+    /// Optional display name for the user
+    pub display_name: Option<String>,
 }
 
 /// Response for successful user registration
@@ -184,6 +187,12 @@ fn json_error(message: &str) -> HttpResponse {
     })
 }
 
+/// Helper function to generate Gravatar URL from email
+fn generate_gravatar_url(email: &str) -> String {
+    let email_hash = format!("{:x}", md5::compute(email.trim().to_lowercase().as_bytes()));
+    format!("https://www.gravatar.com/avatar/{email_hash}?d=identicon&s=200")
+}
+
 /// Helper function to set user session
 fn set_user_session(session: &Session, user: &User) -> Result<(), ServiceError> {
     session
@@ -222,8 +231,13 @@ async fn update_existing_user_with_google_info(
     if existing_user.display_name.is_none() && !google_user_info.name.is_empty() {
         existing_user.display_name = Some(google_user_info.name.clone());
     }
-    if existing_user.avatar_url.is_none() && !google_user_info.picture.is_empty() {
-        existing_user.avatar_url = Some(google_user_info.picture.clone());
+    if existing_user.avatar_url.is_none() {
+        if google_user_info.picture.is_empty() {
+            // Use Gravatar as fallback if no Google picture
+            existing_user.avatar_url = Some(generate_gravatar_url(&existing_user.email));
+        } else {
+            existing_user.avatar_url = Some(google_user_info.picture.clone());
+        }
     }
 
     // Update auth provider
@@ -262,7 +276,11 @@ async fn create_new_user_from_google_info(
         id: Uuid::new_v4(),
         email: google_user_info.email.clone(),
         display_name: Some(google_user_info.name.clone()),
-        avatar_url: Some(google_user_info.picture.clone()),
+        avatar_url: Some(if google_user_info.picture.is_empty() {
+            generate_gravatar_url(&google_user_info.email)
+        } else {
+            google_user_info.picture.clone()
+        }),
         auth_provider: "google".to_owned(),
         email_verified: true,
         password_hash: None,
@@ -468,12 +486,15 @@ pub async fn register(
     // Hash password
     let password_hash = hash_password(&body.password)?;
 
+    // Generate Gravatar URL as default avatar
+    let avatar_url = generate_gravatar_url(&body.email);
+
     // Create new user
     let new_user = User {
         id: Uuid::new_v4(),
         email: body.email.clone(),
-        display_name: None,
-        avatar_url: None,
+        display_name: body.display_name.clone(),
+        avatar_url: Some(avatar_url),
         auth_provider: "email".to_owned(),
         email_verified: false,
         password_hash: Some(password_hash),

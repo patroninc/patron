@@ -17,5 +17,6 @@ let value: RegisterRequest = {
 
 | Field                                   | Type                                    | Required                                | Description                             |
 | --------------------------------------- | --------------------------------------- | --------------------------------------- | --------------------------------------- |
+| `displayName`                           | *string*                                | :heavy_minus_sign:                      | Optional display name for the user      |
 | `email`                                 | *string*                                | :heavy_check_mark:                      | Email address for new user registration |
 | `password`                              | *string*                                | :heavy_check_mark:                      | User's password (minimum 8 characters)  |

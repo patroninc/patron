@@ -381,6 +381,11 @@ components:
         - "email"
         - "password"
       properties:
+        "display_name":
+          type:
+            - "string"
+            - "null"
+          description: "Optional display name for the user"
         "email":
           type: "string"
           description: "Email address for new user registration"
