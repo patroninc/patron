@@ -1,4 +1,4 @@
-import Layout from '../layouts/login';
+import LoginLayout from '../layouts/login';
 import FormCard from '../components/form-card';
 import {
   Form,
@@ -272,7 +272,7 @@ export const Login = (): JSX.Element => {
   const description = currentStep === 1 ? '' : `logging in as ${formData.email ?? ''}`;
 
   return (
-    <Layout>
+    <LoginLayout>
       <FormCard title={title} description={description}>
         {currentStep === 1 ? (
           <EmailStep initialEmail={formData.email || ''} onNext={handleEmailNext} />
@@ -283,6 +283,6 @@ export const Login = (): JSX.Element => {
           />
         )}
       </FormCard>
-    </Layout>
+    </LoginLayout>
   );
 };

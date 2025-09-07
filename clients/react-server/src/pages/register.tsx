@@ -1,4 +1,4 @@
-import Layout from '../layouts/login';
+import LoginLayout from '../layouts/login';
 import FormCard from '../components/form-card';
 import {
   Form,
@@ -118,7 +118,7 @@ export const Register = (): React.ReactElement => {
   };
 
   return (
-    <Layout>
+    <LoginLayout>
       <FormCard
         title="Create your account"
         description="Set up your account details and secure password."
@@ -206,6 +206,6 @@ export const Register = (): React.ReactElement => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Layout>
+    </LoginLayout>
   );
 };

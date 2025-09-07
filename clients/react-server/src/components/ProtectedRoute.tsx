@@ -1,5 +1,5 @@
 import { JSX, ReactNode } from 'react';
-import { Navigate, useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
 
 interface ProtectedRouteProps {
@@ -22,6 +22,7 @@ export default function ProtectedRoute({
   requireAuth = true,
   redirectTo,
 }: ProtectedRouteProps): JSX.Element {
+  const navigate = useNavigate();
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -39,7 +40,7 @@ export default function ProtectedRoute({
 
   // If authentication is required and user is not logged in
   if (requireAuth && !user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    navigate('/login', { state: { from: location }, replace: true, viewTransition: true });
   }
 
   // If user is logged in and trying to access auth pages, redirect to home
@@ -48,17 +49,17 @@ export default function ProtectedRoute({
     !requireAuth &&
     (location.pathname === '/login' || location.pathname === '/register')
   ) {
-    return <Navigate to="/" replace />;
+    navigate('/', { replace: true, viewTransition: true });
   }
 
   // If no user and on home page, redirect to login
   if (!user && location.pathname === '/') {
-    return <Navigate to="/login" replace />;
+    navigate('/login', { replace: true, viewTransition: true });
   }
 
   // If redirectTo is specified and conditions aren't met
   if (redirectTo) {
-    return <Navigate to={redirectTo} replace />;
+    navigate(redirectTo, { replace: true, viewTransition: true });
   }
 
   return <>{children}</>;

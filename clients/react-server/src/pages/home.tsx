@@ -1,4 +1,4 @@
-import Layout from '../layouts/main';
+import MainLayout from '../layouts/main';
 import { JSX } from 'react';
 
 /**
@@ -6,9 +6,9 @@ import { JSX } from 'react';
  */
 export const Home = (): JSX.Element => {
   return (
-    <Layout>
+    <MainLayout>
       <p>Home</p>
-    </Layout>
+    </MainLayout>
   );
 };
 

@@ -8,7 +8,7 @@ import { AppSidebar } from '../components/AppSidebar';
  * @param {React.ReactNode} props.children - Child components to be rendered within the layout
  * @returns {React.ReactElement} The Layout component
  */
-const Layout = ({ children }: { children: JSX.Element }): JSX.Element => {
+const MainLayout = ({ children }: { children: JSX.Element }): JSX.Element => {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -25,4 +25,4 @@ const Layout = ({ children }: { children: JSX.Element }): JSX.Element => {
   );
 };
 
-export default Layout;
+export default MainLayout;
