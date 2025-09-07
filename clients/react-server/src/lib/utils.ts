@@ -1,5 +1,10 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Patronts } from 'patronts';
+
+export const patronClient = new Patronts({
+  serverURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:8080',
+});
 
 /**
  * Parses URL search parameters and returns them as an object.
@@ -7,16 +12,17 @@ import { twMerge } from 'tailwind-merge';
  * @param {string} search - The URL search string (e.g., "?token=abc&foo=bar")
  * @returns {Record<string, string>} Object containing parsed parameters
  */
-export function parseURLParams(search: string): Record<string, string> {
+export const parseURLParams = (search: string): Record<string, string> => {
   const params = new URLSearchParams(search);
   const result: Record<string, string> = {};
 
+  // eslint-disable-next-line max-params
   params.forEach((value, key) => {
     result[key] = value;
   });
 
   return result;
-}
+};
 
 /**
  * Gets a specific parameter from the current URL.
@@ -24,10 +30,10 @@ export function parseURLParams(search: string): Record<string, string> {
  * @param {string} paramName - The name of the parameter to get
  * @returns {string | null} The parameter value or null if not found
  */
-export function getURLParam(paramName: string): string | null {
+export const getURLParam = (paramName: string): string | null => {
   const params = parseURLParams(window.location.search);
   return params[paramName] || null;
-}
+};
 
 /**
  * Merges multiple class values into a single string.
@@ -35,9 +41,9 @@ export function getURLParam(paramName: string): string | null {
  * @param {ClassValue[]} inputs - The class values to merge
  * @returns {string} The merged class string
  */
-export function cn(...inputs: ClassValue[]): string {
+export const cn = (...inputs: ClassValue[]): string => {
   return twMerge(clsx(inputs));
-}
+};
 
 /**
  * Validates an email address.

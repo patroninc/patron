@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { patronClient } from '@/lib/utils';
+import { JSX, useState } from 'react';
 import { Link } from 'react-router';
 
 /**
@@ -11,11 +11,10 @@ export default function Register(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { register } = useAuth();
 
   /**
    * Handles form submission for registration.
@@ -42,7 +41,7 @@ export default function Register(): JSX.Element {
     }
 
     try {
-      await register(email, password, name);
+      await patronClient.auth.register({ email, password, displayName });
       setSuccess('Account created successfully! Please check your email to verify your account.');
     } catch {
       setError('Registration failed. Email might already be in use.');
@@ -81,8 +80,8 @@ export default function Register(): JSX.Element {
                 type="text"
                 autoComplete="name"
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
                 className="focus:ring-blue focus:border-blue relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:outline-none sm:text-sm"
                 placeholder="Enter your full name"
               />

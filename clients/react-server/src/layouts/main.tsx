@@ -1,6 +1,6 @@
 import { JSX } from 'react';
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "../components/ui/sidebar"
-import { AppSidebar } from "../components/AppSidebar"
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '../components/ui/sidebar';
+import { AppSidebar } from '../components/AppSidebar';
 
 function Layout({ children }: { children: JSX.Element }): JSX.Element {
   return (
@@ -13,9 +13,7 @@ function Layout({ children }: { children: JSX.Element }): JSX.Element {
             <h1 className="text-lg font-semibold">Dashboard</h1>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

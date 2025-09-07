@@ -91,6 +91,13 @@ export default [
         'warn',
         { allowExpressions: true, allowTypedFunctionExpressions: true },
       ],
+
+      // Enforce const arrow functions instead of function declarations
+      'prefer-arrow-callback': 'error',
+      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
+
+      // Enforce maximum of one parameter per function
+      'max-params': ['error', 1],
     },
   },
 

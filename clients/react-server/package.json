@@ -23,7 +23,7 @@
     "compression": "^1.8.1",
     "express": "^5.1.0",
     "lucide-react": "^0.542.0",
-    "patronts": "^0.4.0",
+    "patronts": "file:../ts-sdk",
     "radix-ui": "^1.4.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

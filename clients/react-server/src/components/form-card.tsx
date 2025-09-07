@@ -1,16 +1,19 @@
 import { cn } from '../lib/utils';
 
-function FormCard({
-  children,
-  title,
-  description,
-  className,
-}: {
+export interface FormCardProps {
   children?: React.ReactNode;
   title: string;
   description?: string;
   className?: string;
-}) {
+}
+
+/**
+ *
+ * @param formCardProps - The props for the FormCard component, including children, title, description, and className.
+ * @returns A styled card component for forms.
+ */
+const FormCard = (formCardProps: FormCardProps): React.ReactElement => {
+  const { children, title, description, className } = formCardProps;
   return (
     <div className="w-full max-w-[456px] min-w-[350px] p-[5px] max-[360px]:min-w-full">
       <div
@@ -35,6 +38,6 @@ function FormCard({
       </div>
     </div>
   );
-}
+};
 
 export default FormCard;

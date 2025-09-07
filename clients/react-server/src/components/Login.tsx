@@ -1,6 +1,7 @@
 import { JSX, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router';
+import { patronClient } from '@/lib/utils';
 
 /**
  * Login component that renders a login form.
@@ -12,7 +13,7 @@ export default function Login(): JSX.Element {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { setUser } = useAuth();
 
   /**
    * Handles form submission for login.
@@ -26,7 +27,8 @@ export default function Login(): JSX.Element {
     setError('');
 
     try {
-      await login(email, password);
+      const loginResp = await patronClient.auth.login({ email, password });
+      setUser(loginResp.user);
     } catch {
       setError('Invalid email or password');
     } finally {
