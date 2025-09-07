@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 674b24b3a319be9106b9810b01c0be78
+  docChecksum: 31923587007a28f4b00b54c53154f75a
   docVersion: 1.0.0
   speakeasyVersion: 1.611.0
   generationVersion: 2.694.1
-  releaseVersion: 0.4.3
-  configChecksum: 6d37f68bd05926ec8d5213cb61e33f08
+  releaseVersion: 0.4.5
+  configChecksum: 8aa50b31b6895c9a359162605cc83652
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk

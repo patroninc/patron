@@ -3,6 +3,7 @@
  */
 
 import * as z from "zod";
+import { remap as remap$ } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { Result as SafeParseResult } from "../types/fp.js";
 import { SDKValidationError } from "./errors/sdkvalidationerror.js";
@@ -11,6 +12,10 @@ import { SDKValidationError } from "./errors/sdkvalidationerror.js";
  * Request body for user registration.
  */
 export type RegisterRequest = {
+  /**
+   * Optional display name for the user
+   */
+  displayName?: string | null | undefined;
   /**
    * Email address for new user registration
    */
@@ -27,12 +32,18 @@ export const RegisterRequest$inboundSchema: z.ZodType<
   z.ZodTypeDef,
   unknown
 > = z.object({
+  display_name: z.nullable(z.string()).optional(),
   email: z.string(),
   password: z.string(),
+}).transform((v) => {
+  return remap$(v, {
+    "display_name": "displayName",
+  });
 });
 
 /** @internal */
 export type RegisterRequest$Outbound = {
+  display_name?: string | null | undefined;
   email: string;
   password: string;
 };
@@ -43,8 +54,13 @@ export const RegisterRequest$outboundSchema: z.ZodType<
   z.ZodTypeDef,
   RegisterRequest
 > = z.object({
+  displayName: z.nullable(z.string()).optional(),
   email: z.string(),
   password: z.string(),
+}).transform((v) => {
+  return remap$(v, {
+    displayName: "display_name",
+  });
 });
 
 /**
