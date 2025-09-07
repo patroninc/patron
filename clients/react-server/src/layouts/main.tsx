@@ -2,7 +2,13 @@ import { JSX } from 'react';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '../components/ui/sidebar';
 import { AppSidebar } from '../components/AppSidebar';
 
-function Layout({ children }: { children: JSX.Element }): JSX.Element {
+/**
+ *
+ * @param {object} props - Props for the Layout component
+ * @param {React.ReactNode} props.children - Child components to be rendered within the layout
+ * @returns {React.ReactElement} The Layout component
+ */
+const Layout = ({ children }: { children: JSX.Element }): JSX.Element => {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -17,6 +23,6 @@ function Layout({ children }: { children: JSX.Element }): JSX.Element {
       </SidebarInset>
     </SidebarProvider>
   );
-}
+};
 
 export default Layout;

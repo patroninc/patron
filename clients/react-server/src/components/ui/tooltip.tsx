@@ -2,11 +2,18 @@ import * as React from 'react';
 import { Tooltip as TooltipPrimitive } from 'radix-ui';
 
 import { cn } from '../../lib/utils';
+import { JSX } from 'react';
 
-function TooltipProvider({
+/**
+ *
+ * @param {object} props - Props for the TooltipProvider component
+ * @param {number} props.delayDuration - Delay duration before showing the tooltip (default is 0)
+ * @returns {JSX.Element} The TooltipProvider component
+ */
+const TooltipProvider = ({
   delayDuration = 0,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+}: React.ComponentProps<typeof TooltipPrimitive.Provider>): JSX.Element => {
   return (
     <TooltipPrimitive.Provider
       data-slot="tooltip-provider"
@@ -14,26 +21,46 @@ function TooltipProvider({
       {...props}
     />
   );
-}
+};
 
-function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+/**
+ *
+ * @param {object} props - Props for the Tooltip component
+ * @returns {JSX.Element} The Tooltip component
+ */
+const Tooltip = ({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>): JSX.Element => {
   return (
     <TooltipProvider>
       <TooltipPrimitive.Root data-slot="tooltip" {...props} />
     </TooltipProvider>
   );
-}
+};
 
-function TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+/**
+ *
+ * @param {object} props - Props for the TooltipTrigger component
+ * @returns {JSX.Element} The TooltipTrigger component
+ */
+const TooltipTrigger = ({
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Trigger>): JSX.Element => {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
-}
+};
 
-function TooltipContent({
+/**
+ *
+ * @param {object} props - Props for the TooltipContent component
+ * @param {string} props.className - Additional class names for styling
+ * @param {number} props.sideOffset - Offset from the side (default is 0)
+ * @param {React.ReactNode} props.children - Content of the tooltip
+ * @returns {JSX.Element} The TooltipContent component
+ */
+const TooltipContent = ({
   className,
   sideOffset = 0,
   children,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: React.ComponentProps<typeof TooltipPrimitive.Content>): JSX.Element => {
   return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Content
@@ -50,6 +77,6 @@ function TooltipContent({
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );
-}
+};
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

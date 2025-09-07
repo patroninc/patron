@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../components/ui/sidebar';
+import { JSX } from 'react';
 
 const items = [
   {
@@ -40,13 +41,16 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+/**
+ * @returns {JSX.Element} The AppSidebar component
+ */
+export const AppSidebar = (): JSX.Element => {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu className="flex">
           <SidebarMenuItem className="w-max">
-            <SidebarMenuButton className="w-max rounded-none p-0" size="icon">
+            <SidebarMenuButton className="w-max rounded-none p-0" size="sm">
               <img src="/logo.svg" alt="logo" className="size-8" />
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -92,4 +96,4 @@ export function AppSidebar() {
       </SidebarFooter>
     </Sidebar>
   );
-}
+};

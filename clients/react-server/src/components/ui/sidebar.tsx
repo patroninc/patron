@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../components/ui/tooltip';
+import { JSX } from 'react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -34,8 +35,10 @@ const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 type SidebarContextProps = {
   state: 'expanded' | 'collapsed';
   open: boolean;
+  // eslint-disable-next-line no-unused-vars
   setOpen: (open: boolean) => void;
   openMobile: boolean;
+  // eslint-disable-next-line no-unused-vars
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
@@ -43,16 +46,32 @@ type SidebarContextProps = {
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
 
-function useSidebar() {
+/**
+ * Custom hook to access the sidebar context.
+ *
+ * @returns {SidebarContextProps} The sidebar context value.
+ */
+const useSidebar = (): SidebarContextProps => {
   const context = React.useContext(SidebarContext);
   if (!context) {
     throw new Error('useSidebar must be used within a SidebarProvider.');
   }
 
   return context;
-}
+};
 
-function SidebarProvider({
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarProvider component.
+ * @param {boolean} props.defaultOpen - Whether the sidebar is open by default. Defaults to true.
+ * @param {boolean} props.open - Controlled open state of the sidebar.
+ * @param {Function} props.onOpenChange - Callback when the open state changes.
+ * @param {string} props.className - Additional class names to be applied to the SidebarProvider component.
+ * @param {React.CSSProperties} props.style - Additional styles to be applied to the SidebarProvider component.
+ * @param {React.ReactNode} props.children - The content to be rendered inside the SidebarProvider component.
+ * @returns The SidebarProvider component.
+ */
+const SidebarProvider = ({
   defaultOpen = true,
   open: openProp,
   onOpenChange: setOpenProp,
@@ -63,8 +82,9 @@ function SidebarProvider({
 }: React.ComponentProps<'div'> & {
   defaultOpen?: boolean;
   open?: boolean;
+  // eslint-disable-next-line no-unused-vars
   onOpenChange?: (open: boolean) => void;
-}) {
+}): JSX.Element => {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = React.useState(false);
 
@@ -73,8 +93,13 @@ function SidebarProvider({
   const [_open, _setOpen] = React.useState(defaultOpen);
   const open = openProp ?? _open;
   const setOpen = React.useCallback(
-    (value: boolean | ((value: boolean) => boolean)) => {
-      const openState = typeof value === 'function' ? value(open) : value;
+    // eslint-disable-next-line no-unused-vars
+    (nextValue: boolean | ((prev: boolean) => boolean)) => {
+      const openState =
+        typeof nextValue === 'function'
+          ? // eslint-disable-next-line no-unused-vars
+            (nextValue as (prev: boolean) => boolean)(open)
+          : nextValue;
       if (setOpenProp) {
         setOpenProp(openState);
       } else {
@@ -94,7 +119,11 @@ function SidebarProvider({
 
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+    /**
+     *
+     * @param {KeyboardEvent} event - The keyboard event.
+     */
+    const handleKeyDown = (event: KeyboardEvent): void => {
       if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
         toggleSidebar();
@@ -145,9 +174,19 @@ function SidebarProvider({
       </TooltipProvider>
     </SidebarContext.Provider>
   );
-}
+};
 
-function Sidebar({
+/**
+ *
+ * @param {object} props - Props to be passed to the Sidebar component.
+ * @param {'left' | 'right'} [props.side] - The side on which the sidebar appears.
+ * @param {'sidebar' | 'floating' | 'inset'} [props.variant] - The visual variant of the sidebar.
+ * @param {'offcanvas' | 'icon' | 'none'} [props.collapsible] - The collapsibility behavior of the sidebar.
+ * @param {string} [props.className] - Additional class names to apply.
+ * @param {React.ReactNode} [props.children] - The content of the sidebar.
+ * @returns {JSX.Element} The Sidebar component.
+ */
+const Sidebar = ({
   side = 'left',
   variant = 'sidebar',
   collapsible = 'offcanvas',
@@ -158,7 +197,7 @@ function Sidebar({
   side?: 'left' | 'right';
   variant?: 'sidebar' | 'floating' | 'inset';
   collapsible?: 'offcanvas' | 'icon' | 'none';
-}) {
+}): JSX.Element => {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
   if (collapsible === 'none') {
@@ -247,9 +286,20 @@ function Sidebar({
       </div>
     </div>
   );
-}
+};
 
-function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<typeof Button>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarTrigger component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarTrigger component.
+ * @param {Function} props.onClick - Click handler for the SidebarTrigger component.
+ * @returns The SidebarTrigger component.
+ */
+const SidebarTrigger = ({
+  className,
+  onClick,
+  ...props
+}: React.ComponentProps<typeof Button>): JSX.Element => {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -262,15 +312,22 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<t
         onClick?.(event);
         toggleSidebar();
       }}
+      className={className}
       {...props}
     >
       <PanelLeftIcon />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
-}
+};
 
-function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarRail component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarRail component.
+ * @returns The SidebarRail component.
+ */
+const SidebarRail = ({ className, ...props }: React.ComponentProps<'button'>): JSX.Element => {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -293,9 +350,15 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
       {...props}
     />
   );
-}
+};
 
-function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarInset component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarInset component.
+ * @returns The SidebarInset component.
+ */
+const SidebarInset = ({ className, ...props }: React.ComponentProps<'main'>): JSX.Element => {
   return (
     <main
       data-slot="sidebar-inset"
@@ -307,9 +370,15 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
       {...props}
     />
   );
-}
+};
 
-function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarInput component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarInput component.
+ * @returns The SidebarInput component.
+ */
+const SidebarInput = ({ className, ...props }: React.ComponentProps<typeof Input>): JSX.Element => {
   return (
     <Input
       data-slot="sidebar-input"
@@ -318,9 +387,15 @@ function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input
       {...props}
     />
   );
-}
+};
 
-function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarHeader component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarHeader component.
+ * @returns The SidebarHeader component.
+ */
+const SidebarHeader = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="sidebar-header"
@@ -329,9 +404,15 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
       {...props}
     />
   );
-}
+};
 
-function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarFooter component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarFooter component.
+ * @returns The SidebarFooter component.
+ */
+const SidebarFooter = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="sidebar-footer"
@@ -340,9 +421,15 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
       {...props}
     />
   );
-}
+};
 
-function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarContent component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarContent component.
+ * @returns The SidebarContent component.
+ */
+const SidebarContent = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="sidebar-content"
@@ -354,9 +441,15 @@ function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
       {...props}
     />
   );
-}
+};
 
-function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarGroup component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarGroup component.
+ * @returns The SidebarGroup component.
+ */
+const SidebarGroup = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="sidebar-group"
@@ -365,13 +458,20 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
       {...props}
     />
   );
-}
+};
 
-function SidebarGroupLabel({
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarGroupLabel component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarGroupLabel component.
+ * @param {boolean} props.asChild - If true, the component will render as a child using Radix's Slot.
+ * @returns The SidebarGroupLabel component.
+ */
+const SidebarGroupLabel = ({
   className,
   asChild = false,
   ...props
-}: React.ComponentProps<'div'> & { asChild?: boolean }) {
+}: React.ComponentProps<'div'> & { asChild?: boolean }): JSX.Element => {
   const Comp = asChild ? Slot : 'div';
 
   return (
@@ -386,13 +486,20 @@ function SidebarGroupLabel({
       {...props}
     />
   );
-}
+};
 
-function SidebarGroupAction({
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarGroupAction component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarGroupAction component.
+ * @param {boolean} props.asChild - If true, the component will render as a child using Radix's Slot.
+ * @returns The SidebarGroupAction component.
+ */
+const SidebarGroupAction = ({
   className,
   asChild = false,
   ...props
-}: React.ComponentProps<'button'> & { asChild?: boolean }) {
+}: React.ComponentProps<'button'> & { asChild?: boolean }): JSX.Element => {
   const Comp = asChild ? Slot : 'button';
 
   return (
@@ -409,9 +516,15 @@ function SidebarGroupAction({
       {...props}
     />
   );
-}
+};
 
-function SidebarGroupContent({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarGroupContent component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarGroupContent component.
+ * @returns The SidebarGroupContent component.
+ */
+const SidebarGroupContent = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="sidebar-group-content"
@@ -420,9 +533,15 @@ function SidebarGroupContent({ className, ...props }: React.ComponentProps<'div'
       {...props}
     />
   );
-}
+};
 
-function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenu component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenu component.
+ * @returns The SidebarMenu component.
+ */
+const SidebarMenu = ({ className, ...props }: React.ComponentProps<'ul'>): JSX.Element => {
   return (
     <ul
       data-slot="sidebar-menu"
@@ -431,9 +550,15 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
       {...props}
     />
   );
-}
+};
 
-function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenuItem component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenuItem component.
+ * @returns The SidebarMenuItem component.
+ */
+const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'li'>): JSX.Element => {
   return (
     <li
       data-slot="sidebar-menu-item"
@@ -442,7 +567,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
       {...props}
     />
   );
-}
+};
 
 const sidebarMenuButtonVariants = cva(
   'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-0! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
@@ -466,7 +591,18 @@ const sidebarMenuButtonVariants = cva(
   },
 );
 
-function SidebarMenuButton({
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenuButton component.
+ * @param {boolean} props.asChild - If true, the component will render as a child using Radix's Slot.
+ * @param {boolean} props.isActive - If true, the button will be styled as active.
+ * @param {string | React.ComponentProps<typeof TooltipContent>} props.tooltip - The tooltip content or string.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenuButton component.
+ * @param {'default' | 'outline'} props.variant - The visual variant of the button.
+ * @param {'sm' | 'default' | 'lg'} props.size - The size of the button.
+ * @returns The SidebarMenuButton component.
+ */
+const SidebarMenuButton = ({
   asChild = false,
   isActive = false,
   variant = 'default',
@@ -478,7 +614,7 @@ function SidebarMenuButton({
   asChild?: boolean;
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-} & VariantProps<typeof sidebarMenuButtonVariants>) {
+} & VariantProps<typeof sidebarMenuButtonVariants>): JSX.Element => {
   const Comp = asChild ? Slot : 'button';
   const { isMobile, state } = useSidebar();
 
@@ -514,9 +650,17 @@ function SidebarMenuButton({
       />
     </Tooltip>
   );
-}
+};
 
-function SidebarMenuAction({
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenuAction component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenuAction component.
+ * @param {boolean} props.asChild - If true, the component will render as a child using Radix's Slot.
+ * @param {boolean} props.showOnHover - If true, the action button will only show on hover of the menu item.
+ * @returns The SidebarMenuAction component.
+ */
+const SidebarMenuAction = ({
   className,
   asChild = false,
   showOnHover = false,
@@ -524,7 +668,7 @@ function SidebarMenuAction({
 }: React.ComponentProps<'button'> & {
   asChild?: boolean;
   showOnHover?: boolean;
-}) {
+}): JSX.Element => {
   const Comp = asChild ? Slot : 'button';
 
   return (
@@ -546,9 +690,15 @@ function SidebarMenuAction({
       {...props}
     />
   );
-}
+};
 
-function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'div'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenuBadge component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenuBadge component.
+ * @returns The SidebarMenuBadge component.
+ */
+const SidebarMenuBadge = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
     <div
       data-slot="sidebar-menu-badge"
@@ -565,15 +715,22 @@ function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'div'>) 
       {...props}
     />
   );
-}
+};
 
-function SidebarMenuSkeleton({
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenuSkeleton component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenuSkeleton component.
+ * @param {boolean} props.showIcon - Whether to show an icon skeleton.
+ * @returns The SidebarMenuSkeleton component.
+ */
+const SidebarMenuSkeleton = ({
   className,
   showIcon = false,
   ...props
 }: React.ComponentProps<'div'> & {
   showIcon?: boolean;
-}) {
+}): JSX.Element => {
   // Random width between 50 to 90%.
   const width = React.useMemo(() => {
     return `${Math.floor(Math.random() * 40) + 50}%`;
@@ -598,9 +755,15 @@ function SidebarMenuSkeleton({
       />
     </div>
   );
-}
+};
 
-function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenuSub component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenuSub component.
+ * @returns The SidebarMenuSub component.
+ */
+const SidebarMenuSub = ({ className, ...props }: React.ComponentProps<'ul'>): JSX.Element => {
   return (
     <ul
       data-slot="sidebar-menu-sub"
@@ -613,9 +776,15 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
       {...props}
     />
   );
-}
+};
 
-function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>) {
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenuSubItem component.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenuSubItem component.
+ * @returns The SidebarMenuSubItem component.
+ */
+const SidebarMenuSubItem = ({ className, ...props }: React.ComponentProps<'li'>): JSX.Element => {
   return (
     <li
       data-slot="sidebar-menu-sub-item"
@@ -624,9 +793,18 @@ function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>)
       {...props}
     />
   );
-}
+};
 
-function SidebarMenuSubButton({
+/**
+ *
+ * @param {object} props - Props to be passed to the SidebarMenuSubButton component.
+ * @param {boolean} props.asChild - If true, the component will render as a child using Radix's Slot.
+ * @param {'sm' | 'md'} props.size - The size of the button.
+ * @param {boolean} props.isActive - If true, the button will be styled as active.
+ * @param {string} props.className - Additional class names to be applied to the SidebarMenuSubButton component.
+ * @returns The SidebarMenuSubButton component.
+ */
+const SidebarMenuSubButton = ({
   asChild = false,
   size = 'md',
   isActive = false,
@@ -636,7 +814,7 @@ function SidebarMenuSubButton({
   asChild?: boolean;
   size?: 'sm' | 'md';
   isActive?: boolean;
-}) {
+}): JSX.Element => {
   const Comp = asChild ? Slot : 'a';
 
   return (
@@ -656,7 +834,7 @@ function SidebarMenuSubButton({
       {...props}
     />
   );
-}
+};
 
 export {
   Sidebar,
