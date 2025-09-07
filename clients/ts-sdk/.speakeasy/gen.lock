@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 31923587007a28f4b00b54c53154f75a
+  docChecksum: 928a7c9b687280e0551f8249d8c2f8f5
   docVersion: 1.0.0
   speakeasyVersion: 1.611.0
   generationVersion: 2.694.1
-  releaseVersion: 0.4.5
-  configChecksum: 8aa50b31b6895c9a359162605cc83652
+  releaseVersion: 0.4.6
+  configChecksum: 6a587396b3d4af50697f0b22fe574652
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -55,7 +55,6 @@ generatedFiles:
   - docs/models/resetpasswordresponse.md
   - docs/models/security.md
   - docs/models/userinfo.md
-  - docs/models/userinforesponse.md
   - docs/sdks/auth/README.md
   - docs/sdks/patronts/README.md
   - eslint.config.mjs
@@ -120,7 +119,6 @@ generatedFiles:
   - src/models/resetpasswordresponse.ts
   - src/models/security.ts
   - src/models/userinfo.ts
-  - src/models/userinforesponse.ts
   - src/sdk/auth.ts
   - src/sdk/index.ts
   - src/sdk/sdk.ts
@@ -180,7 +178,7 @@ examples:
     speakeasy-default-get-me:
       responses:
         "200":
-          application/json: {"created_at": "2023-01-01T00:00:00Z", "email": "user@example.com", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+          application/json: {"auth_provider": "email", "avatar_url": "https://example.com/avatar.jpg", "created_at": "2023-01-01T00:00:00", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "last_login": "2023-01-02T12:00:00"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   register:

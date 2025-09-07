@@ -524,7 +524,7 @@ run();
 
 ### Response
 
-**Promise\<[models.UserInfoResponse](../../models/userinforesponse.md)\>**
+**Promise\<[models.UserInfo](../../models/userinfo.md)\>**
 
 ### Errors
 

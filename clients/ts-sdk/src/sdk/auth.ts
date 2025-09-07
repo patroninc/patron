@@ -131,7 +131,7 @@ export class Auth extends ClientSDK {
    */
   async getCurrentUser(
     options?: RequestOptions,
-  ): Promise<models.UserInfoResponse> {
+  ): Promise<models.UserInfo> {
     return unwrapAsync(authGetCurrentUser(
       this,
       options,

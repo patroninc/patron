@@ -35,7 +35,7 @@ export function authGetCurrentUser(
   options?: RequestOptions,
 ): APIPromise<
   Result<
-    models.UserInfoResponse,
+    models.UserInfo,
     | errors.ErrorResponse
     | PatrontsError
     | ResponseValidationError
@@ -59,7 +59,7 @@ async function $do(
 ): Promise<
   [
     Result<
-      models.UserInfoResponse,
+      models.UserInfo,
       | errors.ErrorResponse
       | PatrontsError
       | ResponseValidationError
@@ -128,7 +128,7 @@ async function $do(
   };
 
   const [result] = await M.match<
-    models.UserInfoResponse,
+    models.UserInfo,
     | errors.ErrorResponse
     | PatrontsError
     | ResponseValidationError
@@ -139,7 +139,7 @@ async function $do(
     | UnexpectedClientError
     | SDKValidationError
   >(
-    M.json(200, models.UserInfoResponse$inboundSchema),
+    M.json(200, models.UserInfo$inboundSchema),
     M.jsonErr(401, errors.ErrorResponse$inboundSchema),
     M.fail("4XX"),
     M.fail("5XX"),
