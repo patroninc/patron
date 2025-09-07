@@ -1,7 +1,7 @@
 import { JSX, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import FormCard from '../components/form-card';
-import Layout from '../layouts/login';
+import LoginLayout from '../layouts/login';
 import { Button } from '../components/ui/button';
 import { patronClient } from '@/lib/utils';
 
@@ -61,7 +61,7 @@ export default function VerifyEmailPage(): JSX.Element {
   }, [token, navigate]);
 
   return (
-    <Layout>
+    <LoginLayout>
       <FormCard title="Email Verification" description="Verifying your email address">
         {status === 'verifying' && (
           <div className="text-center">
@@ -122,6 +122,6 @@ export default function VerifyEmailPage(): JSX.Element {
           </div>
         )}
       </FormCard>
-    </Layout>
+    </LoginLayout>
   );
 }

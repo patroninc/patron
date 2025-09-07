@@ -1,7 +1,7 @@
 import { JSX, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import FormCard from '../components/form-card';
-import Layout from '../layouts/login';
+import LoginLayout from '../layouts/login';
 import { Button } from '../components/ui/button';
 import {
   Form,
@@ -103,7 +103,7 @@ export const ForgotPasswordPage = (): JSX.Element => {
   };
 
   return (
-    <Layout>
+    <LoginLayout>
       <FormCard title="Reset Password" description="Enter your new password">
         {status === 'loading' && (
           <div className="text-center">
@@ -226,6 +226,6 @@ export const ForgotPasswordPage = (): JSX.Element => {
           </div>
         )}
       </FormCard>
-    </Layout>
+    </LoginLayout>
   );
 };
