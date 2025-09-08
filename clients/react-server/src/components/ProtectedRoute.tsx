@@ -1,4 +1,4 @@
-import { JSX, ReactNode } from 'react';
+import { JSX, ReactNode, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -23,44 +23,33 @@ export default function ProtectedRoute({
   redirectTo,
 }: ProtectedRouteProps): JSX.Element {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
 
-  // Show loading state while checking authentication
-  if (loading) {
-    return (
-      <div className="bg-background cube-bg flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="border-blue mx-auto h-12 w-12 animate-spin rounded-full border-b-2"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (requireAuth && !user) {
+      navigate('/login', { state: { from: location }, replace: true, viewTransition: true });
+      return;
+    }
 
-  // If authentication is required and user is not logged in
-  if (requireAuth && !user) {
-    navigate('/login', { state: { from: location }, replace: true, viewTransition: true });
-  }
+    if (
+      user &&
+      !requireAuth &&
+      (location.pathname === '/login' || location.pathname === '/register')
+    ) {
+      navigate('/', { replace: true, viewTransition: true });
+      return;
+    }
 
-  // If user is logged in and trying to access auth pages, redirect to home
-  if (
-    user &&
-    !requireAuth &&
-    (location.pathname === '/login' || location.pathname === '/register')
-  ) {
-    navigate('/', { replace: true, viewTransition: true });
-  }
+    if (!user && location.pathname === '/') {
+      navigate('/login', { replace: true, viewTransition: true });
+      return;
+    }
 
-  // If no user and on home page, redirect to login
-  if (!user && location.pathname === '/') {
-    navigate('/login', { replace: true, viewTransition: true });
-  }
-
-  // If redirectTo is specified and conditions aren't met
-  if (redirectTo) {
-    navigate(redirectTo, { replace: true, viewTransition: true });
-  }
+    if (redirectTo) {
+      navigate(redirectTo, { replace: true, viewTransition: true });
+    }
+  }, [user, requireAuth, location.pathname, navigate, redirectTo, location]);
 
   return <>{children}</>;
 }

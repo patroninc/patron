@@ -1,10 +1,15 @@
 import fs from 'node:fs/promises';
 import express from 'express';
+import { Patronts } from 'patronts';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || 5173;
 const base = process.env.BASE || '/';
 const ABORT_DELAY = 10000;
+
+const patronClient = new Patronts({
+  serverURL: process.env.VITE_SERVER_URL || 'http://localhost:8080',
+});
 
 const templateHtml = isProduction ? await fs.readFile('./dist/client/index.html', 'utf-8') : '';
 
@@ -46,10 +51,13 @@ app.use(async (req, res) => {
       render = (await import('./dist/server/entry-server.js')).render;
     }
 
-    // 1) Load any data needed for this route on the server only
     const initialData = await loadDataForUrl(url, req);
 
-    // 2) Safely serialize and inline initial data into the HTML head
+    if (initialData?.shouldRedirect) {
+      res.redirect(302, initialData.shouldRedirect.to);
+      return;
+    }
+
     const serialized = JSON.stringify(initialData).replace(/</g, '\\u003c');
     template = template.replace(
       '<!--app-head-->',
@@ -114,25 +122,42 @@ app.listen(port, () => {
 });
 
 /**
- * Example server-only data loader. Replace with real logic per route.
- * You can call databases, internal APIs, etc. here without exposing keys.
+ * Server-only data loader that checks authentication and handles redirects.
+ * Calls the patron API to verify user authentication status.
  *
  * @param {string} url - The request path, relative to the app base.
  * @param {import('express').Request} req - The Express request object for headers/session.
- * @returns {Promise<unknown>} Data to serialize into the document for SSR/hydration.
+ * @returns {Promise<{user: object | null, shouldRedirect?: {to: string}}>} Data to serialize into the document for SSR/hydration.
  */
 async function loadDataForUrl(url, req) {
-  // Simple demo: return different payloads by route
-  if (url.startsWith('/api-demo')) {
-    // Example: call an internal service. Use fetch/axios or DB client here.
-    // const r = await fetch(process.env.INTERNAL_URL + '/something');
-    // return await r.json();
-    return {
-      route: url,
-      userAgent: req.headers['user-agent'],
-      message: 'Hello from the server-only loader',
-      now: new Date().toISOString(),
-    };
+  try {
+    const cookies = req.headers.cookie || '';
+    const user = await patronClient.auth.getCurrentUser({
+      credentials: 'include',
+      headers: {
+        cookie: cookies,
+      },
+    });
+
+    if (url === 'login' || url === 'register') {
+      return {
+        user,
+        shouldRedirect: { to: '/' },
+      };
+    }
+
+    return { user };
+  } catch {
+    const isProtectedRoute =
+      !url.startsWith('login') && !url.startsWith('register') && !url.startsWith('forgot-password');
+
+    if (isProtectedRoute) {
+      return {
+        user: null,
+        shouldRedirect: { to: 'login' },
+      };
+    }
+
+    return { user: null };
   }
-  return null;
 }

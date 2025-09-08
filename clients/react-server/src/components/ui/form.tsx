@@ -101,7 +101,10 @@ const FormItemContext = React.createContext<FormItemContextValue>({} as FormItem
  * @returns The FormItem component.
  */
 const FormItem = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
-  const id = React.useId();
+  const fieldContext = React.useContext(FormFieldContext);
+  const fallbackId = React.useId();
+
+  const id = fieldContext?.name ? `field-${fieldContext.name}` : fallbackId;
 
   return (
     <FormItemContext.Provider value={{ id }}>

@@ -5,6 +5,7 @@ import {
   renderToPipeableStream,
 } from 'react-dom/server';
 import App from './App';
+import { UserInfo } from 'patronts/models';
 
 /*
   React SSR streaming with Suspense requires a stable parent element and a
@@ -16,20 +17,20 @@ import App from './App';
 /**
  * Render the React app to a Node stream for SSR.
  *
- * @param {string} _url - Current request URL (used for routing if needed).
+ * @param {string} url - Current request URL (used for routing).
  * @param {unknown} initialData - Server-fetched data injected into the tree.
  * @param {RenderToPipeableStreamOptions} [options] - Streaming callbacks for shell and errors.
  * @returns {import('stream').Readable} Node read stream of the rendered HTML.
  */
 export const render = (
-  _url: string,
+  url: string,
   initialData: unknown,
   options?: RenderToPipeableStreamOptions,
   // eslint-disable-next-line max-params
 ): PipeableStream => {
   return renderToPipeableStream(
     <StrictMode>
-      <App initialData={initialData} />
+      <App initialData={initialData as { user?: UserInfo | null } | null} url={url} />
     </StrictMode>,
     options,
   );

@@ -1,20 +1,17 @@
-import { createContext, useContext, useEffect, useState, ReactNode, JSX } from 'react';
+import { createContext, useContext, useState, ReactNode, JSX } from 'react';
 import { UserInfo } from 'patronts/models';
-import { patronClient } from '@/lib/utils';
 
 interface AuthContextType {
   user: UserInfo | null;
   // eslint-disable-next-line no-unused-vars
   setUser: (user: UserInfo | null) => void;
-  loading: boolean;
-  // eslint-disable-next-line no-unused-vars
-  setLoading: (loading: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
+  initialUser?: UserInfo | null;
 }
 
 /**
@@ -22,40 +19,15 @@ interface AuthProviderProps {
  *
  * @param {AuthProviderProps} props - The component props
  * @param {ReactNode} props.children - Child components to render
+ * @param {UserInfo | null} props.initialUser - Initial user data from server
  * @returns {JSX.Element} The provider component
  */
-export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
-  const [user, setUser] = useState<UserInfo | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  /**
-   * Checks the current authentication status by calling the API.
-   *
-   * @returns {Promise<void>} Promise that resolves when check is complete
-   */
-  const checkAuthStatus = async (): Promise<void> => {
-    try {
-      const userInfo = await patronClient.auth.getCurrentUser({
-        credentials: 'include',
-      });
-      setUser(userInfo);
-    } catch {
-      console.log('Not authenticated');
-    } finally {
-      setLoading(false);
-    }
-  };
+export const AuthProvider = ({ children, initialUser }: AuthProviderProps): JSX.Element => {
+  const [user, setUser] = useState<UserInfo | null>(initialUser ?? null);
 
   const value = {
     user,
     setUser,
-    loading,
-    setLoading,
-    isAuthenticated: !!user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

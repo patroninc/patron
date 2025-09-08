@@ -1,46 +1,79 @@
 import { JSX } from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { UserInfo } from 'patronts/models';
+import { AuthProvider } from './contexts/AuthContext';
+import Home from './pages/home';
+import { Login } from './pages/login';
+import { Register } from './pages/register';
+import ProtectedRoute from './components/ProtectedRoute';
+import { ForgotPasswordPage } from './pages/forgot-password';
+import { StaticRouter } from 'react-router';
 
 type AppProps = {
-  initialData?: unknown;
+  initialData?: {
+    user?: UserInfo | null;
+  } | null;
+  url?: string;
 };
 
 /**
- * Component that handles authenticated app state and routing.
- *
- * @returns {JSX.Element} The authenticated app component
- */
-const Loading = (): JSX.Element => {
-  const { loading } = useAuth();
-
-  if (!loading) {
-    return <></>;
-  }
-
-  return (
-    <div className="bg-background cube-bg flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <div className="border-blue mx-auto h-12 w-12 animate-spin rounded-full border-b-2"></div>
-        <p className="mt-4 text-gray-600">Loading...</p>
-      </div>
-    </div>
-  );
-
-  // Return an empty fragment or your main app content here
-};
-
-/**
- * Main App component that wraps the application with authentication provider.
+ * Main App component that wraps the application with authentication provider and routing.
  *
  * @param {AppProps} props - The component props
- * @param {unknown} props.initialData - Initial server-fetched data for SSR/hydration
+ * @param {Object} props.initialData - Initial server-fetched data for SSR/hydration
+ * @param {UserInfo | null} props.initialData.user - Initial user data from server
+ * @param {string} props.url - Current URL for server-side routing
  * @returns {JSX.Element} The main app component
  */
-// eslint-disable-next-line no-unused-vars
-const App = ({ initialData: _initialData }: AppProps): JSX.Element => {
+const App = ({ initialData, url }: AppProps): JSX.Element => {
+  /**
+   * Renders the appropriate page component based on the current URL path.
+   *
+   * @returns The JSX element for the current route
+   */
+  const renderPage = (): JSX.Element => {
+    const path = url || '';
+
+    switch (path) {
+      case '':
+      case '/':
+        return (
+          <ProtectedRoute requireAuth={true}>
+            <Home />
+          </ProtectedRoute>
+        );
+      case 'login':
+      case '/login':
+        return (
+          <ProtectedRoute requireAuth={false}>
+            <Login />
+          </ProtectedRoute>
+        );
+      case 'register':
+      case '/register':
+        return (
+          <ProtectedRoute requireAuth={false}>
+            <Register />
+          </ProtectedRoute>
+        );
+      case 'reset-password':
+      case '/reset-password':
+        return (
+          <ProtectedRoute requireAuth={false}>
+            <ForgotPasswordPage />
+          </ProtectedRoute>
+        );
+      default:
+        return (
+          <ProtectedRoute requireAuth={true}>
+            <Home />
+          </ProtectedRoute>
+        );
+    }
+  };
+
   return (
-    <AuthProvider>
-      <Loading />
+    <AuthProvider initialUser={initialData?.user}>
+      <StaticRouter location={url || '/'}>{renderPage()}</StaticRouter>
     </AuthProvider>
   );
 };

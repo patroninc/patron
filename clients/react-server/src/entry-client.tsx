@@ -1,16 +1,17 @@
 import { JSX, StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router';
+import { UserInfo } from 'patronts/models';
 import { AuthProvider } from './contexts/AuthContext';
 import Home from './pages/home';
 import { Login } from './pages/login';
 import { Register } from './pages/register';
 import ProtectedRoute from './components/ProtectedRoute';
-import VerifyEmailPage from './pages/verify-email';
 import { ForgotPasswordPage } from './pages/forgot-password';
 
-// Create the router configuration
-const router = createBrowserRouter([
+const initialData = (window as any).__INITIAL_DATA__ as { user?: UserInfo | null } | null;
+
+export const router = createBrowserRouter([
   {
     path: '/',
     children: [
@@ -39,14 +40,6 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'verify-email',
-        Component: () => (
-          <ProtectedRoute requireAuth={false}>
-            <VerifyEmailPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
         path: 'reset-password',
         Component: () => (
           <ProtectedRoute requireAuth={false}>
@@ -65,7 +58,7 @@ const router = createBrowserRouter([
  */
 const App = (): JSX.Element => {
   return (
-    <AuthProvider>
+    <AuthProvider initialUser={initialData?.user}>
       <RouterProvider router={router} />
     </AuthProvider>
   );
