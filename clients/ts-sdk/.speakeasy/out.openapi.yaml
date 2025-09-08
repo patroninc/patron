@@ -177,9 +177,9 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/UserInfo"}
-              example: {"created_at": "2023-01-01T00:00:00", "email": "user@example.com", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+              example: {"auth_provider": "email", "created_at": "2023-01-01T00:00:00", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
         "401":
-          description: "Not authenticated"
+          description: "User authentication required to access profile"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
@@ -238,7 +238,7 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
               example: {"code": "AUTH_EMAIL_ALREADY_VERIFIED", "error": "Email is already verified"}
         "401":
-          description: "Not authenticated"
+          description: "Authentication required to resend verification email"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
@@ -469,7 +469,7 @@ components:
           type: "string"
           format: "uuid"
           description: "User ID associated with the reset token"
-      example: {"new_password": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000"}
+      example: {"new_password": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
     "ResetPasswordResponse":
       type: "object"
       description: "Response for successful password reset"
@@ -535,6 +535,7 @@ components:
       type: "apiKey"
       in: "cookie"
       name: "sessionid"
+      description: "Session-based authentication using secure HTTP-only cookies"
 tags:
   - name: "Auth"
     description: "Authentication and authorization endpoints"

@@ -139,6 +139,7 @@ pub struct ForgotPasswordResponse {
 #[derive(Deserialize, ToSchema, Debug)]
 #[schema(example = json!({
     "token": "550e8400-e29b-41d4-a716-446655440000",
+    "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
     "new_password": "newpassword123"
 }))]
 pub struct ResetPasswordRequest {
@@ -781,10 +782,12 @@ pub async fn login(
             example = json!({
                 "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
                 "email": "user@example.com",
+                "auth_provider": "email",
+                "email_verified": true,
                 "created_at": "2023-01-01T00:00:00"
             })
         ),
-        (status = 401, description = "Not authenticated", body = ErrorResponse,
+        (status = 401, description = "User authentication required to access profile", body = ErrorResponse,
             example = json!({
                 "error": "Not authenticated",
                 "code": "AUTH_REQUIRED"
@@ -1041,7 +1044,7 @@ pub async fn check_email(
                 "code": "AUTH_EMAIL_ALREADY_VERIFIED"
             })
         ),
-        (status = 401, description = "Not authenticated", body = ErrorResponse,
+        (status = 401, description = "Authentication required to resend verification email", body = ErrorResponse,
             example = json!({
                 "error": "Not authenticated",
                 "code": "AUTH_REQUIRED"

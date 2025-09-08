@@ -72,10 +72,13 @@ struct SecurityAddon;
 impl Modify for SecurityAddon {
     fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
         if let Some(components) = openapi.components.as_mut() {
-            components.add_security_scheme(
-                "cookieAuth",
-                SecurityScheme::ApiKey(ApiKey::Cookie(ApiKeyValue::new("sessionid"))),
-            );
+            let mut cookie_auth =
+                SecurityScheme::ApiKey(ApiKey::Cookie(ApiKeyValue::new("sessionid")));
+            if let SecurityScheme::ApiKey(ApiKey::Cookie(ref mut cookie)) = cookie_auth {
+                cookie.description =
+                    Some("Session-based authentication using secure HTTP-only cookies".to_owned());
+            }
+            components.add_security_scheme("cookieAuth", cookie_auth);
         } else {
             // Optionally log or handle the missing components case
             // e.g., log::warn!("OpenAPI components are missing, cannot add security scheme.");

@@ -702,7 +702,7 @@ async function run() {
   const result = await patronts.auth.resetPassword({
     newPassword: "newpassword123",
     token: "550e8400-e29b-41d4-a716-446655440000",
-    userId: "7a93f201-b2ff-45d2-a705-2d98abb16488",
+    userId: "d290f1ee-6c54-4b01-90e6-d701748f0851",
   });
 
   console.log(result);
@@ -729,7 +729,7 @@ async function run() {
   const res = await authResetPassword(patronts, {
     newPassword: "newpassword123",
     token: "550e8400-e29b-41d4-a716-446655440000",
-    userId: "7a93f201-b2ff-45d2-a705-2d98abb16488",
+    userId: "d290f1ee-6c54-4b01-90e6-d701748f0851",
   });
   if (res.ok) {
     const { value: result } = res;

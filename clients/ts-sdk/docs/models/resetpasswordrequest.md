@@ -10,7 +10,7 @@ import { ResetPasswordRequest } from "patronts/models";
 let value: ResetPasswordRequest = {
   newPassword: "newpassword123",
   token: "550e8400-e29b-41d4-a716-446655440000",
-  userId: "964b5133-8894-4b05-96b1-518bff2f6e78",
+  userId: "d290f1ee-6c54-4b01-90e6-d701748f0851",
 };
 ```
 
