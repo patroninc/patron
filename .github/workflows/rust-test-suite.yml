@@ -8,6 +8,10 @@ on:
   pull_request:
     paths:
       - "backend/server/**"
+  push:
+    branches: [ main ]
+    paths:
+      - "backend/server/**"
 
 jobs:
   cargo-fmt:

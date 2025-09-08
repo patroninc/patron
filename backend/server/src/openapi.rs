@@ -1,7 +1,7 @@
 use crate::handlers::auth::{
     CheckEmailRequest, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse,
-    LogoutResponse, RegisterRequest, RegisterResponse, ResetPasswordRequest, ResetPasswordResponse,
-    ResendVerificationResponse,
+    LogoutResponse, RegisterRequest, RegisterResponse, ResendVerificationResponse,
+    ResetPasswordRequest, ResetPasswordResponse,
 };
 use shared::models::auth::{UserInfo, UserInfoResponse};
 use utoipa::{
