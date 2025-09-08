@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 1bcd5684bba76b737de367351707a1ca
+  docChecksum: e695902dc62d1b1d7e12a77a98122430
   docVersion: 1.0.0
   speakeasyVersion: 1.611.1
   generationVersion: 2.694.1
-  releaseVersion: 0.4.7
-  configChecksum: c7f57a368dc8f229201a4b1f6266adac
+  releaseVersion: 0.4.8
+  configChecksum: 64c5b6a5c6a870fbdbecf5dc8dd404a2
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -51,6 +51,7 @@ generatedFiles:
   - docs/models/operations/verifyemailrequest.md
   - docs/models/registerrequest.md
   - docs/models/registerresponse.md
+  - docs/models/resendverificationresponse.md
   - docs/models/resetpasswordrequest.md
   - docs/models/resetpasswordresponse.md
   - docs/models/security.md
@@ -73,6 +74,7 @@ generatedFiles:
   - src/funcs/authLogin.ts
   - src/funcs/authLogout.ts
   - src/funcs/authRegister.ts
+  - src/funcs/authResendVerificationEmail.ts
   - src/funcs/authResetPassword.ts
   - src/funcs/authVerifyEmail.ts
   - src/hooks/hooks.ts
@@ -115,6 +117,7 @@ generatedFiles:
   - src/models/operations/verifyemail.ts
   - src/models/registerrequest.ts
   - src/models/registerresponse.ts
+  - src/models/resendverificationresponse.ts
   - src/models/resetpasswordrequest.ts
   - src/models/resetpasswordresponse.ts
   - src/models/security.ts
@@ -218,6 +221,15 @@ examples:
       requestBody:
         application/json: {"email": "user@example.com"}
       responses:
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  resend_verification_email:
+    speakeasy-default-resend-verification-email:
+      responses:
+        "200":
+          application/json: {"message": "Verification email sent successfully"}
+        "400":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
 examplesVersion: 1.0.2

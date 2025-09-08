@@ -178,27 +178,21 @@ pub async fn main() -> std::io::Result<()> {
                     web::scope("/auth")
                         .service(
                             web::resource("/google")
-                                // redirects to Google for authentication
                                 .route(web::get().to(handlers::auth::google_auth_redirect)),
                         )
                         .service(
                             web::resource("/google/callback")
-                                // handles the callback from Google after authentication
                                 .route(web::get().to(handlers::auth::google_auth_callback)),
                         )
                         .service(
                             web::resource("/register")
-                                // creates a new user account with email and password
                                 .route(web::post().to(handlers::auth::register)),
                         )
                         .service(
-                            web::resource("/login")
-                                // authenticates user with email and password
-                                .route(web::post().to(handlers::auth::login)),
+                            web::resource("/login").route(web::post().to(handlers::auth::login)),
                         )
                         .service(
                             web::resource("/verify-email")
-                                // verifies user's email address and sets session cookie
                                 .route(web::get().to(handlers::auth::verify_email)),
                         )
                         .service(
@@ -207,18 +201,19 @@ pub async fn main() -> std::io::Result<()> {
                         .service(web::resource("/me").route(web::get().to(handlers::auth::get_me)))
                         .service(
                             web::resource("/forgot-password")
-                                // sends password reset email
                                 .route(web::post().to(handlers::auth::forgot_password)),
                         )
                         .service(
                             web::resource("/reset-password")
-                                // resets password using token
                                 .route(web::post().to(handlers::auth::reset_password)),
                         )
                         .service(
                             web::resource("/check-email")
-                                // checks if email exists in system
                                 .route(web::post().to(handlers::auth::check_email)),
+                        )
+                        .service(
+                            web::resource("/resend-verification")
+                                .route(web::post().to(handlers::auth::resend_verification_email)),
                         ),
                 ),
             )

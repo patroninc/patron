@@ -104,6 +104,16 @@ pub struct CheckEmailRequest {
     pub email: String,
 }
 
+/// Response for resend verification email request
+#[derive(Serialize, ToSchema, Debug)]
+#[schema(example = json!({
+    "message": "Verification email sent successfully"
+}))]
+pub struct ResendVerificationResponse {
+    /// Resend verification email status message
+    pub message: String,
+}
+
 /// Request body for password reset
 #[derive(Deserialize, ToSchema, Debug)]
 #[schema(example = json!({
@@ -194,6 +204,60 @@ fn json_error(message: &str) -> HttpResponse {
 fn generate_gravatar_url(email: &str) -> String {
     let email_hash = format!("{:x}", md5::compute(email.trim().to_lowercase().as_bytes()));
     format!("https://www.gravatar.com/avatar/{email_hash}?d=identicon&s=200")
+}
+
+/// Helper function to send email verification
+async fn send_email_verification(
+    user: &User,
+    email_service: &EmailService,
+    google_oauth_service: &GoogleOAuthService,
+    conn: &mut diesel_async::AsyncPgConnection,
+) -> Result<(), ServiceError> {
+    use shared::schema::email_verification_tokens::dsl as tokens_dsl;
+
+    let verification_token = Uuid::new_v4().to_string();
+    let expires_at = Utc::now()
+        .naive_utc()
+        .checked_add_signed(chrono::Duration::hours(24))
+        .ok_or_else(|| ServiceError::Unknown("Failed to compute expiration time".to_owned()))?;
+
+    let new_verification_token = EmailVerificationToken {
+        id: Uuid::new_v4(),
+        user_id: user.id,
+        token: verification_token.clone(),
+        expires_at,
+        created_at: Utc::now().naive_utc(),
+    };
+
+    let _ = diesel::insert_into(tokens_dsl::email_verification_tokens)
+        .values(&new_verification_token)
+        .execute(conn)
+        .await
+        .map_err(ServiceError::from)?;
+
+    let verification_link = format!(
+        "{}/api/auth/verify-email?token={}",
+        google_oauth_service.backend_url, verification_token
+    );
+
+    let email_body = format!(
+        "<h1>Welcome to Patron!</h1>
+        <p>Please click the link below to verify your email address:</p>
+        <p><a href=\"{verification_link}\">Verify Email</a></p>
+        <p>This link will expire in 24 hours.</p>"
+    );
+
+    email_service
+        .send_html_email(shared::services::email::HtmlEmailContent {
+            to: &user.email,
+            subject: "Please verify your email address",
+            html_body: &email_body,
+            text_body: None,
+            from: None,
+        })
+        .await?;
+
+    Ok(())
 }
 
 /// Helper function to verify `OAuth` state
@@ -409,7 +473,7 @@ pub async fn google_auth_callback(
     let _ = session.remove("oauth_redirect_uri");
 
     Ok(HttpResponse::Found()
-        .append_header(("Location", format!("{redirect_uri}/dashboard")))
+        .append_header(("Location", redirect_uri.clone()))
         .finish())
 }
 
@@ -440,13 +504,12 @@ pub async fn google_auth_callback(
     )
 )]
 pub async fn register(
-    _session: Session,
+    session: Session,
     email_service: web::Data<EmailService>,
     db_service: web::Data<shared::services::db::DbService>,
     google_oauth_service: web::Data<GoogleOAuthService>,
     body: web::Json<RegisterRequest>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    use shared::schema::email_verification_tokens::dsl as tokens_dsl;
     use shared::schema::users::dsl as users_dsl;
 
     if body.email.is_empty() {
@@ -482,7 +545,7 @@ pub async fn register(
         password_hash: Some(password_hash),
         created_at: None,
         updated_at: None,
-        last_login: None,
+        last_login: Some(Utc::now().naive_utc()),
     };
 
     let _ = diesel::insert_into(users_dsl::users)
@@ -491,47 +554,11 @@ pub async fn register(
         .await
         .map_err(ServiceError::from)?;
 
-    let verification_token = Uuid::new_v4().to_string();
-    let expires_at = Utc::now()
-        .naive_utc()
-        .checked_add_signed(chrono::Duration::hours(24))
-        .ok_or_else(|| ServiceError::Unknown("Failed to compute expiration time".to_owned()))?;
+    send_email_verification(&new_user, &email_service, &google_oauth_service, &mut conn).await?;
 
-    let new_verification_token = EmailVerificationToken {
-        id: Uuid::new_v4(),
-        user_id: new_user.id,
-        token: verification_token.clone(),
-        expires_at,
-        created_at: Utc::now().naive_utc(),
-    };
-
-    let _ = diesel::insert_into(tokens_dsl::email_verification_tokens)
-        .values(&new_verification_token)
-        .execute(&mut conn)
-        .await
-        .map_err(ServiceError::from)?;
-
-    let verification_link = format!(
-        "{}/api/auth/verify-email?token={}",
-        google_oauth_service.backend_url, verification_token
-    );
-
-    let email_body = format!(
-        "<h1>Welcome to Patron!</h1>
-        <p>Please click the link below to verify your email address:</p>
-        <p><a href=\"{verification_link}\">Verify Email</a></p>
-        <p>This link will expire in 24 hours.</p>"
-    );
-
-    email_service
-        .send_html_email(shared::services::email::HtmlEmailContent {
-            to: &body.email,
-            subject: "Please verify your email address",
-            html_body: &email_body,
-            text_body: None,
-            from: None,
-        })
-        .await?;
+    session
+        .insert("user", &new_user)
+        .map_err(|e| ServiceError::Unknown(format!("Failed to set session: {e}")))?;
 
     Ok(HttpResponse::Ok().json(RegisterResponse {
         message: "Registration successful. Please check your email for verification.".to_owned(),
@@ -645,10 +672,7 @@ pub async fn verify_email(
         tracing::warn!("Failed to clean up verification token: {}", e);
     }
 
-    let redirect_url = format!(
-        "{}/dashboard?verified=success",
-        google_oauth_service.frontend_url
-    );
+    let redirect_url = format!("{}?verified=success", google_oauth_service.frontend_url);
     Ok(HttpResponse::Found()
         .append_header(("Location", redirect_url))
         .finish())
@@ -683,6 +707,8 @@ pub async fn verify_email(
 pub async fn login(
     session: Session,
     db_service: web::Data<shared::services::db::DbService>,
+    email_service: web::Data<EmailService>,
+    google_oauth_service: web::Data<GoogleOAuthService>,
     body: web::Json<LoginRequest>,
 ) -> Result<HttpResponse, actix_web::Error> {
     use shared::schema::users::dsl as users_dsl;
@@ -712,7 +738,13 @@ pub async fn login(
         return Ok(json_error("Invalid email or password"));
     }
 
-    // TODO! Send a fresh verification email if not verified
+    if !user.email_verified {
+        if let Err(e) =
+            send_email_verification(&user, &email_service, &google_oauth_service, &mut conn).await
+        {
+            tracing::warn!("Failed to send verification email during login: {}", e);
+        }
+    }
 
     let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&user.id)))
         .set(users_dsl::last_login.eq(Some(Utc::now().naive_utc())))
@@ -987,4 +1019,58 @@ pub async fn check_email(
         Err(diesel::result::Error::NotFound) => Ok(HttpResponse::NotFound().finish()),
         Err(e) => Err(ServiceError::from(e).into()),
     }
+}
+
+/// Resend verification email
+///
+/// # Errors
+/// Returns an error if user is already verified, database operations fail, or email service fails.
+#[utoipa::path(
+    post,
+    path = "/auth/resend-verification",
+    context_path = "/api",
+    tag = "Auth",
+    security(
+        ("cookieAuth" = [])
+    ),
+    responses(
+        (status = 200, description = "Verification email sent successfully", body = ResendVerificationResponse),
+        (status = 400, description = "User email already verified", body = ErrorResponse,
+            example = json!({
+                "error": "Email is already verified",
+                "code": "AUTH_EMAIL_ALREADY_VERIFIED"
+            })
+        ),
+        (status = 401, description = "Not authenticated", body = ErrorResponse,
+            example = json!({
+                "error": "Not authenticated",
+                "code": "AUTH_REQUIRED"
+            })
+        ),
+        (status = 500, description = "Email service error or database failure", body = ErrorResponse,
+            example = json!({
+                "error": "Email service unavailable",
+                "code": "EMAIL_SERVICE_ERROR"
+            })
+        ),
+    )
+)]
+pub async fn resend_verification_email(
+    user: User,
+    email_service: web::Data<EmailService>,
+    db_service: web::Data<shared::services::db::DbService>,
+    google_oauth_service: web::Data<GoogleOAuthService>,
+) -> Result<HttpResponse, actix_web::Error> {
+    if user.email_verified {
+        return Ok(json_error("Email is already verified"));
+    }
+
+    let pool = db_service.pool();
+    let mut conn = pool.get().await.map_err(ServiceError::from)?;
+
+    send_email_verification(&user, &email_service, &google_oauth_service, &mut conn).await?;
+
+    Ok(HttpResponse::Ok().json(ResendVerificationResponse {
+        message: "Verification email sent successfully".to_owned(),
+    }))
 }

@@ -11,6 +11,7 @@ export * from "./loginresponse.js";
 export * from "./logoutresponse.js";
 export * from "./registerrequest.js";
 export * from "./registerresponse.js";
+export * from "./resendverificationresponse.js";
 export * from "./resetpasswordrequest.js";
 export * from "./resetpasswordresponse.js";
 export * from "./security.js";

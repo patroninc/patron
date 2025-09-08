@@ -10,6 +10,7 @@ import { authGoogleRedirect } from "../funcs/authGoogleRedirect.js";
 import { authLogin } from "../funcs/authLogin.js";
 import { authLogout } from "../funcs/authLogout.js";
 import { authRegister } from "../funcs/authRegister.js";
+import { authResendVerificationEmail } from "../funcs/authResendVerificationEmail.js";
 import { authResetPassword } from "../funcs/authResetPassword.js";
 import { authVerifyEmail } from "../funcs/authVerifyEmail.js";
 import { ClientSDK, RequestOptions } from "../lib/sdks.js";
@@ -152,6 +153,22 @@ export class Auth extends ClientSDK {
     return unwrapAsync(authRegister(
       this,
       request,
+      options,
+    ));
+  }
+
+  /**
+   * Resend verification email
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if user is already verified, database operations fail, or email service fails.
+   */
+  async resendVerificationEmail(
+    options?: RequestOptions,
+  ): Promise<models.ResendVerificationResponse> {
+    return unwrapAsync(authResendVerificationEmail(
+      this,
       options,
     ));
   }
