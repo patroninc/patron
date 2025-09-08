@@ -264,7 +264,6 @@ export const Login = (): JSX.Element => {
   const handleEmailNext = async (email: string): Promise<void> => {
     try {
       await patronClient.auth.checkEmail({ email });
-      // If we reach here, email exists (204 response)
       setFormData((prev) => ({ ...prev, email }));
       setCurrentStep(2);
     } catch {
