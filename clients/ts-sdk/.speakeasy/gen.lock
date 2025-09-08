@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: e695902dc62d1b1d7e12a77a98122430
+  docChecksum: 81918b3712009035a95c6bbcd9ded391
   docVersion: 1.0.0
   speakeasyVersion: 1.611.1
   generationVersion: 2.694.1
-  releaseVersion: 0.4.8
-  configChecksum: 64c5b6a5c6a870fbdbecf5dc8dd404a2
+  releaseVersion: 0.4.9
+  configChecksum: 03554c9488f72b8c9b8ec4c6fde68778
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -198,7 +198,7 @@ examples:
   reset_password:
     speakeasy-default-reset-password:
       requestBody:
-        application/json: {"new_password": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000", "user_id": "7a93f201-b2ff-45d2-a705-2d98abb16488"}
+        application/json: {"new_password": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
       responses:
         "200":
           application/json: {"message": "Password has been reset successfully"}
