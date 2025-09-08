@@ -152,6 +152,7 @@ run();
 * [logout](docs/sdks/auth/README.md#logout) - Logout
 * [getCurrentUser](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
 * [register](docs/sdks/auth/README.md#register) - User registration
+* [resendVerificationEmail](docs/sdks/auth/README.md#resendverificationemail) - Resend verification email
 * [resetPassword](docs/sdks/auth/README.md#resetpassword) - Reset password
 * [verifyEmail](docs/sdks/auth/README.md#verifyemail) - Email verification
 
@@ -182,6 +183,7 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 - [`authLogin`](docs/sdks/auth/README.md#login) - User login
 - [`authLogout`](docs/sdks/auth/README.md#logout) - Logout
 - [`authRegister`](docs/sdks/auth/README.md#register) - User registration
+- [`authResendVerificationEmail`](docs/sdks/auth/README.md#resendverificationemail) - Resend verification email
 - [`authResetPassword`](docs/sdks/auth/README.md#resetpassword) - Reset password
 - [`authVerifyEmail`](docs/sdks/auth/README.md#verifyemail) - Email verification
 

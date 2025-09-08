@@ -15,6 +15,7 @@ Authentication and authorization endpoints
 * [logout](#logout) - Logout
 * [getCurrentUser](#getcurrentuser) - Get current user info
 * [register](#register) - User registration
+* [resendVerificationEmail](#resendverificationemail) - Resend verification email
 * [resetPassword](#resetpassword) - Reset password
 * [verifyEmail](#verifyemail) - Email verification
 
@@ -608,6 +609,77 @@ run();
 | Error Type                  | Status Code                 | Content Type                |
 | --------------------------- | --------------------------- | --------------------------- |
 | errors.ErrorResponse        | 400                         | application/json            |
+| errors.ErrorResponse        | 500                         | application/json            |
+| errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
+
+## resendVerificationEmail
+
+# Errors
+Returns an error if user is already verified, database operations fail, or email service fails.
+
+### Example Usage
+
+<!-- UsageSnippet language="typescript" operationID="resend_verification_email" method="post" path="/api/auth/resend-verification" -->
+```typescript
+import { Patronts } from "patronts";
+
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
+
+async function run() {
+  const result = await patronts.auth.resendVerificationEmail();
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript
+import { PatrontsCore } from "patronts/core.js";
+import { authResendVerificationEmail } from "patronts/funcs/authResendVerificationEmail.js";
+
+// Use `PatrontsCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
+
+async function run() {
+  const res = await authResendVerificationEmail(patronts);
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("authResendVerificationEmail failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
+| `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
+
+### Response
+
+**Promise\<[models.ResendVerificationResponse](../../models/resendverificationresponse.md)\>**
+
+### Errors
+
+| Error Type                  | Status Code                 | Content Type                |
+| --------------------------- | --------------------------- | --------------------------- |
+| errors.ErrorResponse        | 400, 401                    | application/json            |
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 

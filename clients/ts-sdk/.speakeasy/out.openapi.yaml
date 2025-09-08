@@ -218,6 +218,39 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
               example: {"code": "DATABASE_ERROR", "error": "Database connection failed"}
+  "/api/auth/resend-verification":
+    post:
+      tags:
+        - "Auth"
+      summary: "Resend verification email"
+      description: "# Errors\nReturns an error if user is already verified, database operations fail, or email service fails."
+      operationId: "resend_verification_email"
+      responses:
+        "200":
+          description: "Verification email sent successfully"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ResendVerificationResponse"}
+        "400":
+          description: "User email already verified"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_EMAIL_ALREADY_VERIFIED", "error": "Email is already verified"}
+        "401":
+          description: "Not authenticated"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_REQUIRED", "error": "Not authenticated"}
+        "500":
+          description: "Email service error or database failure"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "EMAIL_SERVICE_ERROR", "error": "Email service unavailable"}
+      security:
+        - cookieAuth: []
   "/api/auth/reset-password":
     post:
       tags:
@@ -408,6 +441,16 @@ components:
           format: "uuid"
           description: "Unique identifier of the registered user"
       example: {"message": "Registration successful. Please check your email for verification.", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+    "ResendVerificationResponse":
+      type: "object"
+      description: "Response for resend verification email request"
+      required:
+        - "message"
+      properties:
+        "message":
+          type: "string"
+          description: "Resend verification email status message"
+      example: {"message": "Verification email sent successfully"}
     "ResetPasswordRequest":
       type: "object"
       description: "Request body for password reset confirmation"
