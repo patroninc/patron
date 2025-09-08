@@ -12,16 +12,8 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { isValidEmail, patronClient } from '../lib/utils';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '../components/ui/alert-dialog';
 
 type RegisterFormData = {
   email: string;
@@ -36,18 +28,15 @@ type RegisterFormData = {
  * @returns {React.ReactElement} The register page.
  */
 export const Register = (): React.ReactElement => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [alertTitle, setAlertTitle] = useState<string | null>(null);
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const [showAlert, setShowAlert] = useState(false);
 
-  const emailFromUrl = searchParams.get('email');
+  const emailFromLocation = (location.state as { email?: string } | undefined)?.email;
 
   const form = useForm<RegisterFormData>({
     defaultValues: {
-      email: emailFromUrl || '',
+      email: emailFromLocation || '',
       displayName: '',
       password: '',
       repeatPassword: '',
@@ -55,10 +44,10 @@ export const Register = (): React.ReactElement => {
   });
 
   useEffect(() => {
-    if (!emailFromUrl || !isValidEmail(emailFromUrl)) {
+    if (!emailFromLocation || !isValidEmail(emailFromLocation)) {
       navigate('/login', { viewTransition: true });
     }
-  }, [emailFromUrl, navigate]);
+  }, [emailFromLocation, navigate]);
 
   /**
    * Handles the registration form submission.
@@ -92,27 +81,18 @@ export const Register = (): React.ReactElement => {
         password: registerFormData.password,
         displayName: registerFormData.displayName,
       });
-      setAlertTitle('Success');
-      setAlertMessage('Registration successful! Please check your email for verification.');
-      setShowAlert(true);
+      navigate('/', { viewTransition: true });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An error has occurred, please try again.';
-      setAlertTitle('Registration failed');
-      setAlertMessage(errorMessage);
-      setShowAlert(true);
+      // For errors, we could show a toast or inline error message here
+      // For now, we'll just set the form error
+      form.setError('root', {
+        message: errorMessage,
+      });
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  /**
-   * Handles closing the alert dialog and resets alert state.
-   */
-  const handleAlertClose = (): void => {
-    setShowAlert(false);
-    setAlertTitle(null);
-    setAlertMessage(null);
   };
 
   return (
@@ -123,6 +103,12 @@ export const Register = (): React.ReactElement => {
       >
         <Form {...form}>
           <form onSubmit={(e) => void form.handleSubmit(handleSubmit)(e)} className="space-y-5">
+            {form.formState.errors.root && (
+              <div className="rounded-md border border-red-200 bg-red-50 p-4">
+                <div className="text-sm text-red-700">{form.formState.errors.root.message}</div>
+              </div>
+            )}
+
             <FormField
               control={form.control}
               name="email"
@@ -130,7 +116,7 @@ export const Register = (): React.ReactElement => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email" type="email" {...field} disabled />
+                    <Input placeholder="Enter your email" type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -190,20 +176,6 @@ export const Register = (): React.ReactElement => {
           </form>
         </Form>
       </FormCard>
-
-      <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
-        <AlertDialogContent contentClassName="sm:max-w-[450px]">
-          <AlertDialogHeader className="sm:!text-center">
-            <AlertDialogTitle>{alertTitle}</AlertDialogTitle>
-            <AlertDialogDescription>{alertMessage}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="sm:!justify-center [&>div]:w-full">
-            <Button className="w-full" onClick={handleAlertClose}>
-              Continue
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </LoginLayout>
   );
 };

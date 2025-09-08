@@ -39,7 +39,9 @@ export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
    */
   const checkAuthStatus = async (): Promise<void> => {
     try {
-      const userInfo = await patronClient.auth.getCurrentUser();
+      const userInfo = await patronClient.auth.getCurrentUser({
+        credentials: 'include',
+      });
       setUser(userInfo);
     } catch {
       console.log('Not authenticated');
