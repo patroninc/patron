@@ -1,9 +1,19 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Patronts } from 'patronts';
+import { HTTPClient, Patronts } from 'patronts';
+
+// Create an HTTPClient instance with the default fetcher
+const httpClient = new HTTPClient({
+  // fetcher takes a function that has the same signature as native `fetch`.
+  fetcher: async (request: string | URL | Request) =>
+    fetch(request, {
+      credentials: 'include',
+    }),
+});
 
 export const patronClient = new Patronts({
   serverURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:8080',
+  httpClient,
 });
 
 /**

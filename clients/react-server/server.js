@@ -64,8 +64,6 @@ app.use(async (req, res) => {
       `<script>window.__INITIAL_DATA__ = ${serialized}</script>`,
     );
 
-    console.log('Starting React render to stream...');
-
     const [htmlStart, htmlEnd] = template.split('<!--app-html-->');
 
     let didError = false;
