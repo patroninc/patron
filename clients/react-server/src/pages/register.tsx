@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { isValidEmail, patronClient } from '../lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 type RegisterFormData = {
   email: string;
@@ -28,6 +29,7 @@ type RegisterFormData = {
  * @returns {React.ReactElement} The register page.
  */
 export const Register = (): React.ReactElement => {
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,6 +86,8 @@ export const Register = (): React.ReactElement => {
         },
         { credentials: 'include' },
       );
+      const user = await patronClient.auth.getCurrentUser({ credentials: 'include' });
+      setUser(user);
       navigate('/', { viewTransition: true });
     } catch (error) {
       const errorMessage =

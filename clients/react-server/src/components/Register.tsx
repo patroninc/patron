@@ -1,6 +1,7 @@
+import { useAuth } from '@/contexts/AuthContext';
 import { patronClient } from '@/lib/utils';
 import { JSX, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 /**
  * Register component that renders a registration form.
@@ -8,6 +9,9 @@ import { Link } from 'react-router';
  * @returns {JSX.Element} The register component
  */
 export default function Register(): JSX.Element {
+  const navigate = useNavigate();
+  const { setUser } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -48,6 +52,9 @@ export default function Register(): JSX.Element {
         },
       );
       setSuccess('Account created successfully! Please check your email to verify your account.');
+      const user = await patronClient.auth.getCurrentUser({ credentials: 'include' });
+      setUser(user);
+      navigate('/', { viewTransition: true });
     } catch {
       setError('Registration failed. Email might already be in use.');
     } finally {
