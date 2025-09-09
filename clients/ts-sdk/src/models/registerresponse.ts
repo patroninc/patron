@@ -3,10 +3,15 @@
  */
 
 import * as z from "zod";
-import { remap as remap$ } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { Result as SafeParseResult } from "../types/fp.js";
 import { SDKValidationError } from "./errors/sdkvalidationerror.js";
+import {
+  UserInfo,
+  UserInfo$inboundSchema,
+  UserInfo$Outbound,
+  UserInfo$outboundSchema,
+} from "./userinfo.js";
 
 /**
  * Response for successful user registration
@@ -17,9 +22,9 @@ export type RegisterResponse = {
    */
   message: string;
   /**
-   * Unique identifier of the registered user
+   * User information for API responses and internal use
    */
-  userId: string;
+  user: UserInfo;
 };
 
 /** @internal */
@@ -29,17 +34,13 @@ export const RegisterResponse$inboundSchema: z.ZodType<
   unknown
 > = z.object({
   message: z.string(),
-  user_id: z.string(),
-}).transform((v) => {
-  return remap$(v, {
-    "user_id": "userId",
-  });
+  user: UserInfo$inboundSchema,
 });
 
 /** @internal */
 export type RegisterResponse$Outbound = {
   message: string;
-  user_id: string;
+  user: UserInfo$Outbound;
 };
 
 /** @internal */
@@ -49,11 +50,7 @@ export const RegisterResponse$outboundSchema: z.ZodType<
   RegisterResponse
 > = z.object({
   message: z.string(),
-  userId: z.string(),
-}).transform((v) => {
-  return remap$(v, {
-    userId: "user_id",
-  });
+  user: UserInfo$outboundSchema,
 });
 
 /**

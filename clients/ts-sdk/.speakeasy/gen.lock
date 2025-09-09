@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 81918b3712009035a95c6bbcd9ded391
+  docChecksum: 73bb5b213e95fa5530713931b2d8b807
   docVersion: 1.0.0
-  speakeasyVersion: 1.611.1
-  generationVersion: 2.694.1
-  releaseVersion: 0.4.9
-  configChecksum: 03554c9488f72b8c9b8ec4c6fde68778
+  speakeasyVersion: 1.613.0
+  generationVersion: 2.696.0
+  releaseVersion: 0.4.10
+  configChecksum: 8f89a0ae529ba6de208c1086fff25fa8
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -190,7 +190,7 @@ examples:
         application/json: {"email": "user@example.com", "password": "password123"}
       responses:
         "200":
-          application/json: {"message": "Registration successful. Please check your email for verification.", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+          application/json: {"message": "Registration successful. Please check your email for verification.", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": false, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
