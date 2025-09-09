@@ -119,7 +119,7 @@ const DropdownMenuItem = ({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "focus:bg-primary group relative flex cursor-default cursor-pointer items-center gap-3 px-[13px] py-1 text-lg outline-hidden select-none focus:text-white data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6 [&_svg:not([class*='text-'])]:text-black focus:[&_svg:not([class*='text-'])]:text-white",
+        "focus:bg-primary group relative flex cursor-pointer items-center gap-3 px-[13px] py-1 text-lg outline-hidden select-none focus:text-white data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6 [&_svg:not([class*='text-'])]:text-black focus:[&_svg:not([class*='text-'])]:text-white",
         className,
       )}
       {...props}
