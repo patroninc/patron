@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { cva, VariantProps } from 'class-variance-authority';
 import { PanelLeftIcon } from 'lucide-react';
 
 import { useIsMobile } from '../../hooks/use-mobile';
@@ -400,7 +399,7 @@ const SidebarHeader = ({ className, ...props }: React.ComponentProps<'div'>): JS
     <div
       data-slot="sidebar-header"
       data-sidebar="header"
-      className={cn('flex flex-col gap-2 px-6 py-8', className)}
+      className={cn('flex flex-col px-6 py-8', className)}
       {...props}
     />
   );
@@ -417,7 +416,7 @@ const SidebarFooter = ({ className, ...props }: React.ComponentProps<'div'>): JS
     <div
       data-slot="sidebar-footer"
       data-sidebar="footer"
-      className={cn('flex flex-col gap-2 p-2', className)}
+      className={cn('flex flex-col px-6 py-8', className)}
       {...props}
     />
   );
@@ -546,7 +545,10 @@ const SidebarMenu = ({ className, ...props }: React.ComponentProps<'ul'>): JSX.E
     <ul
       data-slot="sidebar-menu"
       data-sidebar="menu"
-      className={cn('flex w-full min-w-0 flex-col gap-3', className)}
+      className={cn(
+        'flex w-full min-w-0 flex-col gap-4 group-data-[collapsible=icon]:max-w-[41px]',
+        className,
+      )}
       {...props}
     />
   );
@@ -569,27 +571,8 @@ const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'li'>): J
   );
 };
 
-const sidebarMenuButtonVariants = cva(
-  'peer/menu-button flex w-full text-black items-center gap-3 overflow-hidden p-2 text-left text-lg outline-hidden ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-0! [&>span:last-child]:truncate [&>svg]:size-6 [&>svg]:shrink-0',
-  {
-    variants: {
-      variant: {
-        default: '',
-        outline:
-          'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
-      },
-      size: {
-        default: 'h-8 text-sm',
-        sm: 'h-7 text-xs',
-        lg: 'h-12 text-sm group-data-[collapsible=icon]:p-0!',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
-);
+const sidebarMenuButtonVariants: string =
+  'peer/menu-button cursor-pointer flex w-full group text-black h-[45px] items-center gap-3 overflow-hidden px-[13px] text-left text-lg outline-hidden transition-[width,height,padding] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary data-[active=true]:font-medium data-[active=true]:text-white data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-[41px]! group-data-[collapsible=icon]:py-2! group-data-[collapsible=icon]:px-2! [&>span:last-child]:truncate [&>svg]:size-6 [&>svg]:shrink-0';
 
 /**
  *
@@ -598,23 +581,22 @@ const sidebarMenuButtonVariants = cva(
  * @param {boolean} props.isActive - If true, the button will be styled as active.
  * @param {string | React.ComponentProps<typeof TooltipContent>} props.tooltip - The tooltip content or string.
  * @param {string} props.className - Additional class names to be applied to the SidebarMenuButton component.
- * @param {'default' | 'outline'} props.variant - The visual variant of the button.
- * @param {'sm' | 'default' | 'lg'} props.size - The size of the button.
+ * @param {boolean} props.removeHoverStyles - If true, the hover styles will be removed.
  * @returns The SidebarMenuButton component.
  */
 const SidebarMenuButton = ({
   asChild = false,
   isActive = false,
-  variant = 'default',
-  size = 'default',
   tooltip,
   className,
+  removeHoverStyles = false,
   ...props
 }: React.ComponentProps<'button'> & {
   asChild?: boolean;
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-} & VariantProps<typeof sidebarMenuButtonVariants>): JSX.Element => {
+  removeHoverStyles?: boolean;
+}): JSX.Element => {
   const Comp = asChild ? Slot : 'button';
   const { isMobile, state } = useSidebar();
 
@@ -622,11 +604,36 @@ const SidebarMenuButton = ({
     <Comp
       data-slot="sidebar-menu-button"
       data-sidebar="menu-button"
-      data-size={size}
       data-active={isActive}
-      className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+      className={cn(sidebarMenuButtonVariants, 'group/button', className)}
       {...props}
-    />
+    >
+      {!removeHoverStyles && (
+        <>
+          <div className="absolute -top-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute -bottom-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute top-[3px] -left-[3px] h-[calc(100%-6px)] w-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute top-[3px] -right-[3px] h-[calc(100%-6px)] w-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute top-0 left-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute top-0 right-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute bottom-0 left-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute right-0 bottom-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+        </>
+      )}
+      {props.children}
+      <div className="absolute -top-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
+      <div className="absolute -bottom-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
+      <div className="absolute top-[3px] -left-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute top-[3px] -right-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute top-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute -top-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute top-0 -right-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute -top-[3px] right-[0] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute bottom-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute -bottom-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute -right-[3px] bottom-0 hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute right-[0] -bottom-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+    </Comp>
   );
 
   if (!tooltip) {
