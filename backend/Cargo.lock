@@ -3369,6 +3369,7 @@ dependencies = [
  "derive_more",
  "diesel",
  "diesel-async",
+ "diesel_migrations",
  "lettre",
  "reqwest",
  "serde",
