@@ -95,7 +95,9 @@ const EmailStep = ({
 
       <Button
         onClick={() => {
-          patronClient.auth.googleRedirect();
+          patronClient.auth.googleRedirect({
+            credentials: 'include',
+          });
         }}
         className="flex w-full items-center justify-center gap-2"
       >
@@ -149,7 +151,7 @@ const LoginPasswordStep = ({
    */
   const tryForgotPassword = async (): Promise<void> => {
     try {
-      void patronClient.auth.forgotPassword({ email });
+      void patronClient.auth.forgotPassword({ email }, { credentials: 'include' });
     } catch {
       setForgotPasswordError(true);
     }
@@ -175,7 +177,10 @@ const LoginPasswordStep = ({
     }
 
     try {
-      const loginResp = await patronClient.auth.login({ email, password: data.password });
+      const loginResp = await patronClient.auth.login(
+        { email, password: data.password },
+        { credentials: 'include' },
+      );
       setUser(loginResp.user);
       navigate('/home', { viewTransition: true });
     } catch {
@@ -263,7 +268,7 @@ export const Login = (): JSX.Element => {
    */
   const handleEmailNext = async (email: string): Promise<void> => {
     try {
-      await patronClient.auth.checkEmail({ email });
+      await patronClient.auth.checkEmail({ email }, { credentials: 'include' });
       setFormData((prev) => ({ ...prev, email }));
       setCurrentStep(2);
     } catch {

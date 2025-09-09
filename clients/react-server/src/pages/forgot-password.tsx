@@ -85,7 +85,12 @@ export const ForgotPasswordPage = (): JSX.Element => {
     setMessage('');
 
     try {
-      await patronClient.auth.resetPassword({ newPassword: data.newPassword, token, userId });
+      await patronClient.auth.resetPassword(
+        { newPassword: data.newPassword, token, userId },
+        {
+          credentials: 'include',
+        },
+      );
       setStatus('success');
       setMessage(
         'Your password has been successfully reset! You can now log in with your new password.',

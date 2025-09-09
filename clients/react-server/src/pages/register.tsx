@@ -76,11 +76,14 @@ export const Register = (): React.ReactElement => {
 
     setIsSubmitting(true);
     try {
-      await patronClient.auth.register({
-        email: registerFormData.email,
-        password: registerFormData.password,
-        displayName: registerFormData.displayName,
-      });
+      await patronClient.auth.register(
+        {
+          email: registerFormData.email,
+          password: registerFormData.password,
+          displayName: registerFormData.displayName,
+        },
+        { credentials: 'include' },
+      );
       navigate('/', { viewTransition: true });
     } catch (error) {
       const errorMessage =

@@ -41,7 +41,12 @@ export default function Register(): JSX.Element {
     }
 
     try {
-      await patronClient.auth.register({ email, password, displayName });
+      await patronClient.auth.register(
+        { email, password, displayName },
+        {
+          credentials: 'include',
+        },
+      );
       setSuccess('Account created successfully! Please check your email to verify your account.');
     } catch {
       setError('Registration failed. Email might already be in use.');
