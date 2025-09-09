@@ -1,16 +1,15 @@
 services:
   postgres:
     image: postgres:15
-    container_name: nametbd_postgres
+    container_name: patron_postgres
     environment:
-      POSTGRES_DB: nametbd
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backend/migrations:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 30s
@@ -19,7 +18,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: nametbd_redis
+    container_name: patron_redis
     ports:
       - "6380:6379"
     volumes:
@@ -29,25 +28,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
-# server:
-#   image: patroninc/server:latest
-#   platform: linux/amd64
-#   build:
-#     context: ./backend
-#     dockerfile: Dockerfile
-#   container_name: patron_server
-#   ports:
-#     - "8081:8080"
-#   depends_on:
-#     postgres:
-#       condition: service_healthy
-#     redis:
-#       condition: service_healthy
-#   env_file:
-#     - server/.env
-#   volumes:
-#     - ./server/migrations:/app/migrations
 
 volumes:
   postgres_data:
