@@ -36,6 +36,7 @@ const buttonVariants = cva(
  * @param {string} props.size - The size of the button, which determines its dimensions. Can be 'default', 'sm', 'lg', or 'icon'.
  * @param {boolean} [props.asChild=false] - If true, the button will render as a child component using Radix's Slot. Defaults to false.
  * @param {boolean} [props.shadow=true] - If true, the button will have a shadow effect. Defaults to true.
+ * @param {string} [props.containerClassName] - Additional class names to be applied to the container of the button.
  * @returns The Button component.
  */
 const Button = ({
@@ -44,11 +45,13 @@ const Button = ({
   size,
   asChild = false,
   shadow = true,
+  containerClassName,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     shadow?: boolean;
+    containerClassName?: string;
   }): JSX.Element => {
   const Comp = asChild ? RadixSlot.Slot : 'button';
 
@@ -88,7 +91,7 @@ const Button = ({
   );
 
   return shadow ? (
-    <div className="relative p-[3px]">
+    <div className={cn('relative p-[3px]', containerClassName)}>
       {Btn}
       <div className="absolute -bottom-[3px] left-[9px] h-[3px] w-[calc(100%-12px)] bg-black peer-disabled:bg-black/50" />
       <div className="absolute top-[9px] -right-[3px] h-[calc(100%-12px)] w-[3px] bg-black peer-disabled:bg-black/50" />
