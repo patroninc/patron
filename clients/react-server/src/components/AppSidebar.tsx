@@ -1,4 +1,4 @@
-import { User, LayoutDashboard, Library, ChartBar, Users, DollarSign } from 'lucide-react';
+import { LayoutDashboard, Library, ChartBar, Users, DollarSign } from 'lucide-react';
 
 import {
   Sidebar,
@@ -12,7 +12,9 @@ import {
   SidebarMenuItem,
 } from '../components/ui/sidebar';
 import { JSX } from 'react';
-
+import { Link, useLocation, useNavigate } from 'react-router';
+import { UserDropdown } from './user-dropdown';
+import { useAuth } from '../contexts/AuthContext';
 const items = [
   {
     title: 'Dashboard',
@@ -45,14 +47,18 @@ const items = [
  * @returns {JSX.Element} The AppSidebar component
  */
 export const AppSidebar = (): JSX.Element => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarMenu className="flex">
+        <SidebarMenu className="flex group-data-[collapsible=icon]:items-center">
           <SidebarMenuItem className="w-max">
-            <SidebarMenuButton className="h-8 w-max rounded-none p-0" size="sm">
+            <Link to="/">
               <img src="/logo.svg" alt="logo" className="size-8" />
-            </SidebarMenuButton>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -63,13 +69,12 @@ export const AppSidebar = (): JSX.Element => {
             <SidebarMenu>
               {items.map((item) => {
                 const IconComponent = item.icon;
+                const isActive = location.pathname === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>
-                        <IconComponent />
-                        <span>{item.title}</span>
-                      </a>
+                    <SidebarMenuButton onClick={() => navigate(item.url)} isActive={isActive}>
+                      <IconComponent />
+                      <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -80,19 +85,13 @@ export const AppSidebar = (): JSX.Element => {
       </SidebarContent>
 
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg">
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <User className="size-4" />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">Username</span>
-                <span className="truncate text-xs">username@example.com</span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <UserDropdown
+          user={{
+            name: user!.displayName!,
+            email: user!.email,
+            avatar: 'https://i.pinimg.com/736x/fa/b2/93/fab293035b25686034d03b3e7528f594.jpg',
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );
