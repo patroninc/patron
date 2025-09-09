@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from '../components/ui/
 import { AppSidebar } from '../components/AppSidebar';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
+import { patronClient } from '../lib/utils';
 
 /**
  *
@@ -23,7 +24,14 @@ const MainLayout = ({ children }: { children: JSX.Element }): JSX.Element => {
               <p className="text-lg">
                 Your email is not verified, check the inbox for confirmation email.
               </p>
-              <Button shadow={false} variant="secondary" containerClassName="w-max">
+              <Button
+                shadow={false}
+                variant="secondary"
+                containerClassName="w-max"
+                onClick={() => {
+                  patronClient.auth.resendVerificationEmail();
+                }}
+              >
                 Resend confirmation email
               </Button>
             </div>
