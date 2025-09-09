@@ -50,7 +50,7 @@ export const AppSidebar = (): JSX.Element => {
       <SidebarHeader>
         <SidebarMenu className="flex">
           <SidebarMenuItem className="w-max">
-            <SidebarMenuButton className="w-max rounded-none p-0" size="sm">
+            <SidebarMenuButton className="h-8 w-max rounded-none p-0" size="sm">
               <img src="/logo.svg" alt="logo" className="size-8" />
             </SidebarMenuButton>
           </SidebarMenuItem>
