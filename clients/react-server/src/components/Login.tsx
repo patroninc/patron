@@ -28,7 +28,10 @@ export default function Login(): JSX.Element {
     setError('');
 
     try {
-      const loginResp = await patronClient.auth.login({ email, password });
+      const loginResp = await patronClient.auth.login(
+        { email, password },
+        { credentials: 'include' },
+      );
       setUser(loginResp.user);
       navigate('/home', { viewTransition: true });
     } catch {
