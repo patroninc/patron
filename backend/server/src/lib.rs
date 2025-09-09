@@ -86,6 +86,16 @@ pub async fn main() -> std::io::Result<()> {
             ));
         }
     };
+
+    if let Err(e) = DbService::run_migrations(db_config) {
+        eprintln!("Failed to run database migrations: {e}");
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Failed to run database migrations",
+        ));
+    }
+    println!("Database migrations ran successfully.");
+
     let db_service = match DbService::new(db_config).await {
         Ok(service) => service,
         Err(e) => {

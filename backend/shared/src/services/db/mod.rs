@@ -1,6 +1,9 @@
 use diesel_async::{pooled_connection::bb8::Pool, AsyncPgConnection};
+use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
 use crate::errors::ServiceError;
+
+const MIGRATIONS: EmbeddedMigrations = embed_migrations!("../migrations");
 
 /// Database service for managing connection pool
 #[derive(Clone, Debug)]
@@ -31,5 +34,22 @@ impl DbService {
     #[inline]
     pub fn pool(&self) -> Pool<AsyncPgConnection> {
         self.pool.clone()
+    }
+
+    /// Runs pending migrations against the database
+    ///
+    /// # Errors
+    ///
+    /// Returns `ServiceError::Unknown` if migrations fail to run
+    pub fn run_migrations(database_url: &str) -> Result<(), ServiceError> {
+        use diesel::prelude::*;
+        let mut conn = PgConnection::establish(database_url)
+            .map_err(|e| ServiceError::Unknown(format!("Failed to connect to database: {e}")))?;
+
+        let _ = conn
+            .run_pending_migrations(MIGRATIONS)
+            .map_err(|e| ServiceError::Unknown(format!("Failed to run migrations: {e}")))?;
+
+        Ok(())
     }
 }
