@@ -78,7 +78,7 @@ export const Register = (): React.ReactElement => {
 
     setIsSubmitting(true);
     try {
-      await patronClient.auth.register(
+      const registerResp = await patronClient.auth.register(
         {
           email: registerFormData.email,
           password: registerFormData.password,
@@ -86,8 +86,7 @@ export const Register = (): React.ReactElement => {
         },
         { credentials: 'include' },
       );
-      const user = await patronClient.auth.getCurrentUser({ credentials: 'include' });
-      setUser(user);
+      setUser(registerResp.user);
       navigate('/', { viewTransition: true });
     } catch (error) {
       const errorMessage =

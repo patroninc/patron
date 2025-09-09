@@ -775,22 +775,27 @@
         "description": "Response for successful user registration",
         "required": [
           "message",
-          "user_id"
+          "user"
         ],
         "properties": {
           "message": {
             "type": "string",
             "description": "Registration confirmation message"
           },
-          "user_id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Unique identifier of the registered user"
+          "user": {
+            "$ref": "#/components/schemas/UserInfo",
+            "description": "User information"
           }
         },
         "example": {
           "message": "Registration successful. Please check your email for verification.",
-          "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          "user": {
+            "auth_provider": "email",
+            "display_name": "John Doe",
+            "email": "user@example.com",
+            "email_verified": false,
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          }
         }
       },
       "ResendVerificationResponse": {

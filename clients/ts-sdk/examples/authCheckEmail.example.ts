@@ -18,7 +18,7 @@ const patronts = new Patronts({
 });
 
 async function main() {
-  await patronts.checkEmail({
+  await patronts.auth.checkEmail({
     email: "user@example.com",
   });
 }

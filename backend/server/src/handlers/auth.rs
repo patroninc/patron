@@ -42,13 +42,19 @@ pub struct RegisterRequest {
 #[derive(Serialize, ToSchema, Debug)]
 #[schema(example = json!({
     "message": "Registration successful. Please check your email for verification.",
-    "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+    "user": {
+        "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+        "email": "user@example.com",
+        "display_name": "John Doe",
+        "auth_provider": "email",
+        "email_verified": false
+    }
 }))]
 pub struct RegisterResponse {
     /// Registration confirmation message
     pub message: String,
-    /// Unique identifier of the registered user
-    pub user_id: Uuid,
+    /// User information
+    pub user: UserInfo,
 }
 
 /// Request body for user login
@@ -563,7 +569,7 @@ pub async fn register(
 
     Ok(HttpResponse::Ok().json(RegisterResponse {
         message: "Registration successful. Please check your email for verification.".to_owned(),
-        user_id: new_user.id,
+        user: new_user.into(),
     }))
 }
 
