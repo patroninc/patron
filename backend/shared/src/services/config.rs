@@ -14,6 +14,8 @@ pub struct ConfigService {
     pub smtp_config: Option<SmtpConfig>,
     /// Redis configuration for caching
     pub redis_config: Option<RedisConfig>,
+    /// Cookie secure flag for HTTPS
+    pub cookie_secure: bool,
 }
 
 /// Configuration for Google `OAuth` authentication
@@ -122,6 +124,10 @@ impl ConfigService {
             google_oauth_config,
             smtp_config,
             redis_config,
+            cookie_secure: env::var("COOKIE_SECURE")
+                .unwrap_or_else(|_| "false".to_owned())
+                .parse()
+                .unwrap_or(false),
         }
     }
 

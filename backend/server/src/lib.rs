@@ -165,9 +165,13 @@ pub async fn main() -> std::io::Result<()> {
             .wrap(
                 SessionMiddleware::builder(redis_store.clone(), session_key.clone())
                     .cookie_name("session_id".to_owned())
-                    .cookie_secure(false) // Set to true in production with HTTPS
+                    .cookie_secure(config.cookie_secure)
                     .cookie_http_only(true)
-                    .cookie_same_site(actix_web::cookie::SameSite::Lax)
+                    .cookie_same_site(if config.cookie_secure {
+                        actix_web::cookie::SameSite::None
+                    } else {
+                        actix_web::cookie::SameSite::Lax
+                    })
                     .session_lifecycle(PersistentSession::default().session_ttl(
                         actix_web::cookie::time::Duration::days(
                             #[allow(clippy::unwrap_used)]
