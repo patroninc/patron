@@ -24,40 +24,14 @@ import {
 } from '../../components/ui/tooltip';
 import { JSX } from 'react';
 
+import { SidebarContext, useSidebar, type SidebarContextProps } from './use-sidebar';
+
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '5.875rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
-
-type SidebarContextProps = {
-  state: 'expanded' | 'collapsed';
-  open: boolean;
-  // eslint-disable-next-line no-unused-vars
-  setOpen: (open: boolean) => void;
-  openMobile: boolean;
-  // eslint-disable-next-line no-unused-vars
-  setOpenMobile: (open: boolean) => void;
-  isMobile: boolean;
-  toggleSidebar: () => void;
-};
-
-const SidebarContext = React.createContext<SidebarContextProps | null>(null);
-
-/**
- * Custom hook to access the sidebar context.
- *
- * @returns {SidebarContextProps} The sidebar context value.
- */
-const useSidebar = (): SidebarContextProps => {
-  const context = React.useContext(SidebarContext);
-  if (!context) {
-    throw new Error('useSidebar must be used within a SidebarProvider.');
-  }
-
-  return context;
-};
 
 /**
  *
@@ -866,5 +840,4 @@ export {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-  useSidebar,
 };
