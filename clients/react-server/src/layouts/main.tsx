@@ -1,9 +1,9 @@
 import { JSX } from 'react';
-import { SidebarProvider, SidebarTrigger, SidebarInset } from '../components/ui/sidebar';
-import { AppSidebar } from '../components/AppSidebar';
-import { useAuth } from '../contexts/AuthContext';
-import { Button } from '../components/ui/button';
-import { patronClient } from '../lib/utils';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { patronClient } from '@/lib/utils';
 
 /**
  *
@@ -11,7 +11,7 @@ import { patronClient } from '../lib/utils';
  * @param {React.ReactNode} props.children - Child components to be rendered within the layout
  * @returns {React.ReactElement} The Layout component
  */
-const MainLayout = ({ children }: { children: JSX.Element }): JSX.Element => {
+const MainLayout = ({ children }: { children: React.ReactNode }): JSX.Element => {
   const { user } = useAuth();
 
   return (
@@ -38,12 +38,6 @@ const MainLayout = ({ children }: { children: JSX.Element }): JSX.Element => {
           )}
           {children}
         </div>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold">Dashboard</h1>
-          </div>
-        </header>
       </SidebarInset>
     </SidebarProvider>
   );

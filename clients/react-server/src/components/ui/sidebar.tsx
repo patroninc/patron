@@ -4,24 +4,19 @@ import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { PanelLeftIcon } from 'lucide-react';
 
-import { useIsMobile } from '../../hooks/use-mobile';
-import { cn } from '../../lib/utils';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '../../components/ui/sheet';
-import { Skeleton } from '../../components/ui/skeleton';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../components/ui/tooltip';
+} from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { JSX } from 'react';
 
 import { SidebarContext, useSidebar, type SidebarContextProps } from './use-sidebar';
@@ -178,7 +173,7 @@ const Sidebar = ({
       <div
         data-slot="sidebar"
         className={cn(
-          'bg-secondary-primary text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col',
+          'bg-secondary-primary text-sidebar-foreground relative flex h-full w-(--sidebar-width) flex-col',
           className,
         )}
         {...props}
@@ -286,6 +281,7 @@ const SidebarTrigger = ({
         toggleSidebar();
       }}
       className={className}
+      shadow={false}
       {...props}
     >
       <PanelLeftIcon />
@@ -336,7 +332,7 @@ const SidebarInset = ({ className, ...props }: React.ComponentProps<'main'>): JS
     <main
       data-slot="sidebar-inset"
       className={cn(
-        'bg-background relative flex w-full flex-1 flex-col',
+        'bg-background cube-bg relative flex w-full flex-1 flex-col',
         'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
         className,
       )}
