@@ -9,14 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '../components/ui/sidebar';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../components/ui/sidebar';
 import { useNavigate } from 'react-router';
 import { patronClient } from '../lib/utils';
+import { useSidebar } from './ui/use-sidebar';
 
 /**
  * @param {object} props - Props to be passed to the UserDropdown component.

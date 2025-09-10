@@ -2,8 +2,8 @@ import * as React from 'react';
 import { AlertDialog as AlertDialogPrimitive } from 'radix-ui';
 
 import { cn } from '../../lib/utils';
-import { buttonVariants } from './button';
 import { JSX } from 'react';
+import { buttonVariants } from './button-variants';
 
 /**
  *
