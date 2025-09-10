@@ -4,7 +4,7 @@ import {
   type PipeableStream,
   renderToPipeableStream,
 } from 'react-dom/server';
-import App from './App';
+import App from '@/App';
 import { UserInfo } from 'patronts/models';
 
 /*

@@ -1,5 +1,5 @@
-import LoginLayout from '../layouts/login';
-import FormCard from '../components/form-card';
+import LoginLayout from '@/layouts/login';
+import FormCard from '@/components/form-card';
 import {
   Form,
   FormControl,
@@ -7,13 +7,13 @@ import {
   FormLabel,
   FormMessage,
   FormField,
-} from '../components/ui/form';
-import { Input } from '../components/ui/input';
-import { Button } from '../components/ui/button';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { isValidEmail, patronClient } from '../lib/utils';
+import { isValidEmail, patronClient } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 
 type RegisterFormData = {
