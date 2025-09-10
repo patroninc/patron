@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { Readable } from 'node:stream';
 import express from 'express';
 import { Patronts } from 'patronts';
 
@@ -14,6 +15,106 @@ const patronClient = new Patronts({
 const templateHtml = isProduction ? await fs.readFile('./dist/client/index.html', 'utf-8') : '';
 
 const app = express();
+
+// Reverse proxy for /proxy -> VITE_API_URL (without the /proxy prefix)
+// Example: /proxy/auth/me -> https://backend.example.com/auth/me
+app.use('/proxy', async (req, res, next) => {
+  try {
+    const targetBase = process.env.VITE_API_URL || 'http://localhost:8080';
+
+    // When mounted on '/proxy', req.url no longer contains '/proxy'
+    // So we can directly append it to the target base
+    const targetUrl = new globalThis.URL(req.url, targetBase);
+
+    // Copy request headers, dropping hop-by-hop headers
+    const incomingHeaders = { ...req.headers };
+    delete incomingHeaders['host'];
+    delete incomingHeaders['connection'];
+    delete incomingHeaders['keep-alive'];
+    delete incomingHeaders['proxy-authenticate'];
+    delete incomingHeaders['proxy-authorization'];
+    delete incomingHeaders['te'];
+    delete incomingHeaders['trailers'];
+    delete incomingHeaders['transfer-encoding'];
+    delete incomingHeaders['upgrade'];
+    delete incomingHeaders['content-length']; // Let fetch calculate this
+
+    // Preserve cookies and auth headers as-is; adjust origin/referrer to backend
+    if (incomingHeaders['origin']) {
+      incomingHeaders['origin'] = new globalThis.URL(targetBase).origin;
+    }
+    if (incomingHeaders['referer']) {
+      incomingHeaders['referer'] = new globalThis.URL(targetBase).origin;
+    }
+
+    const method = req.method || 'GET';
+    const hasBody = !['GET', 'HEAD'].includes(method);
+
+    const fetchInit = {
+      method,
+      headers: incomingHeaders,
+      // Node Fetch requires duplex: 'half' when streaming a request body
+      ...(hasBody ? { body: req, duplex: 'half' } : {}),
+      redirect: 'manual',
+    };
+
+    const upstream = await globalThis.fetch(targetUrl, fetchInit);
+
+    // Copy response status and headers, omitting hop-by-hop
+    res.status(upstream.status);
+
+    const hopByHop = new Set([
+      'connection',
+      'keep-alive',
+      'proxy-authenticate',
+      'proxy-authorization',
+      'te',
+      'trailers',
+      'transfer-encoding',
+      'upgrade',
+    ]);
+
+    upstream.headers.forEach((value, key) => {
+      if (!hopByHop.has(key.toLowerCase())) {
+        // set-cookie can be repeated; handle array form if supported
+        if (key.toLowerCase() === 'set-cookie') {
+          // Node 18+ (undici) supports getSetCookie()
+          const cookies = upstream.headers.getSetCookie?.();
+          if (cookies && cookies.length) {
+            res.setHeader('set-cookie', cookies);
+          } else {
+            res.setHeader('set-cookie', value);
+          }
+        } else {
+          res.setHeader(key, value);
+        }
+      }
+    });
+
+    // Stream body back to client
+    if (!upstream.body) {
+      res.end();
+      return;
+    }
+
+    // Convert Web ReadableStream to Node Readable and pipe
+    const nodeStream =
+      typeof Readable.fromWeb === 'function'
+        ? Readable.fromWeb(upstream.body)
+        : Readable.from(upstream.body);
+
+    nodeStream.on('error', () => {
+      // Fail the response if upstream stream errors out
+      if (!res.headersSent) res.status(502);
+      res.end();
+    });
+
+    nodeStream.pipe(res);
+  } catch (err) {
+    // On errors, fall through to next handler so SSR or error middleware can decide
+    next(err);
+  }
+});
 
 /** @type {import('vite').ViteDevServer | undefined} */
 let vite;
@@ -51,7 +152,7 @@ app.use(async (req, res) => {
       render = (await import('./dist/server/entry-server.js')).render;
     }
 
-    const initialData = await loadDataForUrl(url, req);
+    const initialData = await loadDataForUrl(url, req, res);
 
     if (initialData?.shouldRedirect) {
       res.redirect(302, initialData.shouldRedirect.to);
@@ -121,15 +222,18 @@ app.listen(port, () => {
 
 /**
  * Server-only data loader that checks authentication and handles redirects.
- * Calls the patron API to verify user authentication status.
+ * Calls the patron API to verify user authentication status and forwards cookies.
  *
  * @param {string} url - The request path, relative to the app base.
  * @param {import('express').Request} req - The Express request object for headers/session.
+ * @param {import('express').Response} res - The Express response object for setting cookies.
  * @returns {Promise<{user: object | null, shouldRedirect?: {to: string}}>} Data to serialize into the document for SSR/hydration.
  */
-async function loadDataForUrl(url, req) {
+// eslint-disable-next-line no-unused-vars
+async function loadDataForUrl(url, req, res) {
   try {
     const cookies = req.headers.cookie || '';
+
     const user = await patronClient.auth.getCurrentUser({
       credentials: 'include',
       headers: {
