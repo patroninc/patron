@@ -1,11 +1,15 @@
 import { JSX } from 'react';
 import { UserInfo } from 'patronts/models';
-import { AuthProvider } from './contexts/AuthContext';
-import Home from './pages/home';
-import { Login } from './pages/login';
-import { Register } from './pages/register';
-import ProtectedRoute from './components/ProtectedRoute';
-import { ForgotPasswordPage } from './pages/forgot-password';
+import { AuthProvider } from '@/contexts/AuthContext';
+import Home from '@/pages/home';
+import { Login } from '@/pages/login';
+import { Register } from '@/pages/register';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { ForgotPasswordPage } from '@/pages/forgot-password';
+import Content from '@/pages/dashboard/content';
+import Insights from '@/pages/dashboard/insights';
+import Audience from '@/pages/dashboard/audience';
+import Payouts from '@/pages/dashboard/payouts';
 import { StaticRouter } from 'react-router';
 
 type AppProps = {
@@ -60,6 +64,34 @@ const App = ({ initialData, url }: AppProps): JSX.Element => {
         return (
           <ProtectedRoute requireAuth={false}>
             <ForgotPasswordPage />
+          </ProtectedRoute>
+        );
+      case 'dashboard/content':
+      case '/dashboard/content':
+        return (
+          <ProtectedRoute requireAuth={true}>
+            <Content />
+          </ProtectedRoute>
+        );
+      case 'dashboard/insights':
+      case '/dashboard/insights':
+        return (
+          <ProtectedRoute requireAuth={true}>
+            <Insights />
+          </ProtectedRoute>
+        );
+      case 'dashboard/audience':
+      case '/dashboard/audience':
+        return (
+          <ProtectedRoute requireAuth={true}>
+            <Audience />
+          </ProtectedRoute>
+        );
+      case 'dashboard/payouts':
+      case '/dashboard/payouts':
+        return (
+          <ProtectedRoute requireAuth={true}>
+            <Payouts />
           </ProtectedRoute>
         );
       default:

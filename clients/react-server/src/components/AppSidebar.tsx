@@ -10,11 +10,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '../components/ui/sidebar';
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
 import { JSX } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { UserDropdown } from './user-dropdown';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 const items = [
   {
     title: 'Dashboard',
@@ -23,22 +24,22 @@ const items = [
   },
   {
     title: 'Content',
-    url: '/content',
+    url: '/dashboard/content',
     icon: Library,
   },
   {
     title: 'Insights',
-    url: '/insights',
+    url: '/dashboard/insights',
     icon: ChartBar,
   },
   {
     title: 'Audience',
-    url: '/audience',
+    url: '/dashboard/audience',
     icon: Users,
   },
   {
     title: 'Payouts',
-    url: '/payouts',
+    url: '/dashboard/payouts',
     icon: DollarSign,
   },
 ];
@@ -53,6 +54,8 @@ export const AppSidebar = (): JSX.Element => {
 
   return (
     <Sidebar collapsible="icon">
+      <SidebarTrigger className="absolute top-[calc((100vh-36px)/2)] -right-6 z-10" />
+
       <SidebarHeader>
         <SidebarMenu className="flex group-data-[collapsible=icon]:items-center">
           <SidebarMenuItem className="w-max">
@@ -72,7 +75,10 @@ export const AppSidebar = (): JSX.Element => {
                 const isActive = location.pathname === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton onClick={() => navigate(item.url)} isActive={isActive}>
+                    <SidebarMenuButton
+                      onClick={() => navigate(item.url, { viewTransition: true })}
+                      isActive={isActive}
+                    >
                       <IconComponent />
                       <span>{item.title}</span>
                     </SidebarMenuButton>
