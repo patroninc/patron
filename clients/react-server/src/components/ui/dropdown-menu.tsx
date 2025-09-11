@@ -4,6 +4,7 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { JSX } from 'react';
+import PxBorder from '@/components/px-border';
 
 /**
  * @param {object} props - Props to be passed to the DropdownMenu component.
@@ -66,14 +67,7 @@ const DropdownMenuContent = ({
         {...props}
       >
         <div className="bg-secondary-primary relative h-full w-full flex-col gap-3 p-3">
-          <div className="absolute -top-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] bg-black" />
-          <div className="absolute -bottom-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] bg-black" />
-          <div className="absolute top-[3px] -left-[3px] h-[calc(100%-6px)] w-[3px] bg-black" />
-          <div className="absolute top-[3px] -right-[3px] h-[calc(100%-6px)] w-[3px] bg-black" />
-          <div className="absolute top-0 left-0 size-[3px] bg-black" />
-          <div className="absolute top-0 right-0 size-[3px] bg-black" />
-          <div className="absolute bottom-0 left-0 size-[3px] bg-black" />
-          <div className="absolute right-0 bottom-0 size-[3px] bg-black" />
+          <PxBorder width={3} radius="lg" />
           {props.children}
         </div>
       </DropdownMenuPrimitive.Content>

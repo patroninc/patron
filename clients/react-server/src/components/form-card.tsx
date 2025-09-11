@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import PxBorder from '@/components/px-border';
 
 export interface FormCardProps {
   children?: React.ReactNode;
@@ -27,14 +28,7 @@ const FormCard = (formCardProps: FormCardProps): React.ReactElement => {
           <p className="text-sm sm:text-base">{description}</p>
         </div>
         {children}
-        <div className="absolute -top-[5px] left-[5px] h-[5px] w-[calc(100%-10px)] bg-black"></div>
-        <div className="absolute -bottom-[5px] left-[5px] h-[5px] w-[calc(100%-10px)] bg-black"></div>
-        <div className="absolute top-[5px] -left-[5px] h-[calc(100%-10px)] w-[5px] bg-black"></div>
-        <div className="absolute top-[5px] -right-[5px] h-[calc(100%-10px)] w-[5px] bg-black"></div>
-        <div className="absolute top-0 left-0 size-[5px] bg-black"></div>
-        <div className="absolute bottom-0 left-0 size-[5px] bg-black"></div>
-        <div className="absolute top-0 right-0 size-[5px] bg-black"></div>
-        <div className="absolute right-0 bottom-0 size-[5px] bg-black"></div>
+        <PxBorder width={5} radius="lg" />
       </div>
     </div>
   );
