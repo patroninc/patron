@@ -4,6 +4,7 @@ import { AlertDialog as AlertDialogPrimitive } from 'radix-ui';
 import { cn } from '@/lib/utils';
 import { JSX } from 'react';
 import { buttonVariants } from './button-variants';
+import PxBorder from '@/components/px-border';
 
 /**
  *
@@ -91,15 +92,7 @@ const AlertDialogContent = ({
       >
         <div className={cn('bg-secondary-primary relative flex flex-col gap-4 p-6', className)}>
           {props.children}
-          {/* Pixelated border */}
-          <div className="pointer-events-none absolute -top-[5px] left-[5px] h-[5px] w-[calc(100%-10px)] bg-black"></div>
-          <div className="pointer-events-none absolute -bottom-[5px] left-[5px] h-[5px] w-[calc(100%-10px)] bg-black"></div>
-          <div className="pointer-events-none absolute top-[5px] -left-[5px] h-[calc(100%-10px)] w-[5px] bg-black"></div>
-          <div className="pointer-events-none absolute top-[5px] -right-[5px] h-[calc(100%-10px)] w-[5px] bg-black"></div>
-          <div className="pointer-events-none absolute top-0 left-0 size-[5px] bg-black"></div>
-          <div className="pointer-events-none absolute bottom-0 left-0 size-[5px] bg-black"></div>
-          <div className="pointer-events-none absolute top-0 right-0 size-[5px] bg-black"></div>
-          <div className="pointer-events-none absolute right-0 bottom-0 size-[5px] bg-black"></div>
+          <PxBorder width={5} radius="lg" />
         </div>
       </AlertDialogPrimitive.Content>
     </AlertDialogPortal>
