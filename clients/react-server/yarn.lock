@@ -663,12 +663,12 @@ __metadata:
   linkType: hard
 
 "@jridgewell/trace-mapping@npm:^0.3.24, @jridgewell/trace-mapping@npm:^0.3.28":
-  version: 0.3.30
-  resolution: "@jridgewell/trace-mapping@npm:0.3.30"
+  version: 0.3.31
+  resolution: "@jridgewell/trace-mapping@npm:0.3.31"
   dependencies:
     "@jridgewell/resolve-uri": "npm:^3.1.0"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
-  checksum: 10c0/3a1516c10f44613b9ba27c37a02ff8f410893776b2b3dad20a391b51b884dd60f97bbb56936d65d2ff8fe978510a0000266654ab8426bdb9ceb5fb4585b19e23
+  checksum: 10c0/4b30ec8cd56c5fd9a661f088230af01e0c1a3888d11ffb6b47639700f71225be21d1f7e168048d6d4f9449207b978a235c07c8f15c07705685d16dc06280e9d9
   languageName: node
   linkType: hard
 
@@ -743,6 +743,7 @@ __metadata:
     "@radix-ui/react-tabs": "npm:^1.1.13"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@tailwindcss/vite": "npm:^4.1.12"
+    "@tanstack/react-table": "npm:^8.21.3"
     "@types/express": "npm:^5.0.3"
     "@types/node": "npm:^24.1.0"
     "@types/react": "npm:^19.1.9"
@@ -771,6 +772,7 @@ __metadata:
     react-hook-form: "npm:^7.62.0"
     react-router: "npm:^7.8.2"
     sirv: "npm:^3.0.1"
+    sonner: "npm:^2.0.7"
     tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4.1.12"
     tw-animate-css: "npm:^1.3.8"
@@ -2437,12 +2439,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-table@npm:^8.21.3":
+  version: 8.21.3
+  resolution: "@tanstack/react-table@npm:8.21.3"
+  dependencies:
+    "@tanstack/table-core": "npm:8.21.3"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 10c0/85d1d0fcb690ecc011f68a5a61c96f82142e31a0270dcf9cbc699a6f36715b1653fe6ff1518302a6d08b7093351fc4cabefd055a7db3cd8ac01e068956b0f944
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.21.3":
+  version: 8.21.3
+  resolution: "@tanstack/table-core@npm:8.21.3"
+  checksum: 10c0/40e3560e6d55e07cc047024aa7f83bd47a9323d21920d4adabba8071fd2d21230c48460b26cedf392588f8265b9edc133abb1b0d6d0adf4dae0970032900a8c9
+  languageName: node
+  linkType: hard
+
 "@tybys/wasm-util@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "@tybys/wasm-util@npm:0.10.0"
+  version: 0.10.1
+  resolution: "@tybys/wasm-util@npm:0.10.1"
   dependencies:
     tslib: "npm:^2.4.0"
-  checksum: 10c0/044feba55c1e2af703aa4946139969badb183ce1a659a75ed60bc195a90e73a3f3fc53bcd643497c9954597763ddb051fec62f80962b2ca6fc716ba897dc696e
+  checksum: 10c0/b255094f293794c6d2289300c5fbcafbb5532a3aed3a5ffd2f8dc1828e639b88d75f6a376dd8f94347a44813fd7a7149d8463477a9a49525c8b2dcaa38c2d1e8
   languageName: node
   linkType: hard
 
@@ -3436,9 +3457,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.211":
-  version: 1.5.215
-  resolution: "electron-to-chromium@npm:1.5.215"
-  checksum: 10c0/3a45976d1193e57284533096b3bbec218a5d4d85af4f7c133522aae35b14bbf22734f48ccc3f0e43a451441ebc375fa2f4350390fd729dcedb97543692133e39
+  version: 1.5.217
+  resolution: "electron-to-chromium@npm:1.5.217"
+  checksum: 10c0/e63eab55c0bd5d08e878f90c1adec384f701d51763ecb7c08a951adc49b97483d5cd93595d2166c7072ed1ba314a65d27efca99aa611669f9d9a89e351fd9529
   languageName: node
   linkType: hard
 
@@ -6435,6 +6456,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sonner@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "sonner@npm:2.0.7"
+  peerDependencies:
+    react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+    react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+  checksum: 10c0/6966ab5e892ed6aab579a175e4a24f3b48747f0fc21cb68c3e33cb41caa7a0eebeb098c210545395e47a18d585eb8734ae7dd12d2bd18c8a3294a1ee73f997d9
+  languageName: node
+  linkType: hard
+
 "source-map-js@npm:^1.2.1":
   version: 1.2.1
   resolution: "source-map-js@npm:1.2.1"
@@ -7155,8 +7186,8 @@ __metadata:
   linkType: hard
 
 "zod@npm:^4.1.5":
-  version: 4.1.5
-  resolution: "zod@npm:4.1.5"
-  checksum: 10c0/7826fb931bc71d4d0fff2fbb72f1a1cf30a6672cf9dbe6933a216bbb60242ef1c3bdfbcd3c5b27e806235a35efaad7a4a9897ff4d3621452f9ea278bce6fd42a
+  version: 4.1.7
+  resolution: "zod@npm:4.1.7"
+  checksum: 10c0/df5510f3a96d87645c3bd98be7b095f1fab29295823a2fc693a4a34b307b5ece55f7ca4b083b8e90a8279d3926a6c5692a82e248399980e4870370087ad098cc
   languageName: node
   linkType: hard
