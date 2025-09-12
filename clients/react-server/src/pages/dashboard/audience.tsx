@@ -1,5 +1,89 @@
 import { JSX } from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+
 import MainLayout from '@/layouts/main';
+import {
+  DataTable,
+  createSelectColumn,
+  createSimpleColumn,
+  createActionsColumn,
+} from '@/components/data-table';
+
+// User data types and placeholder data
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  tier: 'supporter' | 'supporter+' | 'fan';
+  createdAt: string;
+  lastLogin: string;
+};
+
+const userData: User[] = [
+  {
+    id: '1',
+    name: 'John Doe',
+    email: 'john@example.com',
+    tier: 'supporter',
+    createdAt: '2024-01-15',
+    lastLogin: '2024-01-20',
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    tier: 'supporter+',
+    createdAt: '2024-01-16',
+    lastLogin: '2024-01-19',
+  },
+  {
+    id: '3',
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    tier: 'fan',
+    createdAt: '2024-01-17',
+    lastLogin: '2024-01-18',
+  },
+];
+
+// Column definitions using simplified helpers
+const userColumns: ColumnDef<User>[] = [
+  createSelectColumn<User>(),
+  createSimpleColumn('name', 'Name', false, ({ row }) => (
+    <div className="font-medium">{row.getValue('name')}</div>
+  )),
+  createSimpleColumn('email', 'Email', false, ({ row }) => (
+    <div className="lowercase">{row.getValue('email')}</div>
+  )),
+  createSimpleColumn('tier', 'Tier', false),
+  createSimpleColumn('createdAt', 'Created', true, ({ row }) => {
+    const date = new Date(row.getValue('createdAt'));
+    return <div>{date.toLocaleDateString()}</div>;
+  }),
+  createSimpleColumn('lastLogin', 'Last Login', true, ({ row }) => {
+    const date = new Date(row.getValue('lastLogin'));
+    return <div>{date.toLocaleDateString()}</div>;
+  }),
+  createActionsColumn<User>([
+    {
+      label: 'Copy user ID',
+      onClick: (user) => navigator.clipboard.writeText(user.id),
+    },
+    {
+      label: 'Edit user',
+      onClick: (user) => console.log('Edit user:', user.id),
+    },
+    {
+      label: 'View profile',
+      onClick: (user) => console.log('View profile:', user.id),
+    },
+    {
+      label: 'Delete user',
+      onClick: (user) => console.log('Delete user:', user.id),
+      className: 'text-red-600',
+    },
+  ]),
+];
 
 /**
  * Audience dashboard page component.
@@ -10,82 +94,19 @@ import MainLayout from '@/layouts/main';
 const Audience = (): JSX.Element => {
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Audience</h1>
-          <p className="mt-2 text-gray-600">Understand your audience and demographics</p>
-        </div>
-
-        <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h3 className="mb-4 text-lg font-semibold">Demographics</h3>
-            <div className="space-y-4">
-              <div>
-                <div className="mb-1 flex justify-between">
-                  <span className="text-sm text-gray-600">18-24</span>
-                  <span className="text-sm text-gray-600">35%</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-gray-200">
-                  <div className="h-2 rounded-full bg-blue-600" style={{ width: '35%' }}></div>
-                </div>
-              </div>
-
-              <div>
-                <div className="mb-1 flex justify-between">
-                  <span className="text-sm text-gray-600">25-34</span>
-                  <span className="text-sm text-gray-600">42%</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-gray-200">
-                  <div className="h-2 rounded-full bg-blue-600" style={{ width: '42%' }}></div>
-                </div>
-              </div>
-
-              <div>
-                <div className="mb-1 flex justify-between">
-                  <span className="text-sm text-gray-600">35-44</span>
-                  <span className="text-sm text-gray-600">23%</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-gray-200">
-                  <div className="h-2 rounded-full bg-blue-600" style={{ width: '23%' }}></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h3 className="mb-4 text-lg font-semibold">Top Locations</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-700">United States</span>
-                <span className="text-sm text-gray-600">45%</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-700">United Kingdom</span>
-                <span className="text-sm text-gray-600">18%</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-700">Canada</span>
-                <span className="text-sm text-gray-600">12%</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-700">Australia</span>
-                <span className="text-sm text-gray-600">8%</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-700">Germany</span>
-                <span className="text-sm text-gray-600">7%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h3 className="mb-4 text-lg font-semibold">Audience Growth</h3>
-          <p className="text-gray-600">
-            Growth charts and audience insights will be displayed here.
-          </p>
-        </div>
-      </div>
+      <main className="p-[50px]">
+        <h1 className="mb-[50px] text-5xl">Audience</h1>
+        <DataTable
+          columns={userColumns}
+          data={userData}
+          enableSorting={true}
+          enableCheckboxes={true}
+          enablePagination={true}
+          enableColumnFilters={true}
+          filterPlaceholder="Search users..."
+          filterColumn="name"
+        />
+      </main>
     </MainLayout>
   );
 };
