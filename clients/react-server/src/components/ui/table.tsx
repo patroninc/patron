@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 import { JSX } from 'react';
+import PxBorder from '@/components/px-border';
 
 /**
  *
@@ -11,12 +12,15 @@ import { JSX } from 'react';
  */
 const Table = ({ className, ...props }: React.ComponentProps<'table'>): JSX.Element => {
   return (
-    <div data-slot="table-container" className="relative w-full overflow-x-auto">
-      <table
-        data-slot="table"
-        className={cn('w-full caption-bottom text-sm', className)}
-        {...props}
-      />
+    <div data-slot="table-container" className="relative m-[3px]">
+      <div className="relative w-full overflow-x-auto">
+        <table
+          data-slot="table"
+          className={cn('w-full caption-bottom text-sm', className)}
+          {...props}
+        />
+      </div>
+      <PxBorder width={3} radius="md" />
     </div>
   );
 };
@@ -28,7 +32,13 @@ const Table = ({ className, ...props }: React.ComponentProps<'table'>): JSX.Elem
  * @returns The TableHeader component.
  */
 const TableHeader = ({ className, ...props }: React.ComponentProps<'thead'>): JSX.Element => {
-  return <thead data-slot="table-header" className={cn('[&_tr]:border-b', className)} {...props} />;
+  return (
+    <thead
+      data-slot="table-header"
+      className={cn('[&_tr]:border-b-3 [&_tr]:border-b-black', className)}
+      {...props}
+    />
+  );
 };
 
 /**
@@ -74,7 +84,7 @@ const TableRow = ({ className, ...props }: React.ComponentProps<'tr'>): JSX.Elem
     <tr
       data-slot="table-row"
       className={cn(
-        'hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors',
+        'data-[state=selected]:bg-muted bg-secondary-primary border-b-3 border-b-black',
         className,
       )}
       {...props}
@@ -93,7 +103,7 @@ const TableHead = ({ className, ...props }: React.ComponentProps<'th'>): JSX.Ele
     <th
       data-slot="table-head"
       className={cn(
-        'text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'text-foreground h-10 px-2 text-left align-middle font-bold whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}
       {...props}
@@ -112,7 +122,7 @@ const TableCell = ({ className, ...props }: React.ComponentProps<'td'>): JSX.Ele
     <td
       data-slot="table-cell"
       className={cn(
-        'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}
       {...props}
