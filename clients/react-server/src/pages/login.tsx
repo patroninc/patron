@@ -1,5 +1,5 @@
-import LoginLayout from '../layouts/login';
-import FormCard from '../components/form-card';
+import LoginLayout from '@/layouts/login';
+import FormCard from '@/components/form-card';
 import {
   Form,
   FormControl,
@@ -7,9 +7,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../components/ui/form';
-import { Input } from '../components/ui/input';
-import { Button } from '../components/ui/button';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -18,11 +18,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '../components/ui/alert-dialog';
+} from '@/components/ui/alert-dialog';
 import { useForm } from 'react-hook-form';
 import { JSX, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { isValidEmail, patronClient } from '../lib/utils';
+import { isValidEmail, patronClient } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**

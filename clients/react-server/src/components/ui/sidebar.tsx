@@ -2,28 +2,24 @@
 
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { cva, VariantProps } from 'class-variance-authority';
 import { PanelLeftIcon } from 'lucide-react';
 
-import { useIsMobile } from '../../hooks/use-mobile';
-import { cn } from '../../lib/utils';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '../../components/ui/sheet';
-import { Skeleton } from '../../components/ui/skeleton';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../components/ui/tooltip';
+} from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { JSX } from 'react';
+
+import { SidebarContext, useSidebar, type SidebarContextProps } from './use-sidebar';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -31,34 +27,6 @@ const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '5.875rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
-
-type SidebarContextProps = {
-  state: 'expanded' | 'collapsed';
-  open: boolean;
-  // eslint-disable-next-line no-unused-vars
-  setOpen: (open: boolean) => void;
-  openMobile: boolean;
-  // eslint-disable-next-line no-unused-vars
-  setOpenMobile: (open: boolean) => void;
-  isMobile: boolean;
-  toggleSidebar: () => void;
-};
-
-const SidebarContext = React.createContext<SidebarContextProps | null>(null);
-
-/**
- * Custom hook to access the sidebar context.
- *
- * @returns {SidebarContextProps} The sidebar context value.
- */
-const useSidebar = (): SidebarContextProps => {
-  const context = React.useContext(SidebarContext);
-  if (!context) {
-    throw new Error('useSidebar must be used within a SidebarProvider.');
-  }
-
-  return context;
-};
 
 /**
  *
@@ -205,7 +173,7 @@ const Sidebar = ({
       <div
         data-slot="sidebar"
         className={cn(
-          'bg-secondary-primary text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col',
+          'bg-secondary-primary text-sidebar-foreground relative flex h-full w-(--sidebar-width) flex-col',
           className,
         )}
         {...props}
@@ -271,7 +239,7 @@ const Sidebar = ({
           // Adjust the padding for floating and inset variants.
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r-5 group-data-[side=left]:border-black group-data-[side=right]:border-l',
           className,
         )}
         {...props}
@@ -313,6 +281,7 @@ const SidebarTrigger = ({
         toggleSidebar();
       }}
       className={className}
+      shadow={false}
       {...props}
     >
       <PanelLeftIcon />
@@ -363,7 +332,7 @@ const SidebarInset = ({ className, ...props }: React.ComponentProps<'main'>): JS
     <main
       data-slot="sidebar-inset"
       className={cn(
-        'bg-background relative flex w-full flex-1 flex-col',
+        'bg-background cube-bg relative flex w-full flex-1 flex-col',
         'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
         className,
       )}
@@ -400,7 +369,7 @@ const SidebarHeader = ({ className, ...props }: React.ComponentProps<'div'>): JS
     <div
       data-slot="sidebar-header"
       data-sidebar="header"
-      className={cn('flex flex-col gap-2 px-6 py-8', className)}
+      className={cn('flex flex-col px-6 py-8', className)}
       {...props}
     />
   );
@@ -417,7 +386,7 @@ const SidebarFooter = ({ className, ...props }: React.ComponentProps<'div'>): JS
     <div
       data-slot="sidebar-footer"
       data-sidebar="footer"
-      className={cn('flex flex-col gap-2 p-2', className)}
+      className={cn('flex flex-col px-6 py-8', className)}
       {...props}
     />
   );
@@ -454,7 +423,7 @@ const SidebarGroup = ({ className, ...props }: React.ComponentProps<'div'>): JSX
     <div
       data-slot="sidebar-group"
       data-sidebar="group"
-      className={cn('relative flex w-full min-w-0 flex-col p-2', className)}
+      className={cn('relative flex w-full min-w-0 flex-col', className)}
       {...props}
     />
   );
@@ -529,7 +498,7 @@ const SidebarGroupContent = ({ className, ...props }: React.ComponentProps<'div'
     <div
       data-slot="sidebar-group-content"
       data-sidebar="group-content"
-      className={cn('w-full text-sm', className)}
+      className={cn('w-full px-6', className)}
       {...props}
     />
   );
@@ -546,7 +515,10 @@ const SidebarMenu = ({ className, ...props }: React.ComponentProps<'ul'>): JSX.E
     <ul
       data-slot="sidebar-menu"
       data-sidebar="menu"
-      className={cn('flex w-full min-w-0 flex-col gap-1', className)}
+      className={cn(
+        'flex w-full min-w-0 flex-col gap-4 group-data-[collapsible=icon]:max-w-[41px]',
+        className,
+      )}
       {...props}
     />
   );
@@ -569,27 +541,8 @@ const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'li'>): J
   );
 };
 
-const sidebarMenuButtonVariants = cva(
-  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-0! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
-  {
-    variants: {
-      variant: {
-        default: '',
-        outline:
-          'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
-      },
-      size: {
-        default: 'h-8 text-sm',
-        sm: 'h-7 text-xs',
-        lg: 'h-12 text-sm group-data-[collapsible=icon]:p-0!',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
-);
+const sidebarMenuButtonVariants: string =
+  'peer/menu-button cursor-pointer flex w-full group text-black h-[45px] items-center gap-3 overflow-hidden px-[13px] text-left text-lg outline-hidden transition-[width,height,padding] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary data-[active=true]:font-medium data-[active=true]:text-white data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-[41px]! group-data-[collapsible=icon]:py-2! group-data-[collapsible=icon]:px-2! [&>span:last-child]:truncate [&>svg]:size-6 [&>svg]:shrink-0';
 
 /**
  *
@@ -598,23 +551,22 @@ const sidebarMenuButtonVariants = cva(
  * @param {boolean} props.isActive - If true, the button will be styled as active.
  * @param {string | React.ComponentProps<typeof TooltipContent>} props.tooltip - The tooltip content or string.
  * @param {string} props.className - Additional class names to be applied to the SidebarMenuButton component.
- * @param {'default' | 'outline'} props.variant - The visual variant of the button.
- * @param {'sm' | 'default' | 'lg'} props.size - The size of the button.
+ * @param {boolean} props.removeHoverStyles - If true, the hover styles will be removed.
  * @returns The SidebarMenuButton component.
  */
 const SidebarMenuButton = ({
   asChild = false,
   isActive = false,
-  variant = 'default',
-  size = 'default',
   tooltip,
   className,
+  removeHoverStyles = false,
   ...props
 }: React.ComponentProps<'button'> & {
   asChild?: boolean;
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-} & VariantProps<typeof sidebarMenuButtonVariants>): JSX.Element => {
+  removeHoverStyles?: boolean;
+}): JSX.Element => {
   const Comp = asChild ? Slot : 'button';
   const { isMobile, state } = useSidebar();
 
@@ -622,11 +574,36 @@ const SidebarMenuButton = ({
     <Comp
       data-slot="sidebar-menu-button"
       data-sidebar="menu-button"
-      data-size={size}
       data-active={isActive}
-      className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+      className={cn(sidebarMenuButtonVariants, 'group/button', className)}
       {...props}
-    />
+    >
+      {!removeHoverStyles && (
+        <>
+          <div className="absolute -top-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute -bottom-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute top-[3px] -left-[3px] h-[calc(100%-6px)] w-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute top-[3px] -right-[3px] h-[calc(100%-6px)] w-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute top-0 left-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute top-0 right-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute bottom-0 left-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+          <div className="absolute right-0 bottom-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
+        </>
+      )}
+      {props.children}
+      <div className="absolute -top-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
+      <div className="absolute -bottom-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
+      <div className="absolute top-[3px] -left-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute top-[3px] -right-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute top-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute -top-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute top-0 -right-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute -top-[3px] right-[0] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute bottom-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute -bottom-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute -right-[3px] bottom-0 hidden size-[3px] bg-white group-focus-visible:block" />
+      <div className="absolute right-[0] -bottom-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+    </Comp>
   );
 
   if (!tooltip) {
@@ -859,5 +836,4 @@ export {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-  useSidebar,
 };

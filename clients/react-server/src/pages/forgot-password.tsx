@@ -1,8 +1,8 @@
 import { JSX, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import FormCard from '../components/form-card';
-import LoginLayout from '../layouts/login';
-import { Button } from '../components/ui/button';
+import FormCard from '@/components/form-card';
+import LoginLayout from '@/layouts/login';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -10,8 +10,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../components/ui/form';
-import { Input } from '../components/ui/input';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { patronClient } from '@/lib/utils';
 
