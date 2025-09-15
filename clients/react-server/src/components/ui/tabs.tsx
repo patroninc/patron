@@ -2,6 +2,8 @@ import * as React from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { JSX } from 'react';
 import { cn } from '../../lib/utils';
+import PxBorder from '../px-border';
+import FocusRing from '../focus-ring';
 
 /**
  *
@@ -16,7 +18,7 @@ const Tabs = ({
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
-      className={cn('flex flex-col gap-0', className)}
+      className={cn('flex flex-col gap-5', className)}
       {...props}
     />
   );
@@ -35,7 +37,7 @@ const TabsList = ({
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
-      className={cn('inline-flex h-[47px] w-fit items-end justify-center gap-4', className)}
+      className={cn('inline-flex h-[47px] w-fit items-end justify-center gap-5', className)}
       {...props}
     />
   );
@@ -61,21 +63,8 @@ const TabsTrigger = ({
       {...props}
     >
       {props.children}
-      <div className="absolute -top-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] bg-black" />
-      <div className="absolute top-[3px] -left-[3px] h-[calc(100%-3px)] w-[3px] bg-black" />
-      <div className="absolute top-[3px] -right-[3px] h-[calc(100%-3px)] w-[3px] bg-black" />
-      <div className="absolute top-0 left-0 size-[3px] bg-black" />
-      <div className="absolute top-0 right-0 size-[3px] bg-black" />
-
-      <div className="absolute -bottom-[0px] left-0 h-[3px] w-full bg-black group-data-[state=active]:-bottom-[3px] group-data-[state=active]:bg-white" />
-
-      <div className="absolute -top-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
-      <div className="absolute top-[3px] -left-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-[3px] -right-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -top-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-0 -right-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -top-[3px] right-[0] hidden size-[3px] bg-white group-focus-visible:block" />
+      <PxBorder width={3} radius="lg" />
+      <FocusRing width={3} />
     </TabsPrimitive.Trigger>
   );
 };
@@ -93,14 +82,10 @@ const TabsContent = ({
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
-      className={cn('relative flex-1 bg-white p-5 outline-none', className)}
+      className={cn('relative flex-1 outline-none', className)}
       {...props}
     >
       {props.children}
-      <div className="absolute -top-[3px] left-0 h-[3px] w-full bg-black" />
-      <div className="absolute -bottom-[3px] left-0 h-[3px] w-full bg-black" />
-      <div className="absolute top-0 -left-[3px] h-full w-[3px] bg-black" />
-      <div className="absolute top-0 -right-[3px] h-full w-[3px] bg-black" />
     </TabsPrimitive.Content>
   );
 };
