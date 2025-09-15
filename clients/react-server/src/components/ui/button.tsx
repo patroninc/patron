@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { JSX } from 'react';
 import { buttonVariants } from './button-variants';
 import PxBorder from '@/components/px-border';
+import FocusRing from '@/components/focus-ring';
 
 /**
  *
@@ -47,18 +48,7 @@ const Button = ({
     >
       <PxBorder width={3} radius="lg" />
       {props.children}
-      <div className="absolute -top-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
-      <div className="absolute -bottom-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
-      <div className="absolute top-[3px] -left-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-[3px] -right-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -top-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-0 -right-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -top-[3px] right-[0] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute bottom-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -bottom-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -right-[3px] bottom-0 hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute right-[0] -bottom-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+      <FocusRing width={3} />
     </Comp>
   );
 

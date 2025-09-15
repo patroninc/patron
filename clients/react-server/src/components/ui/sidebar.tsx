@@ -20,6 +20,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { JSX } from 'react';
 
 import { SidebarContext, useSidebar, type SidebarContextProps } from './use-sidebar';
+import FocusRing from '@/components/focus-ring';
+import PxBorder from '@/components/px-border';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -579,30 +581,14 @@ const SidebarMenuButton = ({
       {...props}
     >
       {!removeHoverStyles && (
-        <>
-          <div className="absolute -top-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] group-hover/button:bg-black group-data-[active=true]:bg-black" />
-          <div className="absolute -bottom-[3px] left-[3px] h-[3px] w-[calc(100%-6px)] group-hover/button:bg-black group-data-[active=true]:bg-black" />
-          <div className="absolute top-[3px] -left-[3px] h-[calc(100%-6px)] w-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
-          <div className="absolute top-[3px] -right-[3px] h-[calc(100%-6px)] w-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
-          <div className="absolute top-0 left-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
-          <div className="absolute top-0 right-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
-          <div className="absolute bottom-0 left-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
-          <div className="absolute right-0 bottom-0 size-[3px] group-hover/button:bg-black group-data-[active=true]:bg-black" />
-        </>
+        <PxBorder
+          width={3}
+          radius="lg"
+          className="bg-transparent group-hover/button:bg-black group-data-[active=true]:bg-black"
+        />
       )}
       {props.children}
-      <div className="absolute -top-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
-      <div className="absolute -bottom-[6px] left-[3px] hidden h-[3px] w-[calc(100%-6px)] bg-white group-focus-visible:block" />
-      <div className="absolute top-[3px] -left-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-[3px] -right-[6px] hidden h-[calc(100%-6px)] w-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -top-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute top-0 -right-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -top-[3px] right-[0] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute bottom-0 -left-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -bottom-[3px] left-[0] hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute -right-[3px] bottom-0 hidden size-[3px] bg-white group-focus-visible:block" />
-      <div className="absolute right-[0] -bottom-[3px] hidden size-[3px] bg-white group-focus-visible:block" />
+      <FocusRing width={3} />
     </Comp>
   );
 
