@@ -1,11 +1,12 @@
-import { Link2, CalendarDays, PlusIcon, SquarePen, Pencil } from 'lucide-react';
+import { Link2, CalendarDays, PlusIcon } from 'lucide-react';
 import MainLayout from '../layouts/main';
 import { JSX } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PxBorder from '@/components/px-border';
 import { Link } from 'react-router';
 import FocusRing from '@/components/focus-ring';
-import { Button } from '@/components/ui/button';
+import About from '@/components/about';
+import Tiers from '@/components/tiers';
 
 /**
  * @returns {JSX.Element} The Home component
@@ -167,14 +168,17 @@ export const Home = (): JSX.Element => {
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
           <TabsContent className="grid grid-cols-4 gap-10" value="all">
-            <button className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none">
+            <Link
+              to="/new-post"
+              className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none"
+            >
               <PxBorder width={3} radius="lg" />
               <FocusRing width={3} />
               <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
                 <PlusIcon size={70} />
                 <h2 className="text-3xl">Add new post</h2>
               </div>
-            </button>
+            </Link>
             {posts.map((post) => (
               <Link
                 className="group outline-none"
@@ -218,14 +222,17 @@ export const Home = (): JSX.Element => {
             ))}
           </TabsContent>
           <TabsContent className="grid grid-cols-4 gap-10" value="serials">
-            <button className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none">
+            <Link
+              to="/new-serial"
+              className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none"
+            >
               <PxBorder width={3} radius="lg" />
               <FocusRing width={3} />
               <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
                 <PlusIcon size={70} />
                 <h2 className="text-3xl">Create new serial</h2>
               </div>
-            </button>
+            </Link>
             {serials.map((serial) => (
               <Link className="group outline-none" to={`/serial/${serial.id}`}>
                 <div
@@ -262,54 +269,10 @@ export const Home = (): JSX.Element => {
             ))}
           </TabsContent>
           <TabsContent className="grid grid-cols-4 gap-10" value="membership-tiers">
-            <button className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none">
-              <PxBorder width={3} radius="lg" />
-              <FocusRing width={3} />
-              <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
-                <Pencil strokeWidth={1.5} size={70} />
-                <h2 className="text-3xl">Manage tiers</h2>
-              </div>
-            </button>
-            {tiers.map((tier) => (
-              <div
-                key={tier.id}
-                className="bg-secondary-primary relative flex h-full flex-col justify-between gap-4 p-5"
-              >
-                <PxBorder width={3} radius="lg" />
-                <FocusRing width={3} />
-                <div className="flex flex-col gap-5">
-                  <div className="flex justify-between">
-                    <h3 className="text-2xl">{tier.name}</h3>
-                    <div className="flex flex-col items-end gap-[5px]">
-                      <p className="text-4xl font-bold">{tier.price}$</p>
-                      <p className="text-base">per month</p>
-                    </div>
-                  </div>
-                  <ul className="flex [list-style-type:square] flex-col gap-2 pl-5">
-                    {tier.features.map((feature) => (
-                      <li className="text-sm">{feature}</li>
-                    ))}
-                  </ul>
-                </div>
-                <Button variant="secondary" className="w-full">
-                  Edit this tier
-                  <SquarePen />
-                </Button>
-              </div>
-            ))}
+            <Tiers tiers={tiers} />
           </TabsContent>
           <TabsContent className="gap-10" value="about">
-            <div className="flex flex-col items-end gap-5">
-              <div className="relative flex flex-col gap-10 bg-white p-5">
-                <PxBorder width={3} radius="lg" />
-                <p className="text-lg">{about}</p>
-                <p className="text-base">Joined {joined}</p>
-              </div>
-              <Button size="lg" containerClassName="w-max" variant="secondary">
-                Edit
-                <SquarePen />
-              </Button>
-            </div>
+            <About joined={joined} about={about} />
           </TabsContent>
         </Tabs>
       </main>
