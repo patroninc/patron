@@ -544,7 +544,7 @@ const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'li'>): J
 };
 
 const sidebarMenuButtonVariants: string =
-  'peer/menu-button cursor-pointer flex w-full group text-black h-[45px] items-center gap-3 overflow-hidden px-[13px] text-left text-lg outline-hidden transition-[width,height,padding] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary data-[active=true]:font-medium data-[active=true]:text-white data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-[41px]! group-data-[collapsible=icon]:py-2! group-data-[collapsible=icon]:px-2! [&>span:last-child]:truncate [&>svg]:size-6 [&>svg]:shrink-0';
+  'peer/menu-button cursor-pointer flex w-full select-none group text-black h-[45px] items-center gap-3 overflow-hidden px-[13px] text-left text-lg outline-hidden transition-[width,height,padding] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary data-[active=true]:font-medium data-[active=true]:text-white data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-[41px]! group-data-[collapsible=icon]:py-2! group-data-[collapsible=icon]:px-2! [&>span:last-child]:truncate [&>svg]:size-6 [&>svg]:shrink-0';
 
 /**
  *
