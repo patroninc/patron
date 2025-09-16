@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { JSX } from 'react';
 import { buttonVariants } from './button-variants';
 import PxBorder from '@/components/px-border';
+import FocusRing from '@/components/focus-ring';
 
 /**
  *
@@ -85,12 +86,14 @@ const AlertDialogContent = ({
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
         className={cn(
-          'bg-secondary-primary data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 duration-200 sm:max-w-lg',
+          'bg-secondary-primary data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] min-w-0 translate-x-[-50%] translate-y-[-50%] gap-4 duration-200 sm:max-w-lg',
           contentClassName,
         )}
         {...props}
       >
-        <div className={cn('bg-secondary-primary relative flex flex-col gap-4 p-6', className)}>
+        <div
+          className={cn('bg-secondary-primary relative flex min-w-0 flex-col gap-5 p-6', className)}
+        >
           {props.children}
           <PxBorder width={5} radius="lg" />
         </div>
@@ -125,7 +128,7 @@ const AlertDialogFooter = ({ className, ...props }: React.ComponentProps<'div'>)
   return (
     <div
       data-slot="alert-dialog-footer"
-      className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3', className)}
+      className={cn('flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-4', className)}
       {...props}
     />
   );
@@ -179,7 +182,13 @@ const AlertDialogAction = ({
   className,
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action>): JSX.Element => {
-  return <AlertDialogPrimitive.Action className={cn(buttonVariants(), className)} {...props} />;
+  return (
+    <AlertDialogPrimitive.Action className={cn(buttonVariants(), className)} {...props}>
+      <PxBorder width={3} radius="lg" />
+      <FocusRing width={3} />
+      {props.children}
+    </AlertDialogPrimitive.Action>
+  );
 };
 
 /**
@@ -194,9 +203,14 @@ const AlertDialogCancel = ({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>): JSX.Element => {
   return (
     <AlertDialogPrimitive.Cancel
+      data-slot="alert-dialog-cancel"
       className={cn(buttonVariants({ variant: 'secondary' }), className)}
       {...props}
-    />
+    >
+      <PxBorder width={3} radius="lg" />
+      <FocusRing width={3} />
+      {props.children}
+    </AlertDialogPrimitive.Cancel>
   );
 };
 
