@@ -137,6 +137,8 @@ pub struct User {
     pub email_verified: bool,
     /// Timestamp of user's last login
     pub last_login: Option<NaiveDateTime>,
+    /// User's description or bio
+    pub description: Option<String>,
 }
 
 /// User information for API responses and internal use

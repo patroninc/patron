@@ -518,12 +518,17 @@ components:
             - "string"
             - "null"
           description: "Updated avatar URL for the user"
+        "description":
+          type:
+            - "string"
+            - "null"
+          description: "Updated description for the user"
         "display_name":
           type:
             - "string"
             - "null"
           description: "Updated display name for the user"
-      example: {"avatar_url": "https://example.com/new-avatar.jpg", "display_name": "New Display Name"}
+      example: {"avatar_url": "https://example.com/new-avatar.jpg", "description": "A brief description about myself", "display_name": "New Display Name"}
     "UpdateUserInfoResponse":
       type: "object"
       description: "Response for successful user information update"

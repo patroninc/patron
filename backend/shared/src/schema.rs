@@ -28,12 +28,10 @@ diesel::table! {
         auth_provider -> Varchar,
         email_verified -> Bool,
         last_login -> Nullable<Timestamp>,
+        description -> Nullable<Text>,
     }
 }
 
 diesel::joinable!(email_verification_tokens -> users (user_id));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    email_verification_tokens,
-    users,
-);
+diesel::allow_tables_to_appear_in_same_query!(email_verification_tokens, users,);

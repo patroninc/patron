@@ -553,6 +553,7 @@ const patronts = new Patronts({
 async function run() {
   const result = await patronts.auth.updateUserInfo({
     avatarUrl: "https://example.com/new-avatar.jpg",
+    description: "A brief description about myself",
     displayName: "New Display Name",
   });
 
@@ -579,6 +580,7 @@ const patronts = new PatrontsCore({
 async function run() {
   const res = await authUpdateUserInfo(patronts, {
     avatarUrl: "https://example.com/new-avatar.jpg",
+    description: "A brief description about myself",
     displayName: "New Display Name",
   });
   if (res.ok) {

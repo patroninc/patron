@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: bd98af7881370734026e8d73ffd03021
+  docChecksum: 6fe8ec86e458da42baccb6dfbec89fe9
   docVersion: 1.0.0
   speakeasyVersion: 1.618.0
   generationVersion: 2.702.0
-  releaseVersion: 0.4.11
-  configChecksum: eedf122bb5a03b27963307dbcd47fc34
+  releaseVersion: 0.4.12
+  configChecksum: 26732b4d593d3c2b3d4bd018218790bf
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -240,7 +240,7 @@ examples:
   update_user_info:
     speakeasy-default-update-user-info:
       requestBody:
-        application/json: {"avatar_url": "https://example.com/new-avatar.jpg", "display_name": "New Display Name"}
+        application/json: {"avatar_url": "https://example.com/new-avatar.jpg", "description": "A brief description about myself", "display_name": "New Display Name"}
       responses:
         "200":
           application/json: {"message": "User information updated successfully", "user": {"auth_provider": "email", "display_name": "New Display Name", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}

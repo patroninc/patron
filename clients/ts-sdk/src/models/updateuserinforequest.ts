@@ -17,6 +17,10 @@ export type UpdateUserInfoRequest = {
    */
   avatarUrl?: string | null | undefined;
   /**
+   * Updated description for the user
+   */
+  description?: string | null | undefined;
+  /**
    * Updated display name for the user
    */
   displayName?: string | null | undefined;
@@ -29,6 +33,7 @@ export const UpdateUserInfoRequest$inboundSchema: z.ZodType<
   unknown
 > = z.object({
   avatar_url: z.nullable(z.string()).optional(),
+  description: z.nullable(z.string()).optional(),
   display_name: z.nullable(z.string()).optional(),
 }).transform((v) => {
   return remap$(v, {
@@ -40,6 +45,7 @@ export const UpdateUserInfoRequest$inboundSchema: z.ZodType<
 /** @internal */
 export type UpdateUserInfoRequest$Outbound = {
   avatar_url?: string | null | undefined;
+  description?: string | null | undefined;
   display_name?: string | null | undefined;
 };
 
@@ -50,6 +56,7 @@ export const UpdateUserInfoRequest$outboundSchema: z.ZodType<
   UpdateUserInfoRequest
 > = z.object({
   avatarUrl: z.nullable(z.string()).optional(),
+  description: z.nullable(z.string()).optional(),
   displayName: z.nullable(z.string()).optional(),
 }).transform((v) => {
   return remap$(v, {

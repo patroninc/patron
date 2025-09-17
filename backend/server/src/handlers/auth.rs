@@ -124,13 +124,16 @@ pub struct ResendVerificationResponse {
 #[derive(Deserialize, ToSchema, Debug)]
 #[schema(example = json!({
     "display_name": "New Display Name",
-    "avatar_url": "https://example.com/new-avatar.jpg"
+    "avatar_url": "https://example.com/new-avatar.jpg",
+    "description": "A brief description about myself"
 }))]
 pub struct UpdateUserInfoRequest {
     /// Updated display name for the user
     pub display_name: Option<String>,
     /// Updated avatar URL for the user
     pub avatar_url: Option<String>,
+    /// Updated description for the user
+    pub description: Option<String>,
 }
 
 /// Response for successful user information update
@@ -382,6 +385,7 @@ async fn create_new_user_from_google_info(
         created_at: None,
         updated_at: None,
         last_login: Some(Utc::now().naive_utc()),
+        description: None,
     };
 
     let _ = diesel::insert_into(users_dsl::users)
@@ -585,6 +589,7 @@ pub async fn register(
         created_at: None,
         updated_at: None,
         last_login: Some(Utc::now().naive_utc()),
+        description: None,
     };
 
     let _ = diesel::insert_into(users_dsl::users)
