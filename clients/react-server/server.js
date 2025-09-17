@@ -3,6 +3,7 @@ import { Readable } from 'node:stream';
 import express from 'express';
 import { config } from 'dotenv';
 import { Patronts } from 'patronts';
+import winston from 'winston';
 
 config();
 
@@ -11,6 +12,17 @@ const port = process.env.PORT || 5173;
 const base = process.env.BASE || '/';
 const ABORT_DELAY = 10000;
 
+// Configure Winston logger
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+    }),
+  ],
+});
+
 const patronClient = new Patronts({
   serverURL: process.env.VITE_SERVER_URL || 'http://localhost:8080',
 });
@@ -18,6 +30,42 @@ const patronClient = new Patronts({
 const templateHtml = isProduction ? await fs.readFile('./dist/client/index.html', 'utf-8') : '';
 
 const app = express();
+
+// Structured logging middleware for all requests
+app.use((req, res, next) => {
+  const start = Date.now();
+
+  // Log request start
+  logger.info('Request started', {
+    type: 'request_start',
+    method: req.method,
+    url: req.originalUrl,
+    userAgent: req.get('User-Agent'),
+    ip: req.ip || req.connection.remoteAddress,
+    referer: req.get('Referer'),
+  });
+
+  // Capture response end to log completion
+  const originalEnd = res.end;
+  res.end = function (...args) {
+    const duration = Date.now() - start;
+
+    logger.info('Request completed', {
+      type: 'request_complete',
+      method: req.method,
+      url: req.originalUrl,
+      statusCode: res.statusCode,
+      duration,
+      contentLength: res.get('Content-Length'),
+      userAgent: req.get('User-Agent'),
+      ip: req.ip || req.connection.remoteAddress,
+    });
+
+    originalEnd.apply(this, args);
+  };
+
+  next();
+});
 
 // Reverse proxy for /proxy -> VITE_API_URL (without the /proxy prefix)
 // Example: /proxy/auth/me -> https://backend.example.com/auth/me
