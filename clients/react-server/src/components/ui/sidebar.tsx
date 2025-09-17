@@ -329,9 +329,9 @@ const SidebarRail = ({ className, ...props }: React.ComponentProps<'button'>): J
  * @param {string} props.className - Additional class names to be applied to the SidebarInset component.
  * @returns The SidebarInset component.
  */
-const SidebarInset = ({ className, ...props }: React.ComponentProps<'main'>): JSX.Element => {
+const SidebarInset = ({ className, ...props }: React.ComponentProps<'div'>): JSX.Element => {
   return (
-    <main
+    <div
       data-slot="sidebar-inset"
       className={cn(
         'bg-background cube-bg relative flex w-full flex-1 flex-col',

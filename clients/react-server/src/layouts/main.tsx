@@ -18,7 +18,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }): JSX.Element =>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <div className="flex flex-col">
+        <>
           {!user?.emailVerified && (
             <div className="bg-warning flex items-center justify-between gap-4 border-b-5 border-b-black px-6 py-3">
               <p className="text-lg">
@@ -37,7 +37,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }): JSX.Element =>
             </div>
           )}
           {children}
-        </div>
+        </>
       </SidebarInset>
     </SidebarProvider>
   );
