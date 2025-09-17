@@ -43,6 +43,7 @@ type TierFormData = {
 
 type TierFormProps = {
   initialData?: Partial<TierFormData>;
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (data: TierFormData) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
