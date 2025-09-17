@@ -14,6 +14,7 @@ Authentication and authorization endpoints
 * [login](#login) - User login
 * [logout](#logout) - Logout
 * [getCurrentUser](#getcurrentuser) - Get current user info
+* [updateUserInfo](#updateuserinfo) - Update user information
 * [register](#register) - User registration
 * [resendVerificationEmail](#resendverificationemail) - Resend verification email
 * [resetPassword](#resetpassword) - Reset password
@@ -532,6 +533,84 @@ run();
 | Error Type                  | Status Code                 | Content Type                |
 | --------------------------- | --------------------------- | --------------------------- |
 | errors.ErrorResponse        | 401                         | application/json            |
+| errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
+
+## updateUserInfo
+
+# Errors
+Returns an error if database operations fail or user validation fails.
+
+### Example Usage
+
+<!-- UsageSnippet language="typescript" operationID="update_user_info" method="put" path="/api/auth/me" -->
+```typescript
+import { Patronts } from "patronts";
+
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
+
+async function run() {
+  const result = await patronts.auth.updateUserInfo({
+    avatarUrl: "https://example.com/new-avatar.jpg",
+    displayName: "New Display Name",
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+### Standalone function
+
+The standalone function version of this method:
+
+```typescript
+import { PatrontsCore } from "patronts/core.js";
+import { authUpdateUserInfo } from "patronts/funcs/authUpdateUserInfo.js";
+
+// Use `PatrontsCore` for best tree-shaking performance.
+// You can create one instance of it to use across an application.
+const patronts = new PatrontsCore({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
+
+async function run() {
+  const res = await authUpdateUserInfo(patronts, {
+    avatarUrl: "https://example.com/new-avatar.jpg",
+    displayName: "New Display Name",
+  });
+  if (res.ok) {
+    const { value: result } = res;
+    console.log(result);
+  } else {
+    console.log("authUpdateUserInfo failed:", res.error);
+  }
+}
+
+run();
+```
+
+### Parameters
+
+| Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `request`                                                                                                                                                                      | [models.UpdateUserInfoRequest](../../models/updateuserinforequest.md)                                                                                                          | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
+| `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
+| `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
+| `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
+
+### Response
+
+**Promise\<[models.UpdateUserInfoResponse](../../models/updateuserinforesponse.md)\>**
+
+### Errors
+
+| Error Type                  | Status Code                 | Content Type                |
+| --------------------------- | --------------------------- | --------------------------- |
+| errors.ErrorResponse        | 401                         | application/json            |
+| errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
 ## register

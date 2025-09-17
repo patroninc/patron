@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 73bb5b213e95fa5530713931b2d8b807
+  docChecksum: bd98af7881370734026e8d73ffd03021
   docVersion: 1.0.0
-  speakeasyVersion: 1.613.0
-  generationVersion: 2.696.0
-  releaseVersion: 0.4.10
-  configChecksum: 8f89a0ae529ba6de208c1086fff25fa8
+  speakeasyVersion: 1.618.0
+  generationVersion: 2.702.0
+  releaseVersion: 0.4.11
+  configChecksum: eedf122bb5a03b27963307dbcd47fc34
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -19,7 +19,7 @@ features:
     devContainers: 2.90.0
     enumUnions: 0.1.0
     envVarSecurityUsage: 0.1.2
-    globalSecurity: 2.82.13
+    globalSecurity: 2.82.14
     globalSecurityCallbacks: 0.1.0
     globalSecurityFlattening: 0.1.0
     globalServerURLs: 2.82.5
@@ -55,6 +55,8 @@ generatedFiles:
   - docs/models/resetpasswordrequest.md
   - docs/models/resetpasswordresponse.md
   - docs/models/security.md
+  - docs/models/updateuserinforequest.md
+  - docs/models/updateuserinforesponse.md
   - docs/models/userinfo.md
   - docs/sdks/auth/README.md
   - docs/sdks/patronts/README.md
@@ -76,6 +78,7 @@ generatedFiles:
   - src/funcs/authRegister.ts
   - src/funcs/authResendVerificationEmail.ts
   - src/funcs/authResetPassword.ts
+  - src/funcs/authUpdateUserInfo.ts
   - src/funcs/authVerifyEmail.ts
   - src/hooks/hooks.ts
   - src/hooks/index.ts
@@ -121,6 +124,8 @@ generatedFiles:
   - src/models/resetpasswordrequest.ts
   - src/models/resetpasswordresponse.ts
   - src/models/security.ts
+  - src/models/updateuserinforequest.ts
+  - src/models/updateuserinforesponse.ts
   - src/models/userinfo.ts
   - src/sdk/auth.ts
   - src/sdk/index.ts
@@ -229,6 +234,17 @@ examples:
         "200":
           application/json: {"message": "Verification email sent successfully"}
         "400":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  update_user_info:
+    speakeasy-default-update-user-info:
+      requestBody:
+        application/json: {"avatar_url": "https://example.com/new-avatar.jpg", "display_name": "New Display Name"}
+      responses:
+        "200":
+          application/json: {"message": "User information updated successfully", "user": {"auth_provider": "email", "display_name": "New Display Name", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+        "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}

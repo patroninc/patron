@@ -212,7 +212,11 @@ pub async fn main() -> std::io::Result<()> {
                         .service(
                             web::resource("/logout").route(web::get().to(handlers::auth::logout)),
                         )
-                        .service(web::resource("/me").route(web::get().to(handlers::auth::get_me)))
+                        .service(
+                            web::resource("/me")
+                                .route(web::get().to(handlers::auth::get_me))
+                                .route(web::put().to(handlers::auth::update_user_info))
+                        )
                         .service(
                             web::resource("/forgot-password")
                                 .route(web::post().to(handlers::auth::forgot_password)),

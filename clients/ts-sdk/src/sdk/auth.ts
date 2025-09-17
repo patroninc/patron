@@ -12,6 +12,7 @@ import { authLogout } from "../funcs/authLogout.js";
 import { authRegister } from "../funcs/authRegister.js";
 import { authResendVerificationEmail } from "../funcs/authResendVerificationEmail.js";
 import { authResetPassword } from "../funcs/authResetPassword.js";
+import { authUpdateUserInfo } from "../funcs/authUpdateUserInfo.js";
 import { authVerifyEmail } from "../funcs/authVerifyEmail.js";
 import { ClientSDK, RequestOptions } from "../lib/sdks.js";
 import * as models from "../models/index.js";
@@ -135,6 +136,24 @@ export class Auth extends ClientSDK {
   ): Promise<models.UserInfo> {
     return unwrapAsync(authGetCurrentUser(
       this,
+      options,
+    ));
+  }
+
+  /**
+   * Update user information
+   *
+   * @remarks
+   * # Errors
+   * Returns an error if database operations fail or user validation fails.
+   */
+  async updateUserInfo(
+    request: models.UpdateUserInfoRequest,
+    options?: RequestOptions,
+  ): Promise<models.UpdateUserInfoResponse> {
+    return unwrapAsync(authUpdateUserInfo(
+      this,
+      request,
       options,
     ));
   }

@@ -15,4 +15,6 @@ export * from "./resendverificationresponse.js";
 export * from "./resetpasswordrequest.js";
 export * from "./resetpasswordresponse.js";
 export * from "./security.js";
+export * from "./updateuserinforequest.js";
+export * from "./updateuserinforesponse.js";
 export * from "./userinfo.js";

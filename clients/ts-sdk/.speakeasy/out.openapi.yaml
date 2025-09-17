@@ -187,6 +187,38 @@ paths:
       security:
         - cookieAuth: []
       x-speakeasy-name-override: "getCurrentUser"
+    put:
+      tags:
+        - "Auth"
+      summary: "Update user information"
+      description: "# Errors\nReturns an error if database operations fail or user validation fails."
+      operationId: "update_user_info"
+      requestBody:
+        description: "Updated user information"
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/UpdateUserInfoRequest"}
+        required: true
+      responses:
+        "200":
+          description: "User information updated successfully"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/UpdateUserInfoResponse"}
+        "401":
+          description: "User authentication required to update profile"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "AUTH_REQUIRED", "error": "Not authenticated"}
+        "500":
+          description: "Database connection failed or update service error"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+              example: {"code": "DATABASE_ERROR", "error": "Database connection failed"}
+      security:
+        - cookieAuth: []
   "/api/auth/register":
     post:
       tags:
@@ -477,6 +509,33 @@ components:
           type: "string"
           description: "Password reset confirmation message"
       example: {"message": "Password has been reset successfully"}
+    "UpdateUserInfoRequest":
+      type: "object"
+      description: "Request body for updating user information"
+      properties:
+        "avatar_url":
+          type:
+            - "string"
+            - "null"
+          description: "Updated avatar URL for the user"
+        "display_name":
+          type:
+            - "string"
+            - "null"
+          description: "Updated display name for the user"
+      example: {"avatar_url": "https://example.com/new-avatar.jpg", "display_name": "New Display Name"}
+    "UpdateUserInfoResponse":
+      type: "object"
+      description: "Response for successful user information update"
+      required:
+        - "message"
+        - "user"
+      properties:
+        "message":
+          type: "string"
+          description: "Update confirmation message"
+        "user": {"$ref": "#/components/schemas/UserInfo", "description": "Updated user information"}
+      example: {"message": "User information updated successfully", "user": {"auth_provider": "email", "display_name": "New Display Name", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
     "UserInfo":
       type: "object"
       description: "User information for API responses and internal use"

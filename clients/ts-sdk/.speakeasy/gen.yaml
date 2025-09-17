@@ -19,13 +19,14 @@ generation:
   auth:
     oAuth2ClientCredentialsEnabled: false
     oAuth2PasswordEnabled: false
+    hoistGlobalSecurity: true
   sdkHooksConfigAccess: true
   tests:
     generateTests: false
     generateNewTests: true
     skipResponseBodyAssertions: false
 typescript:
-  version: 0.4.10
+  version: 0.4.11
   additionalDependencies:
     dependencies: {}
     devDependencies: {}
@@ -60,6 +61,7 @@ typescript:
   outputModelSuffix: output
   packageName: patronts
   responseFormat: flat
+  sseFlatResponse: false
   templateVersion: v2
   usageSDKInitImports: []
   useIndexModules: true

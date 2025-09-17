@@ -120,6 +120,38 @@ pub struct ResendVerificationResponse {
     pub message: String,
 }
 
+/// Request body for updating user information
+#[derive(Deserialize, ToSchema, Debug)]
+#[schema(example = json!({
+    "display_name": "New Display Name",
+    "avatar_url": "https://example.com/new-avatar.jpg"
+}))]
+pub struct UpdateUserInfoRequest {
+    /// Updated display name for the user
+    pub display_name: Option<String>,
+    /// Updated avatar URL for the user
+    pub avatar_url: Option<String>,
+}
+
+/// Response for successful user information update
+#[derive(Serialize, ToSchema, Debug)]
+#[schema(example = json!({
+    "message": "User information updated successfully",
+    "user": {
+        "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+        "email": "user@example.com",
+        "display_name": "New Display Name",
+        "auth_provider": "email",
+        "email_verified": true
+    }
+}))]
+pub struct UpdateUserInfoResponse {
+    /// Update confirmation message
+    pub message: String,
+    /// Updated user information
+    pub user: UserInfo,
+}
+
 /// Request body for password reset
 #[derive(Deserialize, ToSchema, Debug)]
 #[schema(example = json!({
@@ -1081,5 +1113,73 @@ pub async fn resend_verification_email(
 
     Ok(HttpResponse::Ok().json(ResendVerificationResponse {
         message: "Verification email sent successfully".to_owned(),
+    }))
+}
+
+/// Update user information
+///
+/// # Errors
+/// Returns an error if database operations fail or user validation fails.
+#[utoipa::path(
+    put,
+    path = "/auth/me",
+    context_path = "/api",
+    tag = "Auth",
+    security(
+        ("cookieAuth" = [])
+    ),
+    request_body(content = UpdateUserInfoRequest, description = "Updated user information"),
+    responses(
+        (status = 200, description = "User information updated successfully", body = UpdateUserInfoResponse),
+        (status = 401, description = "User authentication required to update profile", body = ErrorResponse,
+            example = json!({
+                "error": "Not authenticated",
+                "code": "AUTH_REQUIRED"
+            })
+        ),
+        (status = 500, description = "Database connection failed or update service error", body = ErrorResponse,
+            example = json!({
+                "error": "Database connection failed",
+                "code": "DATABASE_ERROR"
+            })
+        ),
+    )
+)]
+pub async fn update_user_info(
+    mut user: User,
+    db_service: web::Data<shared::services::db::DbService>,
+    session: Session,
+    body: web::Json<UpdateUserInfoRequest>,
+) -> Result<HttpResponse, actix_web::Error> {
+    use shared::schema::users::dsl as users_dsl;
+
+    let pool = db_service.pool();
+    let mut conn = pool.get().await.map_err(ServiceError::from)?;
+
+    if let Some(ref display_name) = body.display_name {
+        user.display_name = Some(display_name.clone());
+    }
+    if let Some(ref avatar_url) = body.avatar_url {
+        user.avatar_url = Some(avatar_url.clone());
+    }
+
+    let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&user.id)))
+        .set((
+            users_dsl::display_name.eq(&user.display_name),
+            users_dsl::avatar_url.eq(&user.avatar_url),
+            users_dsl::updated_at.eq(Some(Utc::now().naive_utc())),
+        ))
+        .execute(&mut conn)
+        .await
+        .map_err(ServiceError::from)?;
+
+    user.updated_at = Some(Utc::now().naive_utc());
+    session
+        .insert("user", &user)
+        .map_err(|e| ServiceError::Unknown(format!("Failed to update session: {e}")))?;
+
+    Ok(HttpResponse::Ok().json(UpdateUserInfoResponse {
+        message: "User information updated successfully".to_owned(),
+        user: user.into(),
     }))
 }
