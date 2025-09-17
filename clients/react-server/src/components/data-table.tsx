@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -44,6 +45,7 @@ export interface DataTableProps<TData, TValue> {
   filterPlaceholder?: string;
   filterColumn?: string;
   className?: string;
+  // eslint-disable-next-line no-unused-vars
   onTableReady?: (table: Table<TData>) => void;
 }
 
@@ -60,10 +62,10 @@ export interface DataTableProps<TData, TValue> {
  * @param props.filterPlaceholder - Placeholder text for the filter input
  * @param props.filterColumn - Column key to filter on
  * @param props.className - Additional CSS classes
+ * @param props.onTableReady - Optional callback invoked when the table instance is ready
  * @returns The DataTable component
  */
-// eslint-disable-next-line func-style
-export function DataTable<TData, TValue>({
+export const DataTable = <TData, TValue>({
   columns,
   data,
   enableSorting = true,
@@ -74,7 +76,7 @@ export function DataTable<TData, TValue>({
   filterColumn,
   className,
   onTableReady,
-}: DataTableProps<TData, TValue>): React.JSX.Element {
+}: DataTableProps<TData, TValue>): React.JSX.Element => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -195,7 +197,7 @@ export function DataTable<TData, TValue>({
       )}
     </div>
   );
-}
+};
 
 // Helper functions for creating common column types
 /**
@@ -203,8 +205,7 @@ export function DataTable<TData, TValue>({
  *
  * @returns A column definition for checkboxes
  */
-// eslint-disable-next-line func-style
-export function createSelectColumn<TData>(): ColumnDef<TData> {
+export const createSelectColumn = <TData,>(): ColumnDef<TData> => {
   return {
     id: 'select',
     header: ({ table }) => (
@@ -226,7 +227,7 @@ export function createSelectColumn<TData>(): ColumnDef<TData> {
     enableSorting: false,
     enableHiding: false,
   };
-}
+};
 
 /**
  * Creates a sortable header column
@@ -236,12 +237,13 @@ export function createSelectColumn<TData>(): ColumnDef<TData> {
  * @param cell - Optional custom cell renderer
  * @returns A column definition with sortable header
  */
-// eslint-disable-next-line func-style, max-params
-export function createSortableHeader<TData, TValue>(
+export const createSortableHeader = <TData, TValue>(
   accessorKey: string,
+  // eslint-disable-next-line no-unused-vars
   header: string | ((columnProps: any) => React.ReactNode),
+  // eslint-disable-next-line no-unused-vars
   cell?: (rowProps: any) => React.ReactNode,
-): ColumnDef<TData, TValue> {
+): ColumnDef<TData, TValue> => {
   return {
     accessorKey,
     header: ({ column }) => {
@@ -262,7 +264,7 @@ export function createSortableHeader<TData, TValue>(
     },
     cell: cell || (({ row }) => <div>{row.getValue(accessorKey)}</div>),
   };
-}
+};
 
 /**
  * Creates a simple column with optional sorting
@@ -273,13 +275,13 @@ export function createSortableHeader<TData, TValue>(
  * @param cell - Optional custom cell renderer
  * @returns A column definition
  */
-// eslint-disable-next-line func-style, max-params
-export function createSimpleColumn<TData, TValue>(
+export const createSimpleColumn = <TData, TValue>(
   accessorKey: string,
   header: string,
   sortable: boolean = false,
+  // eslint-disable-next-line no-unused-vars
   cell?: (rowProps: any) => React.ReactNode,
-): ColumnDef<TData, TValue> {
+): ColumnDef<TData, TValue> => {
   if (!sortable) {
     return {
       accessorKey,
@@ -289,7 +291,7 @@ export function createSimpleColumn<TData, TValue>(
   }
 
   return createSortableHeader(accessorKey, header, cell);
-}
+};
 
 /**
  * Creates a simple actions column with dropdown menu
@@ -297,14 +299,14 @@ export function createSimpleColumn<TData, TValue>(
  * @param actions - Array of action objects with label and onClick
  * @returns An actions column definition
  */
-// eslint-disable-next-line func-style
-export function createActionsColumn<TData>(
+export const createActionsColumn = <TData,>(
   actions: Array<{
     label: string;
+    // eslint-disable-next-line no-unused-vars
     onClick: (row: TData) => void;
     className?: string;
   }>,
-): ColumnDef<TData> {
+): ColumnDef<TData> => {
   return {
     id: 'actions',
     enableHiding: false,
@@ -321,18 +323,20 @@ export function createActionsColumn<TData>(
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {actions.map((action, index) => (
-              <DropdownMenuItem
-                key={index}
-                onClick={() => action.onClick(data)}
-                className={action.className}
-              >
-                {action.label}
-              </DropdownMenuItem>
-            ))}
+            {actions.map((action, index) => {
+              return (
+                <DropdownMenuItem
+                  key={index}
+                  onClick={() => action.onClick(data)}
+                  className={action.className}
+                >
+                  {action.label}
+                </DropdownMenuItem>
+              );
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
   };
-}
+};
