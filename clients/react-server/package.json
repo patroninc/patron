@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "compression": "^1.8.1",
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "lucide-react": "^0.542.0",
     "patronts": "file:../ts-sdk",

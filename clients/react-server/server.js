@@ -1,7 +1,10 @@
 import fs from 'node:fs/promises';
 import { Readable } from 'node:stream';
 import express from 'express';
+import { config } from 'dotenv';
 import { Patronts } from 'patronts';
+
+config();
 
 const isProduction = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || 5173;
@@ -134,8 +137,6 @@ if (!isProduction) {
 }
 
 app.use(async (req, res) => {
-  console.log('Received request for:', req.originalUrl);
-
   try {
     const url = req.originalUrl.replace(base, '');
 
