@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 import { Link2, CalendarDays, PlusIcon } from 'lucide-react';
 import MainLayout from '../layouts/main';
 import { JSX } from 'react';
@@ -179,10 +180,11 @@ export const Home = (): JSX.Element => {
                 <h2 className="text-3xl">Add new post</h2>
               </div>
             </Link>
-            {posts.map((post) => (
+            {posts.map((post, idx) => (
               <Link
                 className="group outline-none"
                 to={`/post/${post.serial_id}/${post.post_number}`}
+                key={idx}
               >
                 <div
                   key={post.post_number}
