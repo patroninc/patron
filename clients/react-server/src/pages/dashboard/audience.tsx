@@ -1,7 +1,9 @@
-import { JSX } from 'react';
+import { JSX, useRef } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
+import { Copy, Edit, Eye, Trash2 } from 'lucide-react';
 
 import MainLayout from '@/layouts/main';
+import { Input } from '@/components/ui/input';
 import {
   DataTable,
   createSelectColumn,
@@ -67,20 +69,24 @@ const userColumns: ColumnDef<User>[] = [
   createActionsColumn<User>([
     {
       label: 'Copy user ID',
+      icon: Copy,
       onClick: (user) => navigator.clipboard.writeText(user.id),
     },
     {
       label: 'Edit user',
+      icon: Edit,
       onClick: (user) => console.log('Edit user:', user.id),
     },
     {
       label: 'View profile',
+      icon: Eye,
       onClick: (user) => console.log('View profile:', user.id),
     },
     {
       label: 'Delete user',
+      icon: Trash2,
+      destructive: true,
       onClick: (user) => console.log('Delete user:', user.id),
-      className: 'text-red-600',
     },
   ]),
 ];
@@ -92,10 +98,14 @@ const userColumns: ColumnDef<User>[] = [
  * @returns {JSX.Element} The audience dashboard page
  */
 const Audience = (): JSX.Element => {
+  const filterRef = useRef<HTMLInputElement>(null);
   return (
     <MainLayout>
       <main className="p-[50px]">
         <h1 className="mb-[50px] text-5xl">Audience</h1>
+        <div className="flex items-center py-4">
+          <Input ref={filterRef} placeholder="Search users..." className="max-w-sm" />
+        </div>
         <DataTable
           columns={userColumns}
           data={userData}
@@ -103,8 +113,8 @@ const Audience = (): JSX.Element => {
           enableCheckboxes={true}
           enablePagination={true}
           enableColumnFilters={true}
-          filterPlaceholder="Search users..."
           filterColumn="name"
+          filterInputRef={filterRef}
         />
       </main>
     </MainLayout>
