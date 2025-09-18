@@ -8,6 +8,7 @@ import { Link } from 'react-router';
 import FocusRing from '@/components/focus-ring';
 import About from '@/components/about';
 import Tiers from '@/components/tiers';
+import { Customization } from '@/components/customization';
 
 /**
  * @returns {JSX.Element} The Home component
@@ -159,6 +160,7 @@ export const Home = (): JSX.Element => {
             <p className="text-base">patron.com/{urlSlug}</p>
           </div>
         </div>
+        <Customization />
       </div>
       <main className="p-[50px] px-[100px]">
         <Tabs className="gap-10" defaultValue="all">
