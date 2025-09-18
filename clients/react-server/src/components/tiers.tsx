@@ -7,6 +7,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -38,7 +39,7 @@ type TiersProps = {
 type TierFormData = {
   name: string;
   price: string;
-  features: string;
+  features: string[];
 };
 
 type TierFormProps = {
@@ -69,7 +70,7 @@ const TierForm = ({
     defaultValues: {
       name: initialData?.name || '',
       price: initialData?.price || '',
-      features: initialData?.features || '',
+      features: initialData?.features || [''],
     },
   });
 
@@ -79,10 +80,106 @@ const TierForm = ({
    * @param data - The form data
    */
   const handleSubmit = (data: TierFormData): void => {
-    onSubmit(data);
+    // Filter out empty features before submitting
+    const filteredData = {
+      ...data,
+      features: data.features.filter((feature) => feature.trim() !== ''),
+    };
+    onSubmit(filteredData);
   };
 
   const isFormChanged = form.formState.isDirty;
+
+  // Helper functions for feature management
+  /**
+   * Updates a feature at the specified index.
+   *
+   * @param params - Object containing index and value
+   * @param params.index - The index of the feature to update
+   * @param params.value - The new value for the feature
+   */
+  const updateFeature = (params: { index: number; value: string }): void => {
+    const newFeatures = [...form.getValues('features')];
+    newFeatures[params.index] = params.value;
+    form.setValue('features', newFeatures, { shouldDirty: true });
+  };
+
+  /**
+   * Removes a feature at the specified index.
+   *
+   * @param index - The index of the feature to remove
+   */
+  const removeFeature = (index: number): void => {
+    const currentFeatures = form.getValues('features');
+    const newFeatures: string[] = [];
+    for (let i = 0; i < currentFeatures.length; i++) {
+      if (i !== index) {
+        newFeatures.push(currentFeatures[i]);
+      }
+    }
+    form.setValue('features', newFeatures, { shouldDirty: true });
+  };
+
+  /**
+   * Adds a new empty feature to the list.
+   */
+  const addFeature = (): void => {
+    const currentFeatures = form.getValues('features');
+    form.setValue('features', [...currentFeatures, ''], { shouldDirty: true });
+  };
+
+  /**
+   * Renders feature inputs.
+   *
+   * @param features - Array of feature strings
+   * @returns Array of JSX elements
+   */
+  const renderFeatureInputs = (features: string[]): JSX.Element[] => {
+    const result: JSX.Element[] = [];
+    for (let i = 0; i < features.length; i++) {
+      const feature = features[i];
+      const index = i;
+
+      /**
+       * Handles input change for a feature.
+       *
+       * @param e - The input change event
+       */
+      const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        updateFeature({ index, value: e.target.value });
+      };
+
+      /**
+       * Handles remove button click for a feature.
+       */
+      const handleRemoveClick = (): void => {
+        removeFeature(index);
+      };
+
+      result.push(
+        <div key={index} className="flex gap-2">
+          <Input
+            containerClassName="flex-grow"
+            placeholder="Enter feature"
+            value={feature}
+            onChange={handleInputChange}
+          />
+          {features.length > 1 && (
+            <Button
+              type="button"
+              size="icon"
+              shadow={false}
+              variant="destructive"
+              onClick={handleRemoveClick}
+            >
+              <Trash className="h-4 w-4" />
+            </Button>
+          )}
+        </div>,
+      );
+    }
+    return result;
+  };
 
   return (
     <Form {...form}>
@@ -120,13 +217,22 @@ const TierForm = ({
           name="features"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Features (one per line)</FormLabel>
+              <FormLabel>Features</FormLabel>
               <FormControl>
-                <textarea
-                  className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Enter features, one per line"
-                  {...field}
-                />
+                <div className="space-y-2">
+                  {renderFeatureInputs(field.value)}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="w-[calc(100%-6px)]"
+                    size="sm"
+                    shadow={false}
+                    onClick={addFeature}
+                  >
+                    Add Feature
+                    <Plus />
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -318,7 +424,7 @@ const Tiers = ({ tiers }: TiersProps): JSX.Element => {
                 ? {
                     name: selectedTier.name,
                     price: selectedTier.price.toString(),
-                    features: selectedTier.features.join('\n'),
+                    features: selectedTier.features,
                   }
                 : undefined
             }
@@ -348,19 +454,17 @@ const Tiers = ({ tiers }: TiersProps): JSX.Element => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Tier</AlertDialogTitle>
-          </AlertDialogHeader>
-          <div className="py-4">
-            <p>
+            <AlertDialogDescription>
               Are you sure you want to delete the tier "{selectedTier?.name}"? This action cannot be
               undone.
-            </p>
-          </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
+              variant="destructive"
               onClick={handleDeleteConfirm}
               disabled={isSubmitting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {isSubmitting ? 'Deleting...' : 'Delete'}
             </AlertDialogAction>
