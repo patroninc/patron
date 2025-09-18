@@ -53,34 +53,34 @@ export const UserDropdown = (): JSX.Element => {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => navigate('/settings')}>
-                <Settings />
+              <DropdownMenuItem className="text-lg" onClick={() => navigate('/settings')}>
+                <Settings className="size-6" />
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="text-lg">
                 <a
                   className="flex items-center gap-3"
                   href="https://patron.com/privacy-policy"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <ExternalLink />
+                  <ExternalLink className="size-6" />
                   Privacy Policy
                 </a>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="text-lg">
                 <a
                   className="flex items-center gap-3"
                   href="https://patron.com/terms-of-service"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <ExternalLink />
+                  <ExternalLink className="size-6" />
                   Terms of Service
                 </a>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <LogOut onClick={() => patronClient.auth.logout()} />
+              <DropdownMenuItem className="text-lg">
+                <LogOut className="size-6" onClick={() => patronClient.auth.logout()} />
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuGroup>

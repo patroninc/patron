@@ -66,7 +66,7 @@ const DropdownMenuContent = ({
         )}
         {...props}
       >
-        <div className="bg-secondary-primary relative h-full w-full flex-col gap-3 p-3">
+        <div className="bg-secondary-primary relative flex h-full w-full flex-col gap-2 p-3">
           <PxBorder width={3} radius="lg" />
           {props.children}
         </div>
@@ -113,7 +113,7 @@ const DropdownMenuItem = ({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "focus:bg-primary group relative flex cursor-pointer items-center gap-3 px-[13px] py-1 text-lg outline-hidden select-none focus:text-white data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6 [&_svg:not([class*='text-'])]:text-black focus:[&_svg:not([class*='text-'])]:text-white",
+        "focus:bg-primary focus:data-[variant=destructive]:bg-destructive group relative flex cursor-pointer items-center gap-3 px-[13px] py-1 text-sm outline-hidden select-none focus:text-white data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 focus:data-[variant=destructive]:text-white [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-black focus:[&_svg:not([class*='text-'])]:text-white",
         className,
       )}
       {...props}
