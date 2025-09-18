@@ -6,6 +6,7 @@ import { JSX } from 'react';
 import { buttonVariants } from './button-variants';
 import PxBorder from '@/components/px-border';
 import FocusRing from '@/components/focus-ring';
+import { VariantProps } from 'class-variance-authority';
 
 /**
  *
@@ -92,7 +93,7 @@ const AlertDialogContent = ({
         {...props}
       >
         <div
-          className={cn('bg-secondary-primary relative flex min-w-0 flex-col gap-5 p-6', className)}
+          className={cn('bg-secondary-primary relative flex min-w-0 flex-col gap-6 p-6', className)}
         >
           {props.children}
           <PxBorder width={5} radius="lg" />
@@ -112,7 +113,7 @@ const AlertDialogHeader = ({ className, ...props }: React.ComponentProps<'div'>)
   return (
     <div
       data-slot="alert-dialog-header"
-      className={cn('flex flex-col gap-4 text-center sm:text-left', className)}
+      className={cn('flex flex-col text-center sm:text-left', className)}
       {...props}
     />
   );
@@ -147,7 +148,7 @@ const AlertDialogTitle = ({
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
-      className={cn('text-lg font-bold', className)}
+      className={cn('text-center text-2xl font-bold', className)}
       {...props}
     />
   );
@@ -166,7 +167,7 @@ const AlertDialogDescription = ({
   return (
     <AlertDialogPrimitive.Description
       data-slot="alert-dialog-description"
-      className={cn('text-sm', className)}
+      className={cn('text-center text-base', className)}
       {...props}
     />
   );
@@ -176,14 +177,17 @@ const AlertDialogDescription = ({
  *
  * @param {object} props - Props to be passed to the AlertDialog action component.
  * @param {string} props.className - Additional class names to be applied to the AlertDialog action component.
+ * @param {string} props.variant - The variant of the button, which determines its styling. Can be 'default', 'destructive', or 'secondary'.
  * @returns The AlertDialog action component.
  */
 const AlertDialogAction = ({
   className,
+  variant,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Action>): JSX.Element => {
+}: React.ComponentProps<typeof AlertDialogPrimitive.Action> &
+  VariantProps<typeof buttonVariants>): JSX.Element => {
   return (
-    <AlertDialogPrimitive.Action className={cn(buttonVariants(), className)} {...props}>
+    <AlertDialogPrimitive.Action className={cn(buttonVariants({ variant }), className)} {...props}>
       <PxBorder width={3} radius="lg" />
       <FocusRing width={3} />
       {props.children}
