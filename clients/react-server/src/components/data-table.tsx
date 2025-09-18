@@ -22,10 +22,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import {
   Table as UITable,
   TableBody,
@@ -42,8 +40,8 @@ export interface DataTableProps<TData, TValue> {
   enableCheckboxes?: boolean;
   enablePagination?: boolean;
   enableColumnFilters?: boolean;
-  filterPlaceholder?: string;
   filterColumn?: string;
+  filterInputRef?: React.RefObject<HTMLInputElement | null>;
   className?: string;
   // eslint-disable-next-line no-unused-vars
   onTableReady?: (table: Table<TData>) => void;
@@ -59,8 +57,8 @@ export interface DataTableProps<TData, TValue> {
  * @param props.enableCheckboxes - Whether to enable row selection checkboxes
  * @param props.enablePagination - Whether to enable pagination
  * @param props.enableColumnFilters - Whether to enable column filtering
- * @param props.filterPlaceholder - Placeholder text for the filter input
  * @param props.filterColumn - Column key to filter on
+ * @param props.filterInputRef - Ref to an external input controlling the filter
  * @param props.className - Additional CSS classes
  * @param props.onTableReady - Optional callback invoked when the table instance is ready
  * @returns The DataTable component
@@ -72,8 +70,8 @@ export const DataTable = <TData, TValue>({
   enableCheckboxes = false,
   enablePagination = true,
   enableColumnFilters = false,
-  filterPlaceholder = 'Filter...',
   filterColumn,
+  filterInputRef,
   className,
   onTableReady,
 }: DataTableProps<TData, TValue>): React.JSX.Element => {
@@ -110,18 +108,40 @@ export const DataTable = <TData, TValue>({
     }
   }, [table, onTableReady]);
 
+  // Wire external input (via ref) to the table filter
+  React.useEffect(() => {
+    if (!enableColumnFilters || !filterColumn || !filterInputRef?.current) return;
+    const inputEl = filterInputRef.current;
+    /**
+     * Handle changes from the external input and update the table filter value.
+     *
+     * @param event - The DOM input event from the external input element
+     */
+    const handleInput = (event: Event): void => {
+      const target = event.target as HTMLInputElement;
+      table.getColumn(filterColumn)?.setFilterValue(target.value);
+    };
+
+    // Initialize from current input value
+    table.getColumn(filterColumn)?.setFilterValue(inputEl.value);
+
+    inputEl.addEventListener('input', handleInput);
+    return () => {
+      inputEl.removeEventListener('input', handleInput);
+    };
+  }, [enableColumnFilters, filterColumn, filterInputRef, table]);
+
+  // Keep external input value in sync when filter state changes elsewhere
+  React.useEffect(() => {
+    if (!enableColumnFilters || !filterColumn || !filterInputRef?.current) return;
+    const value = (table.getColumn(filterColumn)?.getFilterValue() as string) ?? '';
+    if (filterInputRef.current.value !== value) {
+      filterInputRef.current.value = value;
+    }
+  }, [columnFilters, enableColumnFilters, filterColumn, filterInputRef, table]);
+
   return (
     <div className={`font-base text-main-foreground w-full ${className || ''}`}>
-      {enableColumnFilters && filterColumn && (
-        <div className="flex items-center py-4">
-          <Input
-            placeholder={filterPlaceholder}
-            value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ''}
-            onChange={(event) => table.getColumn(filterColumn)?.setFilterValue(event.target.value)}
-            className="max-w-sm"
-          />
-        </div>
-      )}
       <div>
         <UITable>
           <TableHeader className="font-heading">
@@ -145,7 +165,7 @@ export const DataTable = <TData, TValue>({
                 <TableRow
                   className="text-foreground data-[state=selected]:bg-primary data-[state=selected]:text-white"
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
+                  data-state={enableCheckboxes && row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
@@ -296,7 +316,7 @@ export const createSimpleColumn = <TData, TValue>(
 /**
  * Creates a simple actions column with dropdown menu
  *
- * @param actions - Array of action objects with label and onClick
+ * @param actions - Array of action objects with label, onClick, optional icon, and optional destructive variant
  * @returns An actions column definition
  */
 export const createActionsColumn = <TData,>(
@@ -305,6 +325,8 @@ export const createActionsColumn = <TData,>(
     // eslint-disable-next-line no-unused-vars
     onClick: (row: TData) => void;
     className?: string;
+    icon?: React.ComponentType<{ className?: string }>;
+    destructive?: boolean;
   }>,
 ): ColumnDef<TData> => {
   return {
@@ -322,14 +344,16 @@ export const createActionsColumn = <TData,>(
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             {actions.map((action, index) => {
+              const IconComponent = action.icon;
               return (
                 <DropdownMenuItem
                   key={index}
                   onClick={() => action.onClick(data)}
                   className={action.className}
+                  variant={action.destructive ? 'destructive' : undefined}
                 >
+                  {IconComponent && <IconComponent />}
                   {action.label}
                 </DropdownMenuItem>
               );
