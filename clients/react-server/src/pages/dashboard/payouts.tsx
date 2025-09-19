@@ -10,7 +10,7 @@ import MainLayout from '@/layouts/main';
 const Payouts = (): JSX.Element => {
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="p-[50px] px-[100px]">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Payouts</h1>
           <p className="mt-2 text-gray-600">Manage your earnings and payouts</p>

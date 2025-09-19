@@ -126,7 +126,7 @@ const Content = (): JSX.Element => {
 
   return (
     <MainLayout>
-      <div className="p-[50px]">
+      <div className="p-[50px] px-[100px]">
         <h1 className="mb-[50px] text-5xl">Content</h1>
 
         <Tabs defaultValue="posts" className="w-full">
