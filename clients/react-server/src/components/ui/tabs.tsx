@@ -37,7 +37,7 @@ const TabsList = ({
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
-      className={cn('inline-flex h-[47px] w-fit items-end justify-center gap-5', className)}
+      className={cn('m-[3px] inline-flex h-[47px] w-fit items-end justify-center gap-5', className)}
       {...props}
     />
   );
@@ -82,7 +82,7 @@ const TabsContent = ({
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
-      className={cn('relative flex-1 outline-none', className)}
+      className={cn('relative m-[3px] flex-1 outline-none', className)}
       {...props}
     >
       {props.children}
