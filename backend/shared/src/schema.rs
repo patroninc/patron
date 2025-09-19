@@ -15,6 +15,24 @@ diesel::table! {
 }
 
 diesel::table! {
+    user_files (id) {
+        id -> Uuid,
+        user_id -> Uuid,
+        filename -> Text,
+        original_filename -> Text,
+        file_path -> Text,
+        file_size -> Int8,
+        mime_type -> Text,
+        file_hash -> Text,
+        status -> Text,
+        metadata -> Nullable<Jsonb>,
+        created_at -> Nullable<Timestamp>,
+        updated_at -> Nullable<Timestamp>,
+        deleted_at -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
     users (id) {
         id -> Uuid,
         email -> Text,
@@ -33,5 +51,6 @@ diesel::table! {
 }
 
 diesel::joinable!(email_verification_tokens -> users (user_id));
+diesel::joinable!(user_files -> users (user_id));
 
-diesel::allow_tables_to_appear_in_same_query!(email_verification_tokens, users,);
+diesel::allow_tables_to_appear_in_same_query!(email_verification_tokens, user_files, users,);

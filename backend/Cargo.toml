@@ -37,7 +37,6 @@ pedantic = { level = "warn", priority = -1 }
 as_conversions = "warn"
 assertions_on_result_states = "warn"
 dbg_macro = "warn"
-decimal_literal_representation = "warn"
 default_numeric_fallback = "warn"
 disallowed_script_idents = "warn"
 else_if_without_else = "warn"
@@ -94,7 +93,6 @@ unwrap_in_result = "warn"
 unwrap_used = "warn"
 use_debug = "warn"
 verbose_file_reads = "warn"
-wildcard_enum_match_arm = "warn"
 
 # Cargo lints
 cargo = { level = "warn", priority = -1 }
@@ -127,7 +125,7 @@ edition = "2021"
 [workspace.dependencies]
 shared = { path = "shared" }
 uuid = { version = "1.18.1", features = ["v4", "serde"] }
-diesel = { version = "2.2.12", features = [
+diesel = { version = "2.2.0", features = [
     "postgres",
     "chrono",
     "serde_json",
@@ -135,14 +133,14 @@ diesel = { version = "2.2.12", features = [
 ] }
 diesel-async = { version = "0.6.1", features = ["postgres", "bb8"] }
 bb8 = "0.9.0"
-chrono = { version = "0.4.41", features = ["serde"] }
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.143"
+chrono = { version = "0.4.42", features = ["serde"] }
+serde = { version = "1.0.225", features = ["derive"] }
+serde_json = "1.0.145"
 actix-web = "4.11.0"
 reqwest = { version = "0.12.23", features = ["json", "stream"] }
 thiserror = "2.0.16"
 aws-config = { version = "1.8.6", features = ["behavior-version-latest"] }
-aws-sdk-s3 = "1.104.0"
+aws-sdk-s3 = "1.106.0"
 tracing = "0.1.41"
 bytes = "1.10.1"
 urlencoding = { version = "2.1.3" }
