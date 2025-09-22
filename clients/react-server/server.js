@@ -35,31 +35,23 @@ const app = express();
 app.use((req, res, next) => {
   const start = Date.now();
 
-  // Log request start
-  logger.info('Request started', {
-    type: 'request_start',
-    method: req.method,
-    url: req.originalUrl,
-    userAgent: req.get('User-Agent'),
-    ip: req.ip || req.connection.remoteAddress,
-    referer: req.get('Referer'),
-  });
-
   // Capture response end to log completion
   const originalEnd = res.end;
   res.end = function (...args) {
     const duration = Date.now() - start;
 
-    logger.info('Request completed', {
-      type: 'request_complete',
-      method: req.method,
-      url: req.originalUrl,
-      statusCode: res.statusCode,
-      duration,
-      contentLength: res.get('Content-Length'),
-      userAgent: req.get('User-Agent'),
-      ip: req.ip || req.connection.remoteAddress,
-    });
+    if (isProduction) {
+      logger.info('Request completed', {
+        type: 'request_complete',
+        method: req.method,
+        url: req.originalUrl,
+        statusCode: res.statusCode,
+        duration,
+        contentLength: res.get('Content-Length'),
+        userAgent: req.get('User-Agent'),
+        ip: req.ip || req.socket.remoteAddress,
+      });
+    }
 
     originalEnd.apply(this, args);
   };
@@ -204,6 +196,7 @@ app.use(async (req, res) => {
     const initialData = await loadDataForUrl(url, req, res);
 
     if (initialData?.shouldRedirect) {
+      console.log('Redirecting to:', initialData.shouldRedirect.to);
       res.redirect(302, initialData.shouldRedirect.to);
       return;
     }
