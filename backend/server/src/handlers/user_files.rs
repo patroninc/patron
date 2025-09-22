@@ -27,7 +27,10 @@ use uuid::Uuid;
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct FileUploadRequest {
     /// The file to upload
-    #[schema(format = "binary", example = "Binary file content (PDF, image, document, etc.)")]
+    #[schema(
+        format = "binary",
+        example = "Binary file content (PDF, image, document, etc.)"
+    )]
     pub file: String,
 }
 
@@ -52,16 +55,16 @@ pub struct ListFilesQuery {
     "message": "File uploaded successfully",
     "file": {
         "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-        "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
         "filename": "document.pdf",
-        "original_filename": "My Important Document.pdf",
-        "file_size": 1_048_576,
-        "mime_type": "application/pdf",
-        "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "originalFilename": "My Important Document.pdf",
+        "fileSize": 1_048_576,
+        "mimeType": "application/pdf",
+        "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "status": "uploaded",
         "metadata": {"description": "Important document"},
-        "created_at": "2023-01-01T00:00:00Z",
-        "updated_at": "2023-01-01T00:00:00Z"
+        "createdAt": "2023-01-01T00:00:00Z",
+        "updatedAt": "2023-01-01T00:00:00Z"
     }
 }))]
 pub struct FileUploadResponse {

@@ -177,7 +177,7 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/UserInfo"}
-              example: {"auth_provider": "email", "created_at": "2023-01-01T00:00:00", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+              example: {"authProvider": "email", "createdAt": "2023-01-01T00:00:00", "email": "user@example.com", "emailVerified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
         "401":
           description: "User authentication required to access profile"
           content:
@@ -672,7 +672,7 @@ components:
         "message":
           type: "string"
           description: "Upload confirmation message"
-      example: {"file": {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"description": "Important document"}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
+      example: {"file": {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"description": "Important document"}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
     "ForgotPasswordRequest":
       type: "object"
       description: "Request body for password reset"
@@ -719,7 +719,7 @@ components:
           type: "string"
           description: "Login success message"
         "user": {"$ref": "#/components/schemas/UserInfo", "description": "User information"}
-      example: {"message": "Login successful", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+      example: {"message": "Login successful", "user": {"authProvider": "email", "displayName": "John Doe", "email": "user@example.com", "emailVerified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
     "LogoutResponse":
       type: "object"
       description: "Response for successful logout"
@@ -737,7 +737,7 @@ components:
         - "email"
         - "password"
       properties:
-        "display_name":
+        "displayName":
           type:
             - "string"
             - "null"
@@ -760,7 +760,7 @@ components:
           type: "string"
           description: "Registration confirmation message"
         "user": {"$ref": "#/components/schemas/UserInfo", "description": "User information"}
-      example: {"message": "Registration successful. Please check your email for verification.", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": false, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+      example: {"message": "Registration successful. Please check your email for verification.", "user": {"authProvider": "email", "displayName": "John Doe", "email": "user@example.com", "emailVerified": false, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
     "ResendVerificationResponse":
       type: "object"
       description: "Response for resend verification email request"
@@ -776,20 +776,20 @@ components:
       description: "Request body for password reset confirmation"
       required:
         - "token"
-        - "user_id"
-        - "new_password"
+        - "userId"
+        - "newPassword"
       properties:
-        "new_password":
+        "newPassword":
           type: "string"
           description: "New password (minimum 8 characters)"
         "token":
           type: "string"
           description: "Password reset token"
-        "user_id":
+        "userId":
           type: "string"
           format: "uuid"
           description: "User ID associated with the reset token"
-      example: {"new_password": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+      example: {"newPassword": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000", "userId": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
     "ResetPasswordResponse":
       type: "object"
       description: "Response for successful password reset"
@@ -823,7 +823,7 @@ components:
       type: "object"
       description: "Request body for updating user information"
       properties:
-        "avatar_url":
+        "avatarUrl":
           type:
             - "string"
             - "null"
@@ -833,12 +833,12 @@ components:
             - "string"
             - "null"
           description: "Updated description for the user"
-        "display_name":
+        "displayName":
           type:
             - "string"
             - "null"
           description: "Updated display name for the user"
-      example: {"avatar_url": "https://example.com/new-avatar.jpg", "description": "A brief description about myself", "display_name": "New Display Name"}
+      example: {"avatarUrl": "https://example.com/new-avatar.jpg", "description": "A brief description about myself", "displayName": "New Display Name"}
     "UpdateUserInfoResponse":
       type: "object"
       description: "Response for successful user information update"
@@ -850,32 +850,32 @@ components:
           type: "string"
           description: "Update confirmation message"
         "user": {"$ref": "#/components/schemas/UserInfo", "description": "Updated user information"}
-      example: {"message": "User information updated successfully", "user": {"auth_provider": "email", "display_name": "New Display Name", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+      example: {"message": "User information updated successfully", "user": {"authProvider": "email", "displayName": "New Display Name", "email": "user@example.com", "emailVerified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
     "UserFileInfo":
       type: "object"
       description: "User file information for API responses"
       required:
         - "id"
-        - "user_id"
+        - "userId"
         - "filename"
-        - "original_filename"
-        - "file_size"
-        - "mime_type"
-        - "file_hash"
+        - "originalFilename"
+        - "fileSize"
+        - "mimeType"
+        - "fileHash"
         - "status"
       properties:
-        "created_at":
+        "createdAt":
           type:
             - "string"
             - "null"
           format: "date-time"
           description: "File upload timestamp"
           example: "2023-01-01T00:00:00Z"
-        "file_hash":
+        "fileHash":
           type: "string"
           description: "SHA-256 hash of the file"
           example: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        "file_size":
+        "fileSize":
           type: "integer"
           format: "int64"
           description: "Size of the file in bytes"
@@ -893,58 +893,58 @@ components:
           oneOf:
             - type: "null"
             - {"$ref": "#/components/schemas/Value", "description": "Additional file metadata"}
-        "mime_type":
+        "mimeType":
           type: "string"
           description: "MIME type of the file"
           example: "application/pdf"
-        "original_filename":
+        "originalFilename":
           type: "string"
           description: "Original filename as uploaded by user"
           example: "My Important Document.pdf"
         "status": {"$ref": "#/components/schemas/FileStatus", "description": "Current processing status"}
-        "updated_at":
+        "updatedAt":
           type:
             - "string"
             - "null"
           format: "date-time"
           description: "File last update timestamp"
           example: "2023-01-01T00:00:00Z"
-        "user_id":
+        "userId":
           type: "string"
           format: "uuid"
           description: "ID of the user who owns this file"
           example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-      example: {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"height": 1080, "width": 1920}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
+      example: {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"height": 1080, "width": 1920}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
     "UserFilesResponse":
       type: "array"
       title: "UserFilesResponse"
       items: {"$ref": "#/components/schemas/UserFileInfo"}
       description: "Collection of user files with metadata"
-      example: [{"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"description": "Important document"}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}]
+      example: [{"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"description": "Important document"}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}]
     "UserInfo":
       type: "object"
       description: "User information for API responses and internal use"
       required:
         - "id"
         - "email"
-        - "auth_provider"
-        - "email_verified"
+        - "authProvider"
+        - "emailVerified"
       properties:
-        "auth_provider": {"$ref": "#/components/schemas/AuthProvider", "description": "Authentication provider used by the user"}
-        "avatar_url":
+        "authProvider": {"$ref": "#/components/schemas/AuthProvider", "description": "Authentication provider used by the user"}
+        "avatarUrl":
           type:
             - "string"
             - "null"
           description: "URL to user's avatar image"
           example: "https://example.com/avatar.jpg"
-        "created_at":
+        "createdAt":
           type:
             - "string"
             - "null"
           format: "date-time"
           description: "User account creation timestamp"
           example: "2023-01-01T00:00:00Z"
-        "display_name":
+        "displayName":
           type:
             - "string"
             - "null"
@@ -954,7 +954,7 @@ components:
           type: "string"
           description: "User's registered email address"
           example: "user@example.com"
-        "email_verified":
+        "emailVerified":
           type: "boolean"
           description: "Whether the user's email has been verified"
           example: true
@@ -963,14 +963,14 @@ components:
           format: "uuid"
           description: "User's unique identifier"
           example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        "last_login":
+        "lastLogin":
           type:
             - "string"
             - "null"
           format: "date-time"
           description: "Timestamp of user's last login"
           example: "2023-01-02T12:00:00Z"
-      example: {"auth_provider": "email", "avatar_url": "https://example.com/avatar.jpg", "created_at": "2023-01-01T00:00:00", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "last_login": "2023-01-02T12:00:00"}
+      example: {"authProvider": "email", "avatarUrl": "https://example.com/avatar.jpg", "createdAt": "2023-01-01T00:00:00", "displayName": "John Doe", "email": "user@example.com", "emailVerified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "lastLogin": "2023-01-02T12:00:00"}
     "Value":
       type: "object"
       title: "JSONValue"

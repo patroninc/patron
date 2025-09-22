@@ -3,7 +3,6 @@
  */
 
 import * as z from "zod";
-import { remap as remap$ } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { Result as SafeParseResult } from "../types/fp.js";
 import { SDKValidationError } from "./errors/sdkvalidationerror.js";
@@ -32,21 +31,16 @@ export const UpdateUserInfoRequest$inboundSchema: z.ZodType<
   z.ZodTypeDef,
   unknown
 > = z.object({
-  avatar_url: z.nullable(z.string()).optional(),
+  avatarUrl: z.nullable(z.string()).optional(),
   description: z.nullable(z.string()).optional(),
-  display_name: z.nullable(z.string()).optional(),
-}).transform((v) => {
-  return remap$(v, {
-    "avatar_url": "avatarUrl",
-    "display_name": "displayName",
-  });
+  displayName: z.nullable(z.string()).optional(),
 });
 
 /** @internal */
 export type UpdateUserInfoRequest$Outbound = {
-  avatar_url?: string | null | undefined;
+  avatarUrl?: string | null | undefined;
   description?: string | null | undefined;
-  display_name?: string | null | undefined;
+  displayName?: string | null | undefined;
 };
 
 /** @internal */
@@ -58,11 +52,6 @@ export const UpdateUserInfoRequest$outboundSchema: z.ZodType<
   avatarUrl: z.nullable(z.string()).optional(),
   description: z.nullable(z.string()).optional(),
   displayName: z.nullable(z.string()).optional(),
-}).transform((v) => {
-  return remap$(v, {
-    avatarUrl: "avatar_url",
-    displayName: "display_name",
-  });
 });
 
 /**
