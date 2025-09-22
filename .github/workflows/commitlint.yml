@@ -3,8 +3,6 @@ name: Commitlint
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
 
 jobs:
   commitlint:
@@ -18,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: npm install
