@@ -1,0 +1,11 @@
+{
+  "name": "patron",
+  "private": true,
+  "scripts": {
+    "commitlint": "commitlint --edit"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3"
+  }
+}
