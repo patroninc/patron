@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 07ab658efd152b8659be83841630b34a
+  docChecksum: b85bf271589ebcf66477a31fdd12f28d
   docVersion: 1.0.0
   speakeasyVersion: 1.622.1
   generationVersion: 2.709.0
-  releaseVersion: 0.5.0
-  configChecksum: ee801377d64403c3b5584173770bcb8d
+  releaseVersion: 0.5.1
+  configChecksum: 800c429ec5019431798e1ce44cf1ac25
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -204,7 +204,7 @@ examples:
         application/json: {"email": "user@example.com", "password": "password123"}
       responses:
         "200":
-          application/json: {"message": "Login successful", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+          application/json: {"message": "Login successful", "user": {"authProvider": "email", "displayName": "John Doe", "email": "user@example.com", "emailVerified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -218,7 +218,7 @@ examples:
     speakeasy-default-get-me:
       responses:
         "200":
-          application/json: {"auth_provider": "email", "avatar_url": "https://example.com/avatar.jpg", "created_at": "2023-01-01T00:00:00", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "last_login": "2023-01-02T12:00:00"}
+          application/json: {"authProvider": "email", "avatarUrl": "https://example.com/avatar.jpg", "createdAt": "2023-01-01T00:00:00", "displayName": "John Doe", "email": "user@example.com", "emailVerified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "lastLogin": "2023-01-02T12:00:00"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   register:
@@ -227,7 +227,7 @@ examples:
         application/json: {"email": "user@example.com", "password": "password123"}
       responses:
         "200":
-          application/json: {"message": "Registration successful. Please check your email for verification.", "user": {"auth_provider": "email", "display_name": "John Doe", "email": "user@example.com", "email_verified": false, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+          application/json: {"message": "Registration successful. Please check your email for verification.", "user": {"authProvider": "email", "displayName": "John Doe", "email": "user@example.com", "emailVerified": false, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -235,7 +235,7 @@ examples:
   reset_password:
     speakeasy-default-reset-password:
       requestBody:
-        application/json: {"new_password": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000", "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
+        application/json: {"newPassword": "newpassword123", "token": "550e8400-e29b-41d4-a716-446655440000", "userId": "d290f1ee-6c54-4b01-90e6-d701748f0851"}
       responses:
         "200":
           application/json: {"message": "Password has been reset successfully"}
@@ -272,10 +272,10 @@ examples:
   update_user_info:
     speakeasy-default-update-user-info:
       requestBody:
-        application/json: {"avatar_url": "https://example.com/new-avatar.jpg", "description": "A brief description about myself", "display_name": "New Display Name"}
+        application/json: {"avatarUrl": "https://example.com/new-avatar.jpg", "description": "A brief description about myself", "displayName": "New Display Name"}
       responses:
         "200":
-          application/json: {"message": "User information updated successfully", "user": {"auth_provider": "email", "display_name": "New Display Name", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+          application/json: {"message": "User information updated successfully", "user": {"authProvider": "email", "displayName": "New Display Name", "email": "user@example.com", "emailVerified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -294,7 +294,7 @@ examples:
     speakeasy-default-list-files:
       responses:
         "200":
-          application/json: [{"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}]
+          application/json: [{"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}]
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -305,7 +305,7 @@ examples:
         multipart/form-data: {"file": "Binary file content (PDF, image, document, etc.)"}
       responses:
         "201":
-          application/json: {"file": {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
+          application/json: {"file": {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -317,7 +317,7 @@ examples:
           file_id: "b9989da6-aed4-4643-949a-a7c28d664def"
       responses:
         "200":
-          application/json: {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
+          application/json: {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -331,7 +331,7 @@ examples:
         application/json: {"filename": "renamed_document.pdf", "metadata": {}, "status": "processed"}
       responses:
         "200":
-          application/json: {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
+          application/json: {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":

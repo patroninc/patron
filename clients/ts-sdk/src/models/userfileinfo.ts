@@ -3,7 +3,6 @@
  */
 
 import * as z from "zod";
-import { remap as remap$ } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { Result as SafeParseResult } from "../types/fp.js";
 import { SDKValidationError } from "./errors/sdkvalidationerror.js";
@@ -72,46 +71,36 @@ export const UserFileInfo$inboundSchema: z.ZodType<
   z.ZodTypeDef,
   unknown
 > = z.object({
-  created_at: z.nullable(
+  createdAt: z.nullable(
     z.string().datetime({ offset: true }).transform(v => new Date(v)),
   ).optional(),
-  file_hash: z.string(),
-  file_size: z.number().int(),
+  fileHash: z.string(),
+  fileSize: z.number().int(),
   filename: z.string(),
   id: z.string(),
   metadata: z.nullable(Value$inboundSchema).optional(),
-  mime_type: z.string(),
-  original_filename: z.string(),
+  mimeType: z.string(),
+  originalFilename: z.string(),
   status: FileStatus$inboundSchema,
-  updated_at: z.nullable(
+  updatedAt: z.nullable(
     z.string().datetime({ offset: true }).transform(v => new Date(v)),
   ).optional(),
-  user_id: z.string(),
-}).transform((v) => {
-  return remap$(v, {
-    "created_at": "createdAt",
-    "file_hash": "fileHash",
-    "file_size": "fileSize",
-    "mime_type": "mimeType",
-    "original_filename": "originalFilename",
-    "updated_at": "updatedAt",
-    "user_id": "userId",
-  });
+  userId: z.string(),
 });
 
 /** @internal */
 export type UserFileInfo$Outbound = {
-  created_at?: string | null | undefined;
-  file_hash: string;
-  file_size: number;
+  createdAt?: string | null | undefined;
+  fileHash: string;
+  fileSize: number;
   filename: string;
   id: string;
   metadata?: Value$Outbound | null | undefined;
-  mime_type: string;
-  original_filename: string;
+  mimeType: string;
+  originalFilename: string;
   status: string;
-  updated_at?: string | null | undefined;
-  user_id: string;
+  updatedAt?: string | null | undefined;
+  userId: string;
 };
 
 /** @internal */
@@ -131,16 +120,6 @@ export const UserFileInfo$outboundSchema: z.ZodType<
   status: FileStatus$outboundSchema,
   updatedAt: z.nullable(z.date().transform(v => v.toISOString())).optional(),
   userId: z.string(),
-}).transform((v) => {
-  return remap$(v, {
-    createdAt: "created_at",
-    fileHash: "file_hash",
-    fileSize: "file_size",
-    mimeType: "mime_type",
-    originalFilename: "original_filename",
-    updatedAt: "updated_at",
-    userId: "user_id",
-  });
 });
 
 /**

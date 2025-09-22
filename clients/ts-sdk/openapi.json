@@ -311,10 +311,10 @@
                   "$ref": "#/components/schemas/UserInfo"
                 },
                 "example": {
-                  "auth_provider": "email",
-                  "created_at": "2023-01-01T00:00:00",
+                  "authProvider": "email",
+                  "createdAt": "2023-01-01T00:00:00",
                   "email": "user@example.com",
-                  "email_verified": true,
+                  "emailVerified": true,
                   "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
                 }
               }
@@ -1221,19 +1221,19 @@
         },
         "example": {
           "file": {
-            "created_at": "2023-01-01T00:00:00Z",
-            "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "file_size": 1048576,
+            "createdAt": "2023-01-01T00:00:00Z",
+            "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "fileSize": 1048576,
             "filename": "document.pdf",
             "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
             "metadata": {
               "description": "Important document"
             },
-            "mime_type": "application/pdf",
-            "original_filename": "My Important Document.pdf",
+            "mimeType": "application/pdf",
+            "originalFilename": "My Important Document.pdf",
             "status": "uploaded",
-            "updated_at": "2023-01-01T00:00:00Z",
-            "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+            "updatedAt": "2023-01-01T00:00:00Z",
+            "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "message": "File uploaded successfully"
         }
@@ -1313,10 +1313,10 @@
         "example": {
           "message": "Login successful",
           "user": {
-            "auth_provider": "email",
-            "display_name": "John Doe",
+            "authProvider": "email",
+            "displayName": "John Doe",
             "email": "user@example.com",
-            "email_verified": true,
+            "emailVerified": true,
             "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
           }
         }
@@ -1345,7 +1345,7 @@
           "password"
         ],
         "properties": {
-          "display_name": {
+          "displayName": {
             "type": [
               "string",
               "null"
@@ -1386,10 +1386,10 @@
         "example": {
           "message": "Registration successful. Please check your email for verification.",
           "user": {
-            "auth_provider": "email",
-            "display_name": "John Doe",
+            "authProvider": "email",
+            "displayName": "John Doe",
             "email": "user@example.com",
-            "email_verified": false,
+            "emailVerified": false,
             "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
           }
         }
@@ -1415,11 +1415,11 @@
         "description": "Request body for password reset confirmation",
         "required": [
           "token",
-          "user_id",
-          "new_password"
+          "userId",
+          "newPassword"
         ],
         "properties": {
-          "new_password": {
+          "newPassword": {
             "type": "string",
             "description": "New password (minimum 8 characters)"
           },
@@ -1427,16 +1427,16 @@
             "type": "string",
             "description": "Password reset token"
           },
-          "user_id": {
+          "userId": {
             "type": "string",
             "format": "uuid",
             "description": "User ID associated with the reset token"
           }
         },
         "example": {
-          "new_password": "newpassword123",
+          "newPassword": "newpassword123",
           "token": "550e8400-e29b-41d4-a716-446655440000",
-          "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          "userId": "d290f1ee-6c54-4b01-90e6-d701748f0851"
         }
       },
       "ResetPasswordResponse": {
@@ -1502,7 +1502,7 @@
         "type": "object",
         "description": "Request body for updating user information",
         "properties": {
-          "avatar_url": {
+          "avatarUrl": {
             "type": [
               "string",
               "null"
@@ -1516,7 +1516,7 @@
             ],
             "description": "Updated description for the user"
           },
-          "display_name": {
+          "displayName": {
             "type": [
               "string",
               "null"
@@ -1525,9 +1525,9 @@
           }
         },
         "example": {
-          "avatar_url": "https://example.com/new-avatar.jpg",
+          "avatarUrl": "https://example.com/new-avatar.jpg",
           "description": "A brief description about myself",
-          "display_name": "New Display Name"
+          "displayName": "New Display Name"
         }
       },
       "UpdateUserInfoResponse": {
@@ -1550,10 +1550,10 @@
         "example": {
           "message": "User information updated successfully",
           "user": {
-            "auth_provider": "email",
-            "display_name": "New Display Name",
+            "authProvider": "email",
+            "displayName": "New Display Name",
             "email": "user@example.com",
-            "email_verified": true,
+            "emailVerified": true,
             "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
           }
         }
@@ -1563,16 +1563,16 @@
         "description": "User file information for API responses",
         "required": [
           "id",
-          "user_id",
+          "userId",
           "filename",
-          "original_filename",
-          "file_size",
-          "mime_type",
-          "file_hash",
+          "originalFilename",
+          "fileSize",
+          "mimeType",
+          "fileHash",
           "status"
         ],
         "properties": {
-          "created_at": {
+          "createdAt": {
             "type": [
               "string",
               "null"
@@ -1581,12 +1581,12 @@
             "description": "File upload timestamp",
             "example": "2023-01-01T00:00:00Z"
           },
-          "file_hash": {
+          "fileHash": {
             "type": "string",
             "description": "SHA-256 hash of the file",
             "example": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
           },
-          "file_size": {
+          "fileSize": {
             "type": "integer",
             "format": "int64",
             "description": "Size of the file in bytes",
@@ -1614,12 +1614,12 @@
               }
             ]
           },
-          "mime_type": {
+          "mimeType": {
             "type": "string",
             "description": "MIME type of the file",
             "example": "application/pdf"
           },
-          "original_filename": {
+          "originalFilename": {
             "type": "string",
             "description": "Original filename as uploaded by user",
             "example": "My Important Document.pdf"
@@ -1628,7 +1628,7 @@
             "$ref": "#/components/schemas/FileStatus",
             "description": "Current processing status"
           },
-          "updated_at": {
+          "updatedAt": {
             "type": [
               "string",
               "null"
@@ -1637,7 +1637,7 @@
             "description": "File last update timestamp",
             "example": "2023-01-01T00:00:00Z"
           },
-          "user_id": {
+          "userId": {
             "type": "string",
             "format": "uuid",
             "description": "ID of the user who owns this file",
@@ -1645,20 +1645,20 @@
           }
         },
         "example": {
-          "created_at": "2023-01-01T00:00:00Z",
-          "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "file_size": 1048576,
+          "createdAt": "2023-01-01T00:00:00Z",
+          "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "fileSize": 1048576,
           "filename": "document.pdf",
           "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
           "metadata": {
             "height": 1080,
             "width": 1920
           },
-          "mime_type": "application/pdf",
-          "original_filename": "My Important Document.pdf",
+          "mimeType": "application/pdf",
+          "originalFilename": "My Important Document.pdf",
           "status": "uploaded",
-          "updated_at": "2023-01-01T00:00:00Z",
-          "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          "updatedAt": "2023-01-01T00:00:00Z",
+          "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
         }
       },
       "UserFilesResponse": {
@@ -1670,19 +1670,19 @@
         "description": "Collection of user files with metadata",
         "example": [
           {
-            "created_at": "2023-01-01T00:00:00Z",
-            "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "file_size": 1048576,
+            "createdAt": "2023-01-01T00:00:00Z",
+            "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "fileSize": 1048576,
             "filename": "document.pdf",
             "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
             "metadata": {
               "description": "Important document"
             },
-            "mime_type": "application/pdf",
-            "original_filename": "My Important Document.pdf",
+            "mimeType": "application/pdf",
+            "originalFilename": "My Important Document.pdf",
             "status": "uploaded",
-            "updated_at": "2023-01-01T00:00:00Z",
-            "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+            "updatedAt": "2023-01-01T00:00:00Z",
+            "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           }
         ]
       },
@@ -1692,15 +1692,15 @@
         "required": [
           "id",
           "email",
-          "auth_provider",
-          "email_verified"
+          "authProvider",
+          "emailVerified"
         ],
         "properties": {
-          "auth_provider": {
+          "authProvider": {
             "$ref": "#/components/schemas/AuthProvider",
             "description": "Authentication provider used by the user"
           },
-          "avatar_url": {
+          "avatarUrl": {
             "type": [
               "string",
               "null"
@@ -1708,7 +1708,7 @@
             "description": "URL to user's avatar image",
             "example": "https://example.com/avatar.jpg"
           },
-          "created_at": {
+          "createdAt": {
             "type": [
               "string",
               "null"
@@ -1717,7 +1717,7 @@
             "description": "User account creation timestamp",
             "example": "2023-01-01T00:00:00Z"
           },
-          "display_name": {
+          "displayName": {
             "type": [
               "string",
               "null"
@@ -1730,7 +1730,7 @@
             "description": "User's registered email address",
             "example": "user@example.com"
           },
-          "email_verified": {
+          "emailVerified": {
             "type": "boolean",
             "description": "Whether the user's email has been verified",
             "example": true
@@ -1741,7 +1741,7 @@
             "description": "User's unique identifier",
             "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
           },
-          "last_login": {
+          "lastLogin": {
             "type": [
               "string",
               "null"
@@ -1752,14 +1752,14 @@
           }
         },
         "example": {
-          "auth_provider": "email",
-          "avatar_url": "https://example.com/avatar.jpg",
-          "created_at": "2023-01-01T00:00:00",
-          "display_name": "John Doe",
+          "authProvider": "email",
+          "avatarUrl": "https://example.com/avatar.jpg",
+          "createdAt": "2023-01-01T00:00:00",
+          "displayName": "John Doe",
           "email": "user@example.com",
-          "email_verified": true,
+          "emailVerified": true,
           "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-          "last_login": "2023-01-02T12:00:00"
+          "lastLogin": "2023-01-02T12:00:00"
         }
       },
       "Value": {

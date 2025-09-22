@@ -146,12 +146,12 @@ pub struct User {
 #[schema(example = json!({
     "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
     "email": "user@example.com",
-    "display_name": "John Doe",
-    "avatar_url": "https://example.com/avatar.jpg",
-    "auth_provider": "email",
-    "email_verified": true,
-    "created_at": "2023-01-01T00:00:00",
-    "last_login": "2023-01-02T12:00:00"
+    "displayName": "John Doe",
+    "avatarUrl": "https://example.com/avatar.jpg",
+    "authProvider": "email",
+    "emailVerified": true,
+    "createdAt": "2023-01-01T00:00:00",
+    "lastLogin": "2023-01-02T12:00:00"
 }))]
 pub struct UserInfo {
     /// User's unique identifier
@@ -162,23 +162,27 @@ pub struct UserInfo {
     pub email: String,
     /// User's display name
     #[schema(example = "John Doe")]
+    #[serde(rename = "displayName")]
     pub display_name: Option<String>,
     /// URL to user's avatar image
     #[schema(example = "https://example.com/avatar.jpg")]
+    #[serde(rename = "avatarUrl")]
     pub avatar_url: Option<String>,
     /// Authentication provider used by the user
     #[schema(example = "email")]
+    #[serde(rename = "authProvider")]
     pub auth_provider: AuthProvider,
     /// Whether the user's email has been verified
     #[schema(example = true)]
+    #[serde(rename = "emailVerified")]
     pub email_verified: bool,
     /// User account creation timestamp
     #[schema(example = "2023-01-01T00:00:00Z")]
-    #[serde(with = "optional_datetime_format")]
+    #[serde(with = "optional_datetime_format", rename = "createdAt")]
     pub created_at: Option<NaiveDateTime>,
     /// Timestamp of user's last login
     #[schema(example = "2023-01-02T12:00:00Z")]
-    #[serde(with = "optional_datetime_format")]
+    #[serde(with = "optional_datetime_format", rename = "lastLogin")]
     pub last_login: Option<NaiveDateTime>,
 }
 
