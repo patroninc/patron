@@ -260,6 +260,34 @@ pub async fn main() -> std::io::Result<()> {
                             web::resource("/files/{file_id}")
                                 .route(web::get().to(handlers::user_files::serve_file_cdn)),
                         ),
+                    )
+                    .service(
+                        web::scope("/series")
+                            .service(
+                                web::resource("")
+                                    .route(web::post().to(handlers::series::create_series))
+                                    .route(web::get().to(handlers::series::list_series)),
+                            )
+                            .service(
+                                web::resource("/{series_id}")
+                                    .route(web::get().to(handlers::series::get_series))
+                                    .route(web::put().to(handlers::series::update_series))
+                                    .route(web::delete().to(handlers::series::delete_series)),
+                            ),
+                    )
+                    .service(
+                        web::scope("/posts")
+                            .service(
+                                web::resource("")
+                                    .route(web::post().to(handlers::posts::create_post))
+                                    .route(web::get().to(handlers::posts::list_posts)),
+                            )
+                            .service(
+                                web::resource("/{post_id}")
+                                    .route(web::get().to(handlers::posts::get_post))
+                                    .route(web::put().to(handlers::posts::update_post))
+                                    .route(web::delete().to(handlers::posts::delete_post)),
+                            ),
                     ),
             )
     })

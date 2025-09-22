@@ -9,7 +9,7 @@ import { SDKValidationError } from "../errors/sdkvalidationerror.js";
 
 export type ListFilesRequest = {
   /**
-   * UUID offset for cursor-based pagination
+   * UUID offset for cursor-based files pagination
    */
   offset?: string | null | undefined;
   /**

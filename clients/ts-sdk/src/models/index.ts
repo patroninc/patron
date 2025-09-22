@@ -4,6 +4,8 @@
 
 export * from "./authprovider.js";
 export * from "./checkemailrequest.js";
+export * from "./createpostrequest.js";
+export * from "./createseriesrequest.js";
 export * from "./filestatus.js";
 export * from "./fileuploadrequest.js";
 export * from "./fileuploadresponse.js";
@@ -12,12 +14,16 @@ export * from "./forgotpasswordresponse.js";
 export * from "./loginrequest.js";
 export * from "./loginresponse.js";
 export * from "./logoutresponse.js";
+export * from "./postresponse.js";
 export * from "./registerrequest.js";
 export * from "./registerresponse.js";
 export * from "./resendverificationresponse.js";
 export * from "./resetpasswordrequest.js";
 export * from "./resetpasswordresponse.js";
 export * from "./security.js";
+export * from "./seriesresponse.js";
+export * from "./updatepostrequest.js";
+export * from "./updateseriesrequest.js";
 export * from "./updateuserfilerequest.js";
 export * from "./updateuserinforequest.js";
 export * from "./updateuserinforesponse.js";

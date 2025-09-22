@@ -41,7 +41,7 @@ pub struct FileUploadRequest {
     "limit": 50
 }))]
 pub struct ListFilesQuery {
-    /// UUID offset for cursor-based pagination
+    /// UUID offset for cursor-based files pagination
     #[schema(example = "d290f1ee-6c54-4b01-90e6-d701748f0851")]
     pub offset: Option<Uuid>,
     /// Maximum number of files to return (default: 50, max: 100)
