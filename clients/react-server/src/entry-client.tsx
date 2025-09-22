@@ -12,12 +12,14 @@ import Content from '@/pages/dashboard/content';
 import Insights from '@/pages/dashboard/insights';
 import Audience from '@/pages/dashboard/audience';
 import Payouts from '@/pages/dashboard/payouts';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const initialData = (window as any).__INITIAL_DATA__ as { user?: UserInfo | null } | null;
 
 export const router = createBrowserRouter([
   {
     path: '/',
+    errorElement: <ErrorBoundary />,
     children: [
       {
         index: true,
@@ -26,6 +28,7 @@ export const router = createBrowserRouter([
             <Home />
           </ProtectedRoute>
         ),
+        errorElement: <ErrorBoundary />,
       },
       {
         path: 'login',
@@ -34,6 +37,7 @@ export const router = createBrowserRouter([
             <Login />
           </ProtectedRoute>
         ),
+        errorElement: <ErrorBoundary />,
       },
       {
         path: 'register',
@@ -42,6 +46,7 @@ export const router = createBrowserRouter([
             <Register />
           </ProtectedRoute>
         ),
+        errorElement: <ErrorBoundary />,
       },
       {
         path: 'reset-password',
@@ -50,6 +55,7 @@ export const router = createBrowserRouter([
             <ForgotPasswordPage />
           </ProtectedRoute>
         ),
+        errorElement: <ErrorBoundary />,
       },
       {
         path: 'dashboard/content',
@@ -58,6 +64,7 @@ export const router = createBrowserRouter([
             <Content />
           </ProtectedRoute>
         ),
+        errorElement: <ErrorBoundary />,
       },
       {
         path: 'dashboard/insights',
@@ -66,6 +73,7 @@ export const router = createBrowserRouter([
             <Insights />
           </ProtectedRoute>
         ),
+        errorElement: <ErrorBoundary />,
       },
       {
         path: 'dashboard/audience',
@@ -74,6 +82,7 @@ export const router = createBrowserRouter([
             <Audience />
           </ProtectedRoute>
         ),
+        errorElement: <ErrorBoundary />,
       },
       {
         path: 'dashboard/payouts',
@@ -82,8 +91,16 @@ export const router = createBrowserRouter([
             <Payouts />
           </ProtectedRoute>
         ),
+        errorElement: <ErrorBoundary />,
       },
     ],
+  },
+  {
+    path: '*',
+    Component: () => {
+      throw new Response('Not Found', { status: 404 });
+    },
+    errorElement: <ErrorBoundary />,
   },
 ]);
 
