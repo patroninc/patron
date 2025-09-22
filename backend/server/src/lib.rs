@@ -204,19 +204,21 @@ pub async fn main() -> std::io::Result<()> {
                                     .route(web::post().to(handlers::auth::register)),
                             )
                             .service(
-                                web::resource("/login").route(web::post().to(handlers::auth::login)),
+                                web::resource("/login")
+                                    .route(web::post().to(handlers::auth::login)),
                             )
                             .service(
                                 web::resource("/verify-email")
                                     .route(web::get().to(handlers::auth::verify_email)),
                             )
                             .service(
-                                web::resource("/logout").route(web::get().to(handlers::auth::logout)),
+                                web::resource("/logout")
+                                    .route(web::get().to(handlers::auth::logout)),
                             )
                             .service(
                                 web::resource("/me")
                                     .route(web::get().to(handlers::auth::get_me))
-                                    .route(web::put().to(handlers::auth::update_user_info))
+                                    .route(web::put().to(handlers::auth::update_user_info)),
                             )
                             .service(
                                 web::resource("/forgot-password")
@@ -231,8 +233,9 @@ pub async fn main() -> std::io::Result<()> {
                                     .route(web::post().to(handlers::auth::check_email)),
                             )
                             .service(
-                                web::resource("/resend-verification")
-                                    .route(web::post().to(handlers::auth::resend_verification_email)),
+                                web::resource("/resend-verification").route(
+                                    web::post().to(handlers::auth::resend_verification_email),
+                                ),
                             ),
                     )
                     .service(
@@ -251,6 +254,12 @@ pub async fn main() -> std::io::Result<()> {
                                     .route(web::put().to(handlers::user_files::update_file))
                                     .route(web::delete().to(handlers::user_files::delete_file)),
                             ),
+                    )
+                    .service(
+                        web::scope("/cdn").service(
+                            web::resource("/files/{file_id}")
+                                .route(web::get().to(handlers::user_files::serve_file_cdn)),
+                        ),
                     ),
             )
     })

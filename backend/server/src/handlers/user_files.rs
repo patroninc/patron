@@ -125,7 +125,10 @@ pub async fn upload_file(
         file_data.ok_or_else(|| actix_web::error::ErrorBadRequest("No file uploaded"))?;
 
     if file_bytes.is_empty() {
-        return Ok(json_error("Uploaded file is empty"));
+        return Ok(HttpResponse::BadRequest().json(ErrorResponse {
+            error: "Uploaded file is empty".to_owned(),
+            code: None,
+        }));
     }
 
     let file_id = Uuid::new_v4();
@@ -460,10 +463,78 @@ pub async fn delete_file(
     Ok(HttpResponse::NoContent().finish())
 }
 
-/// Helper function to create a JSON error response
-fn json_error(message: &str) -> HttpResponse {
-    HttpResponse::BadRequest().json(ErrorResponse {
-        error: message.to_owned(),
-        code: None,
-    })
+/// Serve file content with user authentication
+///
+/// This endpoint is designed to be used to get file content with proper authentication.
+/// It verifies user access to the file and returns the file content with proper cache headers.
+///
+/// # Errors
+/// Returns an error if file not found, access denied, or S3 operations fail.
+#[utoipa::path(
+    get,
+    path = "/api/cdn/files/{file_id}",
+    tag = "files",
+    params(
+        ("file_id" = Uuid, Path, description = "File unique identifier")
+    ),
+    responses(
+        (status = 200, description = "File content returned", content_type = "application/octet-stream"),
+        (status = 404, description = "File not found", body = ErrorResponse),
+        (status = 401, description = "Unauthorized", body = ErrorResponse),
+        (status = 403, description = "Access forbidden", body = ErrorResponse),
+        (status = 500, description = "Internal server error", body = ErrorResponse)
+    ),
+    security(
+        ("session" = [])
+    )
+)]
+pub async fn serve_file_cdn(
+    user: User,
+    db_service: web::Data<shared::services::db::DbService>,
+    s3_service: web::Data<S3Service>,
+    path: web::Path<Uuid>,
+) -> Result<HttpResponse, actix_web::Error> {
+    use shared::schema::user_files::dsl as files_dsl;
+
+    let file_id = path.into_inner();
+    let pool = db_service.pool();
+    let mut conn = pool.get().await.map_err(ServiceError::from)?;
+
+    // Check if user has access to this file
+    let file: UserFile = files_dsl::user_files
+        .filter(files_dsl::id.eq(file_id))
+        .filter(files_dsl::user_id.eq(user.id)) // For now, only owner access
+        .filter(files_dsl::deleted_at.is_null())
+        .first(&mut conn)
+        .await
+        .map_err(|e| match e {
+            diesel::result::Error::NotFound => {
+                actix_web::error::ErrorNotFound("File not found or access denied")
+            }
+            _ => actix_web::error::ErrorInternalServerError(format!("Database error: {e}")),
+        })?;
+
+    // Get file stream from S3
+    let file_stream = s3_service
+        .get_object_stream(&file.file_path)
+        .await
+        .map_err(|e| {
+            actix_web::error::ErrorInternalServerError(format!("Failed to fetch file from S3: {e}"))
+        })?;
+
+    // Convert ServiceError stream to actix-web error stream
+    let actix_stream = file_stream.map(|chunk_result| {
+        chunk_result.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))
+    });
+
+    // Return file with CDN-friendly headers using streaming body
+    Ok(HttpResponse::Ok()
+        .content_type(file.mime_type.as_str())
+        .insert_header(("Cache-Control", "public, max-age=86400, immutable")) // 24 hour cache
+        .insert_header(("ETag", format!("\"{}\"", file.file_hash)))
+        .insert_header((
+            "Content-Disposition",
+            format!("inline; filename=\"{}\"", file.original_filename),
+        ))
+        .streaming(actix_stream))
 }
