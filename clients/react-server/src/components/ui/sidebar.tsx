@@ -578,6 +578,7 @@ const SidebarMenuButton = ({
       data-sidebar="menu-button"
       data-active={isActive}
       className={cn(sidebarMenuButtonVariants, 'group/button', className)}
+      suppressHydrationWarning={true}
       {...props}
     >
       {!removeHoverStyles && (
