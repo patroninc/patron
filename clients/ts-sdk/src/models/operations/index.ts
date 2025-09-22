@@ -3,9 +3,17 @@
  */
 
 export * from "./deletefile.js";
+export * from "./deletepost.js";
+export * from "./deleteseries.js";
 export * from "./getfile.js";
+export * from "./getpost.js";
+export * from "./getseries.js";
 export * from "./googleauthcallback.js";
 export * from "./listfiles.js";
+export * from "./listposts.js";
+export * from "./listseries.js";
 export * from "./servefilecdn.js";
 export * from "./updatefile.js";
+export * from "./updatepost.js";
+export * from "./updateseries.js";
 export * from "./verifyemail.js";

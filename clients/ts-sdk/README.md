@@ -163,6 +163,22 @@ run();
 * [deleteFile](docs/sdks/files/README.md#deletefile) - Permanently delete a user file
 
 
+### [posts](docs/sdks/posts/README.md)
+
+* [listPosts](docs/sdks/posts/README.md#listposts) - List posts with cursor-based pagination and optional series filtering
+* [createPost](docs/sdks/posts/README.md#createpost) - Create a new post
+* [getPost](docs/sdks/posts/README.md#getpost) - Get a specific post by ID with series ownership validation
+* [updatePost](docs/sdks/posts/README.md#updatepost) - Update a post
+* [deletePost](docs/sdks/posts/README.md#deletepost) - Delete a post (soft delete) with series ownership validation
+
+### [series](docs/sdks/series/README.md)
+
+* [listSeries](docs/sdks/series/README.md#listseries) - List user's series with cursor-based pagination
+* [createSeries](docs/sdks/series/README.md#createseries) - Create a new series
+* [getSeries](docs/sdks/series/README.md#getseries) - Get a specific series by ID with user ownership validation
+* [updateSeries](docs/sdks/series/README.md#updateseries) - Update a series
+* [deleteSeries](docs/sdks/series/README.md#deleteseries) - Delete a series (soft delete) with user ownership validation
+
 </details>
 <!-- End Available Resources and Operations [operations] -->
 
@@ -199,6 +215,16 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 - [`filesServeFileCdn`](docs/sdks/files/README.md#servefilecdn) - Serve file content with user authentication
 - [`filesUpdateFile`](docs/sdks/files/README.md#updatefile) - Update file metadata and properties
 - [`filesUploadFile`](docs/sdks/files/README.md#uploadfile) - Upload a file
+- [`postsCreatePost`](docs/sdks/posts/README.md#createpost) - Create a new post
+- [`postsDeletePost`](docs/sdks/posts/README.md#deletepost) - Delete a post (soft delete) with series ownership validation
+- [`postsGetPost`](docs/sdks/posts/README.md#getpost) - Get a specific post by ID with series ownership validation
+- [`postsListPosts`](docs/sdks/posts/README.md#listposts) - List posts with cursor-based pagination and optional series filtering
+- [`postsUpdatePost`](docs/sdks/posts/README.md#updatepost) - Update a post
+- [`seriesCreateSeries`](docs/sdks/series/README.md#createseries) - Create a new series
+- [`seriesDeleteSeries`](docs/sdks/series/README.md#deleteseries) - Delete a series (soft delete) with user ownership validation
+- [`seriesGetSeries`](docs/sdks/series/README.md#getseries) - Get a specific series by ID with user ownership validation
+- [`seriesListSeries`](docs/sdks/series/README.md#listseries) - List user's series with cursor-based pagination
+- [`seriesUpdateSeries`](docs/sdks/series/README.md#updateseries) - Update a series
 
 </details>
 <!-- End Standalone functions [standalone-funcs] -->

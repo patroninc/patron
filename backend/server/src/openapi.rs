@@ -5,6 +5,12 @@ use crate::handlers::auth::{
 };
 use crate::handlers::user_files::{FileUploadRequest, FileUploadResponse};
 use shared::models::auth::{UserInfo, UserInfoResponse};
+use shared::models::posts::{
+    CreatePostRequest, PostResponse, PostsListResponse, UpdatePostRequest,
+};
+use shared::models::series::{
+    CreateSeriesRequest, SeriesListResponse, SeriesResponse, UpdateSeriesRequest,
+};
 use shared::models::user_files::{
     FileStatus, UpdateUserFileRequest, UserFileInfo, UserFileResponse, UserFilesResponse,
 };
@@ -51,6 +57,16 @@ use utoipa::{
         crate::handlers::user_files::update_file,
         crate::handlers::user_files::delete_file,
         crate::handlers::user_files::serve_file_cdn,
+        crate::handlers::series::create_series,
+        crate::handlers::series::list_series,
+        crate::handlers::series::get_series,
+        crate::handlers::series::update_series,
+        crate::handlers::series::delete_series,
+        crate::handlers::posts::create_post,
+        crate::handlers::posts::list_posts,
+        crate::handlers::posts::get_post,
+        crate::handlers::posts::update_post,
+        crate::handlers::posts::delete_post,
     ),
     components(
         schemas(
@@ -75,13 +91,23 @@ use utoipa::{
             UserFilesResponse,
             UpdateUserFileRequest,
             FileUploadRequest,
-            FileUploadResponse
+            FileUploadResponse,
+            SeriesResponse,
+            SeriesListResponse,
+            CreateSeriesRequest,
+            UpdateSeriesRequest,
+            PostResponse,
+            PostsListResponse,
+            CreatePostRequest,
+            UpdatePostRequest
         )
     ),
     modifiers(&SecurityAddon),
     tags(
         (name = "Auth", description = "Authentication and authorization endpoints"),
         (name = "Files", description = "File upload, download, and management endpoints"),
+        (name = "Series", description = "Series creation and management endpoints"),
+        (name = "Posts", description = "Post creation and management endpoints"),
     ),
     servers(
         (url = "http://localhost:8080", description = "Local development server"),

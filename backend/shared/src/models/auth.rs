@@ -144,7 +144,7 @@ pub struct User {
 /// User information for API responses and internal use
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 #[schema(example = json!({
-    "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+    "id": "a7b8c9d0-1234-5678-a123-567890123456",
     "email": "user@example.com",
     "displayName": "John Doe",
     "avatarUrl": "https://example.com/avatar.jpg",
@@ -155,7 +155,7 @@ pub struct User {
 }))]
 pub struct UserInfo {
     /// User's unique identifier
-    #[schema(example = "d290f1ee-6c54-4b01-90e6-d701748f0851")]
+    #[schema(example = "a7b8c9d0-1234-5678-a123-567890123456")]
     pub id: uuid::Uuid,
     /// User's registered email address
     #[schema(example = "user@example.com")]

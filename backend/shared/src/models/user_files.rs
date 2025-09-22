@@ -108,8 +108,8 @@ pub struct UserFile {
 /// User file information for API responses
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 #[schema(example = json!({
-    "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-    "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "id": "b8c9d0e1-2345-6789-b234-678901234567",
+    "userId": "c9d0e1f2-3456-789a-c345-789012345678",
     "filename": "document.pdf",
     "originalFilename": "My Important Document.pdf",
     "fileSize": 1_048_576,
@@ -122,10 +122,10 @@ pub struct UserFile {
 }))]
 pub struct UserFileInfo {
     /// File's unique identifier
-    #[schema(example = "d290f1ee-6c54-4b01-90e6-d701748f0851")]
+    #[schema(example = "b8c9d0e1-2345-6789-b234-678901234567")]
     pub id: uuid::Uuid,
     /// ID of the user who owns this file
-    #[schema(example = "f47ac10b-58cc-4372-a567-0e02b2c3d479")]
+    #[schema(example = "c9d0e1f2-3456-789a-c345-789012345678")]
     #[serde(rename = "userId")]
     pub user_id: uuid::Uuid,
     /// Current filename
@@ -238,8 +238,8 @@ pub type UserFileResponse = UserFileInfo;
     description = "Collection of user files with metadata",
     example = json!([
         {
-            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-            "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            "id": "b8c9d0e1-2345-6789-b234-678901234567",
+            "userId": "c9d0e1f2-3456-789a-c345-789012345678",
             "filename": "document.pdf",
             "originalFilename": "My Important Document.pdf",
             "fileSize": 1_048_576,
