@@ -4,6 +4,9 @@
 
 export * from "./authprovider.js";
 export * from "./checkemailrequest.js";
+export * from "./filestatus.js";
+export * from "./fileuploadrequest.js";
+export * from "./fileuploadresponse.js";
 export * from "./forgotpasswordrequest.js";
 export * from "./forgotpasswordresponse.js";
 export * from "./loginrequest.js";
@@ -15,6 +18,9 @@ export * from "./resendverificationresponse.js";
 export * from "./resetpasswordrequest.js";
 export * from "./resetpasswordresponse.js";
 export * from "./security.js";
+export * from "./updateuserfilerequest.js";
 export * from "./updateuserinforequest.js";
 export * from "./updateuserinforesponse.js";
+export * from "./userfileinfo.js";
 export * from "./userinfo.js";
+export * from "./value.js";

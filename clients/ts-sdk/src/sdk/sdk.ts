@@ -4,10 +4,16 @@
 
 import { ClientSDK } from "../lib/sdks.js";
 import { Auth } from "./auth.js";
+import { Files } from "./files.js";
 
 export class Patronts extends ClientSDK {
   private _auth?: Auth;
   get auth(): Auth {
     return (this._auth ??= new Auth(this._options));
+  }
+
+  private _files?: Files;
+  get files(): Files {
+    return (this._files ??= new Files(this._options));
   }
 }

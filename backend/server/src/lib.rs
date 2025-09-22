@@ -241,7 +241,7 @@ pub async fn main() -> std::io::Result<()> {
                     .service(
                         web::scope("/files")
                             .service(
-                                web::resource("/upload")
+                                web::resource("/actions/upload")
                                     .route(web::post().to(handlers::user_files::upload_file)),
                             )
                             .service(

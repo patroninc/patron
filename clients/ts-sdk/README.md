@@ -25,6 +25,7 @@ Patron API: An open source Patreon alternative with lower fees designed for crea
   * [Authentication](#authentication)
   * [Available Resources and Operations](#available-resources-and-operations)
   * [Standalone functions](#standalone-functions)
+  * [File uploads](#file-uploads)
   * [Retries](#retries)
   * [Error Handling](#error-handling)
   * [Server Selection](#server-selection)
@@ -152,6 +153,15 @@ run();
 * [resetPassword](docs/sdks/auth/README.md#resetpassword) - Reset password
 * [verifyEmail](docs/sdks/auth/README.md#verifyemail) - Email verification
 
+### [files](docs/sdks/files/README.md)
+
+* [serveFileCdn](docs/sdks/files/README.md#servefilecdn) - Serve file content with user authentication
+* [listFiles](docs/sdks/files/README.md#listfiles) - List user's files with cursor-based pagination
+* [uploadFile](docs/sdks/files/README.md#uploadfile) - Upload a file
+* [getFile](docs/sdks/files/README.md#getfile) - Get a specific file by ID
+* [updateFile](docs/sdks/files/README.md#updatefile) - Update file metadata and properties
+* [deleteFile](docs/sdks/files/README.md#deletefile) - Permanently delete a user file
+
 
 </details>
 <!-- End Available Resources and Operations [operations] -->
@@ -183,9 +193,50 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 - [`authResetPassword`](docs/sdks/auth/README.md#resetpassword) - Reset password
 - [`authUpdateUserInfo`](docs/sdks/auth/README.md#updateuserinfo) - Update user information
 - [`authVerifyEmail`](docs/sdks/auth/README.md#verifyemail) - Email verification
+- [`filesDeleteFile`](docs/sdks/files/README.md#deletefile) - Permanently delete a user file
+- [`filesGetFile`](docs/sdks/files/README.md#getfile) - Get a specific file by ID
+- [`filesListFiles`](docs/sdks/files/README.md#listfiles) - List user's files with cursor-based pagination
+- [`filesServeFileCdn`](docs/sdks/files/README.md#servefilecdn) - Serve file content with user authentication
+- [`filesUpdateFile`](docs/sdks/files/README.md#updatefile) - Update file metadata and properties
+- [`filesUploadFile`](docs/sdks/files/README.md#uploadfile) - Upload a file
 
 </details>
 <!-- End Standalone functions [standalone-funcs] -->
+
+<!-- Start File uploads [file-upload] -->
+## File uploads
+
+Certain SDK methods accept files as part of a multi-part request. It is possible and typically recommended to upload files as a stream rather than reading the entire contents into memory. This avoids excessive memory consumption and potentially crashing with out-of-memory errors when working with very large files. The following example demonstrates how to attach a file stream to a request.
+
+> [!TIP]
+>
+> Depending on your JavaScript runtime, there are convenient utilities that return a handle to a file without reading the entire contents into memory:
+>
+> - **Node.js v20+:** Since v20, Node.js comes with a native `openAsBlob` function in [`node:fs`](https://nodejs.org/docs/latest-v20.x/api/fs.html#fsopenasblobpath-options).
+> - **Bun:** The native [`Bun.file`](https://bun.sh/docs/api/file-io#reading-files-bun-file) function produces a file handle that can be used for streaming file uploads.
+> - **Browsers:** All supported browsers return an instance to a [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) when reading the value from an `<input type="file">` element.
+> - **Node.js v18:** A file stream can be created using the `fileFrom` helper from [`fetch-blob/from.js`](https://www.npmjs.com/package/fetch-blob).
+
+```typescript
+import { openAsBlob } from "node:fs";
+import { Patronts } from "patronts";
+
+const patronts = new Patronts({
+  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+});
+
+async function run() {
+  const result = await patronts.files.uploadFile({
+    file: await openAsBlob("example.file"),
+  });
+
+  console.log(result);
+}
+
+run();
+
+```
+<!-- End File uploads [file-upload] -->
 
 <!-- Start Retries [retries] -->
 ## Retries
@@ -423,7 +474,7 @@ httpClient.addHook("requestError", (error, request) => {
   console.groupEnd();
 });
 
-const sdk = new Patronts({ httpClient });
+const sdk = new Patronts({ httpClient: httpClient });
 ```
 <!-- End Custom HTTP Client [http-client] -->
 
