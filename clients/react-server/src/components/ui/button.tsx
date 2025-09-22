@@ -44,6 +44,7 @@ const Button = ({
           ? 'relative z-[1] transition-transform ease-in-out hover:translate-x-[3px] hover:translate-y-[3px]'
           : 'm-[3px]',
       )}
+      suppressHydrationWarning={true}
       {...props}
     >
       <PxBorder width={3} radius="lg" />

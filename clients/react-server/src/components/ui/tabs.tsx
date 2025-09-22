@@ -60,6 +60,7 @@ const TabsTrigger = ({
         "data-[state=active]:bg-primary group text-foreground relative z-[5] inline-flex flex-1 items-center justify-center gap-1.5 bg-white px-6 py-[5px] text-lg whitespace-nowrap outline-none select-none hover:cursor-pointer disabled:pointer-events-none disabled:opacity-50 data-[state=active]:py-2 data-[state=active]:text-white [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
+      suppressHydrationWarning={true}
       {...props}
     >
       {props.children}
@@ -83,6 +84,7 @@ const TabsContent = ({
     <TabsPrimitive.Content
       data-slot="tabs-content"
       className={cn('relative m-[3px] flex-1 outline-none', className)}
+      suppressHydrationWarning={true}
       {...props}
     >
       {props.children}
