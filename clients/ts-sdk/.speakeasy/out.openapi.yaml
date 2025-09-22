@@ -345,6 +345,265 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
               example: {"code": "VERIFICATION_SERVICE_ERROR", "error": "Email verification service unavailable"}
       x-speakeasy-name-override: "verifyEmail"
+  "/api/cdn/files/{file_id}":
+    get:
+      tags:
+        - "Files"
+      summary: "Serve file content with user authentication"
+      description: "This endpoint is designed to be used to get file content with proper authentication.\nIt verifies user access to the file and returns the file content with proper cache headers.\nThe file content is streamed directly from S3 to minimize memory usage for large files.\n\n# Errors\nReturns an error if file not found, access denied, or S3 operations fail."
+      operationId: "serve_file_cdn"
+      parameters:
+        - name: "file_id"
+          in: "path"
+          description: "UUID of the file to stream via CDN"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "Streaming file content with CDN-optimized headers"
+          content:
+            "application/octet-stream":
+              example: "Binary file content with appropriate Content-Type and Cache-Control headers"
+        "401":
+          description: "Authentication required for CDN file access"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "403":
+          description: "CDN access forbidden - user cannot access this file"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "404":
+          description: "CDN file not found or access denied"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "CDN streaming error from storage backend"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - cookieAuth: []
+  "/api/files":
+    get:
+      tags:
+        - "Files"
+      summary: "List user's files with cursor-based pagination"
+      description: "# Errors\nReturns an error if database operations fail."
+      operationId: "list_files"
+      parameters:
+        - name: "offset"
+          in: "query"
+          description: "UUID offset for cursor-based pagination"
+          required: false
+          schema:
+            type:
+              - "string"
+              - "null"
+            format: "uuid"
+        - name: "limit"
+          in: "query"
+          description: "Maximum number of files to return (default: 50, max: 100)"
+          required: false
+          schema:
+            type:
+              - "integer"
+              - "null"
+            format: "int64"
+      responses:
+        "200":
+          description: "User files retrieved with pagination support"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/UserFilesResponse"}
+        "401":
+          description: "Authentication required to access files"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Database error while retrieving user files"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - cookieAuth: []
+  "/api/files/actions/upload":
+    post:
+      tags:
+        - "Files"
+      summary: "Upload a file"
+      description: "# Errors\nReturns an error if file upload, database operations, or file system operations fail."
+      operationId: "upload_file"
+      requestBody:
+        description: "Multipart form data with file field"
+        content:
+          "multipart/form-data":
+            schema: {"$ref": "#/components/schemas/FileUploadRequest"}
+            example: {"file": "Binary file content - upload any file type (PDF, image, document, etc.)"}
+        required: true
+      responses:
+        "201":
+          description: "File uploaded successfully"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/FileUploadResponse"}
+        "400":
+          description: "Invalid file upload request or malformed file data"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "401":
+          description: "Authentication required for file upload"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "413":
+          description: "Uploaded file exceeds maximum size limit"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Server error during file upload or storage"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - cookieAuth: []
+  "/api/files/{file_id}":
+    get:
+      tags:
+        - "Files"
+      summary: "Get a specific file by ID"
+      description: "# Errors\nReturns an error if database operations fail or file not found."
+      operationId: "get_file"
+      parameters:
+        - name: "file_id"
+          in: "path"
+          description: "UUID of the file to retrieve details for"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "File details retrieved with download URL"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/UserFileInfo"}
+        "401":
+          description: "User authentication required to view file"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "403":
+          description: "File access denied - user does not own this file"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "404":
+          description: "Requested file does not exist or was deleted"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Server error generating file download URL"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - cookieAuth: []
+    put:
+      tags:
+        - "Files"
+      summary: "Update file metadata and properties"
+      description: "# Errors\nReturns an error if validation fails, file not found, or database operations fail."
+      operationId: "update_file"
+      parameters:
+        - name: "file_id"
+          in: "path"
+          description: "UUID of the file to update metadata for"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      requestBody:
+        description: "Updated file metadata, filename, or status"
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/UpdateUserFileRequest"}
+        required: true
+      responses:
+        "200":
+          description: "File metadata updated successfully"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/UserFileInfo"}
+        "401":
+          description: "Authentication required to modify files"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "403":
+          description: "Permission denied - cannot modify file owned by another user"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "404":
+          description: "Target file not found for update"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Database error while updating file information"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - cookieAuth: []
+    delete:
+      tags:
+        - "Files"
+      summary: "Permanently delete a user file"
+      description: "# Errors\nReturns an error if file not found, permission denied, or storage operations fail."
+      operationId: "delete_file"
+      parameters:
+        - name: "file_id"
+          in: "path"
+          description: "UUID of the file to permanently delete"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "204":
+          description: "File permanently deleted from storage and database"
+        "401":
+          description: "User authentication needed for file deletion"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "403":
+          description: "Delete operation forbidden - file belongs to another user"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "404":
+          description: "File to delete not found or already removed"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Storage system error during file deletion"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - cookieAuth: []
 components:
   schemas:
     "AuthProvider":
@@ -382,6 +641,38 @@ components:
           description: "Error message describing what went wrong"
           example: "Invalid email or password"
       example: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+    "FileStatus":
+      type: "string"
+      description: "File processing status for user uploaded files"
+      enum:
+        - "uploaded"
+        - "processing"
+        - "processed"
+        - "failed"
+        - "deleted"
+    "FileUploadRequest":
+      type: "object"
+      description: "File upload request schema for multipart form data"
+      required:
+        - "file"
+      properties:
+        "file":
+          type: "string"
+          format: "binary"
+          description: "The file to upload"
+          example: "Binary file content (PDF, image, document, etc.)"
+    "FileUploadResponse":
+      type: "object"
+      description: "Response for file upload operations"
+      required:
+        - "message"
+        - "file"
+      properties:
+        "file": {"$ref": "#/components/schemas/UserFileInfo", "description": "Uploaded file information"}
+        "message":
+          type: "string"
+          description: "Upload confirmation message"
+      example: {"file": {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"description": "Important document"}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
     "ForgotPasswordRequest":
       type: "object"
       description: "Request body for password reset"
@@ -509,6 +800,25 @@ components:
           type: "string"
           description: "Password reset confirmation message"
       example: {"message": "Password has been reset successfully"}
+    "UpdateUserFileRequest":
+      type: "object"
+      description: "Request payload for updating user file metadata, filename, or status"
+      properties:
+        "filename":
+          type:
+            - "string"
+            - "null"
+          description: "New filename (optional)"
+          example: "renamed_document.pdf"
+        "metadata":
+          oneOf:
+            - type: "null"
+            - {"$ref": "#/components/schemas/Value", "description": "Updated metadata (optional)"}
+        "status":
+          oneOf:
+            - type: "null"
+            - {"$ref": "#/components/schemas/FileStatus", "description": "New status (optional)"}
+      example: {"filename": "renamed_document.pdf", "metadata": {"processed_at": "2023-01-01T12:00:00Z"}, "status": "processed"}
     "UpdateUserInfoRequest":
       type: "object"
       description: "Request body for updating user information"
@@ -541,6 +851,76 @@ components:
           description: "Update confirmation message"
         "user": {"$ref": "#/components/schemas/UserInfo", "description": "Updated user information"}
       example: {"message": "User information updated successfully", "user": {"auth_provider": "email", "display_name": "New Display Name", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+    "UserFileInfo":
+      type: "object"
+      description: "User file information for API responses"
+      required:
+        - "id"
+        - "user_id"
+        - "filename"
+        - "original_filename"
+        - "file_size"
+        - "mime_type"
+        - "file_hash"
+        - "status"
+      properties:
+        "created_at":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "File upload timestamp"
+          example: "2023-01-01T00:00:00Z"
+        "file_hash":
+          type: "string"
+          description: "SHA-256 hash of the file"
+          example: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        "file_size":
+          type: "integer"
+          format: "int64"
+          description: "Size of the file in bytes"
+          example: 1048576
+        "filename":
+          type: "string"
+          description: "Current filename"
+          example: "document.pdf"
+        "id":
+          type: "string"
+          format: "uuid"
+          description: "File's unique identifier"
+          example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        "metadata":
+          oneOf:
+            - type: "null"
+            - {"$ref": "#/components/schemas/Value", "description": "Additional file metadata"}
+        "mime_type":
+          type: "string"
+          description: "MIME type of the file"
+          example: "application/pdf"
+        "original_filename":
+          type: "string"
+          description: "Original filename as uploaded by user"
+          example: "My Important Document.pdf"
+        "status": {"$ref": "#/components/schemas/FileStatus", "description": "Current processing status"}
+        "updated_at":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "File last update timestamp"
+          example: "2023-01-01T00:00:00Z"
+        "user_id":
+          type: "string"
+          format: "uuid"
+          description: "ID of the user who owns this file"
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+      example: {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"height": 1080, "width": 1920}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
+    "UserFilesResponse":
+      type: "array"
+      title: "UserFilesResponse"
+      items: {"$ref": "#/components/schemas/UserFileInfo"}
+      description: "Collection of user files with metadata"
+      example: [{"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"description": "Important document"}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}]
     "UserInfo":
       type: "object"
       description: "User information for API responses and internal use"
@@ -591,6 +971,10 @@ components:
           description: "Timestamp of user's last login"
           example: "2023-01-02T12:00:00Z"
       example: {"auth_provider": "email", "avatar_url": "https://example.com/avatar.jpg", "created_at": "2023-01-01T00:00:00", "display_name": "John Doe", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "last_login": "2023-01-02T12:00:00"}
+    "Value":
+      type: "object"
+      title: "JSONValue"
+      description: "Flexible JSON value that can be an object, array, string, number, boolean, or null"
   securitySchemes:
     "cookieAuth":
       type: "apiKey"
@@ -600,3 +984,5 @@ components:
 tags:
   - name: "Auth"
     description: "Authentication and authorization endpoints"
+  - name: "Files"
+    description: "File upload, download, and management endpoints"

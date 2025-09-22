@@ -6,6 +6,27 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 use utoipa::ToSchema;
 
+/// JSON metadata value for flexible file metadata storage
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[schema(
+    title = "FileMetadata",
+    description = "Flexible JSON object for storing file metadata such as dimensions, processing info, or custom attributes",
+    example = json!({"width": 1920, "height": 1080, "description": "Profile image"})
+)]
+pub struct FileMetadataValue(JsonValue);
+
+impl From<JsonValue> for FileMetadataValue {
+    fn from(value: JsonValue) -> Self {
+        Self(value)
+    }
+}
+
+impl From<FileMetadataValue> for JsonValue {
+    fn from(wrapper: FileMetadataValue) -> Self {
+        wrapper.0
+    }
+}
+
 /// File processing status for user uploaded files
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, ToSchema)]
 pub enum FileStatus {
@@ -158,7 +179,9 @@ impl From<UserFile> for UserFileInfo {
 
 /// Request payload for creating a new user file entry
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-#[schema(example = json!({
+#[schema(
+    description = "Request payload for creating a new user file entry with metadata",
+    example = json!({
     "original_filename": "My Important Document.pdf",
     "mime_type": "application/pdf",
     "file_size": 1_048_576,
@@ -181,7 +204,9 @@ pub struct CreateUserFileRequest {
 
 /// Request payload for updating user file information
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-#[schema(example = json!({
+#[schema(
+    description = "Request payload for updating user file metadata, filename, or status",
+    example = json!({
     "filename": "renamed_document.pdf",
     "status": "processed",
     "metadata": {"processed_at": "2023-01-01T12:00:00Z"}
@@ -201,5 +226,37 @@ pub struct UpdateUserFileRequest {
 /// Type alias for user file information responses returned by the API
 pub type UserFileResponse = UserFileInfo;
 
-/// Type alias for a list of user files returned by the API
-pub type UserFilesResponse = Vec<UserFileInfo>;
+/// List of user files returned by file listing endpoints
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+#[schema(
+    title = "UserFilesResponse",
+    description = "Collection of user files with metadata",
+    example = json!([
+        {
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+            "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            "filename": "document.pdf",
+            "original_filename": "My Important Document.pdf",
+            "file_size": 1_048_576,
+            "mime_type": "application/pdf",
+            "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "status": "uploaded",
+            "metadata": {"description": "Important document"},
+            "created_at": "2023-01-01T00:00:00Z",
+            "updated_at": "2023-01-01T00:00:00Z"
+        }
+    ])
+)]
+pub struct UserFilesResponse(pub Vec<UserFileInfo>);
+
+impl From<Vec<UserFileInfo>> for UserFilesResponse {
+    fn from(files: Vec<UserFileInfo>) -> Self {
+        Self(files)
+    }
+}
+
+impl FromIterator<UserFileInfo> for UserFilesResponse {
+    fn from_iter<T: IntoIterator<Item = UserFileInfo>>(iter: T) -> Self {
+        Self(iter.into_iter().collect())
+    }
+}

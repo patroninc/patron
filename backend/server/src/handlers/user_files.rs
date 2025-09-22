@@ -23,6 +23,14 @@ use std::path::Path;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
+/// File upload request schema for multipart form data
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct FileUploadRequest {
+    /// The file to upload
+    #[schema(format = "binary", example = "Binary file content (PDF, image, document, etc.)")]
+    pub file: String,
+}
+
 /// Request query parameters for listing user files with pagination
 #[derive(Debug, Clone, Copy, Deserialize, ToSchema, utoipa::IntoParams)]
 #[schema(example = json!({
@@ -44,11 +52,16 @@ pub struct ListFilesQuery {
     "message": "File uploaded successfully",
     "file": {
         "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+        "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
         "filename": "document.pdf",
         "original_filename": "My Important Document.pdf",
         "file_size": 1_048_576,
         "mime_type": "application/pdf",
-        "status": "uploaded"
+        "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "status": "uploaded",
+        "metadata": {"description": "Important document"},
+        "created_at": "2023-01-01T00:00:00Z",
+        "updated_at": "2023-01-01T00:00:00Z"
     }
 }))]
 pub struct FileUploadResponse {
@@ -64,22 +77,25 @@ pub struct FileUploadResponse {
 /// Returns an error if file upload, database operations, or file system operations fail.
 #[utoipa::path(
     post,
-    path = "/api/files/upload",
-    tag = "files",
+    path = "/api/files/actions/upload",
+    tag = "Files",
     request_body(
-        content = String,
+        content = FileUploadRequest,
         description = "Multipart form data with file field",
-        content_type = "multipart/form-data"
+        content_type = "multipart/form-data",
+        example = json!({
+            "file": "Binary file content - upload any file type (PDF, image, document, etc.)"
+        })
     ),
     responses(
         (status = 201, description = "File uploaded successfully", body = FileUploadResponse),
-        (status = 400, description = "Invalid request or file", body = ErrorResponse),
-        (status = 401, description = "Unauthorized", body = ErrorResponse),
-        (status = 413, description = "File too large", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse)
+        (status = 400, description = "Invalid file upload request or malformed file data", body = ErrorResponse),
+        (status = 401, description = "Authentication required for file upload", body = ErrorResponse),
+        (status = 413, description = "Uploaded file exceeds maximum size limit", body = ErrorResponse),
+        (status = 500, description = "Server error during file upload or storage", body = ErrorResponse)
     ),
     security(
-        ("session" = [])
+        ("cookieAuth" = [])
     )
 )]
 pub async fn upload_file(
@@ -192,15 +208,15 @@ pub async fn upload_file(
 #[utoipa::path(
     get,
     path = "/api/files",
-    tag = "files",
+    tag = "Files",
     params(ListFilesQuery),
     responses(
-        (status = 200, description = "Files retrieved successfully", body = UserFilesResponse),
-        (status = 401, description = "Unauthorized", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse)
+        (status = 200, description = "User files retrieved with pagination support", body = UserFilesResponse),
+        (status = 401, description = "Authentication required to access files", body = ErrorResponse),
+        (status = 500, description = "Database error while retrieving user files", body = ErrorResponse)
     ),
     security(
-        ("session" = [])
+        ("cookieAuth" = [])
     )
 )]
 pub async fn list_files(
@@ -251,19 +267,19 @@ pub async fn list_files(
 #[utoipa::path(
     get,
     path = "/api/files/{file_id}",
-    tag = "files",
+    tag = "Files",
     params(
-        ("file_id" = Uuid, Path, description = "File unique identifier")
+        ("file_id" = Uuid, Path, description = "UUID of the file to retrieve details for")
     ),
     responses(
-        (status = 200, description = "File retrieved successfully", body = UserFileResponse),
-        (status = 404, description = "File not found", body = ErrorResponse),
-        (status = 401, description = "Unauthorized", body = ErrorResponse),
-        (status = 403, description = "Access forbidden", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse)
+        (status = 200, description = "File details retrieved with download URL", body = UserFileResponse),
+        (status = 404, description = "Requested file does not exist or was deleted", body = ErrorResponse),
+        (status = 401, description = "User authentication required to view file", body = ErrorResponse),
+        (status = 403, description = "File access denied - user does not own this file", body = ErrorResponse),
+        (status = 500, description = "Server error generating file download URL", body = ErrorResponse)
     ),
     security(
-        ("session" = [])
+        ("cookieAuth" = [])
     )
 )]
 pub async fn get_file(
@@ -313,27 +329,27 @@ pub async fn get_file(
     Ok(HttpResponse::Ok().json(file_info))
 }
 
-/// Update file metadata
+/// Update file metadata and properties
 ///
 /// # Errors
-/// Returns an error if database operations fail or file not found.
+/// Returns an error if validation fails, file not found, or database operations fail.
 #[utoipa::path(
     put,
     path = "/api/files/{file_id}",
-    tag = "files",
+    tag = "Files",
     params(
-        ("file_id" = Uuid, Path, description = "File unique identifier")
+        ("file_id" = Uuid, Path, description = "UUID of the file to update metadata for")
     ),
-    request_body = UpdateUserFileRequest,
+    request_body(content = UpdateUserFileRequest, description = "Updated file metadata, filename, or status"),
     responses(
-        (status = 200, description = "File updated successfully", body = UserFileResponse),
-        (status = 404, description = "File not found", body = ErrorResponse),
-        (status = 401, description = "Unauthorized", body = ErrorResponse),
-        (status = 403, description = "Access forbidden", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse)
+        (status = 200, description = "File metadata updated successfully", body = UserFileResponse),
+        (status = 404, description = "Target file not found for update", body = ErrorResponse),
+        (status = 401, description = "Authentication required to modify files", body = ErrorResponse),
+        (status = 403, description = "Permission denied - cannot modify file owned by another user", body = ErrorResponse),
+        (status = 500, description = "Database error while updating file information", body = ErrorResponse)
     ),
     security(
-        ("session" = [])
+        ("cookieAuth" = [])
     )
 )]
 pub async fn update_file(
@@ -399,26 +415,26 @@ pub async fn update_file(
     Ok(HttpResponse::Ok().json(UserFileResponse::from(updated_file)))
 }
 
-/// Delete a file (soft delete)
+/// Permanently delete a user file
 ///
 /// # Errors
-/// Returns an error if database operations fail or file not found.
+/// Returns an error if file not found, permission denied, or storage operations fail.
 #[utoipa::path(
     delete,
     path = "/api/files/{file_id}",
-    tag = "files",
+    tag = "Files",
     params(
-        ("file_id" = Uuid, Path, description = "File unique identifier")
+        ("file_id" = Uuid, Path, description = "UUID of the file to permanently delete")
     ),
     responses(
-        (status = 204, description = "File deleted successfully"),
-        (status = 404, description = "File not found", body = ErrorResponse),
-        (status = 401, description = "Unauthorized", body = ErrorResponse),
-        (status = 403, description = "Access forbidden", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse)
+        (status = 204, description = "File permanently deleted from storage and database"),
+        (status = 404, description = "File to delete not found or already removed", body = ErrorResponse),
+        (status = 401, description = "User authentication needed for file deletion", body = ErrorResponse),
+        (status = 403, description = "Delete operation forbidden - file belongs to another user", body = ErrorResponse),
+        (status = 500, description = "Storage system error during file deletion", body = ErrorResponse)
     ),
     security(
-        ("session" = [])
+        ("cookieAuth" = [])
     )
 )]
 pub async fn delete_file(
@@ -451,11 +467,7 @@ pub async fn delete_file(
             actix_web::error::ErrorInternalServerError(format!("Failed to delete from S3: {e}"))
         })?;
 
-    let _rows_affected = diesel::update(files_dsl::user_files.filter(files_dsl::id.eq(file_id)))
-        .set((
-            files_dsl::deleted_at.eq(Utc::now().naive_utc()),
-            files_dsl::updated_at.eq(Utc::now().naive_utc()),
-        ))
+    let _rows_affected = diesel::delete(files_dsl::user_files.filter(files_dsl::id.eq(file_id)))
         .execute(&mut conn)
         .await
         .map_err(|e| ServiceError::Database(e.to_string()))?;
@@ -467,25 +479,27 @@ pub async fn delete_file(
 ///
 /// This endpoint is designed to be used to get file content with proper authentication.
 /// It verifies user access to the file and returns the file content with proper cache headers.
+/// The file content is streamed directly from S3 to minimize memory usage for large files.
 ///
 /// # Errors
 /// Returns an error if file not found, access denied, or S3 operations fail.
 #[utoipa::path(
     get,
     path = "/api/cdn/files/{file_id}",
-    tag = "files",
+    tag = "Files",
     params(
-        ("file_id" = Uuid, Path, description = "File unique identifier")
+        ("file_id" = Uuid, Path, description = "UUID of the file to stream via CDN")
     ),
     responses(
-        (status = 200, description = "File content returned", content_type = "application/octet-stream"),
-        (status = 404, description = "File not found", body = ErrorResponse),
-        (status = 401, description = "Unauthorized", body = ErrorResponse),
-        (status = 403, description = "Access forbidden", body = ErrorResponse),
-        (status = 500, description = "Internal server error", body = ErrorResponse)
+        (status = 200, description = "Streaming file content with CDN-optimized headers", content_type = "application/octet-stream",
+            example = "Binary file content with appropriate Content-Type and Cache-Control headers"),
+        (status = 404, description = "CDN file not found or access denied", body = ErrorResponse),
+        (status = 401, description = "Authentication required for CDN file access", body = ErrorResponse),
+        (status = 403, description = "CDN access forbidden - user cannot access this file", body = ErrorResponse),
+        (status = 500, description = "CDN streaming error from storage backend", body = ErrorResponse)
     ),
     security(
-        ("session" = [])
+        ("cookieAuth" = [])
     )
 )]
 pub async fn serve_file_cdn(
@@ -500,10 +514,9 @@ pub async fn serve_file_cdn(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    // Check if user has access to this file
     let file: UserFile = files_dsl::user_files
         .filter(files_dsl::id.eq(file_id))
-        .filter(files_dsl::user_id.eq(user.id)) // For now, only owner access
+        .filter(files_dsl::user_id.eq(user.id))
         .filter(files_dsl::deleted_at.is_null())
         .first(&mut conn)
         .await
@@ -522,15 +535,13 @@ pub async fn serve_file_cdn(
             actix_web::error::ErrorInternalServerError(format!("Failed to fetch file from S3: {e}"))
         })?;
 
-    // Convert ServiceError stream to actix-web error stream
     let actix_stream = file_stream.map(|chunk_result| {
         chunk_result.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))
     });
 
-    // Return file with CDN-friendly headers using streaming body
     Ok(HttpResponse::Ok()
         .content_type(file.mime_type.as_str())
-        .insert_header(("Cache-Control", "public, max-age=86400, immutable")) // 24 hour cache
+        .insert_header(("Cache-Control", "public, max-age=86400, immutable"))
         .insert_header(("ETag", format!("\"{}\"", file.file_hash)))
         .insert_header((
             "Content-Disposition",

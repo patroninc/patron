@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 6fe8ec86e458da42baccb6dfbec89fe9
+  docChecksum: 07ab658efd152b8659be83841630b34a
   docVersion: 1.0.0
-  speakeasyVersion: 1.618.0
-  generationVersion: 2.702.0
-  releaseVersion: 0.4.12
-  configChecksum: 26732b4d593d3c2b3d4bd018218790bf
+  speakeasyVersion: 1.622.1
+  generationVersion: 2.709.0
+  releaseVersion: 0.5.0
+  configChecksum: ee801377d64403c3b5584173770bcb8d
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -14,9 +14,9 @@ management:
 features:
   typescript:
     additionalDependencies: 0.1.0
-    core: 3.21.22
+    core: 3.21.23
     defaultEnabledRetries: 0.1.0
-    devContainers: 2.90.0
+    devContainers: 2.90.1
     enumUnions: 0.1.0
     envVarSecurityUsage: 0.1.2
     globalSecurity: 2.82.14
@@ -29,6 +29,7 @@ features:
     responseFormat: 0.2.3
     retries: 2.83.0
     sdkHooks: 0.3.0
+    uploadStreams: 0.1.0
 generatedFiles:
   - .devcontainer/README.md
   - .devcontainer/devcontainer.json
@@ -42,12 +43,21 @@ generatedFiles:
   - docs/models/authprovider.md
   - docs/models/checkemailrequest.md
   - docs/models/errors/errorresponse.md
+  - docs/models/filestatus.md
+  - docs/models/filet.md
+  - docs/models/fileuploadrequest.md
+  - docs/models/fileuploadresponse.md
   - docs/models/forgotpasswordrequest.md
   - docs/models/forgotpasswordresponse.md
   - docs/models/loginrequest.md
   - docs/models/loginresponse.md
   - docs/models/logoutresponse.md
+  - docs/models/operations/deletefilerequest.md
+  - docs/models/operations/getfilerequest.md
   - docs/models/operations/googleauthcallbackrequest.md
+  - docs/models/operations/listfilesrequest.md
+  - docs/models/operations/servefilecdnrequest.md
+  - docs/models/operations/updatefilerequest.md
   - docs/models/operations/verifyemailrequest.md
   - docs/models/registerrequest.md
   - docs/models/registerresponse.md
@@ -55,10 +65,14 @@ generatedFiles:
   - docs/models/resetpasswordrequest.md
   - docs/models/resetpasswordresponse.md
   - docs/models/security.md
+  - docs/models/updateuserfilerequest.md
   - docs/models/updateuserinforequest.md
   - docs/models/updateuserinforesponse.md
+  - docs/models/userfileinfo.md
   - docs/models/userinfo.md
+  - docs/models/value.md
   - docs/sdks/auth/README.md
+  - docs/sdks/files/README.md
   - docs/sdks/patronts/README.md
   - eslint.config.mjs
   - examples/.env.template
@@ -80,6 +94,12 @@ generatedFiles:
   - src/funcs/authResetPassword.ts
   - src/funcs/authUpdateUserInfo.ts
   - src/funcs/authVerifyEmail.ts
+  - src/funcs/filesDeleteFile.ts
+  - src/funcs/filesGetFile.ts
+  - src/funcs/filesListFiles.ts
+  - src/funcs/filesServeFileCdn.ts
+  - src/funcs/filesUpdateFile.ts
+  - src/funcs/filesUploadFile.ts
   - src/hooks/hooks.ts
   - src/hooks/index.ts
   - src/hooks/types.ts
@@ -109,14 +129,22 @@ generatedFiles:
   - src/models/errors/patrontserror.ts
   - src/models/errors/responsevalidationerror.ts
   - src/models/errors/sdkvalidationerror.ts
+  - src/models/filestatus.ts
+  - src/models/fileuploadrequest.ts
+  - src/models/fileuploadresponse.ts
   - src/models/forgotpasswordrequest.ts
   - src/models/forgotpasswordresponse.ts
   - src/models/index.ts
   - src/models/loginrequest.ts
   - src/models/loginresponse.ts
   - src/models/logoutresponse.ts
+  - src/models/operations/deletefile.ts
+  - src/models/operations/getfile.ts
   - src/models/operations/googleauthcallback.ts
   - src/models/operations/index.ts
+  - src/models/operations/listfiles.ts
+  - src/models/operations/servefilecdn.ts
+  - src/models/operations/updatefile.ts
   - src/models/operations/verifyemail.ts
   - src/models/registerrequest.ts
   - src/models/registerresponse.ts
@@ -124,10 +152,14 @@ generatedFiles:
   - src/models/resetpasswordrequest.ts
   - src/models/resetpasswordresponse.ts
   - src/models/security.ts
+  - src/models/updateuserfilerequest.ts
   - src/models/updateuserinforequest.ts
   - src/models/updateuserinforesponse.ts
+  - src/models/userfileinfo.ts
   - src/models/userinfo.ts
+  - src/models/value.ts
   - src/sdk/auth.ts
+  - src/sdk/files.ts
   - src/sdk/index.ts
   - src/sdk/sdk.ts
   - src/types/async.ts
@@ -244,6 +276,72 @@ examples:
       responses:
         "200":
           application/json: {"message": "User information updated successfully", "user": {"auth_provider": "email", "display_name": "New Display Name", "email": "user@example.com", "email_verified": true, "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"}}
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  serve_file_cdn:
+    speakeasy-default-serve-file-cdn:
+      parameters:
+        path:
+          file_id: "39974a06-0f39-432d-896c-ec8ec5a187f3"
+      responses:
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  list_files:
+    speakeasy-default-list-files:
+      responses:
+        "200":
+          application/json: [{"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}]
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  upload_file:
+    speakeasy-default-upload-file:
+      requestBody:
+        multipart/form-data: {"file": "Binary file content (PDF, image, document, etc.)"}
+      responses:
+        "201":
+          application/json: {"file": {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
+        "400":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  get_file:
+    speakeasy-default-get-file:
+      parameters:
+        path:
+          file_id: "b9989da6-aed4-4643-949a-a7c28d664def"
+      responses:
+        "200":
+          application/json: {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  update_file:
+    speakeasy-default-update-file:
+      parameters:
+        path:
+          file_id: "ce621f1a-00d2-437b-b1d0-5650eed83f65"
+      requestBody:
+        application/json: {"filename": "renamed_document.pdf", "metadata": {}, "status": "processed"}
+      responses:
+        "200":
+          application/json: {"created_at": "2023-01-01T00:00:00Z", "file_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "file_size": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mime_type": "application/pdf", "original_filename": "My Important Document.pdf", "status": "uploaded", "updated_at": "2023-01-01T00:00:00Z", "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  delete_file:
+    speakeasy-default-delete-file:
+      parameters:
+        path:
+          file_id: "9d527cd7-448b-40b4-9b53-301ef075d563"
+      responses:
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
