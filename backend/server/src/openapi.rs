@@ -3,9 +3,23 @@ use crate::handlers::auth::{
     LogoutResponse, RegisterRequest, RegisterResponse, ResendVerificationResponse,
     ResetPasswordRequest, ResetPasswordResponse, UpdateUserInfoRequest, UpdateUserInfoResponse,
 };
+use crate::handlers::user_files::{FileUploadRequest, FileUploadResponse};
 use shared::models::auth::{UserInfo, UserInfoResponse};
+use shared::models::posts::{
+    CreatePostRequest, PostResponse, PostsListResponse, UpdatePostRequest,
+};
+use shared::models::series::{
+    CreateSeriesRequest, SeriesListResponse, SeriesResponse, UpdateSeriesRequest,
+};
+use shared::models::user_files::{
+    FileStatus, UpdateUserFileRequest, UserFileInfo, UserFileResponse, UserFilesResponse,
+};
 use utoipa::{
-    openapi::security::{ApiKey, ApiKeyValue, SecurityScheme},
+    openapi::{
+        schema::{ObjectBuilder, Schema},
+        security::{ApiKey, ApiKeyValue, SecurityScheme},
+        RefOr,
+    },
     Modify, OpenApi,
 };
 
@@ -37,6 +51,22 @@ use utoipa::{
         crate::handlers::auth::check_email,
         crate::handlers::auth::resend_verification_email,
         crate::handlers::auth::update_user_info,
+        crate::handlers::user_files::upload_file,
+        crate::handlers::user_files::list_files,
+        crate::handlers::user_files::get_file,
+        crate::handlers::user_files::update_file,
+        crate::handlers::user_files::delete_file,
+        crate::handlers::user_files::serve_file_cdn,
+        crate::handlers::series::create_series,
+        crate::handlers::series::list_series,
+        crate::handlers::series::get_series,
+        crate::handlers::series::update_series,
+        crate::handlers::series::delete_series,
+        crate::handlers::posts::create_post,
+        crate::handlers::posts::list_posts,
+        crate::handlers::posts::get_post,
+        crate::handlers::posts::update_post,
+        crate::handlers::posts::delete_post,
     ),
     components(
         schemas(
@@ -54,12 +84,30 @@ use utoipa::{
             CheckEmailRequest,
             ResendVerificationResponse,
             UpdateUserInfoRequest,
-            UpdateUserInfoResponse
+            UpdateUserInfoResponse,
+            FileStatus,
+            UserFileInfo,
+            UserFileResponse,
+            UserFilesResponse,
+            UpdateUserFileRequest,
+            FileUploadRequest,
+            FileUploadResponse,
+            SeriesResponse,
+            SeriesListResponse,
+            CreateSeriesRequest,
+            UpdateSeriesRequest,
+            PostResponse,
+            PostsListResponse,
+            CreatePostRequest,
+            UpdatePostRequest
         )
     ),
     modifiers(&SecurityAddon),
     tags(
         (name = "Auth", description = "Authentication and authorization endpoints"),
+        (name = "Files", description = "File upload, download, and management endpoints"),
+        (name = "Series", description = "Series creation and management endpoints"),
+        (name = "Posts", description = "Post creation and management endpoints"),
     ),
     servers(
         (url = "http://localhost:8080", description = "Local development server"),
@@ -75,6 +123,7 @@ struct SecurityAddon;
 impl Modify for SecurityAddon {
     fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
         if let Some(components) = openapi.components.as_mut() {
+            // Add security scheme
             let mut cookie_auth =
                 SecurityScheme::ApiKey(ApiKey::Cookie(ApiKeyValue::new("sessionid")));
             if let SecurityScheme::ApiKey(ApiKey::Cookie(ref mut cookie)) = cookie_auth {
@@ -82,9 +131,17 @@ impl Modify for SecurityAddon {
                     Some("Session-based authentication using secure HTTP-only cookies".to_owned());
             }
             components.add_security_scheme("cookieAuth", cookie_auth);
-        } else {
-            // Optionally log or handle the missing components case
-            // e.g., log::warn!("OpenAPI components are missing, cannot add security scheme.");
+
+            // Add proper schema for Value component (serde_json::Value)
+            let value_schema = Schema::Object(
+                ObjectBuilder::new()
+                    .title(Some("JSONValue"))
+                    .description(Some("Flexible JSON value that can be an object, array, string, number, boolean, or null"))
+                    .build()
+            );
+            let _ = components
+                .schemas
+                .insert("Value".to_owned(), RefOr::T(value_schema));
         }
     }
 }

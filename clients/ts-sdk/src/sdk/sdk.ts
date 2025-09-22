@@ -4,10 +4,28 @@
 
 import { ClientSDK } from "../lib/sdks.js";
 import { Auth } from "./auth.js";
+import { Files } from "./files.js";
+import { Posts } from "./posts.js";
+import { Series } from "./series.js";
 
 export class Patronts extends ClientSDK {
   private _auth?: Auth;
   get auth(): Auth {
     return (this._auth ??= new Auth(this._options));
+  }
+
+  private _files?: Files;
+  get files(): Files {
+    return (this._files ??= new Files(this._options));
+  }
+
+  private _posts?: Posts;
+  get posts(): Posts {
+    return (this._posts ??= new Posts(this._options));
+  }
+
+  private _series?: Series;
+  get series(): Series {
+    return (this._series ??= new Series(this._options));
   }
 }

@@ -3,7 +3,6 @@
  */
 
 import * as z from "zod";
-import { remap as remap$ } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { Result as SafeParseResult } from "../types/fp.js";
 import {
@@ -57,39 +56,30 @@ export const UserInfo$inboundSchema: z.ZodType<
   z.ZodTypeDef,
   unknown
 > = z.object({
-  auth_provider: AuthProvider$inboundSchema,
-  avatar_url: z.nullable(z.string()).optional(),
-  created_at: z.nullable(
+  authProvider: AuthProvider$inboundSchema,
+  avatarUrl: z.nullable(z.string()).optional(),
+  createdAt: z.nullable(
     z.string().datetime({ offset: true }).transform(v => new Date(v)),
   ).optional(),
-  display_name: z.nullable(z.string()).optional(),
+  displayName: z.nullable(z.string()).optional(),
   email: z.string(),
-  email_verified: z.boolean(),
+  emailVerified: z.boolean(),
   id: z.string(),
-  last_login: z.nullable(
+  lastLogin: z.nullable(
     z.string().datetime({ offset: true }).transform(v => new Date(v)),
   ).optional(),
-}).transform((v) => {
-  return remap$(v, {
-    "auth_provider": "authProvider",
-    "avatar_url": "avatarUrl",
-    "created_at": "createdAt",
-    "display_name": "displayName",
-    "email_verified": "emailVerified",
-    "last_login": "lastLogin",
-  });
 });
 
 /** @internal */
 export type UserInfo$Outbound = {
-  auth_provider: string;
-  avatar_url?: string | null | undefined;
-  created_at?: string | null | undefined;
-  display_name?: string | null | undefined;
+  authProvider: string;
+  avatarUrl?: string | null | undefined;
+  createdAt?: string | null | undefined;
+  displayName?: string | null | undefined;
   email: string;
-  email_verified: boolean;
+  emailVerified: boolean;
   id: string;
-  last_login?: string | null | undefined;
+  lastLogin?: string | null | undefined;
 };
 
 /** @internal */
@@ -106,15 +96,6 @@ export const UserInfo$outboundSchema: z.ZodType<
   emailVerified: z.boolean(),
   id: z.string(),
   lastLogin: z.nullable(z.date().transform(v => v.toISOString())).optional(),
-}).transform((v) => {
-  return remap$(v, {
-    authProvider: "auth_provider",
-    avatarUrl: "avatar_url",
-    createdAt: "created_at",
-    displayName: "display_name",
-    emailVerified: "email_verified",
-    lastLogin: "last_login",
-  });
 });
 
 /**

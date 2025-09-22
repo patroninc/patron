@@ -13,26 +13,15 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../components/u
 import { useNavigate } from 'react-router';
 import { patronClient } from '../lib/utils';
 import { useSidebar } from './ui/use-sidebar';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
- * @param {object} props - Props to be passed to the UserDropdown component.
- * @param {object} props.user - The user object.
- * @param {string} props.user.name - The user's name.
- * @param {string} props.user.email - The user's email.
- * @param {string} props.user.avatar - The user's avatar URL.
  * @returns {JSX.Element} The UserDropdown component.
  */
-export const UserDropdown = ({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}): JSX.Element => {
+export const UserDropdown = (): JSX.Element => {
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <SidebarMenu>
@@ -44,12 +33,15 @@ export const UserDropdown = ({
               className="px-[3px] py-0 group-data-[collapsible=icon]:p-0!"
             >
               <Avatar>
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                <AvatarImage
+                  src={user?.avatarUrl ?? undefined}
+                  alt={user?.displayName ?? undefined}
+                />
+                <AvatarFallback>{user?.displayName?.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left">
-                <span className="truncate text-base leading-4 font-bold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate text-base leading-4 font-bold">{user?.displayName}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>

@@ -33,7 +33,7 @@ export default function Login(): JSX.Element {
         { credentials: 'include' },
       );
       setUser(loginResp.user);
-      navigate('/home', { viewTransition: true });
+      navigate('/', { viewTransition: true });
     } catch {
       setError('Invalid email or password');
     } finally {

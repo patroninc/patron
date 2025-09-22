@@ -5,5 +5,6 @@
 export * from "./errorresponse.js";
 export * from "./httpclienterrors.js";
 export * from "./patrontsdefaulterror.js";
+export * from "./patrontserror.js";
 export * from "./responsevalidationerror.js";
 export * from "./sdkvalidationerror.js";

@@ -1,20 +1,25 @@
 use crate::errors::ServiceError;
 use aws_sdk_s3::{presigning::PresigningConfig, primitives::ByteStream, Client};
 use bytes::Bytes;
+use futures_util::stream::{Stream, StreamExt};
+use std::pin::Pin;
+use tokio_util::io::ReaderStream;
 use tracing::instrument;
+
+type S3ObjectStream = Pin<Box<dyn Stream<Item = Result<Bytes, ServiceError>> + Send>>;
 
 /// Service for interacting with AWS S3
 #[derive(Clone, Debug)]
 pub struct S3Service {
     /// AWS S3 client
-    client: Client,
+    pub client: Client,
     /// S3 bucket name
-    bucket: String,
+    pub bucket: String,
 }
 
 impl S3Service {
     /// Create a new `S3Service` instance
-    /// 
+    ///
     /// # Errors
     /// Returns a `ServiceError` if AWS configuration loading fails
     pub async fn new<T: Into<String>>(bucket: T) -> Result<Self, ServiceError> {
@@ -27,7 +32,7 @@ impl S3Service {
     }
 
     /// Upload an object to S3 and return a presigned URL
-    /// 
+    ///
     /// # Errors
     /// Returns a `ServiceError` if the S3 upload fails or presigned URL generation fails
     #[instrument(skip_all, fields(key = %key, bucket = %self.bucket))]
@@ -56,7 +61,7 @@ impl S3Service {
     }
 
     /// Upload an audio clip to S3 and return the URL and key
-    /// 
+    ///
     /// # Errors
     /// Returns a `ServiceError` if the S3 upload or presigned URL generation fails
     #[instrument(skip_all, fields(id = %id, bucket = %self.bucket))]
@@ -71,7 +76,7 @@ impl S3Service {
     }
 
     /// Upload a video to S3 and return the URL and key
-    /// 
+    ///
     /// # Errors
     /// Returns a `ServiceError` if the S3 upload or presigned URL generation fails
     #[instrument(skip_all, fields(id = %id, bucket = %self.bucket))]
@@ -86,7 +91,7 @@ impl S3Service {
     }
 
     /// Generate a presigned URL for getting an object from S3
-    /// 
+    ///
     /// # Errors
     /// Returns a `ServiceError` if presigned URL generation fails
     #[instrument(skip_all, fields(key = %key, bucket = %self.bucket))]
@@ -110,8 +115,25 @@ impl S3Service {
         Ok(url)
     }
 
+    /// Get an object from S3 as a stream
+    ///
+    /// # Errors
+    pub async fn get_object_stream(&self, key: &str) -> Result<S3ObjectStream, ServiceError> {
+        let response = self
+            .client
+            .get_object()
+            .bucket(&self.bucket)
+            .key(key)
+            .send()
+            .await?;
+        let stream = ReaderStream::new(response.body.into_async_read())
+            .map(|result| result.map_err(|e| ServiceError::AwsSdk(e.to_string())));
+
+        Ok(Box::pin(stream))
+    }
+
     /// Deletes an object from the bucket.
-    /// 
+    ///
     /// # Errors
     /// Returns a `ServiceError` if the S3 delete operation fails
     #[instrument(skip_all, fields(key = %key, bucket = %self.bucket))]

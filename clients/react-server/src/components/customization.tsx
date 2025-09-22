@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -77,6 +78,7 @@ const defaultBanners = [
  */
 interface AvatarSelectorProps {
   currentAvatar?: string;
+  // eslint-disable-next-line no-unused-vars
   onSelect: (selectedAvatar: string) => void;
   onClose: () => void;
 }
@@ -195,6 +197,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
  */
 interface BannerSelectorProps {
   currentBanner?: string;
+  // eslint-disable-next-line no-unused-vars
   onSelect: (selectedBanner: string) => void;
   onClose: () => void;
 }

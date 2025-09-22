@@ -52,6 +52,14 @@ pub enum ServiceError {
     /// Represents a configuration error with a message.
     #[error("Configuration error: {0}")]
     Config(String),
+
+    /// Represents a conflict error (e.g., duplicate key) with a message.
+    #[error("Conflict: {0}")]
+    Conflict(String),
+
+    /// Represents a forbidden/access denied error with a message.
+    #[error("Forbidden: {0}")]
+    Forbidden(String),
 }
 
 impl From<aws_sdk_s3::Error> for ServiceError {
@@ -105,6 +113,8 @@ impl ResponseError for ServiceError {
         match *self {
             Self::NotFound(_) => HttpResponse::NotFound().json(error_response),
             Self::Config(_) => HttpResponse::BadRequest().json(error_response),
+            Self::Conflict(_) => HttpResponse::Conflict().json(error_response),
+            Self::Forbidden(_) => HttpResponse::Forbidden().json(error_response),
             Self::AwsSdk(_)
             | Self::Http(_)
             | Self::Unknown(_)

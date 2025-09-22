@@ -3,7 +3,6 @@
  */
 
 import * as z from "zod";
-import { remap as remap$ } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { Result as SafeParseResult } from "../types/fp.js";
 import { SDKValidationError } from "./errors/sdkvalidationerror.js";
@@ -32,21 +31,16 @@ export const ResetPasswordRequest$inboundSchema: z.ZodType<
   z.ZodTypeDef,
   unknown
 > = z.object({
-  new_password: z.string(),
+  newPassword: z.string(),
   token: z.string(),
-  user_id: z.string(),
-}).transform((v) => {
-  return remap$(v, {
-    "new_password": "newPassword",
-    "user_id": "userId",
-  });
+  userId: z.string(),
 });
 
 /** @internal */
 export type ResetPasswordRequest$Outbound = {
-  new_password: string;
+  newPassword: string;
   token: string;
-  user_id: string;
+  userId: string;
 };
 
 /** @internal */
@@ -58,11 +52,6 @@ export const ResetPasswordRequest$outboundSchema: z.ZodType<
   newPassword: z.string(),
   token: z.string(),
   userId: z.string(),
-}).transform((v) => {
-  return remap$(v, {
-    newPassword: "new_password",
-    userId: "user_id",
-  });
 });
 
 /**

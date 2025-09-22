@@ -35,6 +35,7 @@ pub struct RegisterRequest {
     /// User's password (minimum 8 characters)
     pub password: String,
     /// Optional display name for the user
+    #[serde(rename = "displayName")]
     pub display_name: Option<String>,
 }
 
@@ -45,9 +46,9 @@ pub struct RegisterRequest {
     "user": {
         "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
         "email": "user@example.com",
-        "display_name": "John Doe",
-        "auth_provider": "email",
-        "email_verified": false
+        "displayName": "John Doe",
+        "authProvider": "email",
+        "emailVerified": false
     }
 }))]
 pub struct RegisterResponse {
@@ -77,9 +78,9 @@ pub struct LoginRequest {
     "user": {
         "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
         "email": "user@example.com",
-        "display_name": "John Doe",
-        "auth_provider": "email",
-        "email_verified": true
+        "displayName": "John Doe",
+        "authProvider": "email",
+        "emailVerified": true
     }
 }))]
 pub struct LoginResponse {
@@ -123,14 +124,16 @@ pub struct ResendVerificationResponse {
 /// Request body for updating user information
 #[derive(Deserialize, ToSchema, Debug)]
 #[schema(example = json!({
-    "display_name": "New Display Name",
-    "avatar_url": "https://example.com/new-avatar.jpg",
+    "displayName": "New Display Name",
+    "avatarUrl": "https://example.com/new-avatar.jpg",
     "description": "A brief description about myself"
 }))]
 pub struct UpdateUserInfoRequest {
     /// Updated display name for the user
+    #[serde(rename = "displayName")]
     pub display_name: Option<String>,
     /// Updated avatar URL for the user
+    #[serde(rename = "avatarUrl")]
     pub avatar_url: Option<String>,
     /// Updated description for the user
     pub description: Option<String>,
@@ -143,9 +146,9 @@ pub struct UpdateUserInfoRequest {
     "user": {
         "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
         "email": "user@example.com",
-        "display_name": "New Display Name",
-        "auth_provider": "email",
-        "email_verified": true
+        "displayName": "New Display Name",
+        "authProvider": "email",
+        "emailVerified": true
     }
 }))]
 pub struct UpdateUserInfoResponse {
@@ -180,15 +183,17 @@ pub struct ForgotPasswordResponse {
 #[derive(Deserialize, ToSchema, Debug)]
 #[schema(example = json!({
     "token": "550e8400-e29b-41d4-a716-446655440000",
-    "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-    "new_password": "newpassword123"
+    "userId": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+    "newPassword": "newpassword123"
 }))]
 pub struct ResetPasswordRequest {
     /// Password reset token
     pub token: String,
     /// User ID associated with the reset token
+    #[serde(rename = "userId")]
     pub user_id: Uuid,
     /// New password (minimum 8 characters)
+    #[serde(rename = "newPassword")]
     pub new_password: String,
 }
 
@@ -825,9 +830,9 @@ pub async fn login(
             example = json!({
                 "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
                 "email": "user@example.com",
-                "auth_provider": "email",
-                "email_verified": true,
-                "created_at": "2023-01-01T00:00:00"
+                "authProvider": "email",
+                "emailVerified": true,
+                "createdAt": "2023-01-01T00:00:00"
             })
         ),
         (status = 401, description = "User authentication required to access profile", body = ErrorResponse,

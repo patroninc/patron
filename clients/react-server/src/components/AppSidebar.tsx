@@ -15,7 +15,6 @@ import {
 import { JSX } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { UserDropdown } from './user-dropdown';
-import { useAuth } from '@/contexts/AuthContext';
 const items = [
   {
     title: 'Dashboard',
@@ -50,7 +49,6 @@ const items = [
 export const AppSidebar = (): JSX.Element => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   return (
     <Sidebar collapsible="icon">
@@ -91,13 +89,7 @@ export const AppSidebar = (): JSX.Element => {
       </SidebarContent>
 
       <SidebarFooter>
-        <UserDropdown
-          user={{
-            name: user!.displayName!,
-            email: user!.email,
-            avatar: 'https://i.pinimg.com/736x/fa/b2/93/fab293035b25686034d03b3e7528f594.jpg',
-          }}
-        />
+        <UserDropdown />
       </SidebarFooter>
     </Sidebar>
   );
