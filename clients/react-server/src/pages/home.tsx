@@ -9,13 +9,13 @@ import FocusRing from '@/components/focus-ring';
 import About from '@/components/about';
 import Tiers from '@/components/tiers';
 import { Customization } from '@/components/customization';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * @returns {JSX.Element} The Home component
  */
 export const Home = (): JSX.Element => {
-  const pfp = 'https://i.pinimg.com/736x/fa/b2/93/fab293035b25686034d03b3e7528f594.jpg';
-  const name = 'Bobby Fischer';
+  const { user } = useAuth();
   const description = 'creating high quality chess lessons';
   const urlSlug = 'bobby';
 
@@ -135,14 +135,14 @@ export const Home = (): JSX.Element => {
     <MainLayout>
       <div className="bg-secondary-primary relative flex h-[300px] w-full items-center gap-[25px] border-b-5 border-b-black p-[50px] px-[100px]">
         <div className="relative m-[5px] size-[190px]">
-          <img src={pfp} alt="pfp" className="size-full object-cover" />
+          <img src={user?.avatarUrl ?? undefined} alt="pfp" className="size-full object-cover" />
           <PxBorder width={5} radius="lg" />
         </div>
         <div className="flex flex-col gap-5">
           <div className="relative m-[5px] w-max">
             <PxBorder width={5} radius="md" />
             <div className="bg-white px-[10px] py-[5px]">
-              <h2 className="text-3xl">{name}</h2>
+              <h2 className="text-3xl">{user?.displayName ?? undefined}</h2>
             </div>
           </div>
           <div className="relative m-[5px]">
@@ -160,7 +160,7 @@ export const Home = (): JSX.Element => {
             <p className="text-base">patron.com/{urlSlug}</p>
           </div>
         </div>
-        <Customization />
+        <Customization initialData={user} />
       </div>
       <main className="p-[50px] px-[100px]">
         <Tabs className="gap-10" defaultValue="all">
