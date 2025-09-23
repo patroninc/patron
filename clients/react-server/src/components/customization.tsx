@@ -8,9 +8,9 @@ import { JSX } from 'react';
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -28,8 +28,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { cn } from '@/lib/utils';
+import { cn, patronClient } from '@/lib/utils';
 import PxBorder from './px-border';
+import { UserInfo } from 'patronts/models';
 // Validation schema
 const customizationSchema = z.object({
   displayName: z
@@ -47,7 +48,7 @@ type CustomizationFormData = z.infer<typeof customizationSchema>;
  * Props for the Customization component.
  */
 interface CustomizationProps {
-  initialData?: Partial<CustomizationFormData>;
+  initialData?: UserInfo;
 }
 
 // Default avatars
@@ -79,7 +80,7 @@ const defaultBanners = [
 interface AvatarSelectorProps {
   currentAvatar?: string;
   // eslint-disable-next-line no-unused-vars
-  onSelect: (selectedAvatar: string) => void;
+  onSelect: (selectedAvatar: string, file?: File) => void;
   onClose: () => void;
 }
 
@@ -98,6 +99,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
   onClose,
 }): JSX.Element => {
   const [selectedAvatar, setSelectedAvatar] = React.useState(currentAvatar || '');
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   /**
@@ -108,6 +110,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
@@ -121,7 +124,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
    * Handles saving the selected avatar.
    */
   const handleSave = (): void => {
-    onSelect(selectedAvatar);
+    onSelect(selectedAvatar, selectedFile || undefined);
     onClose();
   };
 
@@ -153,7 +156,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
       </div>
 
       {/* Default Avatars */}
-      <div className="space-y-2">
+      {/* <div className="space-y-2">
         <h4 className="my-5 text-center text-sm font-bold">or pick a default avatar</h4>
         <div className="grid grid-cols-4 gap-2">
           {defaultAvatars.map((avatarUrl, index) => (
@@ -179,7 +182,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
             </Button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-2 pt-4">
@@ -324,14 +327,15 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
   const [showAvatarSelector, setShowAvatarSelector] = React.useState(false);
   const [showBannerSelector, setShowBannerSelector] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
 
   const form = useForm<CustomizationFormData>({
     resolver: zodResolver(customizationSchema),
     defaultValues: {
       displayName: initialData?.displayName || '',
-      description: initialData?.description || '',
-      profilePicture: initialData?.profilePicture || '',
-      banner: initialData?.banner || '',
+      // description: initialData?.description || '',
+      profilePicture: initialData?.avatarUrl || '',
+      // banner: initialData?.banner || '',
     },
   });
 
@@ -345,13 +349,43 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
    */
   const onSubmit = async (data: CustomizationFormData): Promise<void> => {
     setIsLoading(true);
+
     try {
-      console.log('Customization data:', data);
-      // Here you would typically make an API call to save the data
-      // await api.updateUserProfile(data);
+      // Upload file if one was selected
+      if (uploadedFile) {
+        try {
+          const uploadedFileResult = await patronClient.files.uploadFile({
+            file: uploadedFile,
+          });
+          const avatarUrl = await patronClient.files.serveFileCdn({
+            fileId: uploadedFileResult.file.id,
+          });
+
+          const updateUserInfo = await patronClient.auth.updateUserInfo({
+            avatarUrl: avatarUrl as unknown as string,
+            displayName: data.displayName || undefined,
+            description: data.description || undefined,
+          });
+
+          console.log('Update user info:', updateUserInfo);
+          form.setValue('profilePicture', avatarUrl as unknown as string);
+        } catch (avatarError) {
+          console.error('Error uploading avatar:', avatarError);
+          form.setError('profilePicture', {
+            type: 'manual',
+            message: 'Failed to upload avatar. Please try again.',
+          });
+          return; // Don't close the dialog if avatar upload fails
+        }
+      }
+
       setIsOpen(false);
     } catch (error) {
       console.error('Error saving customization:', error);
+      form.setError('root', {
+        type: 'manual',
+        message: 'Failed to save profile. Please try again.',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -361,9 +395,11 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
    * Handles avatar selection.
    *
    * @param avatar - The selected avatar URL
+   * @param file - The uploaded file object
    */
-  const handleAvatarSelect = (avatar: string): void => {
+  const handleAvatarSelect = (avatar: string, file?: File): void => {
     form.setValue('profilePicture', avatar);
+    setUploadedFile(file || null);
     setShowAvatarSelector(false);
   };
 
@@ -393,36 +429,59 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
         <AlertDialogContent className="max-w-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Customize Your Profile</AlertDialogTitle>
+            <AlertDialogDescription>
+              Update your display name, profile picture, and other profile information.
+            </AlertDialogDescription>
           </AlertDialogHeader>
 
           <Form {...form}>
             <form onSubmit={(e) => void form.handleSubmit(onSubmit)(e)} className="space-y-6">
               {/* Profile Picture and Banner Section */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Profile Picture</Label>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => setShowAvatarSelector(true)}
-                    className="w-full"
-                  >
-                    Update Profile Picture
-                    <Camera />
-                  </Button>
-                </div>
-                <div className="space-y-2">
-                  <Label>Banner</Label>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => setShowBannerSelector(true)}
-                    className="w-full"
-                  >
-                    Update Banner
-                    <Camera />
-                  </Button>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="profilePicture"
+                  render={() => (
+                    <FormItem className="flex flex-col gap-2">
+                      <FormLabel className="max-h-3.5">Profile Picture</FormLabel>
+                      <FormControl>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          shadow={false}
+                          onClick={() => setShowAvatarSelector(true)}
+                          className="w-full"
+                        >
+                          Update Profile Picture
+                          <Camera />
+                        </Button>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="banner"
+                  render={() => (
+                    <FormItem className="flex flex-col gap-2">
+                      <FormLabel className="max-h-3.5">Banner</FormLabel>
+                      <FormControl>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          shadow={false}
+                          onClick={() => setShowBannerSelector(true)}
+                          className="w-full"
+                        >
+                          Update Banner
+                          <Camera />
+                        </Button>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               {/* Display Name */}
@@ -458,11 +517,18 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
                 )}
               />
 
-              <AlertDialogFooter>
+              {/* Root Error Display */}
+              {form.formState.errors.root && (
+                <div className="bg-destructive/15 text-destructive rounded-md p-3 text-sm">
+                  {form.formState.errors.root.message}
+                </div>
+              )}
+
+              <AlertDialogFooter className="items-center">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction type="submit" disabled={isLoading}>
+                <Button shadow={false} type="submit" disabled={isLoading}>
                   {isLoading ? 'Saving...' : 'Save Changes'}
-                </AlertDialogAction>
+                </Button>
               </AlertDialogFooter>
             </form>
           </Form>
@@ -474,6 +540,9 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Choose Profile Picture</AlertDialogTitle>
+            <AlertDialogDescription>
+              Make sure your image is at least 200x200 pixels and 1x1 ratio.
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AvatarSelector
             currentAvatar={watchedProfilePicture}
@@ -488,6 +557,10 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Choose Banner</AlertDialogTitle>
+            <AlertDialogDescription>
+              Select a banner background from the default options or upload your own custom banner
+              image.
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <BannerSelector
             currentBanner={watchedBanner}
