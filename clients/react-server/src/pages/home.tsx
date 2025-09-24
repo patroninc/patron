@@ -10,6 +10,7 @@ import About from '@/components/about';
 import Tiers from '@/components/tiers';
 import { Customization } from '@/components/customization';
 import { useAuth } from '@/contexts/AuthContext';
+import NewSerialForm from '@/components/new-serial-form';
 
 /**
  * @returns {JSX.Element} The Home component
@@ -226,17 +227,21 @@ export const Home = (): JSX.Element => {
             ))}
           </TabsContent>
           <TabsContent className="grid grid-cols-4 gap-10" value="serials">
-            <Link
-              to="/new-serial"
-              className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none"
-            >
-              <PxBorder width={3} radius="lg" />
-              <FocusRing width={3} />
-              <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
-                <PlusIcon size={70} />
-                <h2 className="text-3xl">Create new serial</h2>
-              </div>
-            </Link>
+            <NewSerialForm
+              trigger={
+                <button
+                  type="button"
+                  className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none"
+                >
+                  <PxBorder width={3} radius="lg" />
+                  <FocusRing width={3} />
+                  <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
+                    <PlusIcon size={70} />
+                    <h2 className="text-3xl">Create new serial</h2>
+                  </div>
+                </button>
+              }
+            />
             {serials.map((serial) => (
               <Link className="group outline-none" to={`/serial/${serial.id}`}>
                 <div
