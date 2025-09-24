@@ -1,0 +1,33 @@
+{
+  "name": "@clients/ts-sdk-tests",
+  "version": "1.0.0",
+  "description": "Jest tests for the Patron TypeScript SDK",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint --cache --max-warnings=0 src",
+    "lint:fix": "eslint --cache --max-warnings=0 src --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "eslint": "^9.19.0",
+    "globals": "^15.14.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.26.0"
+  },
+  "dependencies": {
+    "patronts": "workspace:*"
+  }
+}
