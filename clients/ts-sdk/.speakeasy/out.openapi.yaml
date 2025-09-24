@@ -396,7 +396,8 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/LogoutResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
   "/api/auth/me":
     get:
       tags:
@@ -418,7 +419,8 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
               example: {"code": "AUTH_REQUIRED", "error": "Not authenticated"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "getCurrentUser"
     put:
       tags:
@@ -451,7 +453,8 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
               example: {"code": "DATABASE_ERROR", "error": "Database connection failed"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "updateUserInfo"
   "/api/auth/register":
     post:
@@ -516,7 +519,8 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
               example: {"code": "EMAIL_SERVICE_ERROR", "error": "Email service unavailable"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "resendVerificationEmail"
   "/api/auth/reset-password":
     post:
@@ -622,7 +626,8 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "serveCdn"
   "/api/files":
     get:
@@ -667,7 +672,8 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "list"
   "/api/files/actions/upload":
     post:
@@ -710,7 +716,8 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "upload"
   "/api/files/{file_id}":
     get:
@@ -754,7 +761,8 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "get"
     put:
       tags:
@@ -803,7 +811,8 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "update"
     delete:
       tags:
@@ -843,7 +852,8 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
       x-speakeasy-name-override: "delete"
   "/api/posts":
     get:

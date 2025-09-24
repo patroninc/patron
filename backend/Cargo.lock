@@ -3424,6 +3424,7 @@ dependencies = [
  "actix-session",
  "actix-web",
  "aws-config",
+ "aws-credential-types",
  "aws-sdk-s3",
  "bb8",
  "bytes",

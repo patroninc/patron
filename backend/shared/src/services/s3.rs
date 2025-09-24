@@ -1,4 +1,7 @@
 use crate::errors::ServiceError;
+use crate::services::config::AwsConfig;
+use aws_config::{BehaviorVersion, Region};
+use aws_credential_types::{provider::SharedCredentialsProvider, Credentials};
 use aws_sdk_s3::{presigning::PresigningConfig, primitives::ByteStream, Client};
 use bytes::Bytes;
 use futures_util::stream::{Stream, StreamExt};
@@ -18,16 +21,41 @@ pub struct S3Service {
 }
 
 impl S3Service {
-    /// Create a new `S3Service` instance
+    /// Create a new `S3Service` instance using AWS configuration
     ///
     /// # Errors
-    /// Returns a `ServiceError` if AWS configuration loading fails
-    pub async fn new<T: Into<String>>(bucket: T) -> Result<Self, ServiceError> {
-        let config = aws_config::load_from_env().await;
+    /// Returns a `ServiceError` if AWS configuration is invalid
+    pub async fn new(aws_config: AwsConfig) -> Result<Self, ServiceError> {
+        let credentials = Credentials::new(
+            &aws_config.access_key_id,
+            &aws_config.secret_access_key,
+            None,
+            None,
+            "patron-app",
+        );
+
+        let credentials_provider = SharedCredentialsProvider::new(credentials);
+
+        let mut config_builder = aws_config::defaults(BehaviorVersion::latest())
+            .credentials_provider(credentials_provider)
+            .region(Region::new(aws_config.region.clone()));
+
+        if let Some(ref endpoint) = aws_config.s3_host {
+            let endpoint_url =
+                if endpoint.starts_with("http://") || endpoint.starts_with("https://") {
+                    endpoint.clone()
+                } else {
+                    format!("https://{endpoint}")
+                };
+            config_builder = config_builder.endpoint_url(endpoint_url);
+        }
+
+        let config = config_builder.load().await;
         let client = Client::new(&config);
+
         Ok(Self {
             client,
-            bucket: bucket.into(),
+            bucket: aws_config.s3_bucket,
         })
     }
 

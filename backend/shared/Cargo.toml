@@ -34,6 +34,7 @@ actix-session = { workspace = true }
 futures-util = "0.3.31"
 tokio-util = "0.7.16"
 sha2 = "0.10.9"
+aws-credential-types = "1.2.6"
 
 [lints]
 workspace = true

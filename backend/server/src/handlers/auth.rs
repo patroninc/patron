@@ -823,7 +823,7 @@ pub async fn login(
     context_path = "/api",
     tag = "Auth",
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     ),
     responses(
         (status = 200, description = "Current user information", body = UserInfoResponse,
@@ -857,7 +857,7 @@ pub async fn get_me(user: User) -> Result<HttpResponse, actix_web::Error> {
     context_path = "/api",
     tag = "Auth",
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     ),
     responses(
         (status = 200, description = "Successfully logged out", body = LogoutResponse),
@@ -1081,7 +1081,7 @@ pub async fn check_email(
     context_path = "/api",
     tag = "Auth",
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     ),
     responses(
         (status = 200, description = "Verification email sent successfully", body = ResendVerificationResponse),
@@ -1135,7 +1135,7 @@ pub async fn resend_verification_email(
     context_path = "/api",
     tag = "Auth",
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     ),
     request_body(content = UpdateUserInfoRequest, description = "Updated user information"),
     responses(

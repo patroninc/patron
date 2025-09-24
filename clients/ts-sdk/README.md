@@ -134,26 +134,6 @@ async function run() {
 run();
 
 ```
-
-### Per-Operation Security Schemes
-
-Some operations in this SDK require the security scheme to be specified at the request level. For example:
-```typescript
-import { Patronts } from "patronts";
-
-const patronts = new Patronts();
-
-async function run() {
-  const result = await patronts.auth.logout({
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  });
-
-  console.log(result);
-}
-
-run();
-
-```
 <!-- End Authentication [security] -->
 
 <!-- Start Available Resources and Operations [operations] -->
@@ -284,12 +264,15 @@ Certain SDK methods accept files as part of a multi-part request. It is possible
 import { openAsBlob } from "node:fs";
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const result = await patronts.files.upload({
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     file: await openAsBlob("example.file"),
   });
 

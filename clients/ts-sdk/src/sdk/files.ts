@@ -26,13 +26,11 @@ export class Files extends ClientSDK {
    * Returns an error if file not found, access denied, or S3 operations fail.
    */
   async serveCdn(
-    security: operations.ServeFileCdnSecurity,
     request: operations.ServeFileCdnRequest,
     options?: RequestOptions,
   ): Promise<void> {
     return unwrapAsync(filesServeCdn(
       this,
-      security,
       request,
       options,
     ));
@@ -46,13 +44,11 @@ export class Files extends ClientSDK {
    * Returns an error if database operations fail.
    */
   async list(
-    security: operations.ListFilesSecurity,
     request?: operations.ListFilesRequest | undefined,
     options?: RequestOptions,
   ): Promise<Array<models.UserFileInfo>> {
     return unwrapAsync(filesList(
       this,
-      security,
       request,
       options,
     ));
@@ -66,13 +62,11 @@ export class Files extends ClientSDK {
    * Returns an error if file upload, database operations, or file system operations fail.
    */
   async upload(
-    security: operations.UploadFileSecurity,
     request: models.FileUploadRequest,
     options?: RequestOptions,
   ): Promise<models.FileUploadResponse> {
     return unwrapAsync(filesUpload(
       this,
-      security,
       request,
       options,
     ));
@@ -86,13 +80,11 @@ export class Files extends ClientSDK {
    * Returns an error if database operations fail or file not found.
    */
   async get(
-    security: operations.GetFileSecurity,
     request: operations.GetFileRequest,
     options?: RequestOptions,
   ): Promise<models.UserFileInfo> {
     return unwrapAsync(filesGet(
       this,
-      security,
       request,
       options,
     ));
@@ -106,13 +98,11 @@ export class Files extends ClientSDK {
    * Returns an error if validation fails, file not found, or database operations fail.
    */
   async update(
-    security: operations.UpdateFileSecurity,
     request: operations.UpdateFileRequest,
     options?: RequestOptions,
   ): Promise<models.UserFileInfo> {
     return unwrapAsync(filesUpdate(
       this,
-      security,
       request,
       options,
     ));
@@ -126,13 +116,11 @@ export class Files extends ClientSDK {
    * Returns an error if file not found, permission denied, or storage operations fail.
    */
   async delete(
-    security: operations.DeleteFileSecurity,
     request: operations.DeleteFileRequest,
     options?: RequestOptions,
   ): Promise<void> {
     return unwrapAsync(filesDelete(
       this,
-      security,
       request,
       options,
     ));

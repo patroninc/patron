@@ -98,7 +98,7 @@ pub struct FileUploadResponse {
         (status = 500, description = "Server error during file upload or storage", body = ErrorResponse)
     ),
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     )
 )]
 pub async fn upload_file(
@@ -175,7 +175,7 @@ pub async fn upload_file(
     let new_file = UserFile {
         id: file_id,
         user_id: user.id,
-        filename: format!("{file_id}.{extension}"),
+        filename: original_name.clone(),
         original_filename: original_name,
         file_path: s3_key.clone(),
         file_size: i64::try_from(file_bytes.len())
@@ -219,7 +219,7 @@ pub async fn upload_file(
         (status = 500, description = "Database error while retrieving user files", body = ErrorResponse)
     ),
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     )
 )]
 pub async fn list_files(
@@ -282,7 +282,7 @@ pub async fn list_files(
         (status = 500, description = "Server error generating file download URL", body = ErrorResponse)
     ),
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     )
 )]
 pub async fn get_file(
@@ -352,7 +352,7 @@ pub async fn get_file(
         (status = 500, description = "Database error while updating file information", body = ErrorResponse)
     ),
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     )
 )]
 pub async fn update_file(
@@ -437,7 +437,7 @@ pub async fn update_file(
         (status = 500, description = "Storage system error during file deletion", body = ErrorResponse)
     ),
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     )
 )]
 pub async fn delete_file(
@@ -502,7 +502,7 @@ pub async fn delete_file(
         (status = 500, description = "CDN streaming error from storage backend", body = ErrorResponse)
     ),
     security(
-        ("cookieAuth" = [])
+        ("cookieAuth" = [], "bearerAuth" = [])
     )
 )]
 pub async fn serve_file_cdn(

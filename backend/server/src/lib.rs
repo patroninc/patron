@@ -41,17 +41,17 @@ pub async fn main() -> std::io::Result<()> {
 
     let config = ConfigService::from_env();
 
-    let s3_config = match config.s3_config() {
+    let aws_config = match config.aws_config() {
         Ok(cfg) => cfg,
         Err(e) => {
-            eprintln!("Failed to get S3 config: {e}");
+            eprintln!("Failed to get AWS config: {e}");
             return Err(std::io::Error::new(
                 std::io::ErrorKind::Other,
-                "Failed to get S3 config",
+                "Failed to get AWS config",
             ));
         }
     };
-    let s3_service = match S3Service::new(s3_config).await {
+    let s3_service = match S3Service::new(aws_config).await {
         Ok(service) => service,
         Err(e) => {
             eprintln!("Failed to create S3 service: {e}");

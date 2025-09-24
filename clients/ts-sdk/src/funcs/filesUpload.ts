@@ -12,7 +12,7 @@ import * as M from "../lib/matchers.js";
 import { compactMap } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { RequestOptions } from "../lib/sdks.js";
-import { resolveSecurity } from "../lib/security.js";
+import { extractSecurity, resolveGlobalSecurity } from "../lib/security.js";
 import { pathToFunc } from "../lib/url.js";
 import {
   ConnectionError,
@@ -26,7 +26,6 @@ import { PatrontsError } from "../models/errors/patrontserror.js";
 import { ResponseValidationError } from "../models/errors/responsevalidationerror.js";
 import { SDKValidationError } from "../models/errors/sdkvalidationerror.js";
 import * as models from "../models/index.js";
-import * as operations from "../models/operations/index.js";
 import { APICall, APIPromise } from "../types/async.js";
 import { isBlobLike } from "../types/blobs.js";
 import { Result } from "../types/fp.js";
@@ -41,7 +40,6 @@ import { isReadableStream } from "../types/streams.js";
  */
 export function filesUpload(
   client: PatrontsCore,
-  security: operations.UploadFileSecurity,
   request: models.FileUploadRequest,
   options?: RequestOptions,
 ): APIPromise<
@@ -60,7 +58,6 @@ export function filesUpload(
 > {
   return new APIPromise($do(
     client,
-    security,
     request,
     options,
   ));
@@ -68,7 +65,6 @@ export function filesUpload(
 
 async function $do(
   client: PatrontsCore,
-  security: operations.UploadFileSecurity,
   request: models.FileUploadRequest,
   options?: RequestOptions,
 ): Promise<
@@ -124,25 +120,18 @@ async function $do(
     Accept: "application/json",
   }));
 
-  const requestSecurity = resolveSecurity(
-    [
-      {
-        fieldName: "sessionid",
-        type: "apiKey:cookie",
-        value: security?.cookieAuth,
-      },
-    ],
-  );
+  const securityInput = await extractSecurity(client._options.security);
+  const requestSecurity = resolveGlobalSecurity(securityInput);
 
   const context = {
     options: client._options,
     baseURL: options?.serverURL ?? client._baseURL ?? "",
     operationID: "upload_file",
-    oAuth2Scopes: null,
+    oAuth2Scopes: [],
 
     resolvedSecurity: requestSecurity,
 
-    securitySource: security,
+    securitySource: client._options.security,
     retryConfig: options?.retries
       || client._options.retryConfig
       || { strategy: "none" },

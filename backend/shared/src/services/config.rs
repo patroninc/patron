@@ -8,6 +8,8 @@ pub struct ConfigService {
     pub database_url: Option<String>,
     /// S3 bucket name for file storage
     pub s3_bucket: Option<String>,
+    /// AWS configuration for S3 service
+    pub aws_config: Option<AwsConfig>,
     /// Google `OAuth` configuration
     pub google_oauth_config: Option<GoogleOAuthConfig>,
     /// SMTP configuration for email services
@@ -16,6 +18,21 @@ pub struct ConfigService {
     pub redis_config: Option<RedisConfig>,
     /// Cookie secure flag for HTTPS
     pub cookie_secure: bool,
+}
+
+/// Configuration for AWS services
+#[derive(Clone, Debug)]
+pub struct AwsConfig {
+    /// AWS access key ID
+    pub access_key_id: String,
+    /// AWS secret access key
+    pub secret_access_key: String,
+    /// AWS region
+    pub region: String,
+    /// S3 bucket name
+    pub s3_bucket: String,
+    /// S3 host endpoint (optional, for custom endpoints)
+    pub s3_host: Option<String>,
 }
 
 /// Configuration for Google `OAuth` authentication
@@ -116,11 +133,30 @@ impl ConfigService {
                 .unwrap_or(10),
         });
 
+        let aws_config = if let (Ok(access_key_id), Ok(secret_access_key), Ok(region), Ok(s3_bucket)) = (
+            env::var("AWS_ACCESS_KEY_ID"),
+            env::var("AWS_SECRET_ACCESS_KEY"),
+            env::var("AWS_REGION"),
+            env::var("AWS_S3_BUCKET"),
+        ) {
+            Some(AwsConfig {
+                access_key_id,
+                secret_access_key,
+                region,
+                s3_bucket,
+                s3_host: env::var("AWS_S3_HOST").ok(),
+            })
+        } else {
+            None
+        };
+
         Self {
             database_url: env::var("DATABASE_URL").ok(),
-            s3_bucket: env::var("S3_BUCKET")
+            s3_bucket: env::var("AWS_S3_BUCKET")
                 .ok()
+                .or_else(|| env::var("S3_BUCKET").ok())
                 .or_else(|| Some("latentsync-video-clips".to_owned())),
+            aws_config,
             google_oauth_config,
             smtp_config,
             redis_config,
@@ -193,6 +229,23 @@ impl ConfigService {
             .redis_config
             .clone()
             .ok_or_else(|| ServiceError::Config("Redis config not set".to_owned()))?;
+        Ok(config)
+    }
+
+    /// Get the AWS configuration
+    ///
+    /// # Errors
+    ///
+    /// Returns a [`ServiceError::Config`] if the AWS configuration is not set.
+    pub fn aws_config(&self) -> Result<AwsConfig, ServiceError> {
+        let config = self
+            .aws_config
+            .clone()
+            .ok_or_else(|| {
+                ServiceError::Config(
+                    "AWS configuration not set. Please set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, and AWS_S3_BUCKET environment variables".to_owned()
+                )
+            })?;
         Ok(config)
     }
 }

@@ -29,12 +29,15 @@ Returns an error if file not found, access denied, or S3 operations fail.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   await patronts.files.serveCdn({
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     fileId: "39974a06-0f39-432d-896c-ec8ec5a187f3",
   });
 
@@ -54,12 +57,15 @@ import { filesServeCdn } from "patronts/funcs/filesServeCdn.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const res = await filesServeCdn(patronts, {
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     fileId: "39974a06-0f39-432d-896c-ec8ec5a187f3",
   });
   if (res.ok) {
@@ -78,7 +84,6 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.ServeFileCdnRequest](../../models/operations/servefilecdnrequest.md)                                                                                               | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
-| `security`                                                                                                                                                                     | [operations.ServeFileCdnSecurity](../../models/operations/servefilecdnsecurity.md)                                                                                             | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -106,12 +111,15 @@ Returns an error if database operations fail.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
-  const result = await patronts.files.list({
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  });
+  const result = await patronts.files.list();
 
   console.log(result);
 }
@@ -129,12 +137,15 @@ import { filesList } from "patronts/funcs/filesList.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
-  const res = await filesList(patronts, {
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  });
+  const res = await filesList(patronts);
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
@@ -151,7 +162,6 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.ListFilesRequest](../../models/operations/listfilesrequest.md)                                                                                                     | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
-| `security`                                                                                                                                                                     | [operations.ListFilesSecurity](../../models/operations/listfilessecurity.md)                                                                                                   | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -180,12 +190,15 @@ Returns an error if file upload, database operations, or file system operations 
 import { openAsBlob } from "node:fs";
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const result = await patronts.files.upload({
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     file: await openAsBlob("example.file"),
   });
 
@@ -206,12 +219,15 @@ import { filesUpload } from "patronts/funcs/filesUpload.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const res = await filesUpload(patronts, {
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     file: await openAsBlob("example.file"),
   });
   if (res.ok) {
@@ -230,7 +246,6 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [models.FileUploadRequest](../../models/fileuploadrequest.md)                                                                                                                  | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
-| `security`                                                                                                                                                                     | [operations.UploadFileSecurity](../../models/operations/uploadfilesecurity.md)                                                                                                 | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -258,12 +273,15 @@ Returns an error if database operations fail or file not found.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const result = await patronts.files.get({
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     fileId: "b9989da6-aed4-4643-949a-a7c28d664def",
   });
 
@@ -283,12 +301,15 @@ import { filesGet } from "patronts/funcs/filesGet.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const res = await filesGet(patronts, {
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     fileId: "b9989da6-aed4-4643-949a-a7c28d664def",
   });
   if (res.ok) {
@@ -307,7 +328,6 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.GetFileRequest](../../models/operations/getfilerequest.md)                                                                                                         | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
-| `security`                                                                                                                                                                     | [operations.GetFileSecurity](../../models/operations/getfilesecurity.md)                                                                                                       | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -335,12 +355,15 @@ Returns an error if validation fails, file not found, or database operations fai
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const result = await patronts.files.update({
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     fileId: "ce621f1a-00d2-437b-b1d0-5650eed83f65",
     updateUserFileRequest: {
       filename: "renamed_document.pdf",
@@ -365,12 +388,15 @@ import { filesUpdate } from "patronts/funcs/filesUpdate.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const res = await filesUpdate(patronts, {
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     fileId: "ce621f1a-00d2-437b-b1d0-5650eed83f65",
     updateUserFileRequest: {
       filename: "renamed_document.pdf",
@@ -394,7 +420,6 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.UpdateFileRequest](../../models/operations/updatefilerequest.md)                                                                                                   | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
-| `security`                                                                                                                                                                     | [operations.UpdateFileSecurity](../../models/operations/updatefilesecurity.md)                                                                                                 | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -422,12 +447,15 @@ Returns an error if file not found, permission denied, or storage operations fai
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts();
+const patronts = new Patronts({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   await patronts.files.delete({
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     fileId: "9d527cd7-448b-40b4-9b53-301ef075d563",
   });
 
@@ -447,12 +475,15 @@ import { filesDelete } from "patronts/funcs/filesDelete.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore();
+const patronts = new PatrontsCore({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
 
 async function run() {
   const res = await filesDelete(patronts, {
-    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-  }, {
     fileId: "9d527cd7-448b-40b4-9b53-301ef075d563",
   });
   if (res.ok) {
@@ -471,7 +502,6 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.DeleteFileRequest](../../models/operations/deletefilerequest.md)                                                                                                   | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
-| `security`                                                                                                                                                                     | [operations.DeleteFileSecurity](../../models/operations/deletefilesecurity.md)                                                                                                 | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
