@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: b227c6cbc7e594fe0d9a3658fd6424d3
+  docChecksum: 4cd233dcb44350d5957d2dc117f453fc
   docVersion: 1.0.0
   speakeasyVersion: 1.624.0
   generationVersion: 2.714.0
-  releaseVersion: 0.7.3
-  configChecksum: 4f6de8a7afa4b43e7e8d148e3c93f81b
+  releaseVersion: 0.8.1
+  configChecksum: e46a63d9f07c12e2070c91cc895f805d
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -24,7 +24,6 @@ features:
     globalServerURLs: 2.82.5
     groups: 2.81.2
     methodArguments: 0.1.2
-    methodSecurity: 2.82.6
     nameOverrides: 2.81.2
     nullables: 0.1.1
     responseFormat: 0.2.3
@@ -60,32 +59,22 @@ generatedFiles:
   - docs/models/logoutresponse.md
   - docs/models/operations/deleteapikeyrequest.md
   - docs/models/operations/deletefilerequest.md
-  - docs/models/operations/deletefilesecurity.md
   - docs/models/operations/deletepostrequest.md
   - docs/models/operations/deleteseriesrequest.md
   - docs/models/operations/getapikeyrequest.md
   - docs/models/operations/getfilerequest.md
-  - docs/models/operations/getfilesecurity.md
-  - docs/models/operations/getmesecurity.md
   - docs/models/operations/getpostrequest.md
   - docs/models/operations/getseriesrequest.md
   - docs/models/operations/googleauthcallbackrequest.md
   - docs/models/operations/listapikeysrequest.md
   - docs/models/operations/listfilesrequest.md
-  - docs/models/operations/listfilessecurity.md
   - docs/models/operations/listpostsrequest.md
   - docs/models/operations/listseriesrequest.md
-  - docs/models/operations/logoutsecurity.md
-  - docs/models/operations/resendverificationemailsecurity.md
   - docs/models/operations/servefilecdnrequest.md
-  - docs/models/operations/servefilecdnsecurity.md
   - docs/models/operations/updateapikeyrequest.md
   - docs/models/operations/updatefilerequest.md
-  - docs/models/operations/updatefilesecurity.md
   - docs/models/operations/updatepostrequest.md
   - docs/models/operations/updateseriesrequest.md
-  - docs/models/operations/updateuserinfosecurity.md
-  - docs/models/operations/uploadfilesecurity.md
   - docs/models/operations/verifyemailrequest.md
   - docs/models/postresponse.md
   - docs/models/registerrequest.md
@@ -200,7 +189,6 @@ generatedFiles:
   - src/models/operations/deleteseries.ts
   - src/models/operations/getapikey.ts
   - src/models/operations/getfile.ts
-  - src/models/operations/getme.ts
   - src/models/operations/getpost.ts
   - src/models/operations/getseries.ts
   - src/models/operations/googleauthcallback.ts
@@ -209,15 +197,11 @@ generatedFiles:
   - src/models/operations/listfiles.ts
   - src/models/operations/listposts.ts
   - src/models/operations/listseries.ts
-  - src/models/operations/logout.ts
-  - src/models/operations/resendverificationemail.ts
   - src/models/operations/servefilecdn.ts
   - src/models/operations/updateapikey.ts
   - src/models/operations/updatefile.ts
   - src/models/operations/updatepost.ts
   - src/models/operations/updateseries.ts
-  - src/models/operations/updateuserinfo.ts
-  - src/models/operations/uploadfile.ts
   - src/models/operations/verifyemail.ts
   - src/models/postresponse.ts
   - src/models/registerrequest.ts

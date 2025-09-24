@@ -9,7 +9,7 @@ import * as M from "../lib/matchers.js";
 import { compactMap } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { RequestOptions } from "../lib/sdks.js";
-import { resolveSecurity } from "../lib/security.js";
+import { extractSecurity, resolveGlobalSecurity } from "../lib/security.js";
 import { pathToFunc } from "../lib/url.js";
 import {
   ConnectionError,
@@ -36,7 +36,6 @@ import { Result } from "../types/fp.js";
  */
 export function filesList(
   client: PatrontsCore,
-  security: operations.ListFilesSecurity,
   request?: operations.ListFilesRequest | undefined,
   options?: RequestOptions,
 ): APIPromise<
@@ -55,7 +54,6 @@ export function filesList(
 > {
   return new APIPromise($do(
     client,
-    security,
     request,
     options,
   ));
@@ -63,7 +61,6 @@ export function filesList(
 
 async function $do(
   client: PatrontsCore,
-  security: operations.ListFilesSecurity,
   request?: operations.ListFilesRequest | undefined,
   options?: RequestOptions,
 ): Promise<
@@ -106,25 +103,18 @@ async function $do(
     Accept: "application/json",
   }));
 
-  const requestSecurity = resolveSecurity(
-    [
-      {
-        fieldName: "sessionid",
-        type: "apiKey:cookie",
-        value: security?.cookieAuth,
-      },
-    ],
-  );
+  const securityInput = await extractSecurity(client._options.security);
+  const requestSecurity = resolveGlobalSecurity(securityInput);
 
   const context = {
     options: client._options,
     baseURL: options?.serverURL ?? client._baseURL ?? "",
     operationID: "list_files",
-    oAuth2Scopes: null,
+    oAuth2Scopes: [],
 
     resolvedSecurity: requestSecurity,
 
-    securitySource: security,
+    securitySource: client._options.security,
     retryConfig: options?.retries
       || client._options.retryConfig
       || { strategy: "none" },

@@ -8,70 +8,12 @@ import { safeParse } from "../../lib/schemas.js";
 import { Result as SafeParseResult } from "../../types/fp.js";
 import { SDKValidationError } from "../errors/sdkvalidationerror.js";
 
-export type DeleteFileSecurity = {
-  cookieAuth: string;
-};
-
 export type DeleteFileRequest = {
   /**
    * UUID of the file to permanently delete
    */
   fileId: string;
 };
-
-/** @internal */
-export const DeleteFileSecurity$inboundSchema: z.ZodType<
-  DeleteFileSecurity,
-  z.ZodTypeDef,
-  unknown
-> = z.object({
-  cookieAuth: z.string(),
-});
-
-/** @internal */
-export type DeleteFileSecurity$Outbound = {
-  cookieAuth: string;
-};
-
-/** @internal */
-export const DeleteFileSecurity$outboundSchema: z.ZodType<
-  DeleteFileSecurity$Outbound,
-  z.ZodTypeDef,
-  DeleteFileSecurity
-> = z.object({
-  cookieAuth: z.string(),
-});
-
-/**
- * @internal
- * @deprecated This namespace will be removed in future versions. Use schemas and types that are exported directly from this module.
- */
-export namespace DeleteFileSecurity$ {
-  /** @deprecated use `DeleteFileSecurity$inboundSchema` instead. */
-  export const inboundSchema = DeleteFileSecurity$inboundSchema;
-  /** @deprecated use `DeleteFileSecurity$outboundSchema` instead. */
-  export const outboundSchema = DeleteFileSecurity$outboundSchema;
-  /** @deprecated use `DeleteFileSecurity$Outbound` instead. */
-  export type Outbound = DeleteFileSecurity$Outbound;
-}
-
-export function deleteFileSecurityToJSON(
-  deleteFileSecurity: DeleteFileSecurity,
-): string {
-  return JSON.stringify(
-    DeleteFileSecurity$outboundSchema.parse(deleteFileSecurity),
-  );
-}
-
-export function deleteFileSecurityFromJSON(
-  jsonString: string,
-): SafeParseResult<DeleteFileSecurity, SDKValidationError> {
-  return safeParse(
-    jsonString,
-    (x) => DeleteFileSecurity$inboundSchema.parse(JSON.parse(x)),
-    `Failed to parse 'DeleteFileSecurity' from JSON`,
-  );
-}
 
 /** @internal */
 export const DeleteFileRequest$inboundSchema: z.ZodType<
