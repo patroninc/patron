@@ -136,7 +136,7 @@ pub async fn create_api_key(
             .collect(),
         expires_at: inserted_api_key.expires_at,
         is_active: inserted_api_key.is_active,
-        created_at: inserted_api_key.created_at,
+        created_at: inserted_api_key.created_at.map(|dt| dt.and_utc()),
     };
 
     Ok(HttpResponse::Created().json(response))
