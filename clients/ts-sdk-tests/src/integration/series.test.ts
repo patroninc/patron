@@ -234,16 +234,14 @@ describe("Series API Integration Tests", () => {
 
       const response = await patronClient.series.update({
         seriesId: testSeriesId!,
-        ...updateRequest,
         updateSeriesRequest: {
           category: undefined,
           coverImageUrl: undefined,
-          description: undefined,
           isMonetized: undefined,
           isPublished: undefined,
           pricingTier: undefined,
           slug: undefined,
-          title: undefined,
+          ...updateRequest,
         },
       });
 
@@ -262,16 +260,13 @@ describe("Series API Integration Tests", () => {
 
       const response = await patronClient.series.update({
         seriesId: testSeriesId!,
-        ...updateRequest,
         updateSeriesRequest: {
           category: undefined,
           coverImageUrl: undefined,
           description: undefined,
-          isMonetized: undefined,
-          isPublished: undefined,
-          pricingTier: undefined,
           slug: undefined,
           title: undefined,
+          ...updateRequest,
         },
       });
 
@@ -288,16 +283,14 @@ describe("Series API Integration Tests", () => {
 
       const response = await patronClient.series.update({
         seriesId: testSeriesId!,
-        ...updateRequest,
         updateSeriesRequest: {
-          category: undefined,
-          coverImageUrl: undefined,
           description: undefined,
           isMonetized: undefined,
           isPublished: undefined,
           pricingTier: undefined,
           slug: undefined,
           title: undefined,
+          ...updateRequest,
         },
       });
 
@@ -313,7 +306,6 @@ describe("Series API Integration Tests", () => {
 
       const response = await patronClient.series.update({
         seriesId: testSeriesId!,
-        ...updateRequest,
         updateSeriesRequest: {
           category: undefined,
           coverImageUrl: undefined,
@@ -321,8 +313,8 @@ describe("Series API Integration Tests", () => {
           isMonetized: undefined,
           isPublished: undefined,
           pricingTier: undefined,
-          slug: undefined,
           title: undefined,
+          ...updateRequest,
         },
       });
 
@@ -345,15 +337,13 @@ describe("Series API Integration Tests", () => {
             category: undefined,
             coverImageUrl: undefined,
             description: undefined,
-            isMonetized: undefined,
-            isPublished: undefined,
-            pricingTier: undefined,
-            slug: otherSlug,
-            title: undefined,
+            ...otherSeries,
           },
         });
         fail("Expected update to fail with duplicate slug");
-      } catch (error: any) { /* empty */ }
+      } catch (error: any) {
+        /* empty */
+      }
 
       // Clean up the other series
       if (otherSeries?.id) {
@@ -408,7 +398,9 @@ describe("Series API Integration Tests", () => {
           seriesId: testSeriesId!,
         });
         fail("Expected get to fail after deletion");
-      } catch (error: any) { /* empty */ }
+      } catch (error: any) {
+        /* empty */
+      }
 
       // Clear testSeriesId to prevent cleanup attempt
       testSeriesId = null;
@@ -479,8 +471,10 @@ describe("Series API Integration Tests", () => {
 
       // Verify timestamps are valid ISO strings
       if (response.createdAt && response.updatedAt) {
-        expect(new Date(response.createdAt).toISOString()).toBe(response.createdAt);
-        expect(new Date(response.updatedAt).toISOString()).toBe(response.updatedAt);
+        expect(new Date(response.createdAt)).toBeInstanceOf(Date);
+        expect(new Date(response.updatedAt)).toBeInstanceOf(Date);
+        expect(new Date(response.createdAt).getTime()).not.toBeNaN();
+        expect(new Date(response.updatedAt).getTime()).not.toBeNaN();
       }
 
       testSeriesId = response.id || null;

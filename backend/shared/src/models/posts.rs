@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, NaiveDateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -110,11 +110,11 @@ pub struct PostResponse {
     /// Post creation timestamp
     #[schema(example = "2023-01-01T00:00:00Z")]
     #[serde(rename = "createdAt")]
-    pub created_at: Option<NaiveDateTime>,
+    pub created_at: Option<DateTime<Utc>>,
     /// Post last update timestamp
     #[schema(example = "2023-01-01T12:00:00Z")]
     #[serde(rename = "updatedAt")]
-    pub updated_at: Option<NaiveDateTime>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl From<Post> for PostResponse {
@@ -131,8 +131,8 @@ impl From<Post> for PostResponse {
             thumbnail_url: post.thumbnail_url,
             audio_file_id: post.audio_file_id,
             video_file_id: post.video_file_id,
-            created_at: post.created_at,
-            updated_at: post.updated_at,
+            created_at: post.created_at.map(|dt| dt.and_utc()),
+            updated_at: post.updated_at.map(|dt| dt.and_utc()),
         }
     }
 }

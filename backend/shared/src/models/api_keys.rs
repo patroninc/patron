@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, NaiveDateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -88,11 +88,11 @@ pub struct ApiKeyResponse {
     /// When this API key was originally created
     #[schema(example = "2023-01-01T00:00:00Z")]
     #[serde(rename = "createdAt")]
-    pub created_at: Option<NaiveDateTime>,
+    pub created_at: Option<DateTime<Utc>>,
     /// API key last update timestamp
     #[schema(example = "2023-01-01T12:00:00Z")]
     #[serde(rename = "updatedAt")]
-    pub updated_at: Option<NaiveDateTime>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl From<ApiKey> for ApiKeyResponse {
@@ -111,8 +111,8 @@ impl From<ApiKey> for ApiKeyResponse {
             last_used_at: api_key.last_used_at,
             expires_at: api_key.expires_at,
             is_active: api_key.is_active,
-            created_at: api_key.created_at,
-            updated_at: api_key.updated_at,
+            created_at: api_key.created_at.map(|dt| dt.and_utc()),
+            updated_at: api_key.updated_at.map(|dt| dt.and_utc()),
         }
     }
 }
@@ -183,7 +183,7 @@ pub struct CreateApiKeyResponse {
     /// Timestamp of when the API key was just created
     #[schema(example = "2023-01-01T00:00:00Z")]
     #[serde(rename = "createdAt")]
-    pub created_at: Option<NaiveDateTime>,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 /// Request model for updating an existing API key

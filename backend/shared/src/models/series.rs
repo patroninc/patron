@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, NaiveDateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -100,11 +100,11 @@ pub struct SeriesResponse {
     /// Series creation timestamp
     #[schema(example = "2023-01-01T00:00:00Z")]
     #[serde(rename = "createdAt")]
-    pub created_at: Option<NaiveDateTime>,
+    pub created_at: Option<DateTime<Utc>>,
     /// Series last update timestamp
     #[schema(example = "2023-01-01T12:00:00Z")]
     #[serde(rename = "updatedAt")]
-    pub updated_at: Option<NaiveDateTime>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl From<Series> for SeriesResponse {
@@ -120,8 +120,8 @@ impl From<Series> for SeriesResponse {
             is_published: series.is_published.unwrap_or(false),
             is_monetized: series.is_monetized.unwrap_or(false),
             pricing_tier: series.pricing_tier.unwrap_or_else(|| "free".to_owned()),
-            created_at: series.created_at,
-            updated_at: series.updated_at,
+            created_at: series.created_at.map(|dt| dt.and_utc()),
+            updated_at: series.updated_at.map(|dt| dt.and_utc()),
         }
     }
 }

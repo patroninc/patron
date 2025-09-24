@@ -1,6 +1,5 @@
-use crate::models::auth::optional_datetime_format;
 use crate::schema::user_files;
-use chrono::NaiveDateTime;
+use chrono::{DateTime, NaiveDateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
@@ -155,12 +154,12 @@ pub struct UserFileInfo {
     pub metadata: Option<JsonValue>,
     /// File upload timestamp
     #[schema(example = "2023-01-01T00:00:00Z")]
-    #[serde(with = "optional_datetime_format", rename = "createdAt")]
-    pub created_at: Option<NaiveDateTime>,
+    #[serde(rename = "createdAt")]
+    pub created_at: Option<DateTime<Utc>>,
     /// File last update timestamp
     #[schema(example = "2023-01-01T00:00:00Z")]
-    #[serde(with = "optional_datetime_format", rename = "updatedAt")]
-    pub updated_at: Option<NaiveDateTime>,
+    #[serde(rename = "updatedAt")]
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl From<UserFile> for UserFileInfo {
@@ -176,8 +175,8 @@ impl From<UserFile> for UserFileInfo {
             file_hash: file.file_hash,
             status: file.status.into(),
             metadata: file.metadata,
-            created_at: file.created_at,
-            updated_at: file.updated_at,
+            created_at: file.created_at.map(|dt| dt.and_utc()),
+            updated_at: file.updated_at.map(|dt| dt.and_utc()),
         }
     }
 }

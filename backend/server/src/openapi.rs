@@ -150,8 +150,11 @@ impl Modify for SecurityAddon {
                 HttpBuilder::new()
                     .scheme(HttpAuthScheme::Bearer)
                     .bearer_format("API Key")
-                    .description(Some("API key authentication using Bearer token in Authorization header".to_owned()))
-                    .build()
+                    .description(Some(
+                        "API key authentication using Bearer token in Authorization header"
+                            .to_owned(),
+                    ))
+                    .build(),
             );
             components.add_security_scheme("bearerAuth", bearer_auth);
 
