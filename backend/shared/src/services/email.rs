@@ -171,7 +171,6 @@ impl EmailService {
                 .subject(content.subject);
 
         let email = if let Some(text) = content.text_body {
-            // Send multipart email with both HTML and text
             email_builder
                 .multipart(
                     MultiPart::alternative()
@@ -190,7 +189,6 @@ impl EmailService {
                     ServiceError::Config(format!("Failed to build multipart email: {e}"))
                 })?
         } else {
-            // Send HTML-only email
             email_builder
                 .header(header::ContentType::TEXT_HTML)
                 .body(content.html_body.to_owned())
@@ -212,7 +210,6 @@ impl EmailService {
             .credentials(creds)
             .build();
 
-        // Send the email using tokio spawn_blocking since lettre's send is blocking
         let result = tokio::task::spawn_blocking(move || mailer.send(&email))
             .await
             .map_err(|e| ServiceError::Unknown(format!("Task join error: {e}")))?;
@@ -230,8 +227,6 @@ mod tests {
     #[test]
     fn test_email_service_creation() {
         let service = EmailService::from_env();
-        // This test just ensures the service can be created
-        // Actual SMTP functionality would require integration tests with real SMTP server
         assert!(service.smtp_config.is_none() || service.smtp_config.is_some());
     }
 }

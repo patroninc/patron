@@ -922,11 +922,10 @@ pub async fn forgot_password(
     if user.password_hash.is_some() {
         let reset_token = Uuid::new_v4().to_string();
 
-        // Store token in Redis with 1 hour TTL
         let mut con = redis_manager.get_ref().clone();
         let key = format!("password-reset:{}", user.id);
         let _: () = con
-            .set_ex(&key, &reset_token, 3600) // 1 hour TTL
+            .set_ex(&key, &reset_token, 3600)
             .await
             .map_err(|e| ServiceError::Unknown(format!("Failed to store token in Redis: {e}")))?;
 

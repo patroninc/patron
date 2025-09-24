@@ -107,7 +107,6 @@ pub async fn main() -> std::io::Result<()> {
         }
     };
 
-    // Create Redis session store
     let redis_config = match config.redis_config() {
         Ok(cfg) => cfg,
         Err(e) => {
@@ -129,7 +128,6 @@ pub async fn main() -> std::io::Result<()> {
         }
     };
 
-    // Create Redis connection manager for direct Redis operations
     let redis_client = match redis::Client::open(redis_config.url.as_str()) {
         Ok(client) => client,
         Err(e) => {
@@ -151,7 +149,6 @@ pub async fn main() -> std::io::Result<()> {
         }
     };
 
-    // Generate session key from auth secret
     let session_key = Key::from(google_oauth_service.auth_secret_key.as_bytes());
 
     HttpServer::new(move || {
@@ -287,6 +284,20 @@ pub async fn main() -> std::io::Result<()> {
                                     .route(web::get().to(handlers::posts::get_post))
                                     .route(web::put().to(handlers::posts::update_post))
                                     .route(web::delete().to(handlers::posts::delete_post)),
+                            ),
+                    )
+                    .service(
+                        web::scope("/api-keys")
+                            .service(
+                                web::resource("")
+                                    .route(web::post().to(handlers::api_keys::create_api_key))
+                                    .route(web::get().to(handlers::api_keys::list_api_keys)),
+                            )
+                            .service(
+                                web::resource("/{api_key_id}")
+                                    .route(web::get().to(handlers::api_keys::get_api_key))
+                                    .route(web::put().to(handlers::api_keys::update_api_key))
+                                    .route(web::delete().to(handlers::api_keys::delete_api_key)),
                             ),
                     ),
             )

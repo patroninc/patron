@@ -1,11 +1,14 @@
 /// Authentication-related data models.
 pub mod auth;
 
-/// User file management data models.
+/// User file data models.
 pub mod user_files;
 
-/// Series management data models.
+/// Series data models.
 pub mod series;
 
-/// Posts management data models.
+/// Posts data models.
 pub mod posts;
+
+/// API keys data models.
+pub mod api_keys;

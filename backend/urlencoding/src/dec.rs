@@ -42,7 +42,6 @@ pub fn decode_binary(data: &[u8]) -> Cow<'_, [u8]> {
 
     let mut decoded = Vec::new();
     if decoded.try_reserve(data.len()).is_err() {
-        // Return the original data as borrowed if allocation fails
         return Cow::Borrowed(data);
     }
     let mut out = NeverRealloc(&mut decoded);
@@ -52,18 +51,15 @@ pub fn decode_binary(data: &[u8]) -> Cow<'_, [u8]> {
 
     loop {
         let mut parts = remaining.splitn(2, |&c| c == b'%');
-        // first the decoded non-% part
         let Some(non_escaped_part) = parts.next() else {
             break;
         };
         let rest = parts.next();
         if rest.is_none() && out.0.is_empty() {
-            // if empty there were no '%' in the string
             return remaining.into();
         }
         out.extend_from_slice(non_escaped_part);
 
-        // then decode one %xx
         match rest {
             Some(rest_slice) => {
                 if let Some(&[first, second]) = rest_slice.get(0..2) {
@@ -73,7 +69,6 @@ pub fn decode_binary(data: &[u8]) -> Cow<'_, [u8]> {
                             if let Some(next_data) = rest_slice.get(2..) {
                                 remaining = next_data;
                             } else {
-                                // If there are not enough bytes, break the loop
                                 break;
                             }
                         } else {
@@ -88,7 +83,6 @@ pub fn decode_binary(data: &[u8]) -> Cow<'_, [u8]> {
                         remaining = rest_slice;
                     }
                 } else {
-                    // too short
                     out.push(b'%');
                     out.extend_from_slice(rest_slice);
                     break;
@@ -105,8 +99,6 @@ struct NeverRealloc<'vec_ref, T>(pub &'vec_ref mut Vec<T>);
 impl<T> NeverRealloc<'_, T> {
     #[inline]
     pub fn push(&mut self, val: T) {
-        // these branches only exist to remove redundant reallocation code
-        // (the capacity is always sufficient)
         if self.0.len() != self.0.capacity() {
             self.0.push(val);
         }

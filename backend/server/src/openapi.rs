@@ -4,6 +4,10 @@ use crate::handlers::auth::{
     ResetPasswordRequest, ResetPasswordResponse, UpdateUserInfoRequest, UpdateUserInfoResponse,
 };
 use crate::handlers::user_files::{FileUploadRequest, FileUploadResponse};
+use shared::models::api_keys::{
+    ApiKeyResponse, ApiKeysListResponse, CreateApiKeyRequest, CreateApiKeyResponse,
+    UpdateApiKeyRequest,
+};
 use shared::models::auth::{UserInfo, UserInfoResponse};
 use shared::models::posts::{
     CreatePostRequest, PostResponse, PostsListResponse, UpdatePostRequest,
@@ -17,7 +21,7 @@ use shared::models::user_files::{
 use utoipa::{
     openapi::{
         schema::{ObjectBuilder, Schema},
-        security::{ApiKey, ApiKeyValue, SecurityScheme},
+        security::{ApiKey, ApiKeyValue, HttpAuthScheme, HttpBuilder, SecurityScheme},
         RefOr,
     },
     Modify, OpenApi,
@@ -67,6 +71,11 @@ use utoipa::{
         crate::handlers::posts::get_post,
         crate::handlers::posts::update_post,
         crate::handlers::posts::delete_post,
+        crate::handlers::api_keys::create_api_key,
+        crate::handlers::api_keys::list_api_keys,
+        crate::handlers::api_keys::get_api_key,
+        crate::handlers::api_keys::update_api_key,
+        crate::handlers::api_keys::delete_api_key,
     ),
     components(
         schemas(
@@ -99,7 +108,12 @@ use utoipa::{
             PostResponse,
             PostsListResponse,
             CreatePostRequest,
-            UpdatePostRequest
+            UpdatePostRequest,
+            ApiKeyResponse,
+            ApiKeysListResponse,
+            CreateApiKeyRequest,
+            CreateApiKeyResponse,
+            UpdateApiKeyRequest,
         )
     ),
     modifiers(&SecurityAddon),
@@ -108,6 +122,7 @@ use utoipa::{
         (name = "Files", description = "File upload, download, and management endpoints"),
         (name = "Series", description = "Series creation and management endpoints"),
         (name = "Posts", description = "Post creation and management endpoints"),
+        (name = "API Keys", description = "API key creation and management endpoints"),
     ),
     servers(
         (url = "http://localhost:8080", description = "Local development server"),
@@ -123,7 +138,6 @@ struct SecurityAddon;
 impl Modify for SecurityAddon {
     fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
         if let Some(components) = openapi.components.as_mut() {
-            // Add security scheme
             let mut cookie_auth =
                 SecurityScheme::ApiKey(ApiKey::Cookie(ApiKeyValue::new("sessionid")));
             if let SecurityScheme::ApiKey(ApiKey::Cookie(ref mut cookie)) = cookie_auth {
@@ -132,7 +146,15 @@ impl Modify for SecurityAddon {
             }
             components.add_security_scheme("cookieAuth", cookie_auth);
 
-            // Add proper schema for Value component (serde_json::Value)
+            let bearer_auth = SecurityScheme::Http(
+                HttpBuilder::new()
+                    .scheme(HttpAuthScheme::Bearer)
+                    .bearer_format("API Key")
+                    .description(Some("API key authentication using Bearer token in Authorization header".to_owned()))
+                    .build()
+            );
+            components.add_security_scheme("bearerAuth", bearer_auth);
+
             let value_schema = Schema::Object(
                 ObjectBuilder::new()
                     .title(Some("JSONValue"))

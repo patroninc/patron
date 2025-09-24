@@ -94,7 +94,7 @@ pub struct UserFile {
     /// SHA-256 hash of the file for integrity and deduplication
     pub file_hash: String,
     /// Current processing status of the file
-    pub status: String, // Maps to FileStatus enum
+    pub status: String,
     /// Additional metadata stored as JSON
     pub metadata: Option<JsonValue>,
     /// Timestamp when the file was uploaded

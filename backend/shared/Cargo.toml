@@ -33,6 +33,7 @@ tokio = { version = "1.0", features = ["rt", "rt-multi-thread"] }
 actix-session = { workspace = true }
 futures-util = "0.3.31"
 tokio-util = "0.7.16"
+sha2 = "0.10.9"
 
 [lints]
 workspace = true

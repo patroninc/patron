@@ -1,0 +1,3965 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Patron API",
+    "description": "An open source Patreon alternative with lower fees designed for creators who publish ongoing sequential content like books, podcasts, and comics.",
+    "contact": {
+      "name": "Patron Team",
+      "email": "support@patron.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local development server"
+    },
+    {
+      "url": "https://api.patron.com",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/api/api-keys": {
+      "get": {
+        "tags": [
+          "API Keys"
+        ],
+        "summary": "List API keys with cursor-based pagination and optional filtering",
+        "description": "# Errors\nReturns error if API keys database query fails or connection issues occur",
+        "operationId": "list_api_keys",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Starting point UUID for paginated API key results",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of API keys to return per page (default: 50, max: 100)",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "Only show active or inactive API keys",
+            "required": false,
+            "schema": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API keys list retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeysListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to list API keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during API keys listing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "API Keys"
+        ],
+        "summary": "Create a new API key",
+        "description": "# Errors\nReturns error if permissions are invalid, database error, or key generation fails",
+        "operationId": "create_api_key",
+        "requestBody": {
+          "description": "API key creation data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiKeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "API key created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateApiKeyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid API key data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to create API keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during API key creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/api-keys/{api_key_id}": {
+      "get": {
+        "tags": [
+          "API Keys"
+        ],
+        "summary": "Get a specific API key by ID",
+        "description": "# Errors\nReturns error if API key not found, access denied, or database connection error",
+        "operationId": "get_api_key",
+        "parameters": [
+          {
+            "name": "api_key_id",
+            "in": "path",
+            "description": "UUID of the API key to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API key retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to view API keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - API key belongs to different user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "API key not found or access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during API key retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "API Keys"
+        ],
+        "summary": "Update an API key",
+        "description": "# Errors\nReturns error if API key not found, access denied, or database update error",
+        "operationId": "update_api_key",
+        "parameters": [
+          {
+            "name": "api_key_id",
+            "in": "path",
+            "description": "UUID of the API key to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated API key data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateApiKeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "API key updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to update API keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - cannot update API key owned by different user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "API key not found for update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during API key update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "API Keys"
+        ],
+        "summary": "Delete an API key (hard delete for security)",
+        "description": "# Errors\nReturns error if API key not found, access denied, or database deletion error",
+        "operationId": "delete_api_key",
+        "parameters": [
+          {
+            "name": "api_key_id",
+            "in": "path",
+            "description": "UUID of the API key to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "API key deleted successfully"
+          },
+          "401": {
+            "description": "Authentication required to delete API keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - cannot delete API key owned by different user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "API key not found for deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during API key deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/check-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Check if email exists",
+        "description": "# Errors\nReturns 404 if email doesn't exist, 204 if it does exist, or 500 for database errors.",
+        "operationId": "check_email",
+        "requestBody": {
+          "description": "Email address to check for registration",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckEmailRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Email exists in the system"
+          },
+          "404": {
+            "description": "Email not found in the system"
+          },
+          "500": {
+            "description": "Database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "DATABASE_ERROR",
+                  "error": "Database connection failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Forgot password",
+        "description": "# Errors\nReturns an error if database operations fail or email service fails.",
+        "operationId": "forgot_password",
+        "requestBody": {
+          "description": "Email address for password reset request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotPasswordResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Password reset service error or email delivery failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "EMAIL_SERVICE_ERROR",
+                  "error": "Email service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Google `OAuth` redirect",
+        "description": "# Errors\nReturns an error if session operations fail or `OAuth` service configuration is invalid.",
+        "operationId": "google_auth_redirect",
+        "responses": {
+          "302": {
+            "description": "Redirect to Google OAuth consent screen"
+          },
+          "500": {
+            "description": "OAuth initialization failed or session storage error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "OAUTH_SESSION_ERROR",
+                  "error": "Failed to initialize OAuth session"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/google/callback": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Google `OAuth` callback",
+        "description": "# Errors\nReturns an error if `OAuth` state verification fails, token exchange fails, or database operations fail.",
+        "operationId": "google_auth_callback",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Authorization code from Google",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "State parameter for CSRF protection",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to frontend application"
+          },
+          "400": {
+            "description": "Invalid authorization code or state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "OAUTH_INVALID_CODE",
+                  "error": "Invalid authorization code"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "OAuth service error or database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "OAUTH_PROVIDER_ERROR",
+                  "error": "OAuth provider connection failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User login",
+        "description": "# Errors\nReturns an error if credentials are invalid, email is not verified, or database operations fail.",
+        "operationId": "login",
+        "requestBody": {
+          "description": "User login credentials including email and password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials or email not verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_INVALID_CREDENTIALS",
+                  "error": "Invalid email or password"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Login service error or database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_SERVICE_ERROR",
+                  "error": "Authentication service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout",
+        "description": "# Errors\nReturns an error if session operations fail.",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Successfully logged out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get current user info",
+        "description": "# Errors\nReturns an error if user is not authenticated or serialization fails.",
+        "operationId": "get_me",
+        "responses": {
+          "200": {
+            "description": "Current user information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                },
+                "example": {
+                  "authProvider": "email",
+                  "createdAt": "2023-01-01T00:00:00",
+                  "email": "user@example.com",
+                  "emailVerified": true,
+                  "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User authentication required to access profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_REQUIRED",
+                  "error": "Not authenticated"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Update user information",
+        "description": "# Errors\nReturns an error if database operations fail or user validation fails.",
+        "operationId": "update_user_info",
+        "requestBody": {
+          "description": "Updated user information",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserInfoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User information updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserInfoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User authentication required to update profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_REQUIRED",
+                  "error": "Not authenticated"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Database connection failed or update service error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "DATABASE_ERROR",
+                  "error": "Database connection failed"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User registration",
+        "description": "# Errors\nReturns an error if input validation fails, user already exists, or database operations fail.",
+        "operationId": "register",
+        "requestBody": {
+          "description": "User registration data including email and password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Registration successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_EMAIL_EXISTS",
+                  "error": "Email address already registered"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Registration service error or email delivery failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "DATABASE_ERROR",
+                  "error": "Database connection failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/resend-verification": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Resend verification email",
+        "description": "# Errors\nReturns an error if user is already verified, database operations fail, or email service fails.",
+        "operationId": "resend_verification_email",
+        "responses": {
+          "200": {
+            "description": "Verification email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResendVerificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User email already verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_EMAIL_ALREADY_VERIFIED",
+                  "error": "Email is already verified"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to resend verification email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_REQUIRED",
+                  "error": "Not authenticated"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Email service error or database failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "EMAIL_SERVICE_ERROR",
+                  "error": "Email service unavailable"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset password",
+        "description": "# Errors\nReturns an error if token is invalid, password validation fails, or database operations fail.",
+        "operationId": "reset_password",
+        "requestBody": {
+          "description": "Password reset token and new password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetPasswordResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid token or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_INVALID_RESET_TOKEN",
+                  "error": "Invalid or expired password reset token"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Password update service error or database connection failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "RESET_SERVICE_ERROR",
+                  "error": "Password reset service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/verify-email": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Email verification",
+        "description": "# Errors\nReturns an error if token is invalid, expired, or database operations fail.",
+        "operationId": "verify_email",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "Email verification token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to frontend after verification"
+          },
+          "400": {
+            "description": "Invalid or expired token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "AUTH_INVALID_VERIFICATION_TOKEN",
+                  "error": "Invalid or expired verification token"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Email verification service error or database failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": "VERIFICATION_SERVICE_ERROR",
+                  "error": "Email verification service unavailable"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cdn/files/{file_id}": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Serve file content with user authentication",
+        "description": "This endpoint is designed to be used to get file content with proper authentication.\nIt verifies user access to the file and returns the file content with proper cache headers.\nThe file content is streamed directly from S3 to minimize memory usage for large files.\n\n# Errors\nReturns an error if file not found, access denied, or S3 operations fail.",
+        "operationId": "serve_file_cdn",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "description": "UUID of the file to stream via CDN",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Streaming file content with CDN-optimized headers",
+            "content": {
+              "application/octet-stream": {
+                "example": "Binary file content with appropriate Content-Type and Cache-Control headers"
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required for CDN file access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "CDN access forbidden - user cannot access this file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "CDN file not found or access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "CDN streaming error from storage backend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/files": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "List user's files with cursor-based pagination",
+        "description": "# Errors\nReturns an error if database operations fail.",
+        "operationId": "list_files",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "UUID offset for cursor-based files pagination",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of files to return (default: 50, max: 100)",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User files retrieved with pagination support",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserFilesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to access files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Database error while retrieving user files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/files/actions/upload": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Upload a file",
+        "description": "# Errors\nReturns an error if file upload, database operations, or file system operations fail.",
+        "operationId": "upload_file",
+        "requestBody": {
+          "description": "Multipart form data with file field",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadRequest"
+              },
+              "example": {
+                "file": "Binary file content - upload any file type (PDF, image, document, etc.)"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid file upload request or malformed file data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required for file upload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Uploaded file exceeds maximum size limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during file upload or storage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/files/{file_id}": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Get a specific file by ID",
+        "description": "# Errors\nReturns an error if database operations fail or file not found.",
+        "operationId": "get_file",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "description": "UUID of the file to retrieve details for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File details retrieved with download URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserFileInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User authentication required to view file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "File access denied - user does not own this file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Requested file does not exist or was deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error generating file download URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Update file metadata and properties",
+        "description": "# Errors\nReturns an error if validation fails, file not found, or database operations fail.",
+        "operationId": "update_file",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "description": "UUID of the file to update metadata for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated file metadata, filename, or status",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserFileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "File metadata updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserFileInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to modify files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied - cannot modify file owned by another user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Target file not found for update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Database error while updating file information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Permanently delete a user file",
+        "description": "# Errors\nReturns an error if file not found, permission denied, or storage operations fail.",
+        "operationId": "delete_file",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "description": "UUID of the file to permanently delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "File permanently deleted from storage and database"
+          },
+          "401": {
+            "description": "User authentication needed for file deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Delete operation forbidden - file belongs to another user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File to delete not found or already removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Storage system error during file deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/posts": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "List posts with cursor-based pagination and optional series filtering",
+        "description": "# Errors\nReturns error if posts database query fails, series filtering fails, or connection issues occur",
+        "operationId": "list_posts",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "UUID offset for cursor-based posts pagination",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of posts to return (default: 50, max: 100)",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "series_id",
+            "in": "query",
+            "description": "Filter posts by series ID",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Posts list retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostsListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to list posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - cannot list posts for series not owned by user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during post listing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Create a new post",
+        "description": "# Errors\nReturns error if series not found, access denied, slug/number conflict, or database error",
+        "operationId": "create_post",
+        "requestBody": {
+          "description": "Post creation data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Post created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid post data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to create posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - post series does not belong to authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Post creation failed - slug or number already exists in series",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during post creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/posts/{post_id}": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Get a specific post by ID with series ownership validation",
+        "description": "# Errors\nReturns error if post not found, series access denied, or database connection error",
+        "operationId": "get_post",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "description": "UUID of the post to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to view posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - post belongs to series not owned by user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found or access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during post retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Update a post",
+        "description": "# Errors\nReturns error if post not found, access denied, slug/number conflict, or database update error",
+        "operationId": "update_post",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "description": "UUID of the post to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated post data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePostRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Post updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to update posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - cannot update post in series not owned by user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found for update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Post update failed - slug or number already exists in series",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during post update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "Delete a post (soft delete) with series ownership validation",
+        "description": "# Errors\nReturns error if post not found, series access denied, or database deletion error",
+        "operationId": "delete_post",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "description": "UUID of the post to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Post deleted successfully"
+          },
+          "401": {
+            "description": "Authentication required to delete posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - cannot delete post in series not owned by user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found for deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during post deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/series": {
+      "get": {
+        "tags": [
+          "Series"
+        ],
+        "summary": "List user's series with cursor-based pagination",
+        "description": "# Errors\nReturns error if series database query fails or connection issues occur",
+        "operationId": "list_series",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "UUID offset for cursor-based series pagination",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of series to return (default: 50, max: 100)",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Series list retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to list series",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during series listing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Series"
+        ],
+        "summary": "Create a new series",
+        "description": "# Errors\nReturns error if series creation fails, slug conflict, or database error",
+        "operationId": "create_series",
+        "requestBody": {
+          "description": "Series creation data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSeriesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Series created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid series data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to create series",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Series with this slug already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during series creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/api/series/{series_id}": {
+      "get": {
+        "tags": [
+          "Series"
+        ],
+        "summary": "Get a specific series by ID with user ownership validation",
+        "description": "# Errors\nReturns error if series not found, user access denied, or database connection error",
+        "operationId": "get_series",
+        "parameters": [
+          {
+            "name": "series_id",
+            "in": "path",
+            "description": "UUID of the series to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Series retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to view series",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - series does not belong to user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Series not found or access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during series retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Series"
+        ],
+        "summary": "Update a series",
+        "description": "# Errors\nReturns error if series not found, access denied, slug conflict, or database update error",
+        "operationId": "update_series",
+        "parameters": [
+          {
+            "name": "series_id",
+            "in": "path",
+            "description": "UUID of the series to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated series data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSeriesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Series updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeriesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required to update series",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - cannot modify series not owned by user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Series not found for update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Series with updated slug already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during series update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Series"
+        ],
+        "summary": "Delete a series (soft delete) with user ownership validation",
+        "description": "# Errors\nReturns error if series not found, user access denied, or database deletion error",
+        "operationId": "delete_series",
+        "parameters": [
+          {
+            "name": "series_id",
+            "in": "path",
+            "description": "UUID of the series to delete",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Series deleted successfully"
+          },
+          "401": {
+            "description": "Authentication required to delete series",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied - cannot delete series not owned by user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Series not found for deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error during series deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+            "cookieAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiKeyResponse": {
+        "type": "object",
+        "description": "API response model for API keys (excludes sensitive hash)",
+        "required": [
+          "id",
+          "userId",
+          "name",
+          "keyPrefix",
+          "permissions",
+          "isActive"
+        ],
+        "properties": {
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When this API key was originally created",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "expiresAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Expiration timestamp after which key becomes invalid",
+            "example": "2024-01-01T00:00:00Z"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this API key in responses",
+            "example": "a1b2c3d4-5e6f-7890-abcd-ef1234567890"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Current activation status of this API key",
+            "example": true
+          },
+          "keyPrefix": {
+            "type": "string",
+            "description": "Key prefix for visual identification in API key lists",
+            "example": "pk_live_"
+          },
+          "lastUsedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Timestamp when the key was last used",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "name": {
+            "type": "string",
+            "description": "Descriptive name for this API key",
+            "example": "Production API Key"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Permissions granted to this API key for resource access",
+            "example": [
+              "read:posts",
+              "write:posts"
+            ]
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "API key last update timestamp",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Owner user identifier",
+            "example": "b2c3d4e5-6f78-9012-bcde-f12345678901"
+          }
+        },
+        "example": {
+          "createdAt": "2023-01-01T00:00:00Z",
+          "expiresAt": "2024-01-01T00:00:00Z",
+          "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+          "isActive": true,
+          "keyPrefix": "pk_live_",
+          "lastUsedAt": "2023-01-01T12:00:00Z",
+          "name": "Production API Key",
+          "permissions": [
+            "read:posts",
+            "write:posts"
+          ],
+          "updatedAt": "2023-01-01T12:00:00Z",
+          "userId": "b2c3d4e5-6f78-9012-bcde-f12345678901"
+        }
+      },
+      "ApiKeysListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ApiKeyResponse"
+        },
+        "description": "List of API keys for a user",
+        "example": [
+          {
+            "createdAt": "2023-01-01T00:00:00Z",
+            "expiresAt": "2024-01-01T00:00:00Z",
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+            "isActive": true,
+            "keyPrefix": "pk_live_",
+            "lastUsedAt": "2023-01-01T12:00:00Z",
+            "name": "Production API Key",
+            "permissions": [
+              "read:posts",
+              "write:posts"
+            ],
+            "updatedAt": "2023-01-01T12:00:00Z",
+            "userId": "b2c3d4e5-6f78-9012-bcde-f12345678901"
+          }
+        ]
+      },
+      "AuthProvider": {
+        "type": "string",
+        "description": "Authentication provider types supported by the system",
+        "enum": [
+          "google",
+          "email",
+          "both"
+        ]
+      },
+      "CheckEmailRequest": {
+        "type": "object",
+        "description": "Request body for checking if email exists",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to check",
+            "example": "user@example.com"
+          }
+        },
+        "example": {
+          "email": "user@example.com"
+        }
+      },
+      "CreateApiKeyRequest": {
+        "type": "object",
+        "description": "Request payload for creating a new API key",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "expiresAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When the API key should expire (optional)",
+            "example": "2024-01-01T00:00:00Z"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name identifier for the new API key",
+            "example": "Production API Key"
+          },
+          "permissions": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of permissions to grant to this key",
+            "example": [
+              "read:posts",
+              "write:posts"
+            ]
+          }
+        },
+        "example": {
+          "expiresAt": "2024-01-01T00:00:00Z",
+          "name": "Production API Key",
+          "permissions": [
+            "read:posts",
+            "write:posts"
+          ]
+        }
+      },
+      "CreateApiKeyResponse": {
+        "type": "object",
+        "description": "Response when creating a new API key - includes the actual key value",
+        "required": [
+          "id",
+          "name",
+          "key",
+          "keyPrefix",
+          "permissions",
+          "isActive"
+        ],
+        "properties": {
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Timestamp of when the API key was just created",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "expiresAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Key expiration date (when provided)",
+            "example": "2024-01-01T00:00:00Z"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the newly created API key",
+            "example": "a1b2c3d4-5e6f-7890-abcd-ef1234567890"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Initial active status of the new API key",
+            "example": true
+          },
+          "key": {
+            "type": "string",
+            "description": "The actual API key value (only shown once during creation)",
+            "example": "pk_live_1234567890abcdef"
+          },
+          "keyPrefix": {
+            "type": "string",
+            "description": "Prefix portion of the newly generated key",
+            "example": "pk_live_"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name shown for this API key",
+            "example": "Production API Key"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Permissions assigned to the new API key",
+            "example": [
+              "read:posts",
+              "write:posts"
+            ]
+          }
+        },
+        "example": {
+          "createdAt": "2023-01-01T00:00:00Z",
+          "expiresAt": "2024-01-01T00:00:00Z",
+          "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+          "isActive": true,
+          "key": "pk_live_1234567890abcdef",
+          "keyPrefix": "pk_live_",
+          "name": "Production API Key",
+          "permissions": [
+            "read:posts",
+            "write:posts"
+          ]
+        }
+      },
+      "CreatePostRequest": {
+        "type": "object",
+        "description": "Request payload for creating a new post with content and metadata",
+        "required": [
+          "seriesId",
+          "title",
+          "content",
+          "slug",
+          "postNumber"
+        ],
+        "properties": {
+          "audioFileId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Optional audio file attachment for the post",
+            "example": "c3d4e5f6-7890-1234-cdef-123456789012"
+          },
+          "content": {
+            "type": "string",
+            "description": "Full content of the post",
+            "example": "Welcome to our first episode where we discuss the fundamentals..."
+          },
+          "isPremium": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Restrict this post to premium subscribers only",
+            "example": false
+          },
+          "isPublished": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Publish this post immediately upon creation",
+            "example": false
+          },
+          "postNumber": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Episode or post number for sequencing content within the series",
+            "example": 1
+          },
+          "seriesId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Series to add this post to",
+            "example": "b2c3d4e5-6f78-9012-bcde-f12345678901"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Unique URL path segment for the new post",
+            "example": "episode-1-getting-started"
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Cover image URL for the post preview",
+            "example": "https://example.com/thumbnail.jpg"
+          },
+          "title": {
+            "type": "string",
+            "description": "Post title for display",
+            "example": "Episode 1: Getting Started"
+          },
+          "videoFileId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Optional video file attachment for the post",
+            "example": "d4e5f6a7-8901-2345-def0-234567890123"
+          }
+        },
+        "example": {
+          "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
+          "content": "Welcome to our first episode where we discuss the fundamentals...",
+          "isPremium": false,
+          "isPublished": false,
+          "postNumber": 1,
+          "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901",
+          "slug": "episode-1-getting-started",
+          "thumbnailUrl": "https://example.com/thumbnail.jpg",
+          "title": "Episode 1: Getting Started",
+          "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"
+        }
+      },
+      "CreateSeriesRequest": {
+        "type": "object",
+        "description": "Request payload for creating a new series with content and metadata",
+        "required": [
+          "title",
+          "slug"
+        ],
+        "properties": {
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Category or genre of the series (optional)",
+            "example": "Technology"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Banner image URL for the series homepage",
+            "example": "https://example.com/cover.jpg"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Description of the series content and purpose (optional)",
+            "example": "A weekly podcast about technology and innovation"
+          },
+          "isMonetized": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Enable monetization features for this series",
+            "example": false
+          },
+          "isPublished": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Make this series visible to the public upon creation",
+            "example": false
+          },
+          "pricingTier": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Subscription tier required to access the series",
+            "example": "free"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Unique URL path segment for the new series",
+            "example": "my-awesome-podcast"
+          },
+          "title": {
+            "type": "string",
+            "description": "Name for the new series being created",
+            "example": "My Awesome Podcast"
+          }
+        },
+        "example": {
+          "category": "Technology",
+          "coverImageUrl": "https://example.com/cover.jpg",
+          "description": "A weekly podcast about technology and innovation",
+          "isMonetized": false,
+          "isPublished": false,
+          "pricingTier": "free",
+          "slug": "my-awesome-podcast",
+          "title": "My Awesome Podcast"
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Standard JSON error response structure for API endpoints.",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional error code for programmatic handling",
+            "example": "AUTH_INVALID_CREDENTIALS"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "Invalid email or password"
+          }
+        },
+        "example": {
+          "code": "AUTH_INVALID_CREDENTIALS",
+          "error": "Invalid email or password"
+        }
+      },
+      "FileStatus": {
+        "type": "string",
+        "description": "File processing status for user uploaded files",
+        "enum": [
+          "uploaded",
+          "processing",
+          "processed",
+          "failed",
+          "deleted"
+        ]
+      },
+      "FileUploadRequest": {
+        "type": "object",
+        "description": "File upload request schema for multipart form data",
+        "required": [
+          "file"
+        ],
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "The file to upload",
+            "example": "Binary file content (PDF, image, document, etc.)"
+          }
+        }
+      },
+      "FileUploadResponse": {
+        "type": "object",
+        "description": "Response for file upload operations",
+        "required": [
+          "message",
+          "file"
+        ],
+        "properties": {
+          "file": {
+            "$ref": "#/components/schemas/UserFileInfo",
+            "description": "Uploaded file information"
+          },
+          "message": {
+            "type": "string",
+            "description": "Upload confirmation message"
+          }
+        },
+        "example": {
+          "file": {
+            "createdAt": "2023-01-01T00:00:00Z",
+            "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "fileSize": 1048576,
+            "filename": "document.pdf",
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+            "metadata": {
+              "description": "Important document"
+            },
+            "mimeType": "application/pdf",
+            "originalFilename": "My Important Document.pdf",
+            "status": "uploaded",
+            "updatedAt": "2023-01-01T00:00:00Z",
+            "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "message": "File uploaded successfully"
+        }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "description": "Request body for password reset",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to send password reset link to",
+            "example": "user@example.com"
+          }
+        },
+        "example": {
+          "email": "user@example.com"
+        }
+      },
+      "ForgotPasswordResponse": {
+        "type": "object",
+        "description": "Response for password reset request",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Password reset request status message"
+          }
+        },
+        "example": {
+          "message": "If the email exists in our system, a password reset link has been sent."
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "description": "Request body for user login",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address for login authentication"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password"
+          }
+        },
+        "example": {
+          "email": "user@example.com",
+          "password": "password123"
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "description": "Response for successful user login",
+        "required": [
+          "message",
+          "user"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Login success message"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserInfo",
+            "description": "User information"
+          }
+        },
+        "example": {
+          "message": "Login successful",
+          "user": {
+            "authProvider": "email",
+            "displayName": "John Doe",
+            "email": "user@example.com",
+            "emailVerified": true,
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          }
+        }
+      },
+      "LogoutResponse": {
+        "type": "object",
+        "description": "Response for successful logout",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Logout confirmation message"
+          }
+        },
+        "example": {
+          "message": "Logged out successfully"
+        }
+      },
+      "PostResponse": {
+        "type": "object",
+        "description": "API response model for posts",
+        "required": [
+          "id",
+          "seriesId",
+          "title",
+          "content",
+          "slug",
+          "postNumber",
+          "isPublished",
+          "isPremium"
+        ],
+        "properties": {
+          "audioFileId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "ID of associated audio file",
+            "example": "c3d4e5f6-7890-1234-cdef-123456789012"
+          },
+          "content": {
+            "type": "string",
+            "description": "Post body text and content",
+            "example": "Welcome to our first episode where we discuss the fundamentals..."
+          },
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Post creation timestamp",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Post's unique identifier",
+            "example": "a1b2c3d4-5e6f-7890-abcd-ef1234567890"
+          },
+          "isPremium": {
+            "type": "boolean",
+            "description": "Whether the post requires premium access",
+            "example": false
+          },
+          "isPublished": {
+            "type": "boolean",
+            "description": "Whether the post is published and visible to users",
+            "example": true
+          },
+          "postNumber": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Position number for ordering this post within its parent series",
+            "example": 1
+          },
+          "seriesId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Parent series identifier",
+            "example": "b2c3d4e5-6f78-9012-bcde-f12345678901"
+          },
+          "slug": {
+            "type": "string",
+            "description": "SEO-friendly URL identifier for the post",
+            "example": "episode-1-getting-started"
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "URL to the post's thumbnail image",
+            "example": "https://example.com/thumbnail.jpg"
+          },
+          "title": {
+            "type": "string",
+            "description": "Post display title",
+            "example": "Episode 1: Getting Started"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Post last update timestamp",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "videoFileId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "ID of associated video file",
+            "example": "d4e5f6a7-8901-2345-def0-234567890123"
+          }
+        },
+        "example": {
+          "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
+          "content": "Welcome to our first episode where we discuss the fundamentals...",
+          "createdAt": "2023-01-01T00:00:00Z",
+          "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+          "isPremium": false,
+          "isPublished": true,
+          "postNumber": 1,
+          "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901",
+          "slug": "episode-1-getting-started",
+          "thumbnailUrl": "https://example.com/thumbnail.jpg",
+          "title": "Episode 1: Getting Started",
+          "updatedAt": "2023-01-01T12:00:00Z",
+          "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"
+        }
+      },
+      "PostsListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/PostResponse"
+        },
+        "description": "List of posts with pagination support",
+        "example": [
+          {
+            "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
+            "content": "Welcome to our first episode where we discuss the fundamentals...",
+            "createdAt": "2023-01-01T00:00:00Z",
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+            "isPremium": false,
+            "isPublished": true,
+            "postNumber": 1,
+            "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901",
+            "slug": "episode-1-getting-started",
+            "thumbnailUrl": "https://example.com/thumbnail.jpg",
+            "title": "Episode 1: Getting Started",
+            "updatedAt": "2023-01-01T12:00:00Z",
+            "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"
+          }
+        ]
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "description": "Request body for user registration.",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "displayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional display name for the user"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address for new user registration"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password (minimum 8 characters)"
+          }
+        },
+        "example": {
+          "email": "user@example.com",
+          "password": "password123"
+        }
+      },
+      "RegisterResponse": {
+        "type": "object",
+        "description": "Response for successful user registration",
+        "required": [
+          "message",
+          "user"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Registration confirmation message"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserInfo",
+            "description": "User information"
+          }
+        },
+        "example": {
+          "message": "Registration successful. Please check your email for verification.",
+          "user": {
+            "authProvider": "email",
+            "displayName": "John Doe",
+            "email": "user@example.com",
+            "emailVerified": false,
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          }
+        }
+      },
+      "ResendVerificationResponse": {
+        "type": "object",
+        "description": "Response for resend verification email request",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Resend verification email status message"
+          }
+        },
+        "example": {
+          "message": "Verification email sent successfully"
+        }
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "description": "Request body for password reset confirmation",
+        "required": [
+          "token",
+          "userId",
+          "newPassword"
+        ],
+        "properties": {
+          "newPassword": {
+            "type": "string",
+            "description": "New password (minimum 8 characters)"
+          },
+          "token": {
+            "type": "string",
+            "description": "Password reset token"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User ID associated with the reset token"
+          }
+        },
+        "example": {
+          "newPassword": "newpassword123",
+          "token": "550e8400-e29b-41d4-a716-446655440000",
+          "userId": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        }
+      },
+      "ResetPasswordResponse": {
+        "type": "object",
+        "description": "Response for successful password reset",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Password reset confirmation message"
+          }
+        },
+        "example": {
+          "message": "Password has been reset successfully"
+        }
+      },
+      "SeriesListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SeriesResponse"
+        },
+        "description": "List of series with pagination support",
+        "example": [
+          {
+            "category": "Technology",
+            "coverImageUrl": "https://example.com/cover.jpg",
+            "createdAt": "2023-01-01T00:00:00Z",
+            "description": "A weekly podcast about technology and innovation",
+            "id": "e5f6a7b8-9012-3456-ef01-345678901234",
+            "isMonetized": false,
+            "isPublished": true,
+            "pricingTier": "free",
+            "slug": "my-awesome-podcast",
+            "title": "My Awesome Podcast",
+            "updatedAt": "2023-01-01T12:00:00Z",
+            "userId": "f6a7b8c9-0123-4567-f012-456789012345"
+          }
+        ]
+      },
+      "SeriesResponse": {
+        "type": "object",
+        "description": "API response model for series",
+        "required": [
+          "id",
+          "userId",
+          "title",
+          "slug",
+          "isPublished",
+          "isMonetized",
+          "pricingTier"
+        ],
+        "properties": {
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Category or genre of the series",
+            "example": "Technology"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "URL to the series cover image",
+            "example": "https://example.com/cover.jpg"
+          },
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Series creation timestamp",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Description of the series content and purpose",
+            "example": "A weekly podcast about technology and innovation"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Series unique identifier",
+            "example": "e5f6a7b8-9012-3456-ef01-345678901234"
+          },
+          "isMonetized": {
+            "type": "boolean",
+            "description": "Whether the series has monetization enabled",
+            "example": false
+          },
+          "isPublished": {
+            "type": "boolean",
+            "description": "Whether the series is published and visible to users",
+            "example": true
+          },
+          "pricingTier": {
+            "type": "string",
+            "description": "Pricing tier for the series",
+            "example": "free"
+          },
+          "slug": {
+            "type": "string",
+            "description": "SEO-friendly URL identifier for the series",
+            "example": "my-awesome-podcast"
+          },
+          "title": {
+            "type": "string",
+            "description": "Display name of the series",
+            "example": "My Awesome Podcast"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Series last update timestamp",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the user who owns this series",
+            "example": "f6a7b8c9-0123-4567-f012-456789012345"
+          }
+        },
+        "example": {
+          "category": "Technology",
+          "coverImageUrl": "https://example.com/cover.jpg",
+          "createdAt": "2023-01-01T00:00:00Z",
+          "description": "A weekly podcast about technology and innovation",
+          "id": "e5f6a7b8-9012-3456-ef01-345678901234",
+          "isMonetized": false,
+          "isPublished": true,
+          "pricingTier": "free",
+          "slug": "my-awesome-podcast",
+          "title": "My Awesome Podcast",
+          "updatedAt": "2023-01-01T12:00:00Z",
+          "userId": "f6a7b8c9-0123-4567-f012-456789012345"
+        }
+      },
+      "UpdateApiKeyRequest": {
+        "type": "object",
+        "description": "Request payload for updating an API key",
+        "properties": {
+          "expiresAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Update the expiration date",
+            "example": "2024-06-01T00:00:00Z"
+          },
+          "isActive": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Change the active status of the key",
+            "example": false
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New name for the API key (optional)",
+            "example": "Updated API Key Name"
+          },
+          "permissions": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Updated permissions array (optional)",
+            "example": [
+              "read:posts"
+            ]
+          }
+        },
+        "example": {
+          "expiresAt": "2024-06-01T00:00:00Z",
+          "isActive": false,
+          "name": "Updated API Key Name",
+          "permissions": [
+            "read:posts"
+          ]
+        }
+      },
+      "UpdatePostRequest": {
+        "type": "object",
+        "description": "Request payload for updating post content, metadata, or status",
+        "properties": {
+          "audioFileId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Updated audio file reference for the post",
+            "example": "c3d4e5f6-7890-1234-cdef-123456789012"
+          },
+          "content": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Updated post content text (optional)",
+            "example": "Updated content for the first episode with more details..."
+          },
+          "isPremium": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Modify premium subscription requirement for this post",
+            "example": true
+          },
+          "isPublished": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Change the publication visibility of this post",
+            "example": true
+          },
+          "postNumber": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Updated sequential number within the series (optional)",
+            "example": 2
+          },
+          "slug": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New URL-friendly slug for the post (optional)",
+            "example": "episode-1-updated"
+          },
+          "thumbnailUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Replace the post's cover image with a new URL",
+            "example": "https://example.com/new-thumbnail.jpg"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New title for the post (optional)",
+            "example": "Episode 1: Getting Started (Updated)"
+          },
+          "videoFileId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Updated video file reference for the post",
+            "example": "d4e5f6a7-8901-2345-def0-234567890123"
+          }
+        },
+        "example": {
+          "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
+          "content": "Updated content for the first episode with more details...",
+          "isPremium": true,
+          "isPublished": true,
+          "postNumber": 2,
+          "slug": "episode-1-updated",
+          "thumbnailUrl": "https://example.com/new-thumbnail.jpg",
+          "title": "Episode 1: Getting Started (Updated)",
+          "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"
+        }
+      },
+      "UpdateSeriesRequest": {
+        "type": "object",
+        "description": "Request payload for updating series content, metadata, or status",
+        "properties": {
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Updated category or genre of the series (optional)",
+            "example": "Technology"
+          },
+          "coverImageUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Update the series banner image with a new URL",
+            "example": "https://example.com/new-cover.jpg"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Updated description of the series (optional)",
+            "example": "An updated description with more details"
+          },
+          "isMonetized": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Toggle monetization features for the series",
+            "example": true
+          },
+          "isPublished": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Change the public visibility of the series",
+            "example": true
+          },
+          "pricingTier": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Modify the subscription tier requirement for the series",
+            "example": "premium"
+          },
+          "slug": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New URL-friendly slug for the series (optional)",
+            "example": "my-updated-podcast"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New title for the series (optional)",
+            "example": "My Updated Podcast"
+          }
+        },
+        "example": {
+          "category": "Technology",
+          "coverImageUrl": "https://example.com/new-cover.jpg",
+          "description": "An updated description with more details",
+          "isMonetized": true,
+          "isPublished": true,
+          "pricingTier": "premium",
+          "slug": "my-updated-podcast",
+          "title": "My Updated Podcast"
+        }
+      },
+      "UpdateUserFileRequest": {
+        "type": "object",
+        "description": "Request payload for updating user file metadata, filename, or status",
+        "properties": {
+          "filename": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New filename (optional)",
+            "example": "renamed_document.pdf"
+          },
+          "metadata": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Value",
+                "description": "Updated metadata (optional)"
+              }
+            ]
+          },
+          "status": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/FileStatus",
+                "description": "New status (optional)"
+              }
+            ]
+          }
+        },
+        "example": {
+          "filename": "renamed_document.pdf",
+          "metadata": {
+            "processed_at": "2023-01-01T12:00:00Z"
+          },
+          "status": "processed"
+        }
+      },
+      "UpdateUserInfoRequest": {
+        "type": "object",
+        "description": "Request body for updating user information",
+        "properties": {
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Updated avatar URL for the user"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Updated description for the user"
+          },
+          "displayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Updated display name for the user"
+          }
+        },
+        "example": {
+          "avatarUrl": "https://example.com/new-avatar.jpg",
+          "description": "A brief description about myself",
+          "displayName": "New Display Name"
+        }
+      },
+      "UpdateUserInfoResponse": {
+        "type": "object",
+        "description": "Response for successful user information update",
+        "required": [
+          "message",
+          "user"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Update confirmation message"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserInfo",
+            "description": "Updated user information"
+          }
+        },
+        "example": {
+          "message": "User information updated successfully",
+          "user": {
+            "authProvider": "email",
+            "displayName": "New Display Name",
+            "email": "user@example.com",
+            "emailVerified": true,
+            "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          }
+        }
+      },
+      "UserFileInfo": {
+        "type": "object",
+        "description": "User file information for API responses",
+        "required": [
+          "id",
+          "userId",
+          "filename",
+          "originalFilename",
+          "fileSize",
+          "mimeType",
+          "fileHash",
+          "status"
+        ],
+        "properties": {
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "File upload timestamp",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "fileHash": {
+            "type": "string",
+            "description": "SHA-256 hash of the file",
+            "example": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "fileSize": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Size of the file in bytes",
+            "example": 1048576
+          },
+          "filename": {
+            "type": "string",
+            "description": "Current filename",
+            "example": "document.pdf"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "File's unique identifier",
+            "example": "b8c9d0e1-2345-6789-b234-678901234567"
+          },
+          "metadata": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Value",
+                "description": "Additional file metadata"
+              }
+            ]
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "MIME type of the file",
+            "example": "application/pdf"
+          },
+          "originalFilename": {
+            "type": "string",
+            "description": "Original filename as uploaded by user",
+            "example": "My Important Document.pdf"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FileStatus",
+            "description": "Current processing status"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "File last update timestamp",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the user who owns this file",
+            "example": "c9d0e1f2-3456-789a-c345-789012345678"
+          }
+        },
+        "example": {
+          "createdAt": "2023-01-01T00:00:00Z",
+          "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "fileSize": 1048576,
+          "filename": "document.pdf",
+          "id": "b8c9d0e1-2345-6789-b234-678901234567",
+          "metadata": {
+            "height": 1080,
+            "width": 1920
+          },
+          "mimeType": "application/pdf",
+          "originalFilename": "My Important Document.pdf",
+          "status": "uploaded",
+          "updatedAt": "2023-01-01T00:00:00Z",
+          "userId": "c9d0e1f2-3456-789a-c345-789012345678"
+        }
+      },
+      "UserFilesResponse": {
+        "type": "array",
+        "title": "UserFilesResponse",
+        "items": {
+          "$ref": "#/components/schemas/UserFileInfo"
+        },
+        "description": "Collection of user files with metadata",
+        "example": [
+          {
+            "createdAt": "2023-01-01T00:00:00Z",
+            "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "fileSize": 1048576,
+            "filename": "document.pdf",
+            "id": "b8c9d0e1-2345-6789-b234-678901234567",
+            "metadata": {
+              "description": "Important document"
+            },
+            "mimeType": "application/pdf",
+            "originalFilename": "My Important Document.pdf",
+            "status": "uploaded",
+            "updatedAt": "2023-01-01T00:00:00Z",
+            "userId": "c9d0e1f2-3456-789a-c345-789012345678"
+          }
+        ]
+      },
+      "UserInfo": {
+        "type": "object",
+        "description": "User information for API responses and internal use",
+        "required": [
+          "id",
+          "email",
+          "authProvider",
+          "emailVerified"
+        ],
+        "properties": {
+          "authProvider": {
+            "$ref": "#/components/schemas/AuthProvider",
+            "description": "Authentication provider used by the user"
+          },
+          "avatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "URL to user's avatar image",
+            "example": "https://example.com/avatar.jpg"
+          },
+          "createdAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "User account creation timestamp",
+            "example": "2023-01-01T00:00:00Z"
+          },
+          "displayName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "User's display name",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's registered email address",
+            "example": "user@example.com"
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "description": "Whether the user's email has been verified",
+            "example": true
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "User's unique identifier",
+            "example": "a7b8c9d0-1234-5678-a123-567890123456"
+          },
+          "lastLogin": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Timestamp of user's last login",
+            "example": "2023-01-02T12:00:00Z"
+          }
+        },
+        "example": {
+          "authProvider": "email",
+          "avatarUrl": "https://example.com/avatar.jpg",
+          "createdAt": "2023-01-01T00:00:00",
+          "displayName": "John Doe",
+          "email": "user@example.com",
+          "emailVerified": true,
+          "id": "a7b8c9d0-1234-5678-a123-567890123456",
+          "lastLogin": "2023-01-02T12:00:00"
+        }
+      },
+      "Value": {
+        "type": "object",
+        "title": "JSONValue",
+        "description": "Flexible JSON value that can be an object, array, string, number, boolean, or null"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "API key authentication using Bearer token in Authorization header"
+      },
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid",
+        "description": "Session-based authentication using secure HTTP-only cookies"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication and authorization endpoints"
+    },
+    {
+      "name": "Files",
+      "description": "File upload, download, and management endpoints"
+    },
+    {
+      "name": "Series",
+      "description": "Series creation and management endpoints"
+    },
+    {
+      "name": "Posts",
+      "description": "Post creation and management endpoints"
+    },
+    {
+      "name": "API Keys",
+      "description": "API key creation and management endpoints"
+    }
+  ]
+}

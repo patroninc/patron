@@ -1,10 +1,14 @@
+use crate::errors::ServiceError;
 use crate::schema::{email_verification_tokens, users};
+use crate::services::db::DbService;
 use actix_session::Session;
-use actix_web::{dev::Payload, error::Error, FromRequest, HttpRequest};
-use chrono::NaiveDateTime;
+use actix_web::{dev::Payload, error::Error, web, FromRequest, HttpRequest};
+use chrono::{NaiveDateTime, Utc};
 use diesel::prelude::*;
+use diesel_async::RunQueryDsl;
 use serde::{Deserialize, Serialize};
-use std::future::{ready, Ready};
+use sha2::{Digest, Sha256};
+use std::pin::Pin;
 use utoipa::ToSchema;
 
 /// Custom serde module for optional `NaiveDateTime` to RFC3339 string conversion
@@ -132,7 +136,7 @@ pub struct User {
     /// URL to user's avatar image
     pub avatar_url: Option<String>,
     /// Authentication provider used by the user
-    pub auth_provider: String, // Maps to AuthProvider enum
+    pub auth_provider: String,
     /// Whether the user's email has been verified
     pub email_verified: bool,
     /// Timestamp of user's last login
@@ -188,20 +192,43 @@ pub struct UserInfo {
 
 impl FromRequest for User {
     type Error = Error;
-    type Future = Ready<Result<Self, Error>>;
+    type Future = Pin<Box<dyn std::future::Future<Output = Result<Self, Self::Error>>>>;
 
-    #[inline]
     fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
-        let session_result = Session::from_request(req, payload).into_inner();
+        let req_clone = req.clone();
+        let session_result = Session::from_request(&req_clone, payload).into_inner();
 
-        ready(session_result.map_or_else(
-            |_| Err(actix_web::error::ErrorUnauthorized("Session error")),
-            |session| match session.get::<Self>("user") {
-                Ok(Some(user)) => Ok(user),
-                Ok(None) => Err(actix_web::error::ErrorUnauthorized("Not authenticated")),
-                Err(_) => Err(actix_web::error::ErrorUnauthorized("Invalid session")),
-            },
-        ))
+        Box::pin(async move {
+            if let Ok(session) = session_result {
+                if let Ok(Some(user)) = session.get::<Self>("user") {
+                    return Ok(user);
+                }
+            }
+
+            if let Some(auth_header) = req_clone.headers().get("authorization") {
+                if let Ok(auth_str) = auth_header.to_str() {
+                    if let Some(token) = auth_str.strip_prefix("Bearer ") {
+                        if let Some(db_service) = req_clone.app_data::<web::Data<DbService>>() {
+                            match verify_api_key_auth(db_service, token).await {
+                                Ok(Some(user)) => return Ok(user),
+                                Ok(None) => {
+                                    return Err(actix_web::error::ErrorUnauthorized(
+                                        "Invalid API key",
+                                    ))
+                                }
+                                Err(_) => {
+                                    return Err(actix_web::error::ErrorUnauthorized(
+                                        "API key verification failed",
+                                    ))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Err(actix_web::error::ErrorUnauthorized("Not authenticated"))
+        })
     }
 }
 
@@ -235,6 +262,78 @@ pub struct EmailVerificationToken {
     pub expires_at: NaiveDateTime,
     /// When this token was created
     pub created_at: NaiveDateTime,
+}
+
+/// Hash an API key for secure storage and verification
+fn hash_api_key(key: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(key.as_bytes());
+    format!("{:x}", hasher.finalize())
+}
+
+/// Verify an API key and return the associated user for authentication
+async fn verify_api_key_auth(
+    db_service: &DbService,
+    api_key: &str,
+) -> Result<Option<User>, ServiceError> {
+    use crate::schema::{api_keys::dsl as api_keys_dsl, users::dsl as users_dsl};
+
+    let pool = db_service.pool();
+    let mut conn = pool.get().await.map_err(ServiceError::from)?;
+
+    let key_hash = hash_api_key(api_key);
+
+    let result: Result<User, diesel::result::Error> = api_keys_dsl::api_keys
+        .inner_join(users_dsl::users.on(api_keys_dsl::user_id.eq(users_dsl::id)))
+        .filter(api_keys_dsl::key_hash.eq(&key_hash))
+        .filter(api_keys_dsl::is_active.eq(true))
+        .filter(
+            api_keys_dsl::expires_at
+                .is_null()
+                .or(api_keys_dsl::expires_at.gt(Utc::now().naive_utc())),
+        )
+        .select(users_dsl::users::all_columns())
+        .first(&mut conn)
+        .await;
+
+    match result {
+        Ok(user) => {
+            if let Err(e) = update_api_key_last_used_background(db_service, &key_hash).await {
+                eprintln!("Failed to update API key last used timestamp: {e}");
+            }
+            Ok(Some(user))
+        }
+        Err(diesel::result::Error::NotFound) => Ok(None),
+        Err(e) => Err(ServiceError::Database(e.to_string())),
+    }
+}
+
+/// Update last used timestamp for an API key (background operation)
+async fn update_api_key_last_used_background(
+    db_service: &DbService,
+    key_hash: &str,
+) -> Result<(), ServiceError> {
+    use crate::schema::api_keys::dsl as api_keys_dsl;
+
+    let pool = db_service.pool();
+    let mut conn = pool.get().await.map_err(ServiceError::from)?;
+
+    let current_time = Utc::now().naive_utc();
+
+    let _ = diesel::update(
+        api_keys_dsl::api_keys
+            .filter(api_keys_dsl::key_hash.eq(key_hash))
+            .filter(api_keys_dsl::is_active.eq(true)),
+    )
+    .set((
+        api_keys_dsl::last_used_at.eq(current_time),
+        api_keys_dsl::updated_at.eq(current_time),
+    ))
+    .execute(&mut conn)
+    .await
+    .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+    Ok(())
 }
 
 /// Type alias for user information responses returned by the API.

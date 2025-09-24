@@ -9,3 +9,6 @@ pub mod series;
 
 /// Posts management handlers
 pub mod posts;
+
+/// API keys management handlers
+pub mod api_keys;

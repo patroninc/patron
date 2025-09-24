@@ -4,6 +4,22 @@
 #![allow(clippy::single_char_lifetime_names)]
 
 diesel::table! {
+    api_keys (id) {
+        id -> Uuid,
+        user_id -> Uuid,
+        name -> Text,
+        key_hash -> Text,
+        key_prefix -> Text,
+        permissions -> Nullable<Array<Nullable<Text>>>,
+        last_used_at -> Nullable<Timestamp>,
+        expires_at -> Nullable<Timestamp>,
+        is_active -> Bool,
+        created_at -> Nullable<Timestamp>,
+        updated_at -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
     email_verification_tokens (id) {
         id -> Uuid,
         user_id -> Uuid,
@@ -93,12 +109,14 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(api_keys -> users (user_id));
 diesel::joinable!(email_verification_tokens -> users (user_id));
 diesel::joinable!(posts -> series (series_id));
 diesel::joinable!(series -> users (user_id));
 diesel::joinable!(user_files -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    api_keys,
     email_verification_tokens,
     posts,
     series,

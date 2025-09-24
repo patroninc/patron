@@ -51,7 +51,7 @@ pub struct ListPostsQuery {
         (status = 409, description = "Post creation failed - slug or number already exists in series", body = ErrorResponse),
         (status = 500, description = "Server error during post creation", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn create_post(
     user: User,
@@ -113,7 +113,7 @@ pub async fn create_post(
 /// List posts with cursor-based pagination and optional series filtering
 ///
 /// # Errors
-/// Returns error if database query fails, series filtering fails, or connection issues occur
+/// Returns error if posts database query fails, series filtering fails, or connection issues occur
 #[utoipa::path(
     get,
     path = "/api/posts",
@@ -125,7 +125,7 @@ pub async fn create_post(
         (status = 403, description = "Access denied - cannot list posts for series not owned by user", body = ErrorResponse),
         (status = 500, description = "Server error during post listing", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn list_posts(
     user: User,
@@ -193,7 +193,7 @@ pub async fn list_posts(
         (status = 403, description = "Access denied - post belongs to series not owned by user", body = ErrorResponse),
         (status = 500, description = "Server error during post retrieval", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn get_post(
     user: User,
@@ -241,7 +241,7 @@ pub async fn get_post(
         (status = 409, description = "Post update failed - slug or number already exists in series", body = ErrorResponse),
         (status = 500, description = "Server error during post update", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn update_post(
     user: User,
@@ -317,7 +317,7 @@ pub async fn update_post(
         (status = 403, description = "Access denied - cannot delete post in series not owned by user", body = ErrorResponse),
         (status = 500, description = "Server error during post deletion", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn delete_post(
     user: User,

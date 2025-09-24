@@ -530,7 +530,6 @@ pub async fn serve_file_cdn(
             _ => actix_web::error::ErrorInternalServerError(format!("Database error: {e}")),
         })?;
 
-    // Get file stream from S3
     let file_stream = s3_service
         .get_object_stream(&file.file_path)
         .await

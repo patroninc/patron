@@ -48,7 +48,7 @@ pub struct ListSeriesQuery {
         (status = 409, description = "Series with this slug already exists", body = ErrorResponse),
         (status = 500, description = "Server error during series creation", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn create_series(
     user: User,
@@ -98,7 +98,7 @@ pub async fn create_series(
 /// List user's series with cursor-based pagination
 ///
 /// # Errors
-/// Returns error if database query fails or connection issues occur
+/// Returns error if series database query fails or connection issues occur
 #[utoipa::path(
     get,
     path = "/api/series",
@@ -109,7 +109,7 @@ pub async fn create_series(
         (status = 401, description = "Authentication required to list series", body = ErrorResponse),
         (status = 500, description = "Server error during series listing", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn list_series(
     user: User,
@@ -170,7 +170,7 @@ pub async fn list_series(
         (status = 403, description = "Access denied - series does not belong to user", body = ErrorResponse),
         (status = 500, description = "Server error during series retrieval", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn get_series(
     user: User,
@@ -217,7 +217,7 @@ pub async fn get_series(
         (status = 409, description = "Series with updated slug already exists", body = ErrorResponse),
         (status = 500, description = "Server error during series update", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn update_series(
     user: User,
@@ -294,7 +294,7 @@ pub async fn update_series(
         (status = 403, description = "Access denied - cannot delete series not owned by user", body = ErrorResponse),
         (status = 500, description = "Server error during series deletion", body = ErrorResponse)
     ),
-    security(("cookieAuth" = []))
+    security(("cookieAuth" = [], "bearerAuth" = []))
 )]
 pub async fn delete_series(
     user: User,
@@ -307,7 +307,6 @@ pub async fn delete_series(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    // Verify series exists and belongs to user
     let _existing_series: Series = series_dsl::series
         .filter(series_dsl::id.eq(series_id))
         .filter(series_dsl::user_id.eq(user.id))
@@ -321,7 +320,6 @@ pub async fn delete_series(
             _ => ServiceError::Database(e.to_string()),
         })?;
 
-    // Soft delete
     let _updated: Series = diesel::update(series_dsl::series.filter(series_dsl::id.eq(series_id)))
         .set((
             series_dsl::deleted_at.eq(Utc::now().naive_utc()),
