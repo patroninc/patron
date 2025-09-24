@@ -14,6 +14,7 @@ import Audience from '@/pages/dashboard/audience';
 import Payouts from '@/pages/dashboard/payouts';
 import Settings from '@/pages/settings';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import NewPost from './pages/new-post';
 
 const initialData = (window as any).__INITIAL_DATA__ as { user?: UserInfo | null } | null;
 
@@ -90,6 +91,15 @@ export const router = createBrowserRouter([
         Component: () => (
           <ProtectedRoute requireAuth={true}>
             <Payouts />
+          </ProtectedRoute>
+        ),
+        errorElement: <ErrorBoundary />,
+      },
+      {
+        path: 'new-post',
+        Component: () => (
+          <ProtectedRoute requireAuth={true}>
+            <NewPost />
           </ProtectedRoute>
         ),
         errorElement: <ErrorBoundary />,
