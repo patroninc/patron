@@ -1,12 +1,13 @@
 import { JSX, useRef } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
+import { Edit, Eye, Link, Plus, Trash2 } from 'lucide-react';
 
 import MainLayout from '@/layouts/main';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { DataTable, createSimpleColumn, createActionsColumn } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
+import NewSerialForm from '@/components/new-serial-form';
 
 // Data types
 export type Post = {
@@ -139,10 +140,10 @@ const Content = (): JSX.Element => {
             <div className="mb-5 flex items-center justify-between">
               <Input ref={postsFilterRef} placeholder="Search posts..." className="md:text-base" />
 
-              <Button>
+              <Link to="/new-post">
                 New post
                 <Plus />
-              </Button>
+              </Link>
             </div>
             <DataTable
               columns={postsColumns}
@@ -164,10 +165,14 @@ const Content = (): JSX.Element => {
                 className="md:text-base"
               />
 
-              <Button>
-                New serial
-                <Plus />
-              </Button>
+              <NewSerialForm
+                trigger={
+                  <Button>
+                    New serial
+                    <Plus />
+                  </Button>
+                }
+              />
             </div>
             <DataTable
               columns={serialsColumns}
