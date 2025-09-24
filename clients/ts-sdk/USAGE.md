@@ -3,13 +3,16 @@
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.auth.checkEmail({
-    email: "user@example.com",
-  });
+  const result = await patronts.apiKeys.list();
+
+  console.log(result);
 }
 
 run();

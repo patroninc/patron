@@ -8,19 +8,22 @@ dotenv.config();
  * Example usage of the patronts SDK
  *
  * To run this example from the examples directory:
- * npm run build && npx tsx authCheckEmail.example.ts
+ * npm run build && npx tsx apiKeysList.example.ts
  */
 
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function main() {
-  await patronts.auth.checkEmail({
-    email: "user@example.com",
-  });
+  const result = await patronts.apiKeys.list();
+
+  console.log(result);
 }
 
 main().catch(console.error);

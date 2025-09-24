@@ -20,23 +20,24 @@ specific category of applications.
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { authCheckEmail } from "patronts/funcs/authCheckEmail.js";
+import { apiKeysList } from "patronts/funcs/apiKeysList.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await authCheckEmail(patronts, {
-    email: "user@example.com",
-  });
+  const res = await apiKeysList(patronts);
   if (res.ok) {
     const { value: result } = res;
-    
+    console.log(result);
   } else {
-    console.log("authCheckEmail failed:", res.error);
+    console.log("apiKeysList failed:", res.error);
   }
 }
 

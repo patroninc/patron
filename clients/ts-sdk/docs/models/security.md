@@ -12,4 +12,5 @@ let value: Security = {};
 
 | Field              | Type               | Required           | Description        |
 | ------------------ | ------------------ | ------------------ | ------------------ |
+| `bearerAuth`       | *string*           | :heavy_minus_sign: | N/A                |
 | `cookieAuth`       | *string*           | :heavy_minus_sign: | N/A                |

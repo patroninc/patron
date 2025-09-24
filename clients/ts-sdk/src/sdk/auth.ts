@@ -116,10 +116,12 @@ export class Auth extends ClientSDK {
    * Returns an error if session operations fail.
    */
   async logout(
+    security: operations.LogoutSecurity,
     options?: RequestOptions,
   ): Promise<models.LogoutResponse> {
     return unwrapAsync(authLogout(
       this,
+      security,
       options,
     ));
   }
@@ -132,10 +134,12 @@ export class Auth extends ClientSDK {
    * Returns an error if user is not authenticated or serialization fails.
    */
   async getCurrentUser(
+    security: operations.GetMeSecurity,
     options?: RequestOptions,
   ): Promise<models.UserInfo> {
     return unwrapAsync(authGetCurrentUser(
       this,
+      security,
       options,
     ));
   }
@@ -148,11 +152,13 @@ export class Auth extends ClientSDK {
    * Returns an error if database operations fail or user validation fails.
    */
   async updateUserInfo(
+    security: operations.UpdateUserInfoSecurity,
     request: models.UpdateUserInfoRequest,
     options?: RequestOptions,
   ): Promise<models.UpdateUserInfoResponse> {
     return unwrapAsync(authUpdateUserInfo(
       this,
+      security,
       request,
       options,
     ));
@@ -184,10 +190,12 @@ export class Auth extends ClientSDK {
    * Returns an error if user is already verified, database operations fail, or email service fails.
    */
   async resendVerificationEmail(
+    security: operations.ResendVerificationEmailSecurity,
     options?: RequestOptions,
   ): Promise<models.ResendVerificationResponse> {
     return unwrapAsync(authResendVerificationEmail(
       this,
+      security,
       options,
     ));
   }

@@ -6,7 +6,7 @@ import { PatrontsCore } from "../core.js";
 import * as M from "../lib/matchers.js";
 import { compactMap } from "../lib/primitives.js";
 import { RequestOptions } from "../lib/sdks.js";
-import { extractSecurity, resolveGlobalSecurity } from "../lib/security.js";
+import { resolveSecurity } from "../lib/security.js";
 import { pathToFunc } from "../lib/url.js";
 import {
   ConnectionError,
@@ -19,6 +19,7 @@ import { PatrontsError } from "../models/errors/patrontserror.js";
 import { ResponseValidationError } from "../models/errors/responsevalidationerror.js";
 import { SDKValidationError } from "../models/errors/sdkvalidationerror.js";
 import * as models from "../models/index.js";
+import * as operations from "../models/operations/index.js";
 import { APICall, APIPromise } from "../types/async.js";
 import { Result } from "../types/fp.js";
 
@@ -31,6 +32,7 @@ import { Result } from "../types/fp.js";
  */
 export function authLogout(
   client: PatrontsCore,
+  security: operations.LogoutSecurity,
   options?: RequestOptions,
 ): APIPromise<
   Result<
@@ -47,12 +49,14 @@ export function authLogout(
 > {
   return new APIPromise($do(
     client,
+    security,
     options,
   ));
 }
 
 async function $do(
   client: PatrontsCore,
+  security: operations.LogoutSecurity,
   options?: RequestOptions,
 ): Promise<
   [
@@ -76,19 +80,25 @@ async function $do(
     Accept: "application/json",
   }));
 
-  const secConfig = await extractSecurity(client._options.cookieAuth);
-  const securityInput = secConfig == null ? {} : { cookieAuth: secConfig };
-  const requestSecurity = resolveGlobalSecurity(securityInput);
+  const requestSecurity = resolveSecurity(
+    [
+      {
+        fieldName: "sessionid",
+        type: "apiKey:cookie",
+        value: security?.cookieAuth,
+      },
+    ],
+  );
 
   const context = {
     options: client._options,
     baseURL: options?.serverURL ?? client._baseURL ?? "",
     operationID: "logout",
-    oAuth2Scopes: [],
+    oAuth2Scopes: null,
 
     resolvedSecurity: requestSecurity,
 
-    securitySource: client._options.cookieAuth,
+    securitySource: security,
     retryConfig: options?.retries
       || client._options.retryConfig
       || { strategy: "none" },

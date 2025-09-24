@@ -15,6 +15,238 @@ servers:
   - url: "https://api.patron.com"
     description: "Production server"
 paths:
+  "/api/api-keys":
+    get:
+      tags:
+        - "API Keys"
+      summary: "List API keys with cursor-based pagination and optional filtering"
+      description: "# Errors\nReturns error if API keys database query fails or connection issues occur"
+      operationId: "list_api_keys"
+      parameters:
+        - name: "offset"
+          in: "query"
+          description: "Starting point UUID for paginated API key results"
+          required: false
+          schema:
+            type:
+              - "string"
+              - "null"
+            format: "uuid"
+        - name: "limit"
+          in: "query"
+          description: "Number of API keys to return per page (default: 50, max: 100)"
+          required: false
+          schema:
+            type:
+              - "integer"
+              - "null"
+            format: "int64"
+        - name: "isActive"
+          in: "query"
+          description: "Only show active or inactive API keys"
+          required: false
+          schema:
+            type:
+              - "boolean"
+              - "null"
+      responses:
+        "200":
+          description: "API keys list retrieved"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ApiKeysListResponse"}
+        "401":
+          description: "Authentication required to list API keys"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Server error during API keys listing"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-group: "apiKeys"
+      x-speakeasy-name-override: "list"
+    post:
+      tags:
+        - "API Keys"
+      summary: "Create a new API key"
+      description: "# Errors\nReturns error if permissions are invalid, database error, or key generation fails"
+      operationId: "create_api_key"
+      requestBody:
+        description: "API key creation data"
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/CreateApiKeyRequest"}
+        required: true
+      responses:
+        "201":
+          description: "API key created successfully"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/CreateApiKeyResponse"}
+        "400":
+          description: "Invalid API key data"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "401":
+          description: "Authentication required to create API keys"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Server error during API key creation"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-group: "apiKeys"
+      x-speakeasy-name-override: "create"
+  "/api/api-keys/{api_key_id}":
+    get:
+      tags:
+        - "API Keys"
+      summary: "Get a specific API key by ID"
+      description: "# Errors\nReturns error if API key not found, access denied, or database connection error"
+      operationId: "get_api_key"
+      parameters:
+        - name: "api_key_id"
+          in: "path"
+          description: "UUID of the API key to retrieve"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "200":
+          description: "API key retrieved"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ApiKeyResponse"}
+        "401":
+          description: "Authentication required to view API keys"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "403":
+          description: "Access denied - API key belongs to different user"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "404":
+          description: "API key not found or access denied"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Server error during API key retrieval"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-group: "apiKeys"
+      x-speakeasy-name-override: "get"
+    put:
+      tags:
+        - "API Keys"
+      summary: "Update an API key"
+      description: "# Errors\nReturns error if API key not found, access denied, or database update error"
+      operationId: "update_api_key"
+      parameters:
+        - name: "api_key_id"
+          in: "path"
+          description: "UUID of the API key to update"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      requestBody:
+        description: "Updated API key data"
+        content:
+          "application/json":
+            schema: {"$ref": "#/components/schemas/UpdateApiKeyRequest"}
+        required: true
+      responses:
+        "200":
+          description: "API key updated successfully"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ApiKeyResponse"}
+        "401":
+          description: "Authentication required to update API keys"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "403":
+          description: "Access denied - cannot update API key owned by different user"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "404":
+          description: "API key not found for update"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Server error during API key update"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-group: "apiKeys"
+      x-speakeasy-name-override: "update"
+    delete:
+      tags:
+        - "API Keys"
+      summary: "Delete an API key (hard delete for security)"
+      description: "# Errors\nReturns error if API key not found, access denied, or database deletion error"
+      operationId: "delete_api_key"
+      parameters:
+        - name: "api_key_id"
+          in: "path"
+          description: "UUID of the API key to delete"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        "204":
+          description: "API key deleted successfully"
+        "401":
+          description: "Authentication required to delete API keys"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "403":
+          description: "Access denied - cannot delete API key owned by different user"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "404":
+          description: "API key not found for deletion"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+        "500":
+          description: "Server error during API key deletion"
+          content:
+            "application/json":
+              schema: {"$ref": "#/components/schemas/ErrorResponse"}
+      security:
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-group: "apiKeys"
+      x-speakeasy-name-override: "delete"
   "/api/auth/check-email":
     post:
       tags:
@@ -39,6 +271,7 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
               example: {"code": "DATABASE_ERROR", "error": "Database connection failed"}
+      x-speakeasy-name-override: "checkEmail"
   "/api/auth/forgot-password":
     post:
       tags:
@@ -219,6 +452,7 @@ paths:
               example: {"code": "DATABASE_ERROR", "error": "Database connection failed"}
       security:
         - cookieAuth: []
+      x-speakeasy-name-override: "updateUserInfo"
   "/api/auth/register":
     post:
       tags:
@@ -283,6 +517,7 @@ paths:
               example: {"code": "EMAIL_SERVICE_ERROR", "error": "Email service unavailable"}
       security:
         - cookieAuth: []
+      x-speakeasy-name-override: "resendVerificationEmail"
   "/api/auth/reset-password":
     post:
       tags:
@@ -388,6 +623,7 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
         - cookieAuth: []
+      x-speakeasy-name-override: "serveCdn"
   "/api/files":
     get:
       tags:
@@ -432,6 +668,7 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
         - cookieAuth: []
+      x-speakeasy-name-override: "list"
   "/api/files/actions/upload":
     post:
       tags:
@@ -474,6 +711,7 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
         - cookieAuth: []
+      x-speakeasy-name-override: "upload"
   "/api/files/{file_id}":
     get:
       tags:
@@ -517,6 +755,7 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
         - cookieAuth: []
+      x-speakeasy-name-override: "get"
     put:
       tags:
         - "Files"
@@ -565,6 +804,7 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
         - cookieAuth: []
+      x-speakeasy-name-override: "update"
     delete:
       tags:
         - "Files"
@@ -604,12 +844,13 @@ paths:
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
         - cookieAuth: []
+      x-speakeasy-name-override: "delete"
   "/api/posts":
     get:
       tags:
         - "Posts"
       summary: "List posts with cursor-based pagination and optional series filtering"
-      description: "# Errors\nReturns error if database query fails, series filtering fails, or connection issues occur"
+      description: "# Errors\nReturns error if posts database query fails, series filtering fails, or connection issues occur"
       operationId: "list_posts"
       parameters:
         - name: "offset"
@@ -661,7 +902,9 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "list"
     post:
       tags:
         - "Posts"
@@ -706,7 +949,9 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "create"
   "/api/posts/{post_id}":
     get:
       tags:
@@ -749,7 +994,9 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "get"
     put:
       tags:
         - "Posts"
@@ -802,7 +1049,9 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "update"
     delete:
       tags:
         - "Posts"
@@ -841,13 +1090,15 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "delete"
   "/api/series":
     get:
       tags:
         - "Series"
       summary: "List user's series with cursor-based pagination"
-      description: "# Errors\nReturns error if database query fails or connection issues occur"
+      description: "# Errors\nReturns error if series database query fails or connection issues occur"
       operationId: "list_series"
       parameters:
         - name: "offset"
@@ -885,7 +1136,9 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "list"
     post:
       tags:
         - "Series"
@@ -925,7 +1178,9 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "create"
   "/api/series/{series_id}":
     get:
       tags:
@@ -968,7 +1223,9 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "get"
     put:
       tags:
         - "Series"
@@ -1021,7 +1278,9 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "update"
     delete:
       tags:
         - "Series"
@@ -1060,9 +1319,84 @@ paths:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
       security:
-        - cookieAuth: []
+        - bearerAuth: []
+          cookieAuth: []
+      x-speakeasy-name-override: "delete"
 components:
   schemas:
+    "ApiKeyResponse":
+      type: "object"
+      description: "API response model for API keys (excludes sensitive hash)"
+      required:
+        - "id"
+        - "userId"
+        - "name"
+        - "keyPrefix"
+        - "permissions"
+        - "isActive"
+      properties:
+        "createdAt":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "When this API key was originally created"
+          example: "2023-01-01T00:00:00Z"
+        "expiresAt":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "Expiration timestamp after which key becomes invalid"
+          example: "2024-01-01T00:00:00Z"
+        "id":
+          type: "string"
+          format: "uuid"
+          description: "Unique identifier for this API key in responses"
+          example: "a1b2c3d4-5e6f-7890-abcd-ef1234567890"
+        "isActive":
+          type: "boolean"
+          description: "Current activation status of this API key"
+          example: true
+        "keyPrefix":
+          type: "string"
+          description: "Key prefix for visual identification in API key lists"
+          example: "pk_live_"
+        "lastUsedAt":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "Timestamp when the key was last used"
+          example: "2023-01-01T12:00:00Z"
+        "name":
+          type: "string"
+          description: "Descriptive name for this API key"
+          example: "Production API Key"
+        "permissions":
+          type: "array"
+          items:
+            type: "string"
+          description: "Permissions granted to this API key for resource access"
+          example: ["read:posts", "write:posts"]
+        "updatedAt":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "API key last update timestamp"
+          example: "2023-01-01T12:00:00Z"
+        "userId":
+          type: "string"
+          format: "uuid"
+          description: "Owner user identifier"
+          example: "b2c3d4e5-6f78-9012-bcde-f12345678901"
+      example: {"createdAt": "2023-01-01T00:00:00Z", "expiresAt": "2024-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isActive": true, "keyPrefix": "pk_live_", "lastUsedAt": "2023-01-01T12:00:00Z", "name": "Production API Key", "permissions": ["read:posts", "write:posts"], "updatedAt": "2023-01-01T12:00:00Z", "userId": "b2c3d4e5-6f78-9012-bcde-f12345678901"}
+    "ApiKeysListResponse":
+      type: "array"
+      items: {"$ref": "#/components/schemas/ApiKeyResponse"}
+      description: "List of API keys for a user"
+      example: [{"createdAt": "2023-01-01T00:00:00Z", "expiresAt": "2024-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isActive": true, "keyPrefix": "pk_live_", "lastUsedAt": "2023-01-01T12:00:00Z", "name": "Production API Key", "permissions": ["read:posts", "write:posts"], "updatedAt": "2023-01-01T12:00:00Z", "userId": "b2c3d4e5-6f78-9012-bcde-f12345678901"}]
     "AuthProvider":
       type: "string"
       description: "Authentication provider types supported by the system"
@@ -1081,6 +1415,85 @@ components:
           description: "Email address to check"
           example: "user@example.com"
       example: {"email": "user@example.com"}
+    "CreateApiKeyRequest":
+      type: "object"
+      description: "Request payload for creating a new API key"
+      required:
+        - "name"
+      properties:
+        "expiresAt":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "When the API key should expire (optional)"
+          example: "2024-01-01T00:00:00Z"
+        "name":
+          type: "string"
+          description: "Name identifier for the new API key"
+          example: "Production API Key"
+        "permissions":
+          type:
+            - "array"
+            - "null"
+          items:
+            type: "string"
+          description: "Array of permissions to grant to this key"
+          example: ["read:posts", "write:posts"]
+      example: {"expiresAt": "2024-01-01T00:00:00Z", "name": "Production API Key", "permissions": ["read:posts", "write:posts"]}
+    "CreateApiKeyResponse":
+      type: "object"
+      description: "Response when creating a new API key - includes the actual key value"
+      required:
+        - "id"
+        - "name"
+        - "key"
+        - "keyPrefix"
+        - "permissions"
+        - "isActive"
+      properties:
+        "createdAt":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "Timestamp of when the API key was just created"
+          example: "2023-01-01T00:00:00Z"
+        "expiresAt":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "Key expiration date (when provided)"
+          example: "2024-01-01T00:00:00Z"
+        "id":
+          type: "string"
+          format: "uuid"
+          description: "UUID of the newly created API key"
+          example: "a1b2c3d4-5e6f-7890-abcd-ef1234567890"
+        "isActive":
+          type: "boolean"
+          description: "Initial active status of the new API key"
+          example: true
+        "key":
+          type: "string"
+          description: "The actual API key value (only shown once during creation)"
+          example: "pk_live_1234567890abcdef"
+        "keyPrefix":
+          type: "string"
+          description: "Prefix portion of the newly generated key"
+          example: "pk_live_"
+        "name":
+          type: "string"
+          description: "Display name shown for this API key"
+          example: "Production API Key"
+        "permissions":
+          type: "array"
+          items:
+            type: "string"
+          description: "Permissions assigned to the new API key"
+          example: ["read:posts", "write:posts"]
+      example: {"createdAt": "2023-01-01T00:00:00Z", "expiresAt": "2024-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isActive": true, "key": "pk_live_1234567890abcdef", "keyPrefix": "pk_live_", "name": "Production API Key", "permissions": ["read:posts", "write:posts"]}
     "CreatePostRequest":
       type: "object"
       description: "Request payload for creating a new post with content and metadata"
@@ -1542,6 +1955,38 @@ components:
           description: "ID of the user who owns this series"
           example: "f6a7b8c9-0123-4567-f012-456789012345"
       example: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "isMonetized": false, "isPublished": true, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+    "UpdateApiKeyRequest":
+      type: "object"
+      description: "Request payload for updating an API key"
+      properties:
+        "expiresAt":
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+          description: "Update the expiration date"
+          example: "2024-06-01T00:00:00Z"
+        "isActive":
+          type:
+            - "boolean"
+            - "null"
+          description: "Change the active status of the key"
+          example: false
+        "name":
+          type:
+            - "string"
+            - "null"
+          description: "New name for the API key (optional)"
+          example: "Updated API Key Name"
+        "permissions":
+          type:
+            - "array"
+            - "null"
+          items:
+            type: "string"
+          description: "Updated permissions array (optional)"
+          example: ["read:posts"]
+      example: {"expiresAt": "2024-06-01T00:00:00Z", "isActive": false, "name": "Updated API Key Name", "permissions": ["read:posts"]}
     "UpdatePostRequest":
       type: "object"
       description: "Request payload for updating post content, metadata, or status"
@@ -1833,6 +2278,11 @@ components:
       title: "JSONValue"
       description: "Flexible JSON value that can be an object, array, string, number, boolean, or null"
   securitySchemes:
+    "bearerAuth":
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "API Key"
+      description: "API key authentication using Bearer token in Authorization header"
     "cookieAuth":
       type: "apiKey"
       in: "cookie"
@@ -1847,3 +2297,5 @@ tags:
     description: "Series creation and management endpoints"
   - name: "Posts"
     description: "Post creation and management endpoints"
+  - name: "API Keys"
+    description: "API key creation and management endpoints"

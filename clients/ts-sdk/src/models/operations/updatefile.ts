@@ -9,6 +9,10 @@ import { Result as SafeParseResult } from "../../types/fp.js";
 import { SDKValidationError } from "../errors/sdkvalidationerror.js";
 import * as models from "../index.js";
 
+export type UpdateFileSecurity = {
+  cookieAuth: string;
+};
+
 export type UpdateFileRequest = {
   /**
    * UUID of the file to update metadata for
@@ -19,6 +23,60 @@ export type UpdateFileRequest = {
    */
   updateUserFileRequest: models.UpdateUserFileRequest;
 };
+
+/** @internal */
+export const UpdateFileSecurity$inboundSchema: z.ZodType<
+  UpdateFileSecurity,
+  z.ZodTypeDef,
+  unknown
+> = z.object({
+  cookieAuth: z.string(),
+});
+
+/** @internal */
+export type UpdateFileSecurity$Outbound = {
+  cookieAuth: string;
+};
+
+/** @internal */
+export const UpdateFileSecurity$outboundSchema: z.ZodType<
+  UpdateFileSecurity$Outbound,
+  z.ZodTypeDef,
+  UpdateFileSecurity
+> = z.object({
+  cookieAuth: z.string(),
+});
+
+/**
+ * @internal
+ * @deprecated This namespace will be removed in future versions. Use schemas and types that are exported directly from this module.
+ */
+export namespace UpdateFileSecurity$ {
+  /** @deprecated use `UpdateFileSecurity$inboundSchema` instead. */
+  export const inboundSchema = UpdateFileSecurity$inboundSchema;
+  /** @deprecated use `UpdateFileSecurity$outboundSchema` instead. */
+  export const outboundSchema = UpdateFileSecurity$outboundSchema;
+  /** @deprecated use `UpdateFileSecurity$Outbound` instead. */
+  export type Outbound = UpdateFileSecurity$Outbound;
+}
+
+export function updateFileSecurityToJSON(
+  updateFileSecurity: UpdateFileSecurity,
+): string {
+  return JSON.stringify(
+    UpdateFileSecurity$outboundSchema.parse(updateFileSecurity),
+  );
+}
+
+export function updateFileSecurityFromJSON(
+  jsonString: string,
+): SafeParseResult<UpdateFileSecurity, SDKValidationError> {
+  return safeParse(
+    jsonString,
+    (x) => UpdateFileSecurity$inboundSchema.parse(JSON.parse(x)),
+    `Failed to parse 'UpdateFileSecurity' from JSON`,
+  );
+}
 
 /** @internal */
 export const UpdateFileRequest$inboundSchema: z.ZodType<

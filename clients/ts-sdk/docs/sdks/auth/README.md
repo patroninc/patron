@@ -32,7 +32,10 @@ Returns 404 if email doesn't exist, 204 if it does exist, or 500 for database er
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -57,7 +60,10 @@ import { authCheckEmail } from "patronts/funcs/authCheckEmail.js";
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -107,7 +113,10 @@ Returns an error if database operations fail or email service fails.
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -132,7 +141,10 @@ import { authForgotPassword } from "patronts/funcs/authForgotPassword.js";
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -182,7 +194,10 @@ Returns an error if session operations fail or `OAuth` service configuration is 
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -205,7 +220,10 @@ import { authGoogleRedirect } from "patronts/funcs/authGoogleRedirect.js";
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -252,7 +270,10 @@ Returns an error if `OAuth` state verification fails, token exchange fails, or d
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -278,7 +299,10 @@ import { authGoogleCallback } from "patronts/funcs/authGoogleCallback.js";
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -330,7 +354,10 @@ Returns an error if credentials are invalid, email is not verified, or database 
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -356,7 +383,10 @@ import { authLogin } from "patronts/funcs/authLogin.js";
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -407,12 +437,12 @@ Returns an error if session operations fail.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  const result = await patronts.auth.logout();
+  const result = await patronts.auth.logout({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  });
 
   console.log(result);
 }
@@ -430,12 +460,12 @@ import { authLogout } from "patronts/funcs/authLogout.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await authLogout(patronts);
+  const res = await authLogout(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  });
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
@@ -451,6 +481,7 @@ run();
 
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `security`                                                                                                                                                                     | [operations.LogoutSecurity](../../models/operations/logoutsecurity.md)                                                                                                         | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -476,12 +507,12 @@ Returns an error if user is not authenticated or serialization fails.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  const result = await patronts.auth.getCurrentUser();
+  const result = await patronts.auth.getCurrentUser({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  });
 
   console.log(result);
 }
@@ -499,12 +530,12 @@ import { authGetCurrentUser } from "patronts/funcs/authGetCurrentUser.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await authGetCurrentUser(patronts);
+  const res = await authGetCurrentUser(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  });
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
@@ -520,6 +551,7 @@ run();
 
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `security`                                                                                                                                                                     | [operations.GetMeSecurity](../../models/operations/getmesecurity.md)                                                                                                           | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -546,12 +578,12 @@ Returns an error if database operations fail or user validation fails.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
   const result = await patronts.auth.updateUserInfo({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     avatarUrl: "https://example.com/new-avatar.jpg",
     description: "A brief description about myself",
     displayName: "New Display Name",
@@ -573,12 +605,12 @@ import { authUpdateUserInfo } from "patronts/funcs/authUpdateUserInfo.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
   const res = await authUpdateUserInfo(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     avatarUrl: "https://example.com/new-avatar.jpg",
     description: "A brief description about myself",
     displayName: "New Display Name",
@@ -599,6 +631,7 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [models.UpdateUserInfoRequest](../../models/updateuserinforequest.md)                                                                                                          | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
+| `security`                                                                                                                                                                     | [operations.UpdateUserInfoSecurity](../../models/operations/updateuserinfosecurity.md)                                                                                         | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -627,7 +660,10 @@ Returns an error if input validation fails, user already exists, or database ope
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -653,7 +689,10 @@ import { authRegister } from "patronts/funcs/authRegister.js";
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -704,12 +743,12 @@ Returns an error if user is already verified, database operations fail, or email
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  const result = await patronts.auth.resendVerificationEmail();
+  const result = await patronts.auth.resendVerificationEmail({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  });
 
   console.log(result);
 }
@@ -727,12 +766,12 @@ import { authResendVerificationEmail } from "patronts/funcs/authResendVerificati
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await authResendVerificationEmail(patronts);
+  const res = await authResendVerificationEmail(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  });
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
@@ -748,6 +787,7 @@ run();
 
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `security`                                                                                                                                                                     | [operations.ResendVerificationEmailSecurity](../../models/operations/resendverificationemailsecurity.md)                                                                       | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -776,7 +816,10 @@ Returns an error if token is invalid, password validation fails, or database ope
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -803,7 +846,10 @@ import { authResetPassword } from "patronts/funcs/authResetPassword.js";
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -856,7 +902,10 @@ Returns an error if token is invalid, expired, or database operations fail.
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
@@ -881,7 +930,10 @@ import { authVerifyEmail } from "patronts/funcs/authVerifyEmail.js";
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {

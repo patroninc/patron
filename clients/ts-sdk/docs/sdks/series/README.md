@@ -7,16 +7,16 @@ Series creation and management endpoints
 
 ### Available Operations
 
-* [listSeries](#listseries) - List user's series with cursor-based pagination
-* [createSeries](#createseries) - Create a new series
-* [getSeries](#getseries) - Get a specific series by ID with user ownership validation
-* [updateSeries](#updateseries) - Update a series
-* [deleteSeries](#deleteseries) - Delete a series (soft delete) with user ownership validation
+* [list](#list) - List user's series with cursor-based pagination
+* [create](#create) - Create a new series
+* [get](#get) - Get a specific series by ID with user ownership validation
+* [update](#update) - Update a series
+* [delete](#delete) - Delete a series (soft delete) with user ownership validation
 
-## listSeries
+## list
 
 # Errors
-Returns error if database query fails or connection issues occur
+Returns error if series database query fails or connection issues occur
 
 ### Example Usage
 
@@ -25,11 +25,14 @@ Returns error if database query fails or connection issues occur
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const result = await patronts.series.listSeries();
+  const result = await patronts.series.list();
 
   console.log(result);
 }
@@ -43,21 +46,24 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { seriesListSeries } from "patronts/funcs/seriesListSeries.js";
+import { seriesList } from "patronts/funcs/seriesList.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await seriesListSeries(patronts);
+  const res = await seriesList(patronts);
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("seriesListSeries failed:", res.error);
+    console.log("seriesList failed:", res.error);
   }
 }
 
@@ -85,7 +91,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## createSeries
+## create
 
 # Errors
 Returns error if series creation fails, slug conflict, or database error
@@ -97,11 +103,14 @@ Returns error if series creation fails, slug conflict, or database error
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const result = await patronts.series.createSeries({
+  const result = await patronts.series.create({
     category: "Technology",
     coverImageUrl: "https://example.com/cover.jpg",
     description: "A weekly podcast about technology and innovation",
@@ -124,16 +133,19 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { seriesCreateSeries } from "patronts/funcs/seriesCreateSeries.js";
+import { seriesCreate } from "patronts/funcs/seriesCreate.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await seriesCreateSeries(patronts, {
+  const res = await seriesCreate(patronts, {
     category: "Technology",
     coverImageUrl: "https://example.com/cover.jpg",
     description: "A weekly podcast about technology and innovation",
@@ -147,7 +159,7 @@ async function run() {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("seriesCreateSeries failed:", res.error);
+    console.log("seriesCreate failed:", res.error);
   }
 }
 
@@ -175,7 +187,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## getSeries
+## get
 
 # Errors
 Returns error if series not found, user access denied, or database connection error
@@ -187,11 +199,14 @@ Returns error if series not found, user access denied, or database connection er
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const result = await patronts.series.getSeries({
+  const result = await patronts.series.get({
     seriesId: "8d41996a-2849-497f-a32a-300c043d4e31",
   });
 
@@ -207,23 +222,26 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { seriesGetSeries } from "patronts/funcs/seriesGetSeries.js";
+import { seriesGet } from "patronts/funcs/seriesGet.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await seriesGetSeries(patronts, {
+  const res = await seriesGet(patronts, {
     seriesId: "8d41996a-2849-497f-a32a-300c043d4e31",
   });
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("seriesGetSeries failed:", res.error);
+    console.log("seriesGet failed:", res.error);
   }
 }
 
@@ -251,7 +269,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## updateSeries
+## update
 
 # Errors
 Returns error if series not found, access denied, slug conflict, or database update error
@@ -263,11 +281,14 @@ Returns error if series not found, access denied, slug conflict, or database upd
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const result = await patronts.series.updateSeries({
+  const result = await patronts.series.update({
     seriesId: "3a6d3426-0ca8-459f-9b67-866f35bbfc88",
     updateSeriesRequest: {
       category: "Technology",
@@ -293,16 +314,19 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { seriesUpdateSeries } from "patronts/funcs/seriesUpdateSeries.js";
+import { seriesUpdate } from "patronts/funcs/seriesUpdate.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await seriesUpdateSeries(patronts, {
+  const res = await seriesUpdate(patronts, {
     seriesId: "3a6d3426-0ca8-459f-9b67-866f35bbfc88",
     updateSeriesRequest: {
       category: "Technology",
@@ -319,7 +343,7 @@ async function run() {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("seriesUpdateSeries failed:", res.error);
+    console.log("seriesUpdate failed:", res.error);
   }
 }
 
@@ -347,7 +371,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## deleteSeries
+## delete
 
 # Errors
 Returns error if series not found, user access denied, or database deletion error
@@ -359,11 +383,14 @@ Returns error if series not found, user access denied, or database deletion erro
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.series.deleteSeries({
+  await patronts.series.delete({
     seriesId: "39e98c84-7f40-41b5-aa2a-96cccef6c6c9",
   });
 
@@ -379,23 +406,26 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { seriesDeleteSeries } from "patronts/funcs/seriesDeleteSeries.js";
+import { seriesDelete } from "patronts/funcs/seriesDelete.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await seriesDeleteSeries(patronts, {
+  const res = await seriesDelete(patronts, {
     seriesId: "39e98c84-7f40-41b5-aa2a-96cccef6c6c9",
   });
   if (res.ok) {
     const { value: result } = res;
     
   } else {
-    console.log("seriesDeleteSeries failed:", res.error);
+    console.log("seriesDelete failed:", res.error);
   }
 }
 

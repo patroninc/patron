@@ -7,6 +7,10 @@ import { safeParse } from "../../lib/schemas.js";
 import { Result as SafeParseResult } from "../../types/fp.js";
 import { SDKValidationError } from "../errors/sdkvalidationerror.js";
 
+export type ListFilesSecurity = {
+  cookieAuth: string;
+};
+
 export type ListFilesRequest = {
   /**
    * UUID offset for cursor-based files pagination
@@ -17,6 +21,60 @@ export type ListFilesRequest = {
    */
   limit?: number | null | undefined;
 };
+
+/** @internal */
+export const ListFilesSecurity$inboundSchema: z.ZodType<
+  ListFilesSecurity,
+  z.ZodTypeDef,
+  unknown
+> = z.object({
+  cookieAuth: z.string(),
+});
+
+/** @internal */
+export type ListFilesSecurity$Outbound = {
+  cookieAuth: string;
+};
+
+/** @internal */
+export const ListFilesSecurity$outboundSchema: z.ZodType<
+  ListFilesSecurity$Outbound,
+  z.ZodTypeDef,
+  ListFilesSecurity
+> = z.object({
+  cookieAuth: z.string(),
+});
+
+/**
+ * @internal
+ * @deprecated This namespace will be removed in future versions. Use schemas and types that are exported directly from this module.
+ */
+export namespace ListFilesSecurity$ {
+  /** @deprecated use `ListFilesSecurity$inboundSchema` instead. */
+  export const inboundSchema = ListFilesSecurity$inboundSchema;
+  /** @deprecated use `ListFilesSecurity$outboundSchema` instead. */
+  export const outboundSchema = ListFilesSecurity$outboundSchema;
+  /** @deprecated use `ListFilesSecurity$Outbound` instead. */
+  export type Outbound = ListFilesSecurity$Outbound;
+}
+
+export function listFilesSecurityToJSON(
+  listFilesSecurity: ListFilesSecurity,
+): string {
+  return JSON.stringify(
+    ListFilesSecurity$outboundSchema.parse(listFilesSecurity),
+  );
+}
+
+export function listFilesSecurityFromJSON(
+  jsonString: string,
+): SafeParseResult<ListFilesSecurity, SDKValidationError> {
+  return safeParse(
+    jsonString,
+    (x) => ListFilesSecurity$inboundSchema.parse(JSON.parse(x)),
+    `Failed to parse 'ListFilesSecurity' from JSON`,
+  );
+}
 
 /** @internal */
 export const ListFilesRequest$inboundSchema: z.ZodType<

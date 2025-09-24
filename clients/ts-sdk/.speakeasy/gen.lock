@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: da5d5bc1d80a719efa9ecc8e8bfe9419
+  docChecksum: b227c6cbc7e594fe0d9a3658fd6424d3
   docVersion: 1.0.0
-  speakeasyVersion: 1.622.1
-  generationVersion: 2.709.0
-  releaseVersion: 0.5.2
-  configChecksum: 5b48c971a4f09fd83f947d3bf8814076
+  speakeasyVersion: 1.624.0
+  generationVersion: 2.714.0
+  releaseVersion: 0.7.2
+  configChecksum: 2e0e3af98252752c69fee9b02af6b126
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -14,16 +14,17 @@ management:
 features:
   typescript:
     additionalDependencies: 0.1.0
-    core: 3.21.23
+    core: 3.21.25
     defaultEnabledRetries: 0.1.0
     devContainers: 2.90.1
     enumUnions: 0.1.0
     envVarSecurityUsage: 0.1.2
     globalSecurity: 2.82.14
     globalSecurityCallbacks: 0.1.0
-    globalSecurityFlattening: 0.1.0
     globalServerURLs: 2.82.5
+    groups: 2.81.2
     methodArguments: 0.1.2
+    methodSecurity: 2.82.6
     nameOverrides: 2.81.2
     nullables: 0.1.1
     responseFormat: 0.2.3
@@ -40,8 +41,11 @@ generatedFiles:
   - RUNTIMES.md
   - USAGE.md
   - docs/lib/utils/retryconfig.md
+  - docs/models/apikeyresponse.md
   - docs/models/authprovider.md
   - docs/models/checkemailrequest.md
+  - docs/models/createapikeyrequest.md
+  - docs/models/createapikeyresponse.md
   - docs/models/createpostrequest.md
   - docs/models/createseriesrequest.md
   - docs/models/errors/errorresponse.md
@@ -54,20 +58,34 @@ generatedFiles:
   - docs/models/loginrequest.md
   - docs/models/loginresponse.md
   - docs/models/logoutresponse.md
+  - docs/models/operations/deleteapikeyrequest.md
   - docs/models/operations/deletefilerequest.md
+  - docs/models/operations/deletefilesecurity.md
   - docs/models/operations/deletepostrequest.md
   - docs/models/operations/deleteseriesrequest.md
+  - docs/models/operations/getapikeyrequest.md
   - docs/models/operations/getfilerequest.md
+  - docs/models/operations/getfilesecurity.md
+  - docs/models/operations/getmesecurity.md
   - docs/models/operations/getpostrequest.md
   - docs/models/operations/getseriesrequest.md
   - docs/models/operations/googleauthcallbackrequest.md
+  - docs/models/operations/listapikeysrequest.md
   - docs/models/operations/listfilesrequest.md
+  - docs/models/operations/listfilessecurity.md
   - docs/models/operations/listpostsrequest.md
   - docs/models/operations/listseriesrequest.md
+  - docs/models/operations/logoutsecurity.md
+  - docs/models/operations/resendverificationemailsecurity.md
   - docs/models/operations/servefilecdnrequest.md
+  - docs/models/operations/servefilecdnsecurity.md
+  - docs/models/operations/updateapikeyrequest.md
   - docs/models/operations/updatefilerequest.md
+  - docs/models/operations/updatefilesecurity.md
   - docs/models/operations/updatepostrequest.md
   - docs/models/operations/updateseriesrequest.md
+  - docs/models/operations/updateuserinfosecurity.md
+  - docs/models/operations/uploadfilesecurity.md
   - docs/models/operations/verifyemailrequest.md
   - docs/models/postresponse.md
   - docs/models/registerrequest.md
@@ -77,6 +95,7 @@ generatedFiles:
   - docs/models/resetpasswordresponse.md
   - docs/models/security.md
   - docs/models/seriesresponse.md
+  - docs/models/updateapikeyrequest.md
   - docs/models/updatepostrequest.md
   - docs/models/updateseriesrequest.md
   - docs/models/updateuserfilerequest.md
@@ -85,6 +104,7 @@ generatedFiles:
   - docs/models/userfileinfo.md
   - docs/models/userinfo.md
   - docs/models/value.md
+  - docs/sdks/apikeys/README.md
   - docs/sdks/auth/README.md
   - docs/sdks/files/README.md
   - docs/sdks/patronts/README.md
@@ -93,11 +113,16 @@ generatedFiles:
   - eslint.config.mjs
   - examples/.env.template
   - examples/README.md
-  - examples/authCheckEmail.example.ts
+  - examples/apiKeysList.example.ts
   - examples/package.json
   - jsr.json
   - package.json
   - src/core.ts
+  - src/funcs/apiKeysCreate.ts
+  - src/funcs/apiKeysDelete.ts
+  - src/funcs/apiKeysGet.ts
+  - src/funcs/apiKeysList.ts
+  - src/funcs/apiKeysUpdate.ts
   - src/funcs/authCheckEmail.ts
   - src/funcs/authForgotPassword.ts
   - src/funcs/authGetCurrentUser.ts
@@ -110,22 +135,22 @@ generatedFiles:
   - src/funcs/authResetPassword.ts
   - src/funcs/authUpdateUserInfo.ts
   - src/funcs/authVerifyEmail.ts
-  - src/funcs/filesDeleteFile.ts
-  - src/funcs/filesGetFile.ts
-  - src/funcs/filesListFiles.ts
-  - src/funcs/filesServeFileCdn.ts
-  - src/funcs/filesUpdateFile.ts
-  - src/funcs/filesUploadFile.ts
-  - src/funcs/postsCreatePost.ts
-  - src/funcs/postsDeletePost.ts
-  - src/funcs/postsGetPost.ts
-  - src/funcs/postsListPosts.ts
-  - src/funcs/postsUpdatePost.ts
-  - src/funcs/seriesCreateSeries.ts
-  - src/funcs/seriesDeleteSeries.ts
-  - src/funcs/seriesGetSeries.ts
-  - src/funcs/seriesListSeries.ts
-  - src/funcs/seriesUpdateSeries.ts
+  - src/funcs/filesDelete.ts
+  - src/funcs/filesGet.ts
+  - src/funcs/filesList.ts
+  - src/funcs/filesServeCdn.ts
+  - src/funcs/filesUpdate.ts
+  - src/funcs/filesUpload.ts
+  - src/funcs/postsCreate.ts
+  - src/funcs/postsDelete.ts
+  - src/funcs/postsGet.ts
+  - src/funcs/postsList.ts
+  - src/funcs/postsUpdate.ts
+  - src/funcs/seriesCreate.ts
+  - src/funcs/seriesDelete.ts
+  - src/funcs/seriesGet.ts
+  - src/funcs/seriesList.ts
+  - src/funcs/seriesUpdate.ts
   - src/hooks/hooks.ts
   - src/hooks/index.ts
   - src/hooks/types.ts
@@ -146,8 +171,11 @@ generatedFiles:
   - src/lib/sdks.ts
   - src/lib/security.ts
   - src/lib/url.ts
+  - src/models/apikeyresponse.ts
   - src/models/authprovider.ts
   - src/models/checkemailrequest.ts
+  - src/models/createapikeyrequest.ts
+  - src/models/createapikeyresponse.ts
   - src/models/createpostrequest.ts
   - src/models/createseriesrequest.ts
   - src/models/errors/errorresponse.ts
@@ -166,21 +194,30 @@ generatedFiles:
   - src/models/loginrequest.ts
   - src/models/loginresponse.ts
   - src/models/logoutresponse.ts
+  - src/models/operations/deleteapikey.ts
   - src/models/operations/deletefile.ts
   - src/models/operations/deletepost.ts
   - src/models/operations/deleteseries.ts
+  - src/models/operations/getapikey.ts
   - src/models/operations/getfile.ts
+  - src/models/operations/getme.ts
   - src/models/operations/getpost.ts
   - src/models/operations/getseries.ts
   - src/models/operations/googleauthcallback.ts
   - src/models/operations/index.ts
+  - src/models/operations/listapikeys.ts
   - src/models/operations/listfiles.ts
   - src/models/operations/listposts.ts
   - src/models/operations/listseries.ts
+  - src/models/operations/logout.ts
+  - src/models/operations/resendverificationemail.ts
   - src/models/operations/servefilecdn.ts
+  - src/models/operations/updateapikey.ts
   - src/models/operations/updatefile.ts
   - src/models/operations/updatepost.ts
   - src/models/operations/updateseries.ts
+  - src/models/operations/updateuserinfo.ts
+  - src/models/operations/uploadfile.ts
   - src/models/operations/verifyemail.ts
   - src/models/postresponse.ts
   - src/models/registerrequest.ts
@@ -190,6 +227,7 @@ generatedFiles:
   - src/models/resetpasswordresponse.ts
   - src/models/security.ts
   - src/models/seriesresponse.ts
+  - src/models/updateapikeyrequest.ts
   - src/models/updatepostrequest.ts
   - src/models/updateseriesrequest.ts
   - src/models/updateuserfilerequest.ts
@@ -198,6 +236,7 @@ generatedFiles:
   - src/models/userfileinfo.ts
   - src/models/userinfo.ts
   - src/models/value.ts
+  - src/sdk/apikeys.ts
   - src/sdk/auth.ts
   - src/sdk/files.ts
   - src/sdk/index.ts
@@ -495,6 +534,62 @@ examples:
       parameters:
         path:
           series_id: "39e98c84-7f40-41b5-aa2a-96cccef6c6c9"
+      responses:
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  list_api_keys:
+    speakeasy-default-list-api-keys:
+      responses:
+        "200":
+          application/json: [{"createdAt": "2023-01-01T00:00:00Z", "expiresAt": "2024-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isActive": true, "keyPrefix": "pk_live_", "lastUsedAt": "2023-01-01T12:00:00Z", "name": "Production API Key", "permissions": ["read:posts", "write:posts"], "updatedAt": "2023-01-01T12:00:00Z", "userId": "b2c3d4e5-6f78-9012-bcde-f12345678901"}]
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  create_api_key:
+    speakeasy-default-create-api-key:
+      requestBody:
+        application/json: {"expiresAt": "2024-01-01T00:00:00Z", "name": "Production API Key", "permissions": ["read:posts", "write:posts"]}
+      responses:
+        "201":
+          application/json: {"createdAt": "2023-01-01T00:00:00Z", "expiresAt": "2024-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isActive": true, "key": "pk_live_1234567890abcdef", "keyPrefix": "pk_live_", "name": "Production API Key", "permissions": ["read:posts", "write:posts"]}
+        "400":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  get_api_key:
+    speakeasy-default-get-api-key:
+      parameters:
+        path:
+          api_key_id: "66760d63-bc4c-4eba-9f66-728d076e4afd"
+      responses:
+        "200":
+          application/json: {"createdAt": "2023-01-01T00:00:00Z", "expiresAt": "2024-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isActive": true, "keyPrefix": "pk_live_", "lastUsedAt": "2023-01-01T12:00:00Z", "name": "Production API Key", "permissions": ["read:posts", "write:posts"], "updatedAt": "2023-01-01T12:00:00Z", "userId": "b2c3d4e5-6f78-9012-bcde-f12345678901"}
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  update_api_key:
+    speakeasy-default-update-api-key:
+      parameters:
+        path:
+          api_key_id: "4ad661a5-a100-4a43-8c09-72059edc344a"
+      requestBody:
+        application/json: {"expiresAt": "2024-06-01T00:00:00Z", "isActive": false, "name": "Updated API Key Name", "permissions": ["read:posts"]}
+      responses:
+        "200":
+          application/json: {"createdAt": "2023-01-01T00:00:00Z", "expiresAt": "2024-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isActive": true, "keyPrefix": "pk_live_", "lastUsedAt": "2023-01-01T12:00:00Z", "name": "Production API Key", "permissions": ["read:posts", "write:posts"], "updatedAt": "2023-01-01T12:00:00Z", "userId": "b2c3d4e5-6f78-9012-bcde-f12345678901"}
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  delete_api_key:
+    speakeasy-default-delete-api-key:
+      parameters:
+        path:
+          api_key_id: "d30aa790-7049-4dd6-9089-24cd5bc5bd07"
       responses:
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}

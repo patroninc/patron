@@ -3,12 +3,18 @@
  */
 
 import { ClientSDK } from "../lib/sdks.js";
+import { ApiKeys } from "./apikeys.js";
 import { Auth } from "./auth.js";
 import { Files } from "./files.js";
 import { Posts } from "./posts.js";
 import { Series } from "./series.js";
 
 export class Patronts extends ClientSDK {
+  private _apiKeys?: ApiKeys;
+  get apiKeys(): ApiKeys {
+    return (this._apiKeys ??= new ApiKeys(this._options));
+  }
+
   private _auth?: Auth;
   get auth(): Auth {
     return (this._auth ??= new Auth(this._options));

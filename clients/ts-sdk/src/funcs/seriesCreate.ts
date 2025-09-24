@@ -3,7 +3,7 @@
  */
 
 import { PatrontsCore } from "../core.js";
-import { encodeSimple } from "../lib/encodings.js";
+import { encodeJSON } from "../lib/encodings.js";
 import * as M from "../lib/matchers.js";
 import { compactMap } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
@@ -22,24 +22,23 @@ import { PatrontsError } from "../models/errors/patrontserror.js";
 import { ResponseValidationError } from "../models/errors/responsevalidationerror.js";
 import { SDKValidationError } from "../models/errors/sdkvalidationerror.js";
 import * as models from "../models/index.js";
-import * as operations from "../models/operations/index.js";
 import { APICall, APIPromise } from "../types/async.js";
 import { Result } from "../types/fp.js";
 
 /**
- * Get a specific file by ID
+ * Create a new series
  *
  * @remarks
  * # Errors
- * Returns an error if database operations fail or file not found.
+ * Returns error if series creation fails, slug conflict, or database error
  */
-export function filesGetFile(
+export function seriesCreate(
   client: PatrontsCore,
-  request: operations.GetFileRequest,
+  request: models.CreateSeriesRequest,
   options?: RequestOptions,
 ): APIPromise<
   Result<
-    models.UserFileInfo,
+    models.SeriesResponse,
     | errors.ErrorResponse
     | PatrontsError
     | ResponseValidationError
@@ -60,12 +59,12 @@ export function filesGetFile(
 
 async function $do(
   client: PatrontsCore,
-  request: operations.GetFileRequest,
+  request: models.CreateSeriesRequest,
   options?: RequestOptions,
 ): Promise<
   [
     Result<
-      models.UserFileInfo,
+      models.SeriesResponse,
       | errors.ErrorResponse
       | PatrontsError
       | ResponseValidationError
@@ -81,41 +80,34 @@ async function $do(
 > {
   const parsed = safeParse(
     request,
-    (value) => operations.GetFileRequest$outboundSchema.parse(value),
+    (value) => models.CreateSeriesRequest$outboundSchema.parse(value),
     "Input validation failed",
   );
   if (!parsed.ok) {
     return [parsed, { status: "invalid" }];
   }
   const payload = parsed.value;
-  const body = null;
+  const body = encodeJSON("body", payload, { explode: true });
 
-  const pathParams = {
-    file_id: encodeSimple("file_id", payload.file_id, {
-      explode: false,
-      charEncoding: "percent",
-    }),
-  };
-
-  const path = pathToFunc("/api/files/{file_id}")(pathParams);
+  const path = pathToFunc("/api/series")();
 
   const headers = new Headers(compactMap({
+    "Content-Type": "application/json",
     Accept: "application/json",
   }));
 
-  const secConfig = await extractSecurity(client._options.cookieAuth);
-  const securityInput = secConfig == null ? {} : { cookieAuth: secConfig };
+  const securityInput = await extractSecurity(client._options.security);
   const requestSecurity = resolveGlobalSecurity(securityInput);
 
   const context = {
     options: client._options,
     baseURL: options?.serverURL ?? client._baseURL ?? "",
-    operationID: "get_file",
+    operationID: "create_series",
     oAuth2Scopes: [],
 
     resolvedSecurity: requestSecurity,
 
-    securitySource: client._options.cookieAuth,
+    securitySource: client._options.security,
     retryConfig: options?.retries
       || client._options.retryConfig
       || { strategy: "none" },
@@ -124,7 +116,7 @@ async function $do(
 
   const requestRes = client._createRequest(context, {
     security: requestSecurity,
-    method: "GET",
+    method: "POST",
     baseURL: options?.serverURL,
     path: path,
     headers: headers,
@@ -139,7 +131,7 @@ async function $do(
 
   const doResult = await client._do(req, {
     context,
-    errorCodes: ["401", "403", "404", "4XX", "500", "5XX"],
+    errorCodes: ["400", "401", "409", "4XX", "500", "5XX"],
     retryConfig: context.retryConfig,
     retryCodes: context.retryCodes,
   });
@@ -153,7 +145,7 @@ async function $do(
   };
 
   const [result] = await M.match<
-    models.UserFileInfo,
+    models.SeriesResponse,
     | errors.ErrorResponse
     | PatrontsError
     | ResponseValidationError
@@ -164,8 +156,8 @@ async function $do(
     | UnexpectedClientError
     | SDKValidationError
   >(
-    M.json(200, models.UserFileInfo$inboundSchema),
-    M.jsonErr([401, 403, 404], errors.ErrorResponse$inboundSchema),
+    M.json(201, models.SeriesResponse$inboundSchema),
+    M.jsonErr([400, 401, 409], errors.ErrorResponse$inboundSchema),
     M.jsonErr(500, errors.ErrorResponse$inboundSchema),
     M.fail("4XX"),
     M.fail("5XX"),

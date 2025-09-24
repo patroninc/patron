@@ -63,10 +63,7 @@ bun add patronts
 ### Yarn
 
 ```bash
-yarn add patronts zod
-
-# Note that Yarn does not install peer dependencies automatically. You will need
-# to install zod as shown above.
+yarn add patronts
 ```
 
 > [!NOTE]
@@ -88,13 +85,16 @@ For supported JavaScript runtimes, please consult [RUNTIMES.md](RUNTIMES.md).
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.auth.checkEmail({
-    email: "user@example.com",
-  });
+  const result = await patronts.apiKeys.list();
+
+  console.log(result);
 }
 
 run();
@@ -107,24 +107,48 @@ run();
 
 ### Per-Client Security Schemes
 
-This SDK supports the following security scheme globally:
+This SDK supports the following security schemes globally:
 
-| Name         | Type   | Scheme  | Environment Variable   |
-| ------------ | ------ | ------- | ---------------------- |
-| `cookieAuth` | apiKey | API key | `PATRONTS_COOKIE_AUTH` |
+| Name         | Type   | Scheme      | Environment Variable   |
+| ------------ | ------ | ----------- | ---------------------- |
+| `bearerAuth` | http   | HTTP Bearer | `PATRONTS_BEARER_AUTH` |
+| `cookieAuth` | apiKey | API key     | `PATRONTS_COOKIE_AUTH` |
 
-To authenticate with the API the `cookieAuth` parameter must be set when initializing the SDK client instance. For example:
+You can set the security parameters through the `security` optional parameter when initializing the SDK client instance. The selected scheme will be used by default to authenticate with the API for all operations that support it. For example:
 ```typescript
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.auth.checkEmail({
-    email: "user@example.com",
+  const result = await patronts.apiKeys.list();
+
+  console.log(result);
+}
+
+run();
+
+```
+
+### Per-Operation Security Schemes
+
+Some operations in this SDK require the security scheme to be specified at the request level. For example:
+```typescript
+import { Patronts } from "patronts";
+
+const patronts = new Patronts();
+
+async function run() {
+  const result = await patronts.auth.logout({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
   });
+
+  console.log(result);
 }
 
 run();
@@ -137,6 +161,14 @@ run();
 
 <details open>
 <summary>Available methods</summary>
+
+### [apiKeys](docs/sdks/apikeys/README.md)
+
+* [list](docs/sdks/apikeys/README.md#list) - List API keys with cursor-based pagination and optional filtering
+* [create](docs/sdks/apikeys/README.md#create) - Create a new API key
+* [get](docs/sdks/apikeys/README.md#get) - Get a specific API key by ID
+* [update](docs/sdks/apikeys/README.md#update) - Update an API key
+* [delete](docs/sdks/apikeys/README.md#delete) - Delete an API key (hard delete for security)
 
 ### [auth](docs/sdks/auth/README.md)
 
@@ -155,29 +187,29 @@ run();
 
 ### [files](docs/sdks/files/README.md)
 
-* [serveFileCdn](docs/sdks/files/README.md#servefilecdn) - Serve file content with user authentication
-* [listFiles](docs/sdks/files/README.md#listfiles) - List user's files with cursor-based pagination
-* [uploadFile](docs/sdks/files/README.md#uploadfile) - Upload a file
-* [getFile](docs/sdks/files/README.md#getfile) - Get a specific file by ID
-* [updateFile](docs/sdks/files/README.md#updatefile) - Update file metadata and properties
-* [deleteFile](docs/sdks/files/README.md#deletefile) - Permanently delete a user file
+* [serveCdn](docs/sdks/files/README.md#servecdn) - Serve file content with user authentication
+* [list](docs/sdks/files/README.md#list) - List user's files with cursor-based pagination
+* [upload](docs/sdks/files/README.md#upload) - Upload a file
+* [get](docs/sdks/files/README.md#get) - Get a specific file by ID
+* [update](docs/sdks/files/README.md#update) - Update file metadata and properties
+* [delete](docs/sdks/files/README.md#delete) - Permanently delete a user file
 
 
 ### [posts](docs/sdks/posts/README.md)
 
-* [listPosts](docs/sdks/posts/README.md#listposts) - List posts with cursor-based pagination and optional series filtering
-* [createPost](docs/sdks/posts/README.md#createpost) - Create a new post
-* [getPost](docs/sdks/posts/README.md#getpost) - Get a specific post by ID with series ownership validation
-* [updatePost](docs/sdks/posts/README.md#updatepost) - Update a post
-* [deletePost](docs/sdks/posts/README.md#deletepost) - Delete a post (soft delete) with series ownership validation
+* [list](docs/sdks/posts/README.md#list) - List posts with cursor-based pagination and optional series filtering
+* [create](docs/sdks/posts/README.md#create) - Create a new post
+* [get](docs/sdks/posts/README.md#get) - Get a specific post by ID with series ownership validation
+* [update](docs/sdks/posts/README.md#update) - Update a post
+* [delete](docs/sdks/posts/README.md#delete) - Delete a post (soft delete) with series ownership validation
 
 ### [series](docs/sdks/series/README.md)
 
-* [listSeries](docs/sdks/series/README.md#listseries) - List user's series with cursor-based pagination
-* [createSeries](docs/sdks/series/README.md#createseries) - Create a new series
-* [getSeries](docs/sdks/series/README.md#getseries) - Get a specific series by ID with user ownership validation
-* [updateSeries](docs/sdks/series/README.md#updateseries) - Update a series
-* [deleteSeries](docs/sdks/series/README.md#deleteseries) - Delete a series (soft delete) with user ownership validation
+* [list](docs/sdks/series/README.md#list) - List user's series with cursor-based pagination
+* [create](docs/sdks/series/README.md#create) - Create a new series
+* [get](docs/sdks/series/README.md#get) - Get a specific series by ID with user ownership validation
+* [update](docs/sdks/series/README.md#update) - Update a series
+* [delete](docs/sdks/series/README.md#delete) - Delete a series (soft delete) with user ownership validation
 
 </details>
 <!-- End Available Resources and Operations [operations] -->
@@ -197,6 +229,11 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 
 <summary>Available standalone functions</summary>
 
+- [`apiKeysCreate`](docs/sdks/apikeys/README.md#create) - Create a new API key
+- [`apiKeysDelete`](docs/sdks/apikeys/README.md#delete) - Delete an API key (hard delete for security)
+- [`apiKeysGet`](docs/sdks/apikeys/README.md#get) - Get a specific API key by ID
+- [`apiKeysList`](docs/sdks/apikeys/README.md#list) - List API keys with cursor-based pagination and optional filtering
+- [`apiKeysUpdate`](docs/sdks/apikeys/README.md#update) - Update an API key
 - [`authCheckEmail`](docs/sdks/auth/README.md#checkemail) - Check if email exists
 - [`authForgotPassword`](docs/sdks/auth/README.md#forgotpassword) - Forgot password
 - [`authGetCurrentUser`](docs/sdks/auth/README.md#getcurrentuser) - Get current user info
@@ -209,22 +246,22 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 - [`authResetPassword`](docs/sdks/auth/README.md#resetpassword) - Reset password
 - [`authUpdateUserInfo`](docs/sdks/auth/README.md#updateuserinfo) - Update user information
 - [`authVerifyEmail`](docs/sdks/auth/README.md#verifyemail) - Email verification
-- [`filesDeleteFile`](docs/sdks/files/README.md#deletefile) - Permanently delete a user file
-- [`filesGetFile`](docs/sdks/files/README.md#getfile) - Get a specific file by ID
-- [`filesListFiles`](docs/sdks/files/README.md#listfiles) - List user's files with cursor-based pagination
-- [`filesServeFileCdn`](docs/sdks/files/README.md#servefilecdn) - Serve file content with user authentication
-- [`filesUpdateFile`](docs/sdks/files/README.md#updatefile) - Update file metadata and properties
-- [`filesUploadFile`](docs/sdks/files/README.md#uploadfile) - Upload a file
-- [`postsCreatePost`](docs/sdks/posts/README.md#createpost) - Create a new post
-- [`postsDeletePost`](docs/sdks/posts/README.md#deletepost) - Delete a post (soft delete) with series ownership validation
-- [`postsGetPost`](docs/sdks/posts/README.md#getpost) - Get a specific post by ID with series ownership validation
-- [`postsListPosts`](docs/sdks/posts/README.md#listposts) - List posts with cursor-based pagination and optional series filtering
-- [`postsUpdatePost`](docs/sdks/posts/README.md#updatepost) - Update a post
-- [`seriesCreateSeries`](docs/sdks/series/README.md#createseries) - Create a new series
-- [`seriesDeleteSeries`](docs/sdks/series/README.md#deleteseries) - Delete a series (soft delete) with user ownership validation
-- [`seriesGetSeries`](docs/sdks/series/README.md#getseries) - Get a specific series by ID with user ownership validation
-- [`seriesListSeries`](docs/sdks/series/README.md#listseries) - List user's series with cursor-based pagination
-- [`seriesUpdateSeries`](docs/sdks/series/README.md#updateseries) - Update a series
+- [`filesDelete`](docs/sdks/files/README.md#delete) - Permanently delete a user file
+- [`filesGet`](docs/sdks/files/README.md#get) - Get a specific file by ID
+- [`filesList`](docs/sdks/files/README.md#list) - List user's files with cursor-based pagination
+- [`filesServeCdn`](docs/sdks/files/README.md#servecdn) - Serve file content with user authentication
+- [`filesUpdate`](docs/sdks/files/README.md#update) - Update file metadata and properties
+- [`filesUpload`](docs/sdks/files/README.md#upload) - Upload a file
+- [`postsCreate`](docs/sdks/posts/README.md#create) - Create a new post
+- [`postsDelete`](docs/sdks/posts/README.md#delete) - Delete a post (soft delete) with series ownership validation
+- [`postsGet`](docs/sdks/posts/README.md#get) - Get a specific post by ID with series ownership validation
+- [`postsList`](docs/sdks/posts/README.md#list) - List posts with cursor-based pagination and optional series filtering
+- [`postsUpdate`](docs/sdks/posts/README.md#update) - Update a post
+- [`seriesCreate`](docs/sdks/series/README.md#create) - Create a new series
+- [`seriesDelete`](docs/sdks/series/README.md#delete) - Delete a series (soft delete) with user ownership validation
+- [`seriesGet`](docs/sdks/series/README.md#get) - Get a specific series by ID with user ownership validation
+- [`seriesList`](docs/sdks/series/README.md#list) - List user's series with cursor-based pagination
+- [`seriesUpdate`](docs/sdks/series/README.md#update) - Update a series
 
 </details>
 <!-- End Standalone functions [standalone-funcs] -->
@@ -247,12 +284,12 @@ Certain SDK methods accept files as part of a multi-part request. It is possible
 import { openAsBlob } from "node:fs";
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  const result = await patronts.files.uploadFile({
+  const result = await patronts.files.upload({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     file: await openAsBlob("example.file"),
   });
 
@@ -274,13 +311,14 @@ To change the default retry strategy for a single API call, simply provide a ret
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.auth.checkEmail({
-    email: "user@example.com",
-  }, {
+  const result = await patronts.apiKeys.list({
     retries: {
       strategy: "backoff",
       backoff: {
@@ -292,6 +330,8 @@ async function run() {
       retryConnectionErrors: false,
     },
   });
+
+  console.log(result);
 }
 
 run();
@@ -313,13 +353,16 @@ const patronts = new Patronts({
     },
     retryConnectionErrors: false,
   },
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.auth.checkEmail({
-    email: "user@example.com",
-  });
+  const result = await patronts.apiKeys.list();
+
+  console.log(result);
 }
 
 run();
@@ -347,14 +390,17 @@ import { Patronts } from "patronts";
 import * as errors from "patronts/models/errors";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
   try {
-    await patronts.auth.checkEmail({
-      email: "user@example.com",
-    });
+    const result = await patronts.apiKeys.list();
+
+    console.log(result);
   } catch (error) {
     // The base class for HTTP error responses
     if (error instanceof errors.PatrontsError) {
@@ -420,13 +466,16 @@ import { Patronts } from "patronts";
 
 const patronts = new Patronts({
   serverIdx: 1,
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.auth.checkEmail({
-    email: "user@example.com",
-  });
+  const result = await patronts.apiKeys.list();
+
+  console.log(result);
 }
 
 run();
@@ -441,13 +490,16 @@ import { Patronts } from "patronts";
 
 const patronts = new Patronts({
   serverURL: "https://api.patron.com",
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.auth.checkEmail({
-    email: "user@example.com",
-  });
+  const result = await patronts.apiKeys.list();
+
+  console.log(result);
 }
 
 run();

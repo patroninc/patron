@@ -7,14 +7,14 @@ File upload, download, and management endpoints
 
 ### Available Operations
 
-* [serveFileCdn](#servefilecdn) - Serve file content with user authentication
-* [listFiles](#listfiles) - List user's files with cursor-based pagination
-* [uploadFile](#uploadfile) - Upload a file
-* [getFile](#getfile) - Get a specific file by ID
-* [updateFile](#updatefile) - Update file metadata and properties
-* [deleteFile](#deletefile) - Permanently delete a user file
+* [serveCdn](#servecdn) - Serve file content with user authentication
+* [list](#list) - List user's files with cursor-based pagination
+* [upload](#upload) - Upload a file
+* [get](#get) - Get a specific file by ID
+* [update](#update) - Update file metadata and properties
+* [delete](#delete) - Permanently delete a user file
 
-## serveFileCdn
+## serveCdn
 
 This endpoint is designed to be used to get file content with proper authentication.
 It verifies user access to the file and returns the file content with proper cache headers.
@@ -29,12 +29,12 @@ Returns an error if file not found, access denied, or S3 operations fail.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  await patronts.files.serveFileCdn({
+  await patronts.files.serveCdn({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     fileId: "39974a06-0f39-432d-896c-ec8ec5a187f3",
   });
 
@@ -50,23 +50,23 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { filesServeFileCdn } from "patronts/funcs/filesServeFileCdn.js";
+import { filesServeCdn } from "patronts/funcs/filesServeCdn.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await filesServeFileCdn(patronts, {
+  const res = await filesServeCdn(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     fileId: "39974a06-0f39-432d-896c-ec8ec5a187f3",
   });
   if (res.ok) {
     const { value: result } = res;
     
   } else {
-    console.log("filesServeFileCdn failed:", res.error);
+    console.log("filesServeCdn failed:", res.error);
   }
 }
 
@@ -78,6 +78,7 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.ServeFileCdnRequest](../../models/operations/servefilecdnrequest.md)                                                                                               | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
+| `security`                                                                                                                                                                     | [operations.ServeFileCdnSecurity](../../models/operations/servefilecdnsecurity.md)                                                                                             | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -94,7 +95,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## listFiles
+## list
 
 # Errors
 Returns an error if database operations fail.
@@ -105,12 +106,12 @@ Returns an error if database operations fail.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  const result = await patronts.files.listFiles();
+  const result = await patronts.files.list({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  });
 
   console.log(result);
 }
@@ -124,21 +125,21 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { filesListFiles } from "patronts/funcs/filesListFiles.js";
+import { filesList } from "patronts/funcs/filesList.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await filesListFiles(patronts);
+  const res = await filesList(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  });
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("filesListFiles failed:", res.error);
+    console.log("filesList failed:", res.error);
   }
 }
 
@@ -150,6 +151,7 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.ListFilesRequest](../../models/operations/listfilesrequest.md)                                                                                                     | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
+| `security`                                                                                                                                                                     | [operations.ListFilesSecurity](../../models/operations/listfilessecurity.md)                                                                                                   | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -166,7 +168,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## uploadFile
+## upload
 
 # Errors
 Returns an error if file upload, database operations, or file system operations fail.
@@ -178,12 +180,12 @@ Returns an error if file upload, database operations, or file system operations 
 import { openAsBlob } from "node:fs";
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  const result = await patronts.files.uploadFile({
+  const result = await patronts.files.upload({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     file: await openAsBlob("example.file"),
   });
 
@@ -200,23 +202,23 @@ The standalone function version of this method:
 ```typescript
 import { openAsBlob } from "node:fs";
 import { PatrontsCore } from "patronts/core.js";
-import { filesUploadFile } from "patronts/funcs/filesUploadFile.js";
+import { filesUpload } from "patronts/funcs/filesUpload.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await filesUploadFile(patronts, {
+  const res = await filesUpload(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     file: await openAsBlob("example.file"),
   });
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("filesUploadFile failed:", res.error);
+    console.log("filesUpload failed:", res.error);
   }
 }
 
@@ -228,6 +230,7 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [models.FileUploadRequest](../../models/fileuploadrequest.md)                                                                                                                  | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
+| `security`                                                                                                                                                                     | [operations.UploadFileSecurity](../../models/operations/uploadfilesecurity.md)                                                                                                 | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -244,7 +247,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## getFile
+## get
 
 # Errors
 Returns an error if database operations fail or file not found.
@@ -255,12 +258,12 @@ Returns an error if database operations fail or file not found.
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  const result = await patronts.files.getFile({
+  const result = await patronts.files.get({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     fileId: "b9989da6-aed4-4643-949a-a7c28d664def",
   });
 
@@ -276,23 +279,23 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { filesGetFile } from "patronts/funcs/filesGetFile.js";
+import { filesGet } from "patronts/funcs/filesGet.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await filesGetFile(patronts, {
+  const res = await filesGet(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     fileId: "b9989da6-aed4-4643-949a-a7c28d664def",
   });
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("filesGetFile failed:", res.error);
+    console.log("filesGet failed:", res.error);
   }
 }
 
@@ -304,6 +307,7 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.GetFileRequest](../../models/operations/getfilerequest.md)                                                                                                         | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
+| `security`                                                                                                                                                                     | [operations.GetFileSecurity](../../models/operations/getfilesecurity.md)                                                                                                       | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -320,7 +324,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## updateFile
+## update
 
 # Errors
 Returns an error if validation fails, file not found, or database operations fail.
@@ -331,12 +335,12 @@ Returns an error if validation fails, file not found, or database operations fai
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  const result = await patronts.files.updateFile({
+  const result = await patronts.files.update({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     fileId: "ce621f1a-00d2-437b-b1d0-5650eed83f65",
     updateUserFileRequest: {
       filename: "renamed_document.pdf",
@@ -357,16 +361,16 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { filesUpdateFile } from "patronts/funcs/filesUpdateFile.js";
+import { filesUpdate } from "patronts/funcs/filesUpdate.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await filesUpdateFile(patronts, {
+  const res = await filesUpdate(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     fileId: "ce621f1a-00d2-437b-b1d0-5650eed83f65",
     updateUserFileRequest: {
       filename: "renamed_document.pdf",
@@ -378,7 +382,7 @@ async function run() {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("filesUpdateFile failed:", res.error);
+    console.log("filesUpdate failed:", res.error);
   }
 }
 
@@ -390,6 +394,7 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.UpdateFileRequest](../../models/operations/updatefilerequest.md)                                                                                                   | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
+| `security`                                                                                                                                                                     | [operations.UpdateFileSecurity](../../models/operations/updatefilesecurity.md)                                                                                                 | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |
@@ -406,7 +411,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## deleteFile
+## delete
 
 # Errors
 Returns an error if file not found, permission denied, or storage operations fail.
@@ -417,12 +422,12 @@ Returns an error if file not found, permission denied, or storage operations fai
 ```typescript
 import { Patronts } from "patronts";
 
-const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new Patronts();
 
 async function run() {
-  await patronts.files.deleteFile({
+  await patronts.files.delete({
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     fileId: "9d527cd7-448b-40b4-9b53-301ef075d563",
   });
 
@@ -438,23 +443,23 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { filesDeleteFile } from "patronts/funcs/filesDeleteFile.js";
+import { filesDelete } from "patronts/funcs/filesDelete.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
-const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
-});
+const patronts = new PatrontsCore();
 
 async function run() {
-  const res = await filesDeleteFile(patronts, {
+  const res = await filesDelete(patronts, {
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  }, {
     fileId: "9d527cd7-448b-40b4-9b53-301ef075d563",
   });
   if (res.ok) {
     const { value: result } = res;
     
   } else {
-    console.log("filesDeleteFile failed:", res.error);
+    console.log("filesDelete failed:", res.error);
   }
 }
 
@@ -466,6 +471,7 @@ run();
 | Parameter                                                                                                                                                                      | Type                                                                                                                                                                           | Required                                                                                                                                                                       | Description                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `request`                                                                                                                                                                      | [operations.DeleteFileRequest](../../models/operations/deletefilerequest.md)                                                                                                   | :heavy_check_mark:                                                                                                                                                             | The request object to use for the request.                                                                                                                                     |
+| `security`                                                                                                                                                                     | [operations.DeleteFileSecurity](../../models/operations/deletefilesecurity.md)                                                                                                 | :heavy_check_mark:                                                                                                                                                             | The security requirements to use for the request.                                                                                                                              |
 | `options`                                                                                                                                                                      | RequestOptions                                                                                                                                                                 | :heavy_minus_sign:                                                                                                                                                             | Used to set various options for making HTTP requests.                                                                                                                          |
 | `options.fetchOptions`                                                                                                                                                         | [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#options)                                                                                        | :heavy_minus_sign:                                                                                                                                                             | Options that are passed to the underlying HTTP request. This can be used to inject extra headers for examples. All `Request` options, except `method` and `body`, are allowed. |
 | `options.retries`                                                                                                                                                              | [RetryConfig](../../lib/utils/retryconfig.md)                                                                                                                                  | :heavy_minus_sign:                                                                                                                                                             | Enables retrying HTTP requests under certain failure conditions.                                                                                                               |

@@ -8,12 +8,68 @@ import { safeParse } from "../../lib/schemas.js";
 import { Result as SafeParseResult } from "../../types/fp.js";
 import { SDKValidationError } from "../errors/sdkvalidationerror.js";
 
+export type GetFileSecurity = {
+  cookieAuth: string;
+};
+
 export type GetFileRequest = {
   /**
    * UUID of the file to retrieve details for
    */
   fileId: string;
 };
+
+/** @internal */
+export const GetFileSecurity$inboundSchema: z.ZodType<
+  GetFileSecurity,
+  z.ZodTypeDef,
+  unknown
+> = z.object({
+  cookieAuth: z.string(),
+});
+
+/** @internal */
+export type GetFileSecurity$Outbound = {
+  cookieAuth: string;
+};
+
+/** @internal */
+export const GetFileSecurity$outboundSchema: z.ZodType<
+  GetFileSecurity$Outbound,
+  z.ZodTypeDef,
+  GetFileSecurity
+> = z.object({
+  cookieAuth: z.string(),
+});
+
+/**
+ * @internal
+ * @deprecated This namespace will be removed in future versions. Use schemas and types that are exported directly from this module.
+ */
+export namespace GetFileSecurity$ {
+  /** @deprecated use `GetFileSecurity$inboundSchema` instead. */
+  export const inboundSchema = GetFileSecurity$inboundSchema;
+  /** @deprecated use `GetFileSecurity$outboundSchema` instead. */
+  export const outboundSchema = GetFileSecurity$outboundSchema;
+  /** @deprecated use `GetFileSecurity$Outbound` instead. */
+  export type Outbound = GetFileSecurity$Outbound;
+}
+
+export function getFileSecurityToJSON(
+  getFileSecurity: GetFileSecurity,
+): string {
+  return JSON.stringify(GetFileSecurity$outboundSchema.parse(getFileSecurity));
+}
+
+export function getFileSecurityFromJSON(
+  jsonString: string,
+): SafeParseResult<GetFileSecurity, SDKValidationError> {
+  return safeParse(
+    jsonString,
+    (x) => GetFileSecurity$inboundSchema.parse(JSON.parse(x)),
+    `Failed to parse 'GetFileSecurity' from JSON`,
+  );
+}
 
 /** @internal */
 export const GetFileRequest$inboundSchema: z.ZodType<

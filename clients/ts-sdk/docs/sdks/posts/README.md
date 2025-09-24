@@ -7,16 +7,16 @@ Post creation and management endpoints
 
 ### Available Operations
 
-* [listPosts](#listposts) - List posts with cursor-based pagination and optional series filtering
-* [createPost](#createpost) - Create a new post
-* [getPost](#getpost) - Get a specific post by ID with series ownership validation
-* [updatePost](#updatepost) - Update a post
-* [deletePost](#deletepost) - Delete a post (soft delete) with series ownership validation
+* [list](#list) - List posts with cursor-based pagination and optional series filtering
+* [create](#create) - Create a new post
+* [get](#get) - Get a specific post by ID with series ownership validation
+* [update](#update) - Update a post
+* [delete](#delete) - Delete a post (soft delete) with series ownership validation
 
-## listPosts
+## list
 
 # Errors
-Returns error if database query fails, series filtering fails, or connection issues occur
+Returns error if posts database query fails, series filtering fails, or connection issues occur
 
 ### Example Usage
 
@@ -25,11 +25,14 @@ Returns error if database query fails, series filtering fails, or connection iss
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const result = await patronts.posts.listPosts();
+  const result = await patronts.posts.list();
 
   console.log(result);
 }
@@ -43,21 +46,24 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { postsListPosts } from "patronts/funcs/postsListPosts.js";
+import { postsList } from "patronts/funcs/postsList.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await postsListPosts(patronts);
+  const res = await postsList(patronts);
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("postsListPosts failed:", res.error);
+    console.log("postsList failed:", res.error);
   }
 }
 
@@ -85,7 +91,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## createPost
+## create
 
 # Errors
 Returns error if series not found, access denied, slug/number conflict, or database error
@@ -97,11 +103,14 @@ Returns error if series not found, access denied, slug/number conflict, or datab
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const result = await patronts.posts.createPost({
+  const result = await patronts.posts.create({
     audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
     content: "Welcome to our first episode where we discuss the fundamentals...",
     isPremium: false,
@@ -126,16 +135,19 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { postsCreatePost } from "patronts/funcs/postsCreatePost.js";
+import { postsCreate } from "patronts/funcs/postsCreate.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await postsCreatePost(patronts, {
+  const res = await postsCreate(patronts, {
     audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
     content: "Welcome to our first episode where we discuss the fundamentals...",
     isPremium: false,
@@ -151,7 +163,7 @@ async function run() {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("postsCreatePost failed:", res.error);
+    console.log("postsCreate failed:", res.error);
   }
 }
 
@@ -179,7 +191,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## getPost
+## get
 
 # Errors
 Returns error if post not found, series access denied, or database connection error
@@ -191,11 +203,14 @@ Returns error if post not found, series access denied, or database connection er
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const result = await patronts.posts.getPost({
+  const result = await patronts.posts.get({
     postId: "8b23b066-adfe-4d2d-967f-9f5fad145517",
   });
 
@@ -211,23 +226,26 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { postsGetPost } from "patronts/funcs/postsGetPost.js";
+import { postsGet } from "patronts/funcs/postsGet.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await postsGetPost(patronts, {
+  const res = await postsGet(patronts, {
     postId: "8b23b066-adfe-4d2d-967f-9f5fad145517",
   });
   if (res.ok) {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("postsGetPost failed:", res.error);
+    console.log("postsGet failed:", res.error);
   }
 }
 
@@ -255,7 +273,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## updatePost
+## update
 
 # Errors
 Returns error if post not found, access denied, slug/number conflict, or database update error
@@ -267,11 +285,14 @@ Returns error if post not found, access denied, slug/number conflict, or databas
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const result = await patronts.posts.updatePost({
+  const result = await patronts.posts.update({
     postId: "05830c7f-2322-4d89-99a3-4f2a63d863b4",
     updatePostRequest: {
       audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
@@ -298,16 +319,19 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { postsUpdatePost } from "patronts/funcs/postsUpdatePost.js";
+import { postsUpdate } from "patronts/funcs/postsUpdate.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await postsUpdatePost(patronts, {
+  const res = await postsUpdate(patronts, {
     postId: "05830c7f-2322-4d89-99a3-4f2a63d863b4",
     updatePostRequest: {
       audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
@@ -325,7 +349,7 @@ async function run() {
     const { value: result } = res;
     console.log(result);
   } else {
-    console.log("postsUpdatePost failed:", res.error);
+    console.log("postsUpdate failed:", res.error);
   }
 }
 
@@ -353,7 +377,7 @@ run();
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 
-## deletePost
+## delete
 
 # Errors
 Returns error if post not found, series access denied, or database deletion error
@@ -365,11 +389,14 @@ Returns error if post not found, series access denied, or database deletion erro
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  await patronts.posts.deletePost({
+  await patronts.posts.delete({
     postId: "8b634f82-0ea7-401a-85d3-c55d13adab6d",
   });
 
@@ -385,23 +412,26 @@ The standalone function version of this method:
 
 ```typescript
 import { PatrontsCore } from "patronts/core.js";
-import { postsDeletePost } from "patronts/funcs/postsDeletePost.js";
+import { postsDelete } from "patronts/funcs/postsDelete.js";
 
 // Use `PatrontsCore` for best tree-shaking performance.
 // You can create one instance of it to use across an application.
 const patronts = new PatrontsCore({
-  cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
 });
 
 async function run() {
-  const res = await postsDeletePost(patronts, {
+  const res = await postsDelete(patronts, {
     postId: "8b634f82-0ea7-401a-85d3-c55d13adab6d",
   });
   if (res.ok) {
     const { value: result } = res;
     
   } else {
-    console.log("postsDeletePost failed:", res.error);
+    console.log("postsDelete failed:", res.error);
   }
 }
 

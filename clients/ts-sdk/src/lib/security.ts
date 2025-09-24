@@ -245,6 +245,11 @@ export function resolveGlobalSecurity(
   return resolveSecurity(
     [
       {
+        fieldName: "Authorization",
+        type: "http:bearer",
+        value: security?.bearerAuth ?? env().PATRONTS_BEARER_AUTH,
+      },
+      {
         fieldName: "sessionid",
         type: "apiKey:cookie",
         value: security?.cookieAuth ?? env().PATRONTS_COOKIE_AUTH,

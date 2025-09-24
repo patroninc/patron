@@ -8,12 +8,70 @@ import { safeParse } from "../../lib/schemas.js";
 import { Result as SafeParseResult } from "../../types/fp.js";
 import { SDKValidationError } from "../errors/sdkvalidationerror.js";
 
+export type ServeFileCdnSecurity = {
+  cookieAuth: string;
+};
+
 export type ServeFileCdnRequest = {
   /**
    * UUID of the file to stream via CDN
    */
   fileId: string;
 };
+
+/** @internal */
+export const ServeFileCdnSecurity$inboundSchema: z.ZodType<
+  ServeFileCdnSecurity,
+  z.ZodTypeDef,
+  unknown
+> = z.object({
+  cookieAuth: z.string(),
+});
+
+/** @internal */
+export type ServeFileCdnSecurity$Outbound = {
+  cookieAuth: string;
+};
+
+/** @internal */
+export const ServeFileCdnSecurity$outboundSchema: z.ZodType<
+  ServeFileCdnSecurity$Outbound,
+  z.ZodTypeDef,
+  ServeFileCdnSecurity
+> = z.object({
+  cookieAuth: z.string(),
+});
+
+/**
+ * @internal
+ * @deprecated This namespace will be removed in future versions. Use schemas and types that are exported directly from this module.
+ */
+export namespace ServeFileCdnSecurity$ {
+  /** @deprecated use `ServeFileCdnSecurity$inboundSchema` instead. */
+  export const inboundSchema = ServeFileCdnSecurity$inboundSchema;
+  /** @deprecated use `ServeFileCdnSecurity$outboundSchema` instead. */
+  export const outboundSchema = ServeFileCdnSecurity$outboundSchema;
+  /** @deprecated use `ServeFileCdnSecurity$Outbound` instead. */
+  export type Outbound = ServeFileCdnSecurity$Outbound;
+}
+
+export function serveFileCdnSecurityToJSON(
+  serveFileCdnSecurity: ServeFileCdnSecurity,
+): string {
+  return JSON.stringify(
+    ServeFileCdnSecurity$outboundSchema.parse(serveFileCdnSecurity),
+  );
+}
+
+export function serveFileCdnSecurityFromJSON(
+  jsonString: string,
+): SafeParseResult<ServeFileCdnSecurity, SDKValidationError> {
+  return safeParse(
+    jsonString,
+    (x) => ServeFileCdnSecurity$inboundSchema.parse(JSON.parse(x)),
+    `Failed to parse 'ServeFileCdnSecurity' from JSON`,
+  );
+}
 
 /** @internal */
 export const ServeFileCdnRequest$inboundSchema: z.ZodType<

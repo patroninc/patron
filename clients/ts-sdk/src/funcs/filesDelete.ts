@@ -9,7 +9,7 @@ import * as M from "../lib/matchers.js";
 import { compactMap } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
 import { RequestOptions } from "../lib/sdks.js";
-import { extractSecurity, resolveGlobalSecurity } from "../lib/security.js";
+import { resolveSecurity } from "../lib/security.js";
 import { pathToFunc } from "../lib/url.js";
 import {
   ConnectionError,
@@ -27,19 +27,16 @@ import { APICall, APIPromise } from "../types/async.js";
 import { Result } from "../types/fp.js";
 
 /**
- * Serve file content with user authentication
+ * Permanently delete a user file
  *
  * @remarks
- * This endpoint is designed to be used to get file content with proper authentication.
- * It verifies user access to the file and returns the file content with proper cache headers.
- * The file content is streamed directly from S3 to minimize memory usage for large files.
- *
  * # Errors
- * Returns an error if file not found, access denied, or S3 operations fail.
+ * Returns an error if file not found, permission denied, or storage operations fail.
  */
-export function filesServeFileCdn(
+export function filesDelete(
   client: PatrontsCore,
-  request: operations.ServeFileCdnRequest,
+  security: operations.DeleteFileSecurity,
+  request: operations.DeleteFileRequest,
   options?: RequestOptions,
 ): APIPromise<
   Result<
@@ -57,6 +54,7 @@ export function filesServeFileCdn(
 > {
   return new APIPromise($do(
     client,
+    security,
     request,
     options,
   ));
@@ -64,7 +62,8 @@ export function filesServeFileCdn(
 
 async function $do(
   client: PatrontsCore,
-  request: operations.ServeFileCdnRequest,
+  security: operations.DeleteFileSecurity,
+  request: operations.DeleteFileRequest,
   options?: RequestOptions,
 ): Promise<
   [
@@ -85,7 +84,7 @@ async function $do(
 > {
   const parsed = safeParse(
     request,
-    (value) => operations.ServeFileCdnRequest$outboundSchema.parse(value),
+    (value) => operations.DeleteFileRequest$outboundSchema.parse(value),
     "Input validation failed",
   );
   if (!parsed.ok) {
@@ -101,25 +100,31 @@ async function $do(
     }),
   };
 
-  const path = pathToFunc("/api/cdn/files/{file_id}")(pathParams);
+  const path = pathToFunc("/api/files/{file_id}")(pathParams);
 
   const headers = new Headers(compactMap({
     Accept: "application/json",
   }));
 
-  const secConfig = await extractSecurity(client._options.cookieAuth);
-  const securityInput = secConfig == null ? {} : { cookieAuth: secConfig };
-  const requestSecurity = resolveGlobalSecurity(securityInput);
+  const requestSecurity = resolveSecurity(
+    [
+      {
+        fieldName: "sessionid",
+        type: "apiKey:cookie",
+        value: security?.cookieAuth,
+      },
+    ],
+  );
 
   const context = {
     options: client._options,
     baseURL: options?.serverURL ?? client._baseURL ?? "",
-    operationID: "serve_file_cdn",
-    oAuth2Scopes: [],
+    operationID: "delete_file",
+    oAuth2Scopes: null,
 
     resolvedSecurity: requestSecurity,
 
-    securitySource: client._options.cookieAuth,
+    securitySource: security,
     retryConfig: options?.retries
       || client._options.retryConfig
       || { strategy: "none" },
@@ -128,7 +133,7 @@ async function $do(
 
   const requestRes = client._createRequest(context, {
     security: requestSecurity,
-    method: "GET",
+    method: "DELETE",
     baseURL: options?.serverURL,
     path: path,
     headers: headers,
@@ -168,7 +173,7 @@ async function $do(
     | UnexpectedClientError
     | SDKValidationError
   >(
-    M.nil(200, z.void()),
+    M.nil(204, z.void()),
     M.jsonErr([401, 403, 404], errors.ErrorResponse$inboundSchema),
     M.jsonErr(500, errors.ErrorResponse$inboundSchema),
     M.fail("4XX"),

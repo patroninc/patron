@@ -3,7 +3,7 @@
  */
 
 import { PatrontsCore } from "../core.js";
-import { encodeJSON } from "../lib/encodings.js";
+import { encodeSimple } from "../lib/encodings.js";
 import * as M from "../lib/matchers.js";
 import { compactMap } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
@@ -22,19 +22,20 @@ import { PatrontsError } from "../models/errors/patrontserror.js";
 import { ResponseValidationError } from "../models/errors/responsevalidationerror.js";
 import { SDKValidationError } from "../models/errors/sdkvalidationerror.js";
 import * as models from "../models/index.js";
+import * as operations from "../models/operations/index.js";
 import { APICall, APIPromise } from "../types/async.js";
 import { Result } from "../types/fp.js";
 
 /**
- * Create a new post
+ * Get a specific post by ID with series ownership validation
  *
  * @remarks
  * # Errors
- * Returns error if series not found, access denied, slug/number conflict, or database error
+ * Returns error if post not found, series access denied, or database connection error
  */
-export function postsCreatePost(
+export function postsGet(
   client: PatrontsCore,
-  request: models.CreatePostRequest,
+  request: operations.GetPostRequest,
   options?: RequestOptions,
 ): APIPromise<
   Result<
@@ -59,7 +60,7 @@ export function postsCreatePost(
 
 async function $do(
   client: PatrontsCore,
-  request: models.CreatePostRequest,
+  request: operations.GetPostRequest,
   options?: RequestOptions,
 ): Promise<
   [
@@ -80,35 +81,40 @@ async function $do(
 > {
   const parsed = safeParse(
     request,
-    (value) => models.CreatePostRequest$outboundSchema.parse(value),
+    (value) => operations.GetPostRequest$outboundSchema.parse(value),
     "Input validation failed",
   );
   if (!parsed.ok) {
     return [parsed, { status: "invalid" }];
   }
   const payload = parsed.value;
-  const body = encodeJSON("body", payload, { explode: true });
+  const body = null;
 
-  const path = pathToFunc("/api/posts")();
+  const pathParams = {
+    post_id: encodeSimple("post_id", payload.post_id, {
+      explode: false,
+      charEncoding: "percent",
+    }),
+  };
+
+  const path = pathToFunc("/api/posts/{post_id}")(pathParams);
 
   const headers = new Headers(compactMap({
-    "Content-Type": "application/json",
     Accept: "application/json",
   }));
 
-  const secConfig = await extractSecurity(client._options.cookieAuth);
-  const securityInput = secConfig == null ? {} : { cookieAuth: secConfig };
+  const securityInput = await extractSecurity(client._options.security);
   const requestSecurity = resolveGlobalSecurity(securityInput);
 
   const context = {
     options: client._options,
     baseURL: options?.serverURL ?? client._baseURL ?? "",
-    operationID: "create_post",
+    operationID: "get_post",
     oAuth2Scopes: [],
 
     resolvedSecurity: requestSecurity,
 
-    securitySource: client._options.cookieAuth,
+    securitySource: client._options.security,
     retryConfig: options?.retries
       || client._options.retryConfig
       || { strategy: "none" },
@@ -117,7 +123,7 @@ async function $do(
 
   const requestRes = client._createRequest(context, {
     security: requestSecurity,
-    method: "POST",
+    method: "GET",
     baseURL: options?.serverURL,
     path: path,
     headers: headers,
@@ -132,7 +138,7 @@ async function $do(
 
   const doResult = await client._do(req, {
     context,
-    errorCodes: ["400", "401", "403", "409", "4XX", "500", "5XX"],
+    errorCodes: ["401", "403", "404", "4XX", "500", "5XX"],
     retryConfig: context.retryConfig,
     retryCodes: context.retryCodes,
   });
@@ -157,8 +163,8 @@ async function $do(
     | UnexpectedClientError
     | SDKValidationError
   >(
-    M.json(201, models.PostResponse$inboundSchema),
-    M.jsonErr([400, 401, 403, 409], errors.ErrorResponse$inboundSchema),
+    M.json(200, models.PostResponse$inboundSchema),
+    M.jsonErr([401, 403, 404], errors.ErrorResponse$inboundSchema),
     M.jsonErr(500, errors.ErrorResponse$inboundSchema),
     M.fail("4XX"),
     M.fail("5XX"),
