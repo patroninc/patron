@@ -239,7 +239,7 @@ describe("Files API Integration Tests", () => {
         }
         throw error;
       }
-    });
+    }, 30000); // 30 second timeout for large uploads
   });
 
   describe("GET /api/files - List Files", () => {
@@ -576,77 +576,81 @@ describe("Files API Integration Tests", () => {
     });
 
     it("should serve file content via CDN endpoint", async () => {
-      // Note: This test depends on how the SDK handles binary responses
-      try {
-        const response = await patronClient.files.serveCdn({
-          fileId: testFileId!,
-        });
+      // Use direct fetch instead of SDK to avoid binary response handling issues
+      const cdnUrl = `${process.env.PATRON_API_URL}/api/cdn/files/${testFileId}`;
+      const response = await fetch(cdnUrl, {
+        headers: {
+          'Authorization': `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
+        },
+      });
 
-        // The SDK may return undefined for binary responses - this is a known limitation
-        if (response === undefined) {
-          // The endpoint is working but the SDK can't handle the binary response
-          // This is acceptable behavior given SDK limitations
-          console.log("CDN endpoint working but SDK returned undefined for binary response");
-          return;
-        }
+      expect(response.ok).toBe(true);
+      expect(response.status).toBe(200);
 
-        // The response should be the file content
-        expect(response).toBeDefined();
+      // Check response headers
+      expect(response.headers.get('content-type')).toBe('text/plain');
+      expect(response.headers.get('cache-control')).toContain('public');
+      expect(response.headers.get('etag')).toBeDefined();
 
-        // If the SDK returns the content as text for text files
-        if (typeof response === "string") {
-          expect(response).toContain("Test file content created at");
-        }
-        // If the SDK returns binary data, just check it exists
-        else {
-          expect(response).not.toBeNull();
-        }
-      } catch (error: any) {
-        // If the SDK doesn't properly handle binary responses, this might fail
-        // That's acceptable as it indicates an SDK limitation, not API issue
-        console.warn("CDN endpoint test failed - this may be an SDK limitation:", error);
-      }
+      // Check the content
+      const content = await response.text();
+      expect(content).toContain("Test file content created at");
+      expect(content).toContain("This is a multi-line test file for API testing.");
     });
 
     it("should fail when serving non-existent file via CDN", async () => {
       const fakeId = "00000000-0000-0000-0000-000000000000";
+      const cdnUrl = `${process.env.PATRON_API_URL}/api/cdn/files/${fakeId}`;
 
-      try {
-        await patronClient.files.serveCdn({
-          fileId: fakeId,
-        });
-        fail("Expected CDN serve to fail with non-existent ID");
-      } catch (error: any) {
-        // Should get 404 not found error
-      }
+      const response = await fetch(cdnUrl, {
+        headers: {
+          'Authorization': `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
+        },
+      });
+
+      expect(response.ok).toBe(false);
+      expect(response.status).toBe(404);
     });
 
     it("should fail when serving file with invalid UUID via CDN", async () => {
-      try {
-        await patronClient.files.serveCdn({
-          fileId: "invalid-uuid",
-        });
-        fail("Expected CDN serve to fail with invalid UUID");
-      } catch (error: any) {
-        // Should get 400 bad request or validation error
-      }
+      const cdnUrl = `${process.env.PATRON_API_URL}/api/cdn/files/invalid-uuid`;
+
+      const response = await fetch(cdnUrl, {
+        headers: {
+          'Authorization': `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
+        },
+      });
+
+      expect(response.ok).toBe(false);
+      expect([400, 404]).toContain(response.status); // Either bad request or not found
     });
 
     it("should include proper cache headers for CDN response", async () => {
-      // This test would need access to response headers
-      // which may not be available through the generated SDK
-      // This is more of an integration test for the actual HTTP response
-      try {
-        await patronClient.files.serveCdn({
-          fileId: testFileId!,
-        });
+      // Use direct fetch to properly test response headers
+      const cdnUrl = `${process.env.PATRON_API_URL}/api/cdn/files/${testFileId}`;
+      const response = await fetch(cdnUrl, {
+        headers: {
+          'Authorization': `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
+        },
+      });
 
-        // If we get here without error, the CDN endpoint is working
-        // Header validation would need to be done at HTTP client level
-      } catch (error: any) {
-        // If this fails, that's fine - it indicates the endpoint needs work
-        console.warn("CDN header test skipped due to SDK limitations");
-      }
+      expect(response.ok).toBe(true);
+
+      // Validate cache headers
+      const cacheControl = response.headers.get('cache-control');
+      expect(cacheControl).toContain('public');
+      expect(cacheControl).toContain('max-age=86400'); // 24 hours
+      expect(cacheControl).toContain('immutable');
+
+      // Validate ETag header
+      const etag = response.headers.get('etag');
+      expect(etag).toBeDefined();
+      expect(etag).toMatch(/^"[a-f0-9]+"$/); // Should be quoted hex string
+
+      // Validate Content-Disposition header
+      const contentDisposition = response.headers.get('content-disposition');
+      expect(contentDisposition).toContain('inline');
+      expect(contentDisposition).toContain(`filename="${testFileName}"`);
     });
   });
 
