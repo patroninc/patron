@@ -29,6 +29,6 @@
   },
   "dependencies": {
     "dotenv": "^17.2.2",
-    "patronts": "../ts-sdk"
+    "patronts": "file:../ts-sdk"
   }
 }

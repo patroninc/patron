@@ -364,6 +364,9 @@ pub async fn update_file(
     use shared::schema::user_files::dsl as files_dsl;
 
     let file_id = path.into_inner();
+
+    // Log the incoming request body
+
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
@@ -404,7 +407,8 @@ pub async fn update_file(
             .map_err(|e| ServiceError::Database(e.to_string()))?;
     }
 
-    if let Some(value) = body.metadata.as_ref() {
+    // Handle metadata update - distinguish between missing field and explicit null
+    if let Some(ref value) = body.metadata {
         let metadata_value = if value.is_null() {
             None
         } else {

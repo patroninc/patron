@@ -461,7 +461,7 @@ describe("Files API Integration Tests", () => {
         },
       });
 
-      expect(response?.metadata).toBe({});
+      expect(response?.metadata).toBe(null);
     });
 
     it("should fail when updating non-existent file", async () => {

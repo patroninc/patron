@@ -203,6 +203,7 @@ pub struct UpdateUserFileRequest {
     pub status: Option<FileStatus>,
     /// Updated metadata (optional)
     #[schema(example = json!({"processed_at": "2023-01-01T12:00:00Z"}))]
+    #[serde(default, deserialize_with = "deserialize_explicit_null")]
     pub metadata: Option<JsonValue>,
 }
 
@@ -241,5 +242,28 @@ impl From<Vec<UserFileInfo>> for UserFilesResponse {
 impl FromIterator<UserFileInfo> for UserFilesResponse {
     fn from_iter<T: IntoIterator<Item = UserFileInfo>>(iter: T) -> Self {
         Self(iter.into_iter().collect())
+    }
+}
+
+/// Custom deserializer that preserves the distinction between missing fields and explicit nulls
+fn deserialize_explicit_null<'de, D>(deserializer: D) -> Result<Option<JsonValue>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    use serde::de::Deserialize;
+
+    // When the field is missing, default() is called which returns None
+    // When the field is present (even if null), we deserialize it as Some(JsonValue)
+    match JsonValue::deserialize(deserializer) {
+        Ok(value) => Ok(Some(value)),
+        Err(e) => {
+            // If deserialization fails and it's because of a null,
+            // we still want to return Some(JsonValue::Null)
+            if e.to_string().contains("null") {
+                Ok(Some(JsonValue::Null))
+            } else {
+                Err(e)
+            }
+        }
     }
 }
