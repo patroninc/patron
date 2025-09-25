@@ -50,17 +50,6 @@ const Element = ({ attributes, children, element }: RenderElementProps): JSX.Ele
           {children}
         </a>
       );
-    case 'image':
-      return (
-        <div className="my-4" {...attributes}>
-          <img
-            src={element.url}
-            alt={element.alt || ''}
-            className="h-auto max-w-full"
-            style={{ maxHeight: '400px' }}
-          />
-        </div>
-      );
     default:
       return (
         <p className="my-2" {...attributes}>
