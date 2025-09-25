@@ -133,22 +133,23 @@ impl ConfigService {
                 .unwrap_or(10),
         });
 
-        let aws_config = if let (Ok(access_key_id), Ok(secret_access_key), Ok(region), Ok(s3_bucket)) = (
-            env::var("AWS_ACCESS_KEY_ID"),
-            env::var("AWS_SECRET_ACCESS_KEY"),
-            env::var("AWS_REGION"),
-            env::var("AWS_S3_BUCKET"),
-        ) {
-            Some(AwsConfig {
-                access_key_id,
-                secret_access_key,
-                region,
-                s3_bucket,
-                s3_host: env::var("AWS_S3_HOST").ok(),
-            })
-        } else {
-            None
-        };
+        let aws_config =
+            if let (Ok(access_key_id), Ok(secret_access_key), Ok(region), Ok(s3_bucket)) = (
+                env::var("AWS_ACCESS_KEY_ID"),
+                env::var("AWS_SECRET_ACCESS_KEY"),
+                env::var("AWS_REGION"),
+                env::var("AWS_S3_BUCKET"),
+            ) {
+                Some(AwsConfig {
+                    access_key_id,
+                    secret_access_key,
+                    region,
+                    s3_bucket,
+                    s3_host: env::var("AWS_S3_HOST").ok(),
+                })
+            } else {
+                None
+            };
 
         Self {
             database_url: env::var("DATABASE_URL").ok(),

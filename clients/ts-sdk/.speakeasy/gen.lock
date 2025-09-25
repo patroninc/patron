@@ -5,8 +5,8 @@ management:
   docVersion: 1.0.0
   speakeasyVersion: 1.628.6
   generationVersion: 2.716.7
-  releaseVersion: 0.8.8
-  configChecksum: 830d3469849b65cb7c1252c0f6cf5583
+  releaseVersion: 0.8.9
+  configChecksum: 861b1d9f47ad45464c1108c9932580e5
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk

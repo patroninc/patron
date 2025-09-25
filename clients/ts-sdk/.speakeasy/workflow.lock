@@ -14,7 +14,7 @@ targets:
         sourceRevisionDigest: sha256:68e813a731cdc85219fc87d94464843526d4fbed7aa06a549cb29725e8b19903
         sourceBlobDigest: sha256:aa51c8e008e553908ff357dc5736e7448feab1a56f4c1d9d57b4c876c12fea19
         codeSamplesNamespace: celeb-ai-video-generation-api-typescript-code-samples
-        codeSamplesRevisionDigest: sha256:78bdc38f70e3eed872b40b1a1bbc72165ad42b23ba1028c90d96d1c7ce5036b6
+        codeSamplesRevisionDigest: sha256:e9dce6ca75901ad1fc6b184a1c9ecb871ed3ede947c82c6b07b3af8963b1b9e8
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
