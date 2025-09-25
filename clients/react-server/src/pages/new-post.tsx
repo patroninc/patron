@@ -1,11 +1,11 @@
 import { JSX, useState, useEffect } from 'react';
+import { Descendant } from 'slate';
 import { useForm } from 'react-hook-form';
 import { Upload, Save } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 import MainLayout from '@/layouts/main';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Form,
   FormControl,
@@ -19,6 +19,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import PxBorder from '@/components/px-border';
 import { patronClient } from '@/lib/utils';
 import { CreatePostRequest } from 'patronts/models';
+import { RichTextEditor } from '@/components/slate';
 
 export type PostFormData = {
   title: string;
@@ -30,6 +31,14 @@ export type PostFormData = {
   thumbnailUrl?: string;
 };
 
+// Initial value for the editor
+const editorInitialValue = [
+  {
+    type: 'paragraph',
+    children: [{ text: 'Write your post content here...' }],
+  } as any,
+];
+
 /**
  * New post creation page component.
  * Provides a comprehensive form for creating new posts with all available options.
@@ -40,6 +49,9 @@ const NewPost = (): JSX.Element => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  // Rich text editor state
+  const [richValue, setRichValue] = useState<Descendant[]>(editorInitialValue);
 
   /**
    * Form instance for post creation with default values and validation rules.
@@ -69,6 +81,12 @@ const NewPost = (): JSX.Element => {
       form.setValue('slug', slug);
     }
   }, [watchedTitle, form]);
+
+  // Keep form.content in sync with Slate value (serialize as JSON)
+  useEffect(() => {
+    form.setValue('content', JSON.stringify(richValue));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [richValue]);
 
   /**
    * Handles the submission of the post creation form.
@@ -195,14 +213,14 @@ const NewPost = (): JSX.Element => {
                 control={form.control}
                 name="content"
                 rules={{ required: 'Content is required' }}
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormLabel>Content</FormLabel>
                     <FormControl>
-                      <Textarea
+                      <RichTextEditor
+                        value={richValue}
+                        onChange={setRichValue}
                         placeholder="Write your post content here..."
-                        className="min-h-[300px]"
-                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
