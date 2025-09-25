@@ -79,16 +79,20 @@ jobs:
       - run: rustup default 1.87
       - name: Installing Vacuum
         run: npm install -g @quobix/vacuum
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
       - name: Generating OpenAPI spec
         run: cargo run --manifest-path backend/server/Cargo.toml --bin redoc_ci > openapi.json
       - name: Vaccum lint
         run: vacuum lint openapi.json -r '.github/rules.yaml' -d --fail-severity warn
       - name: Check OpenAPI spec matches SDK version
         run: |
+          # Apply the same modification as generate-openapi.sh
+          jq '.components.schemas.Value.additionalProperties = true' openapi.json > openapi.json.tmp && mv openapi.json.tmp openapi.json
+
           if ! diff -q openapi.json ./clients/ts-sdk/openapi.json > /dev/null; then
             echo "❌ Generated OpenAPI spec differs from clients/ts-sdk/openapi.json"
-            echo "Please run: cargo run --manifest-path backend/server/Cargo.toml --bin redoc_ci > openapi.json"
-            echo "Then copy the file: cp openapi.json ./clients/ts-sdk/openapi.json"
+            echo "Please run: ./generate-openapi.sh"
             echo ""
             echo "Differences:"
             diff openapi.json ./clients/ts-sdk/openapi.json || true
