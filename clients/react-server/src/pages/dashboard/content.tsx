@@ -1,6 +1,7 @@
 import { JSX, useRef } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Edit, Eye, Link, Plus, Trash2 } from 'lucide-react';
+import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 import MainLayout from '@/layouts/main';
 import { Input } from '@/components/ui/input';
@@ -122,6 +123,7 @@ const serialsColumns: ColumnDef<Serial>[] = [
  * @returns {JSX.Element} The content dashboard page
  */
 const Content = (): JSX.Element => {
+  const navigate = useNavigate();
   const postsFilterRef = useRef<HTMLInputElement>(null);
   const serialsFilterRef = useRef<HTMLInputElement>(null);
 
@@ -140,10 +142,10 @@ const Content = (): JSX.Element => {
             <div className="mb-5 flex items-center justify-between">
               <Input ref={postsFilterRef} placeholder="Search posts..." className="md:text-base" />
 
-              <Link to="/new-post">
+              <Button onClick={() => navigate('/new-post')}>
                 New post
                 <Plus />
-              </Link>
+              </Button>
             </div>
             <DataTable
               columns={postsColumns}
