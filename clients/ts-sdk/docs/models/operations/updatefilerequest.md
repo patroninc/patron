@@ -9,7 +9,9 @@ let value: UpdateFileRequest = {
   fileId: "156e2e09-0fef-462c-8015-6f2cff075dcb",
   updateUserFileRequest: {
     filename: "renamed_document.pdf",
-    metadata: {},
+    metadata: {
+      "processed_at": "2023-01-01T12:00:00Z",
+    },
     status: "processed",
   },
 };

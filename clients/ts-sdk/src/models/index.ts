@@ -33,4 +33,3 @@ export * from "./updateuserinforequest.js";
 export * from "./updateuserinforesponse.js";
 export * from "./userfileinfo.js";
 export * from "./userinfo.js";
-export * from "./value.js";

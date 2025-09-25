@@ -5,27 +5,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 use utoipa::ToSchema;
 
-/// JSON metadata value for flexible file metadata storage
-#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
-#[schema(
-    title = "FileMetadata",
-    description = "Flexible JSON object for storing file metadata such as dimensions, processing info, or custom attributes",
-    example = json!({"width": 1920, "height": 1080, "description": "Profile image"})
-)]
-pub struct FileMetadataValue(JsonValue);
-
-impl From<JsonValue> for FileMetadataValue {
-    fn from(value: JsonValue) -> Self {
-        Self(value)
-    }
-}
-
-impl From<FileMetadataValue> for JsonValue {
-    fn from(wrapper: FileMetadataValue) -> Self {
-        wrapper.0
-    }
-}
-
 /// File processing status for user uploaded files
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, ToSchema)]
 pub enum FileStatus {

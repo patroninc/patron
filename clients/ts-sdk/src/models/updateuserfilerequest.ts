@@ -11,12 +11,6 @@ import {
   FileStatus$inboundSchema,
   FileStatus$outboundSchema,
 } from "./filestatus.js";
-import {
-  Value,
-  Value$inboundSchema,
-  Value$Outbound,
-  Value$outboundSchema,
-} from "./value.js";
 
 /**
  * Request payload for updating user file metadata, filename, or status
@@ -26,7 +20,7 @@ export type UpdateUserFileRequest = {
    * New filename (optional)
    */
   filename?: string | null | undefined;
-  metadata?: Value | null | undefined;
+  metadata?: { [k: string]: any } | null | undefined;
   status?: FileStatus | null | undefined;
 };
 
@@ -37,14 +31,14 @@ export const UpdateUserFileRequest$inboundSchema: z.ZodType<
   unknown
 > = z.object({
   filename: z.nullable(z.string()).optional(),
-  metadata: z.nullable(Value$inboundSchema).optional(),
+  metadata: z.nullable(z.record(z.any())).optional(),
   status: z.nullable(FileStatus$inboundSchema).optional(),
 });
 
 /** @internal */
 export type UpdateUserFileRequest$Outbound = {
   filename?: string | null | undefined;
-  metadata?: Value$Outbound | null | undefined;
+  metadata?: { [k: string]: any } | null | undefined;
   status?: string | null | undefined;
 };
 
@@ -55,7 +49,7 @@ export const UpdateUserFileRequest$outboundSchema: z.ZodType<
   UpdateUserFileRequest
 > = z.object({
   filename: z.nullable(z.string()).optional(),
-  metadata: z.nullable(Value$outboundSchema).optional(),
+  metadata: z.nullable(z.record(z.any())).optional(),
   status: z.nullable(FileStatus$outboundSchema).optional(),
 });
 

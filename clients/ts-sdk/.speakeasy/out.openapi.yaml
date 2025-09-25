@@ -2287,6 +2287,7 @@ components:
       type: "object"
       title: "JSONValue"
       description: "Flexible JSON value that can be an object, array, string, number, boolean, or null"
+      additionalProperties: true
   securitySchemes:
     "bearerAuth":
       type: "http"

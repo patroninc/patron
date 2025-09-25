@@ -9,7 +9,9 @@ import { UpdateUserFileRequest } from "patronts/models";
 
 let value: UpdateUserFileRequest = {
   filename: "renamed_document.pdf",
-  metadata: {},
+  metadata: {
+    "processed_at": "2023-01-01T12:00:00Z",
+  },
   status: "processed",
 };
 ```
@@ -19,5 +21,5 @@ let value: UpdateUserFileRequest = {
 | Field                                        | Type                                         | Required                                     | Description                                  | Example                                      |
 | -------------------------------------------- | -------------------------------------------- | -------------------------------------------- | -------------------------------------------- | -------------------------------------------- |
 | `filename`                                   | *string*                                     | :heavy_minus_sign:                           | New filename (optional)                      | renamed_document.pdf                         |
-| `metadata`                                   | [models.Value](../models/value.md)           | :heavy_minus_sign:                           | N/A                                          |                                              |
+| `metadata`                                   | Record<string, *any*>                        | :heavy_minus_sign:                           | N/A                                          |                                              |
 | `status`                                     | [models.FileStatus](../models/filestatus.md) | :heavy_minus_sign:                           | N/A                                          |                                              |

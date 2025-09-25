@@ -367,7 +367,9 @@ async function run() {
     fileId: "ce621f1a-00d2-437b-b1d0-5650eed83f65",
     updateUserFileRequest: {
       filename: "renamed_document.pdf",
-      metadata: {},
+      metadata: {
+        "processed_at": "2023-01-01T12:00:00Z",
+      },
       status: "processed",
     },
   });
@@ -400,7 +402,9 @@ async function run() {
     fileId: "ce621f1a-00d2-437b-b1d0-5650eed83f65",
     updateUserFileRequest: {
       filename: "renamed_document.pdf",
-      metadata: {},
+      metadata: {
+        "processed_at": "2023-01-01T12:00:00Z",
+      },
       status: "processed",
     },
   });

@@ -11,12 +11,6 @@ import {
   FileStatus$inboundSchema,
   FileStatus$outboundSchema,
 } from "./filestatus.js";
-import {
-  Value,
-  Value$inboundSchema,
-  Value$Outbound,
-  Value$outboundSchema,
-} from "./value.js";
 
 /**
  * User file information for API responses
@@ -42,7 +36,7 @@ export type UserFileInfo = {
    * File's unique identifier
    */
   id: string;
-  metadata?: Value | null | undefined;
+  metadata?: { [k: string]: any } | null | undefined;
   /**
    * MIME type of the file
    */
@@ -78,7 +72,7 @@ export const UserFileInfo$inboundSchema: z.ZodType<
   fileSize: z.number().int(),
   filename: z.string(),
   id: z.string(),
-  metadata: z.nullable(Value$inboundSchema).optional(),
+  metadata: z.nullable(z.record(z.any())).optional(),
   mimeType: z.string(),
   originalFilename: z.string(),
   status: FileStatus$inboundSchema,
@@ -95,7 +89,7 @@ export type UserFileInfo$Outbound = {
   fileSize: number;
   filename: string;
   id: string;
-  metadata?: Value$Outbound | null | undefined;
+  metadata?: { [k: string]: any } | null | undefined;
   mimeType: string;
   originalFilename: string;
   status: string;
@@ -114,7 +108,7 @@ export const UserFileInfo$outboundSchema: z.ZodType<
   fileSize: z.number().int(),
   filename: z.string(),
   id: z.string(),
-  metadata: z.nullable(Value$outboundSchema).optional(),
+  metadata: z.nullable(z.record(z.any())).optional(),
   mimeType: z.string(),
   originalFilename: z.string(),
   status: FileStatus$outboundSchema,
