@@ -79,6 +79,43 @@ export const toggleBlock = (editor: CustomEditor, format: CustomElementType): vo
   const isActive = isBlockActive(editor, format);
   const isList = isListType(format);
 
+  // For list types, handle special toggle behavior
+  if (isList) {
+    if (isActive) {
+      // If list is active, convert list items back to paragraphs
+      Transforms.unwrapNodes(editor, {
+        match: (n) =>
+          !Editor.isEditor(n) &&
+          SlateElement.isElement(n) &&
+          isListType(n.type as CustomElementType),
+        split: true,
+      });
+      Transforms.setNodes<SlateElement>(editor, { type: 'paragraph' });
+    } else {
+      // If list is not active, check if we're in a list item or need to create one
+      const { selection } = editor;
+      if (selection) {
+        // First unwrap any existing list types
+        Transforms.unwrapNodes(editor, {
+          match: (n) =>
+            !Editor.isEditor(n) &&
+            SlateElement.isElement(n) &&
+            isListType(n.type as CustomElementType),
+          split: true,
+        });
+
+        // Set current node to list-item
+        Transforms.setNodes<SlateElement>(editor, { type: 'list-item' });
+
+        // Wrap in the list type
+        const block = { type: format, children: [] };
+        Transforms.wrapNodes(editor, block);
+      }
+    }
+    return;
+  }
+
+  // For non-list types, use the original logic
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) &&
@@ -90,14 +127,9 @@ export const toggleBlock = (editor: CustomEditor, format: CustomElementType): vo
 
   let newProperties: Partial<SlateElement>;
   newProperties = {
-    type: isActive ? 'paragraph' : isList ? 'list-item' : format,
+    type: isActive ? 'paragraph' : format,
   };
   Transforms.setNodes<SlateElement>(editor, newProperties);
-
-  if (!isActive && isList) {
-    const block = { type: format, children: [] };
-    Transforms.wrapNodes(editor, block);
-  }
 };
 
 /**
@@ -119,11 +151,12 @@ export const isLinkActive = (editor: CustomEditor): boolean => {
  *
  * @param editor - The Slate editor instance
  * @param url - The URL to link to
+ * @param text - Optional text to display for the link
  */
 // eslint-disable-next-line max-params
-export const insertLink = (editor: CustomEditor, url: string): void => {
+export const insertLink = (editor: CustomEditor, url: string, text?: string): void => {
   if (editor.selection) {
-    wrapLink(editor, url);
+    wrapLink(editor, url, text);
   }
 };
 
@@ -143,19 +176,21 @@ export const unwrapLink = (editor: CustomEditor): void => {
  *
  * @param editor - The Slate editor instance
  * @param url - The URL to link to
+ * @param text - Optional text to display for the link
  */
 // eslint-disable-next-line max-params
-export const wrapLink = (editor: CustomEditor, url: string): void => {
+export const wrapLink = (editor: CustomEditor, url: string, text?: string): void => {
   if (isLinkActive(editor)) {
     unwrapLink(editor);
   }
 
   const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
+  const displayText = text || url;
   const link = {
     type: 'link' as const,
     url,
-    children: isCollapsed ? [{ text: url }] : [],
+    children: isCollapsed ? [{ text: displayText }] : [],
   };
 
   if (isCollapsed) {
@@ -164,17 +199,4 @@ export const wrapLink = (editor: CustomEditor, url: string): void => {
     Transforms.wrapNodes(editor, link, { split: true });
     Transforms.collapse(editor, { edge: 'end' });
   }
-};
-
-/**
- * Insert an image at the current selection
- *
- * @param editor - The Slate editor instance
- * @param url - The image URL
- * @param alt - The alt text for the image
- */
-// eslint-disable-next-line max-params
-export const insertImage = (editor: CustomEditor, url: string, alt = ''): void => {
-  const image = { type: 'image' as const, url, alt, children: [{ text: '' }] };
-  Transforms.insertNodes(editor, image);
 };
