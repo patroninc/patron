@@ -20,6 +20,7 @@ import PxBorder from '@/components/px-border';
 import { patronClient } from '@/lib/utils';
 import { CreatePostRequest } from 'patronts/models';
 import { RichTextEditor } from '@/components/slate';
+import { Label } from '@/components/ui/label';
 
 export type PostFormData = {
   title: string;
@@ -82,12 +83,6 @@ const NewPost = (): JSX.Element => {
     }
   }, [watchedTitle, form]);
 
-  // Keep form.content in sync with Slate value (serialize as JSON)
-  useEffect(() => {
-    form.setValue('content', JSON.stringify(richValue));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [richValue]);
-
   /**
    * Handles the submission of the post creation form.
    *
@@ -101,7 +96,7 @@ const NewPost = (): JSX.Element => {
       const createPostRequest: CreatePostRequest = {
         seriesId: '', // TODO: This needs to be provided - series selection was removed
         title: formData.title,
-        content: formData.content,
+        content: JSON.stringify(richValue), // Inject editor content at submit time
         slug: formData.slug,
         postNumber: formData.postNumber,
         isPublished: formData.isPublished,
@@ -151,7 +146,7 @@ const NewPost = (): JSX.Element => {
       <div className="p-[50px] px-[100px]">
         <h1 className="mb-[50px] text-5xl">Create New Post</h1>
 
-        <div className="max-w-4xl">
+        <div className="max-w-4xl space-y-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
               {/* Title */}
@@ -208,25 +203,15 @@ const NewPost = (): JSX.Element => {
                 )}
               />
 
-              {/* Content */}
-              <FormField
-                control={form.control}
-                name="content"
-                rules={{ required: 'Content is required' }}
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Content</FormLabel>
-                    <FormControl>
-                      <RichTextEditor
-                        value={richValue}
-                        onChange={setRichValue}
-                        placeholder="Write your post content here..."
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Content Editor */}
+              <div className="flex flex-col gap-2">
+                <Label className="text-sm">Content</Label>
+                <RichTextEditor
+                  value={richValue}
+                  onChange={setRichValue}
+                  placeholder="Write your post content here..."
+                />
+              </div>
 
               {/* Thumbnail Image */}
               <FormField
