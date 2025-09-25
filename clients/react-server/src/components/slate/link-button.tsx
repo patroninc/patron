@@ -1,8 +1,12 @@
 import { JSX, useState } from 'react';
 import { useSlate } from 'slate-react';
 import { Link, Unlink } from 'lucide-react';
-import { Button } from './index';
+import { Button as SlateButton } from './index';
+import { Button } from '@/components/ui/button';
 import { isLinkActive, insertLink, unwrapLink } from './utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 /**
  * Button component for link operations
@@ -11,8 +15,9 @@ import { isLinkActive, insertLink, unwrapLink } from './utils';
  */
 const LinkButton = (): JSX.Element => {
   const editor = useSlate();
-  const [isPromptOpen, setIsPromptOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [url, setUrl] = useState('');
+  const [linkText, setLinkText] = useState('');
 
   /**
    * Handle link button click
@@ -21,7 +26,7 @@ const LinkButton = (): JSX.Element => {
     if (isLinkActive(editor)) {
       unwrapLink(editor);
     } else {
-      setIsPromptOpen(true);
+      setIsOpen(true);
     }
   };
 
@@ -30,9 +35,10 @@ const LinkButton = (): JSX.Element => {
    */
   const handleSubmit = (): void => {
     if (url.trim()) {
-      insertLink(editor, url.trim());
+      insertLink(editor, url.trim(), linkText.trim());
       setUrl('');
-      setIsPromptOpen(false);
+      setLinkText('');
+      setIsOpen(false);
     }
   };
 
@@ -41,47 +47,82 @@ const LinkButton = (): JSX.Element => {
    */
   const handleCancel = (): void => {
     setUrl('');
-    setIsPromptOpen(false);
+    setLinkText('');
+    setIsOpen(false);
   };
 
-  if (isPromptOpen) {
-    return (
-      <div className="flex items-center gap-2 rounded border border-gray-300 bg-white p-2">
-        <input
-          type="url"
-          placeholder="Enter URL..."
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleSubmit();
-            } else if (e.key === 'Escape') {
-              e.preventDefault();
-              handleCancel();
-            }
-          }}
-          className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          autoFocus
-        />
-        <Button onClick={handleSubmit} className="h-6 w-6 p-0">
-          <span className="text-xs">✓</span>
-        </Button>
-        <Button onClick={handleCancel} className="h-6 w-6 p-0">
-          <span className="text-xs">✕</span>
-        </Button>
-      </div>
-    );
-  }
+  /**
+   * Handle key down events in the popover
+   *
+   * @param e - The keyboard event
+   */
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      e.preventDefault();
+      handleSubmit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancel();
+    }
+  };
 
   return (
-    <Button
-      active={isLinkActive(editor)}
-      onPointerDown={(event: React.PointerEvent<HTMLButtonElement>) => event.preventDefault()}
-      onClick={handleClick}
-    >
-      {isLinkActive(editor) ? <Unlink className="h-4 w-4" /> : <Link className="h-4 w-4" />}
-    </Button>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <SlateButton
+          active={isLinkActive(editor)}
+          onPointerDown={(event: React.PointerEvent<HTMLButtonElement>) => event.preventDefault()}
+          onClick={handleClick}
+        >
+          {isLinkActive(editor) ? <Unlink className="h-4 w-4" /> : <Link className="h-4 w-4" />}
+        </SlateButton>
+      </PopoverTrigger>
+      <PopoverContent className="w-80" sideOffset={20} onKeyDown={handleKeyDown}>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="link-url">Link URL</Label>
+            <Input
+              id="link-url"
+              type="url"
+              placeholder="https://example.com"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="link-text">Link Text (optional)</Label>
+            <Input
+              id="link-text"
+              type="text"
+              placeholder="Display text for the link"
+              value={linkText}
+              onChange={(e) => setLinkText(e.target.value)}
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              shadow={false}
+              onClick={handleCancel}
+              className="h-8 px-3"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              shadow={false}
+              onClick={handleSubmit}
+              disabled={!url.trim()}
+              className="h-8 px-3"
+            >
+              Add Link
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 
