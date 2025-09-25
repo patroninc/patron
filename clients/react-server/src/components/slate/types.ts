@@ -3,14 +3,14 @@ import { ReactEditor } from 'slate-react';
 import { HistoryEditor } from 'slate-history';
 
 // Text formatting types
-export type CustomTextKey = 'bold' | 'italic' | 'underline' | 'strikethrough';
+export type CustomTextKey = 'bold' | 'italic' | 'underline' | 'code';
 
 export type CustomText = {
   text: string;
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;
-  strikethrough?: boolean;
+  code?: boolean;
 };
 
 // Element types
@@ -18,18 +18,19 @@ export type CustomElementType =
   | 'paragraph'
   | 'heading-one'
   | 'heading-two'
+  | 'heading-three'
+  | 'heading-four'
   | 'block-quote'
   | 'numbered-list'
   | 'bulleted-list'
   | 'list-item'
-  | 'link'
-  | 'image';
+  | 'link';
 
 export type CustomElement = {
   type: CustomElementType;
   children: CustomText[];
   url?: string;
-  alt?: string;
+  align?: 'left' | 'center' | 'right' | 'justify';
 };
 
 // Editor type
