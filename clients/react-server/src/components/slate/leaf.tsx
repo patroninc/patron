@@ -25,10 +25,6 @@ const Leaf = ({ attributes, children, leaf }: RenderLeafProps): JSX.Element => {
     formattedChildren = <u>{formattedChildren}</u>;
   }
 
-  if (leaf.strikethrough) {
-    formattedChildren = <s>{formattedChildren}</s>;
-  }
-
   return <span {...attributes}>{formattedChildren}</span>;
 };
 

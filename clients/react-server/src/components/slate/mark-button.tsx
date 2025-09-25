@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 import { useSlate } from 'slate-react';
-import { Bold, Italic, Underline, Strikethrough } from 'lucide-react';
+import { Bold, Italic, Underline } from 'lucide-react';
 import { Button } from './index';
 import { CustomTextKey } from './types';
 import { isMarkActive, toggleMark } from './utils';
@@ -32,8 +32,6 @@ const MarkButton = ({ format }: MarkButtonProps): JSX.Element => {
         return <Italic className="h-4 w-4" />;
       case 'underline':
         return <Underline className="h-4 w-4" />;
-      case 'strikethrough':
-        return <Strikethrough className="h-4 w-4" />;
       default:
         return <Bold className="h-4 w-4" />;
     }
