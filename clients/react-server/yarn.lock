@@ -764,6 +764,7 @@ __metadata:
     "@hookform/resolvers": "npm:5.2.2"
     "@radix-ui/react-avatar": "npm:1.1.10"
     "@radix-ui/react-dropdown-menu": "npm:2.1.16"
+    "@radix-ui/react-popover": "npm:^1.1.15"
     "@radix-ui/react-select": "npm:2.2.6"
     "@radix-ui/react-slot": "npm:1.2.3"
     "@radix-ui/react-tabs": "npm:1.1.13"
@@ -772,6 +773,7 @@ __metadata:
     "@tanstack/react-table": "npm:8.21.3"
     "@types/express": "npm:5.0.3"
     "@types/is-hotkey": "npm:^0"
+    "@types/is-url": "npm:^1"
     "@types/node": "npm:24.5.2"
     "@types/react": "npm:19.1.13"
     "@types/react-dom": "npm:19.1.9"
@@ -791,6 +793,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:5.2.0"
     express: "npm:5.1.0"
     is-hotkey: "npm:^0.2.0"
+    is-url: "npm:^1.2.4"
     lucide-react: "npm:0.544.0"
     patronts: "npm:0.5.2"
     prettier: "npm:3.6.2"
@@ -1471,7 +1474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-popover@npm:1.1.15":
+"@radix-ui/react-popover@npm:1.1.15, @radix-ui/react-popover@npm:^1.1.15":
   version: 1.1.15
   resolution: "@radix-ui/react-popover@npm:1.1.15"
   dependencies:
@@ -2705,6 +2708,13 @@ __metadata:
   version: 0.1.10
   resolution: "@types/is-hotkey@npm:0.1.10"
   checksum: 10c0/8ce7cc70a42e4191ba9871905a68fa6586a9da0bfa9940e20fe67e573b34bc79bfc23158e842c7bd3288ebf9c82ee5cce0c7fa1fe8245f6845c2f9b9f3afc536
+  languageName: node
+  linkType: hard
+
+"@types/is-url@npm:^1":
+  version: 1.2.32
+  resolution: "@types/is-url@npm:1.2.32"
+  checksum: 10c0/735e7c8d45c2e7f3ab41d86b9e7c33913eb184533fdc5415a1496155c1d0e076bb9ec712273403daaa37f2a92f5e0bb459135d6d6c835a6a60c694efc16c679b
   languageName: node
   linkType: hard
 
@@ -5179,6 +5189,13 @@ __metadata:
   dependencies:
     which-typed-array: "npm:^1.1.16"
   checksum: 10c0/415511da3669e36e002820584e264997ffe277ff136643a3126cc949197e6ca3334d0f12d084e83b1994af2e9c8141275c741cf2b7da5a2ff62dd0cac26f76c4
+  languageName: node
+  linkType: hard
+
+"is-url@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "is-url@npm:1.2.4"
+  checksum: 10c0/0157a79874f8f95fdd63540e3f38c8583c2ef572661cd0693cda80ae3e42dfe8e9a4a972ec1b827f861d9a9acf75b37f7d58a37f94a8a053259642912c252bc3
   languageName: node
   linkType: hard
 
