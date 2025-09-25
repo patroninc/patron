@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 4cd233dcb44350d5957d2dc117f453fc
+  docChecksum: a228c41908685c8887ef0a7d45626df2
   docVersion: 1.0.0
-  speakeasyVersion: 1.624.0
-  generationVersion: 2.714.0
-  releaseVersion: 0.8.1
-  configChecksum: e46a63d9f07c12e2070c91cc895f805d
+  speakeasyVersion: 1.628.6
+  generationVersion: 2.716.7
+  releaseVersion: 0.8.8
+  configChecksum: 830d3469849b65cb7c1252c0f6cf5583
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -92,7 +92,6 @@ generatedFiles:
   - docs/models/updateuserinforesponse.md
   - docs/models/userfileinfo.md
   - docs/models/userinfo.md
-  - docs/models/value.md
   - docs/sdks/apikeys/README.md
   - docs/sdks/auth/README.md
   - docs/sdks/files/README.md
@@ -219,7 +218,6 @@ generatedFiles:
   - src/models/updateuserinforesponse.ts
   - src/models/userfileinfo.ts
   - src/models/userinfo.ts
-  - src/models/value.ts
   - src/sdk/apikeys.ts
   - src/sdk/auth.ts
   - src/sdk/files.ts
@@ -359,7 +357,7 @@ examples:
     speakeasy-default-list-files:
       responses:
         "200":
-          application/json: [{"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "b8c9d0e1-2345-6789-b234-678901234567", "metadata": {}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "c9d0e1f2-3456-789a-c345-789012345678"}]
+          application/json: [{"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "b8c9d0e1-2345-6789-b234-678901234567", "metadata": {"description": "Important document"}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "c9d0e1f2-3456-789a-c345-789012345678"}]
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -370,7 +368,7 @@ examples:
         multipart/form-data: {"file": "Binary file content (PDF, image, document, etc.)"}
       responses:
         "201":
-          application/json: {"file": {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
+          application/json: {"file": {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"description": "Important document"}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -382,7 +380,7 @@ examples:
           file_id: "b9989da6-aed4-4643-949a-a7c28d664def"
       responses:
         "200":
-          application/json: {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "b8c9d0e1-2345-6789-b234-678901234567", "metadata": {}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "c9d0e1f2-3456-789a-c345-789012345678"}
+          application/json: {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "b8c9d0e1-2345-6789-b234-678901234567", "metadata": {"height": 1080, "width": 1920}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "c9d0e1f2-3456-789a-c345-789012345678"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -393,10 +391,10 @@ examples:
         path:
           file_id: "ce621f1a-00d2-437b-b1d0-5650eed83f65"
       requestBody:
-        application/json: {"filename": "renamed_document.pdf", "metadata": {}, "status": "processed"}
+        application/json: {"filename": "renamed_document.pdf", "metadata": {"processed_at": "2023-01-01T12:00:00Z"}, "status": "processed"}
       responses:
         "200":
-          application/json: {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "b8c9d0e1-2345-6789-b234-678901234567", "metadata": {}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "c9d0e1f2-3456-789a-c345-789012345678"}
+          application/json: {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "b8c9d0e1-2345-6789-b234-678901234567", "metadata": {"height": 1080, "width": 1920}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "c9d0e1f2-3456-789a-c345-789012345678"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":

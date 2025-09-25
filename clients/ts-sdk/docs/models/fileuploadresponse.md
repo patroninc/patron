@@ -15,7 +15,9 @@ let value: FileUploadResponse = {
     fileSize: 1048576,
     filename: "document.pdf",
     id: "d290f1ee-6c54-4b01-90e6-d701748f0851",
-    metadata: {},
+    metadata: {
+      "description": "Important document",
+    },
     mimeType: "application/pdf",
     originalFilename: "My Important Document.pdf",
     status: "uploaded",

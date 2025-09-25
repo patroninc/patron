@@ -380,11 +380,13 @@ pub async fn update_file(
 
     let mut current_file = existing_file;
 
+    let now = Utc::now().naive_utc();
+
     if let Some(ref filename) = body.filename {
         current_file = diesel::update(files_dsl::user_files.filter(files_dsl::id.eq(file_id)))
             .set((
                 files_dsl::filename.eq(filename),
-                files_dsl::updated_at.eq(Utc::now().naive_utc()),
+                files_dsl::updated_at.eq(now),
             ))
             .get_result(&mut conn)
             .await
@@ -395,18 +397,24 @@ pub async fn update_file(
         current_file = diesel::update(files_dsl::user_files.filter(files_dsl::id.eq(file_id)))
             .set((
                 files_dsl::status.eq(String::from(*status)),
-                files_dsl::updated_at.eq(Utc::now().naive_utc()),
+                files_dsl::updated_at.eq(now),
             ))
             .get_result(&mut conn)
             .await
             .map_err(|e| ServiceError::Database(e.to_string()))?;
     }
 
-    if let Some(ref metadata) = body.metadata {
+    if let Some(value) = body.metadata.as_ref() {
+        let metadata_value = if value.is_null() {
+            None
+        } else {
+            Some(value.clone())
+        };
+
         current_file = diesel::update(files_dsl::user_files.filter(files_dsl::id.eq(file_id)))
             .set((
-                files_dsl::metadata.eq(metadata),
-                files_dsl::updated_at.eq(Utc::now().naive_utc()),
+                files_dsl::metadata.eq(metadata_value),
+                files_dsl::updated_at.eq(now),
             ))
             .get_result(&mut conn)
             .await

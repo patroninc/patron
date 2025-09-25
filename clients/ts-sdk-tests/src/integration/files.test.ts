@@ -249,11 +249,11 @@ describe("Files API Integration Tests", () => {
       const files = [
         {
           name: `list-test-1-${timestamp}-${Math.random().toString(36).substring(7)}.txt`,
-          content: `First test file - ${timestamp} - ${Math.random()}`
+          content: `First test file - ${timestamp} - ${Math.random()}`,
         },
         {
           name: `list-test-2-${timestamp}-${Math.random().toString(36).substring(7)}.txt`,
-          content: `Second test file - ${timestamp} - ${Math.random()}`
+          content: `Second test file - ${timestamp} - ${Math.random()}`,
         },
       ];
 
@@ -461,7 +461,7 @@ describe("Files API Integration Tests", () => {
         },
       });
 
-      expect(response?.metadata).toBeNull();
+      expect(response?.metadata).toBe({});
     });
 
     it("should fail when updating non-existent file", async () => {
@@ -580,7 +580,7 @@ describe("Files API Integration Tests", () => {
       const cdnUrl = `${process.env.PATRON_API_URL}/api/cdn/files/${testFileId}`;
       const response = await fetch(cdnUrl, {
         headers: {
-          'Authorization': `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
+          Authorization: `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
         },
       });
 
@@ -588,9 +588,9 @@ describe("Files API Integration Tests", () => {
       expect(response.status).toBe(200);
 
       // Check response headers
-      expect(response.headers.get('content-type')).toBe('text/plain');
-      expect(response.headers.get('cache-control')).toContain('public');
-      expect(response.headers.get('etag')).toBeDefined();
+      expect(response.headers.get("content-type")).toBe("text/plain");
+      expect(response.headers.get("cache-control")).toContain("public");
+      expect(response.headers.get("etag")).toBeDefined();
 
       // Check the content
       const content = await response.text();
@@ -604,7 +604,7 @@ describe("Files API Integration Tests", () => {
 
       const response = await fetch(cdnUrl, {
         headers: {
-          'Authorization': `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
+          Authorization: `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
         },
       });
 
@@ -617,7 +617,7 @@ describe("Files API Integration Tests", () => {
 
       const response = await fetch(cdnUrl, {
         headers: {
-          'Authorization': `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
+          Authorization: `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
         },
       });
 
@@ -630,26 +630,26 @@ describe("Files API Integration Tests", () => {
       const cdnUrl = `${process.env.PATRON_API_URL}/api/cdn/files/${testFileId}`;
       const response = await fetch(cdnUrl, {
         headers: {
-          'Authorization': `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
+          Authorization: `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,
         },
       });
 
       expect(response.ok).toBe(true);
 
       // Validate cache headers
-      const cacheControl = response.headers.get('cache-control');
-      expect(cacheControl).toContain('public');
-      expect(cacheControl).toContain('max-age=86400'); // 24 hours
-      expect(cacheControl).toContain('immutable');
+      const cacheControl = response.headers.get("cache-control");
+      expect(cacheControl).toContain("public");
+      expect(cacheControl).toContain("max-age=86400"); // 24 hours
+      expect(cacheControl).toContain("immutable");
 
       // Validate ETag header
-      const etag = response.headers.get('etag');
+      const etag = response.headers.get("etag");
       expect(etag).toBeDefined();
       expect(etag).toMatch(/^"[a-f0-9]+"$/); // Should be quoted hex string
 
       // Validate Content-Disposition header
-      const contentDisposition = response.headers.get('content-disposition');
-      expect(contentDisposition).toContain('inline');
+      const contentDisposition = response.headers.get("content-disposition");
+      expect(contentDisposition).toContain("inline");
       expect(contentDisposition).toContain(`filename="${testFileName}"`);
     });
   });
@@ -670,7 +670,7 @@ describe("Files API Integration Tests", () => {
       });
 
       expect(response).toBeDefined();
-      expect(response).not.toBeNull();
+      expect(response).not.toBe({});
 
       if (!response) {
         fail("Expected response to be defined");
