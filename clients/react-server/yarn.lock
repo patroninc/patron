@@ -6284,6 +6284,7 @@ __metadata:
     "@radix-ui/react-avatar": "npm:1.1.10"
     "@radix-ui/react-dropdown-menu": "npm:2.1.16"
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@radix-ui/react-select": "npm:^2.2.6"
     "@radix-ui/react-slot": "npm:1.2.3"
     "@radix-ui/react-tabs": "npm:1.1.13"
@@ -6293,6 +6294,9 @@ __metadata:
     "@types/express": "npm:5.0.3"
     "@types/node": "npm:24.5.1"
 =======
+=======
+    "@radix-ui/react-popover": "npm:^1.1.15"
+>>>>>>> 4d6c5af (feat: install more packages)
     "@radix-ui/react-select": "npm:2.2.6"
     "@radix-ui/react-slot": "npm:1.2.3"
     "@radix-ui/react-tabs": "npm:1.1.13"
@@ -6301,6 +6305,7 @@ __metadata:
     "@tanstack/react-table": "npm:8.21.3"
     "@types/express": "npm:5.0.3"
     "@types/is-hotkey": "npm:^0"
+    "@types/is-url": "npm:^1"
     "@types/node": "npm:24.5.2"
 >>>>>>> f06c1ad (chore: install some new packages)
     "@types/react": "npm:19.1.13"
@@ -6331,6 +6336,7 @@ __metadata:
     patronts: "npm:0.4.12"
 =======
     is-hotkey: "npm:^0.2.0"
+    is-url: "npm:^1.2.4"
     lucide-react: "npm:0.544.0"
     patronts: "npm:0.5.2"
 >>>>>>> f06c1ad (chore: install some new packages)
@@ -7025,7 +7031,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-popover@npm:1.1.15":
+"@radix-ui/react-popover@npm:1.1.15, @radix-ui/react-popover@npm:^1.1.15":
   version: 1.1.15
   resolution: "@radix-ui/react-popover@npm:1.1.15"
   dependencies:
@@ -8414,7 +8420,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 >>>>>>> f06c1ad (chore: install some new packages)
+=======
+"@types/is-url@npm:^1":
+  version: 1.2.32
+  resolution: "@types/is-url@npm:1.2.32"
+  checksum: 10c0/735e7c8d45c2e7f3ab41d86b9e7c33913eb184533fdc5415a1496155c1d0e076bb9ec712273403daaa37f2a92f5e0bb459135d6d6c835a6a60c694efc16c679b
+  languageName: node
+  linkType: hard
+
+>>>>>>> 4d6c5af (feat: install more packages)
 "@types/json-schema@npm:^7.0.15":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -11026,6 +11042,13 @@ __metadata:
   dependencies:
     which-typed-array: "npm:^1.1.16"
   checksum: 10c0/415511da3669e36e002820584e264997ffe277ff136643a3126cc949197e6ca3334d0f12d084e83b1994af2e9c8141275c741cf2b7da5a2ff62dd0cac26f76c4
+  languageName: node
+  linkType: hard
+
+"is-url@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "is-url@npm:1.2.4"
+  checksum: 10c0/0157a79874f8f95fdd63540e3f38c8583c2ef572661cd0693cda80ae3e42dfe8e9a4a972ec1b827f861d9a9acf75b37f7d58a37f94a8a053259642912c252bc3
   languageName: node
   linkType: hard
 
