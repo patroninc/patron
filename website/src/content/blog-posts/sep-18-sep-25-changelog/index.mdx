@@ -1,0 +1,79 @@
+---
+title: Sep 18 - Sep 25 Changelog
+summary: >-
+  🧪 Major testing infrastructure overhaul with comprehensive API testing suite,
+  file management system, and enhanced development workflow with CI improvements
+author: Nick Khami
+authorTwitter: https://x.com/skeptrune
+authorLinkedIn: https://www.linkedin.com/in/nkhami/
+createdAt: 2025-09-25T15:00:00.000Z
+lastUpdatedAt: 2025-09-25T15:00:00.000Z
+isDraft: false
+categories:
+  - changelog
+coverImage: /src/assets/images/blog-posts/sep-18-sep-25-changelog/coverImage.png
+ogSection: Technology
+---
+***🧪 MAJOR TESTING INFRASTRUCTURE OVERHAUL: Complete testing suite implementation with comprehensive API coverage, file management system, and enhanced development workflow. Plus new API resources, UI improvements, and robust CI/CD pipeline enhancements.***
+
+#### 🧪 Testing Infrastructure & Quality Assurance
+
+* **Complete Testing Suite**: Implemented comprehensive testing infrastructure with fully passing tests across all API functionality
+* **Accelerated Backend Development**: With robust testing infrastructure in place, we can now add new backend functionality much more confidently and quickly, knowing that our tests will catch regressions and validate new features automatically
+* **API Integration Tests**: Added dedicated integration tests for Posts API, Series API, and user-files functionality
+* **TypeScript SDK Testing**: Created new `ts-sdk-tests` folder specifically for testing API functionality with real-world scenarios
+* **Test Coverage Enhancement**: Added extensive test coverage for user-files, posts, and series API routes with proper datetime handling
+* **Quality Gates**: All tests now fully passing with robust error handling and edge case coverage
+* **Development Velocity**: Testing infrastructure enables rapid feature development with confidence - new backend endpoints can be developed with automated validation of functionality
+
+#### 🗂️ File Management System
+
+* **File CRUD Operations**: Initial implementation of complete file CRUD routes with backend infrastructure
+* **File Metadata Support**: Enhanced SDK and API to support file metadata operations
+* **File Endpoint Development**: Added dedicated file route functionality with proper API structure
+* **CDN Integration Prep**: File management system prepared for CDN integration (in progress)
+
+#### 🔑 API Key Management & Security
+
+* **API Key Functionality**: Complete API key route functionality for users with proper authentication
+* **TypeScript SDK Updates**: Updated the TypeScript SDK to include new API key functionality and enhanced capabilities
+* **User Authentication**: Enhanced user authentication system with API key support
+
+#### 📊 API Resources & Data Management
+
+* **Series API**: Complete Series API resources and routes with full CRUD functionality
+* **Posts API**: Enhanced Posts API resources with comprehensive endpoint coverage
+* **Data Model Enhancement**: Improved API data models for better structure and consistency
+
+#### 💻 Client Application & UI Improvements
+
+* **React Components**: Enhanced UI components with suppressHydrationWarning props for Button, SidebarMenuButton, and Tabs components
+* **Error Handling**: Added ErrorBoundary to react-server client for better error management
+* **User Experience**: Updated insights page with improved functionality and user interface
+* **Component Library**: Added new UI components and packages for enhanced user experience
+* **Content Management**: Added new content page with improved content structure
+* **Audience Management**: Updated audience page with enhanced functionality
+* **Customization Features**: Added new customization component with filterInputRef prop support
+* **Styling Enhancements**: Various styling improvements and updates to tiers component
+
+#### 🛠️ Development Infrastructure & CI/CD
+
+* **Dependency Updates**: Updated dependencies in react-server and upgraded patronts package
+* **Lint & Format**: Applied comprehensive linting and formatting to react-server codebase
+* **CommitLint Integration**: Setup commitlint CI action with improved commit message standards
+* **Docker Optimization**: CI now only builds Docker images on PR merges for efficiency
+* **OpenAPI Improvements**: Fixed OpenAPI spec checking action and resolved spec warnings
+* **SDK Generation**: Generated new SDK for updated file endpoint specifications
+
+#### 📝 Documentation & Code Quality
+
+* **README Updates**: Updated README to simplify Rust and Actix-web documentation
+* **SDK Documentation**: Removed "not production ready" warning from SDK README
+* **Code Cleanup**: Simplified UserDropdown component and updated avatar handling
+* **File Routing**: Enhanced file routing with proper GET route implementation
+
+#### 🔧 Performance & Optimization
+
+* **CommitLint Configuration**: Made commitlint not run on main branch for better workflow
+* **Avatar Handling**: Improved avatar handling system for better performance
+* **Component Refactoring**: Streamlined component architecture for better maintainability

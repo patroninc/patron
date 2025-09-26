@@ -11,14 +11,19 @@ const { posts } = Astro.props as {
 const POSTS_PER_LOAD = 6;
 ---
 
+<div class="bg-orange hidden"></div>
+<div class="bg-purple hidden"></div>
+<div class="bg-green hidden"></div>
+<div class="bg-azule hidden"></div>
+
 <div
   class="grid grid-cols-1 gap-5 sm:gap-10 md:grid-cols-2 lg:grid-cols-3"
   id="posts-grid"
 >
   {
     posts.map((post, idx) => {
-      const colorPattern = ["orange", "purple", "green"];
-      const bgColor = colorPattern[idx % 6];
+      const colorPattern = ["orange", "purple", "green", "azule"];
+      const bgColor = colorPattern[idx % 4];
 
       return (
         <Box

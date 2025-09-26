@@ -6,6 +6,7 @@
   --color-green: #00d6bd;
   --color-purple: #858deb;
   --color-orange: #f68615;
+  --color-azule: #007fff;
 }
 
 @theme {
@@ -13,6 +14,7 @@
   --color-green: var(--color-green);
   --color-purple: var(--color-purple);
   --color-orange: var(--color-orange);
+  --color-azule: var(--color-azule);
 
   --text-h1: 64px;
   --text-h2: 48px;
