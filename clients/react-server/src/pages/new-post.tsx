@@ -1,4 +1,4 @@
-import { JSX, useState, useEffect } from 'react';
+import { JSX, useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { Upload, Save } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -18,7 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import PxBorder from '@/components/px-border';
 import { patronClient } from '@/lib/utils';
 import { CreatePostRequest } from 'patronts/models';
-import { Textarea } from '@/components/ui/textarea';
+import { Editor } from '@tinymce/tinymce-react';
 
 export type PostFormData = {
   title: string;
@@ -40,6 +40,8 @@ const NewPost = (): JSX.Element => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const editorRef = useRef<any>(null);
 
   /**
    * Form instance for post creation with default values and validation rules.
@@ -80,10 +82,13 @@ const NewPost = (): JSX.Element => {
     try {
       setIsLoading(true);
 
+      // Get content from TinyMCE editor
+      const editorContent = editorRef.current?.getContent() || formData.content;
+
       const createPostRequest: CreatePostRequest = {
         seriesId: '', // TODO: This needs to be provided - series selection was removed
         title: formData.title,
-        content: formData.content,
+        content: editorContent,
         slug: formData.slug,
         postNumber: formData.postNumber,
         isPublished: formData.isPublished,
@@ -195,14 +200,36 @@ const NewPost = (): JSX.Element => {
                 control={form.control}
                 name="content"
                 rules={{ required: 'Content is required' }}
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormLabel>Content</FormLabel>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Write your post content here..."
-                        rows={15}
+                      <Editor
+                        apiKey="oja86xbqgcds3rxbw50q4thormz7y3np8vsw1tg2xpm3d60i"
+                        // eslint-disable-next-line max-params
+                        onInit={(_evt, editor) => {
+                          editorRef.current = editor;
+                        }}
+                        init={{
+                          height: 500,
+                          menubar: false,
+                          plugins: [
+                            'importcss',
+                            'autolink',
+                            'lists',
+                            'link',
+                            'image',
+                            'anchor',
+                            'searchreplace',
+                            'fullscreen',
+                            'code',
+                            'help',
+                            'wordcount',
+                          ],
+                          toolbar:
+                            'undo redo blocks bold italic underline strikethrough bullist numlist link image quote',
+                          content_style: 'tinymce.css',
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
