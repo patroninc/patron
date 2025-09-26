@@ -1,5 +1,4 @@
 import { JSX, useState, useEffect } from 'react';
-import { Descendant } from 'slate';
 import { useForm } from 'react-hook-form';
 import { Upload, Save } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -19,8 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import PxBorder from '@/components/px-border';
 import { patronClient } from '@/lib/utils';
 import { CreatePostRequest } from 'patronts/models';
-import { RichTextEditor } from '@/components/slate';
-import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 export type PostFormData = {
   title: string;
@@ -32,14 +30,6 @@ export type PostFormData = {
   thumbnailUrl?: string;
 };
 
-// Initial value for the editor
-const editorInitialValue = [
-  {
-    type: 'paragraph',
-    children: [{ text: 'Write your post content here...' }],
-  } as any,
-];
-
 /**
  * New post creation page component.
  * Provides a comprehensive form for creating new posts with all available options.
@@ -50,9 +40,6 @@ const NewPost = (): JSX.Element => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-
-  // Rich text editor state
-  const [richValue, setRichValue] = useState<Descendant[]>(editorInitialValue);
 
   /**
    * Form instance for post creation with default values and validation rules.
@@ -96,7 +83,7 @@ const NewPost = (): JSX.Element => {
       const createPostRequest: CreatePostRequest = {
         seriesId: '', // TODO: This needs to be provided - series selection was removed
         title: formData.title,
-        content: JSON.stringify(richValue), // Inject editor content at submit time
+        content: formData.content,
         slug: formData.slug,
         postNumber: formData.postNumber,
         isPublished: formData.isPublished,
@@ -204,14 +191,24 @@ const NewPost = (): JSX.Element => {
               />
 
               {/* Content Editor */}
-              <div className="flex flex-col gap-2">
-                <Label className="text-sm">Content</Label>
-                <RichTextEditor
-                  value={richValue}
-                  onChange={setRichValue}
-                  placeholder="Write your post content here..."
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="content"
+                rules={{ required: 'Content is required' }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Content</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Write your post content here..."
+                        rows={15}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               {/* Thumbnail Image */}
               <FormField
