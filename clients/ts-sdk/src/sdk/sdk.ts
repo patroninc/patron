@@ -6,6 +6,7 @@ import { ClientSDK } from "../lib/sdks.js";
 import { ApiKeys } from "./apikeys.js";
 import { Auth } from "./auth.js";
 import { Files } from "./files.js";
+import { Outrank } from "./outrank.js";
 import { Posts } from "./posts.js";
 import { Series } from "./series.js";
 
@@ -23,6 +24,11 @@ export class Patronts extends ClientSDK {
   private _files?: Files;
   get files(): Files {
     return (this._files ??= new Files(this._options));
+  }
+
+  private _outrank?: Outrank;
+  get outrank(): Outrank {
+    return (this._outrank ??= new Outrank(this._options));
   }
 
   private _posts?: Posts;

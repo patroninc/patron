@@ -17,6 +17,8 @@ export * from "./forgotpasswordresponse.js";
 export * from "./loginrequest.js";
 export * from "./loginresponse.js";
 export * from "./logoutresponse.js";
+export * from "./outrankwebhookpayload.js";
+export * from "./outrankwebhookresponse.js";
 export * from "./postresponse.js";
 export * from "./registerrequest.js";
 export * from "./registerresponse.js";
