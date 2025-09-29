@@ -301,11 +301,10 @@ pub async fn main() -> std::io::Result<()> {
                             ),
                     )
                     .service(
-                        web::scope("/outrank")
-                            .service(
-                                web::resource("/webhook")
-                                    .route(web::post().to(handlers::outrank::process_webhook)),
-                            ),
+                        web::scope("/outrank").service(
+                            web::resource("/webhook")
+                                .route(web::post().to(handlers::outrank::process_webhook)),
+                        ),
                     ),
             )
     })

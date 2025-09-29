@@ -2,19 +2,31 @@
 
 use actix_web::{web, HttpRequest, HttpResponse, Result};
 use serde::{Deserialize, Serialize};
+use serde_json::Value as JsonValue;
 use shared::errors::{ErrorResponse, ServiceError};
 use shared::services::email::{EmailService, HtmlEmailContent};
 use utoipa::ToSchema;
 
 /// Outrank webhook payload
 #[derive(Debug, Deserialize, ToSchema)]
-#[schema(description = "Webhook payload from Outrank SEO service")]
+#[schema(
+    description = "Webhook payload from Outrank SEO service",
+    example = json!({"eventType": "analysis_complete", "data": {"score": 85, "recommendations": ["Improve meta descriptions", "Add alt text to images"]}})
+)]
 pub struct OutrankWebhookPayload {
     /// Event type from Outrank
+    #[serde(rename = "eventType")]
     #[schema(example = "analysis_complete")]
     pub event_type: Option<String>,
     /// Analysis data from Outrank
-    pub data: Option<serde_json::Value>,
+    #[schema(example = json!({
+        "score": 85,
+        "recommendations": [
+            "Improve meta descriptions",
+            "Add alt text to images"
+        ]
+    }))]
+    pub data: Option<JsonValue>,
 }
 
 /// Outrank webhook response
@@ -49,7 +61,11 @@ fn validate_access_token(req: &HttpRequest, expected_token: &str) -> bool {
     post,
     path = "/api/outrank/webhook",
     tag = "Outrank",
-    request_body(content = OutrankWebhookPayload, description = "Webhook payload from Outrank"),
+    request_body(
+        content = OutrankWebhookPayload,
+        description = "Webhook payload from Outrank",
+        example = json!({"eventType": "analysis_complete", "data": {"score": 85, "recommendations": ["Improve meta descriptions", "Add alt text to images"]}})
+    ),
     responses(
         (status = 200, description = "Webhook processed successfully", body = OutrankWebhookResponse),
         (status = 401, description = "Invalid or missing access token", body = ErrorResponse),

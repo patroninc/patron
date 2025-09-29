@@ -1526,6 +1526,74 @@
         ]
       }
     },
+    "/api/outrank/webhook": {
+      "post": {
+        "tags": [
+          "Outrank"
+        ],
+        "summary": "Process Outrank webhook",
+        "description": "# Security\nValidates Bearer token from Authorization header against OUTRANK_ACCESS_TOKEN environment variable\n\n# Errors\nReturns 401 if access token is invalid or missing, 500 for processing errors",
+        "operationId": "process_webhook",
+        "requestBody": {
+          "description": "Webhook payload from Outrank",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OutrankWebhookPayload"
+              },
+              "example": {
+                "data": {
+                  "recommendations": [
+                    "Improve meta descriptions",
+                    "Add alt text to images"
+                  ],
+                  "score": 85
+                },
+                "eventType": "analysis_complete"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook processed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutrankWebhookResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error processing webhook",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/posts": {
       "get": {
         "tags": [
@@ -3007,6 +3075,55 @@
           "message": "Logged out successfully"
         }
       },
+      "OutrankWebhookPayload": {
+        "type": "object",
+        "description": "Webhook payload from Outrank SEO service",
+        "properties": {
+          "data": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Value",
+                "description": "Analysis data from Outrank"
+              }
+            ]
+          },
+          "eventType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Event type from Outrank",
+            "example": "analysis_complete"
+          }
+        },
+        "example": {
+          "data": {
+            "recommendations": [
+              "Improve meta descriptions",
+              "Add alt text to images"
+            ],
+            "score": 85
+          },
+          "eventType": "analysis_complete"
+        }
+      },
+      "OutrankWebhookResponse": {
+        "type": "object",
+        "description": "Response confirming webhook processing",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Success message",
+            "example": "Webhook processed successfully"
+          }
+        }
+      },
       "PostResponse": {
         "type": "object",
         "description": "API response model for posts",
@@ -3932,8 +4049,7 @@
       "Value": {
         "type": "object",
         "title": "JSONValue",
-        "description": "Flexible JSON value that can be an object, array, string, number, boolean, or null",
-        "additionalProperties": true
+        "description": "Flexible JSON value that can be an object, array, string, number, boolean, or null"
       }
     },
     "securitySchemes": {
@@ -3971,6 +4087,10 @@
     {
       "name": "API Keys",
       "description": "API key creation and management endpoints"
+    },
+    {
+      "name": "Outrank",
+      "description": "Outrank SEO integration webhook endpoints"
     }
   ]
 }
