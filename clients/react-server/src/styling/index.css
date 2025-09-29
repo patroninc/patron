@@ -8,6 +8,10 @@ body {
   font-optical-sizing: auto;
 }
 
+:root {
+  --tox-private-color-black: #000;
+}
+
 @theme inline {
   --color-primary: oklch(46.36% 0.1058 251.87deg);
   --color-secondary-primary: oklch(67.75% 0.1381 278.35deg);

@@ -30,6 +30,8 @@ export type PostFormData = {
   thumbnailUrl?: string;
 };
 
+import '../styling/tinymce.css';
+
 /**
  * New post creation page component.
  * Provides a comprehensive form for creating new posts with all available options.
@@ -204,33 +206,47 @@ const NewPost = (): JSX.Element => {
                   <FormItem>
                     <FormLabel>Content</FormLabel>
                     <FormControl>
-                      <Editor
-                        apiKey="oja86xbqgcds3rxbw50q4thormz7y3np8vsw1tg2xpm3d60i"
-                        // eslint-disable-next-line max-params
-                        onInit={(_evt, editor) => {
-                          editorRef.current = editor;
-                        }}
-                        init={{
-                          height: 500,
-                          menubar: false,
-                          plugins: [
-                            'importcss',
-                            'autolink',
-                            'lists',
-                            'link',
-                            'image',
-                            'anchor',
-                            'searchreplace',
-                            'fullscreen',
-                            'code',
-                            'help',
-                            'wordcount',
-                          ],
-                          toolbar:
-                            'undo redo blocks bold italic underline strikethrough bullist numlist link image quote',
-                          content_style: 'tinymce.css',
-                        }}
-                      />
+                      <div className="relative m-[3px]">
+                        <PxBorder className="z-10" width={3} radius="lg" />
+                        <Editor
+                          apiKey="oja86xbqgcds3rxbw50q4thormz7y3np8vsw1tg2xpm3d60i"
+                          // eslint-disable-next-line max-params
+                          onInit={(_evt, editor) => {
+                            editorRef.current = editor;
+
+                            editor.ui.registry.addIcon(
+                              'undo',
+                              '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-undo2-icon lucide-undo-2"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>',
+                            );
+                          }}
+                          init={{
+                            height: 500,
+                            menubar: false,
+                            plugins: [
+                              'importcss',
+                              'autolink',
+                              'lists',
+                              'link',
+                              'image',
+                              'anchor',
+                              'searchreplace',
+                              'fullscreen',
+                              'code',
+                            ],
+                            promotion: false,
+                            onboarding: false,
+                            statusbar: false,
+                            icons_url: '/tinymce/icons/custom/icons.js',
+                            icons: 'custom',
+                            toolbar:
+                              'undo redo blocks bold italic underline strikethrough bullist numlist link image quote triangleUp',
+                            content_css: [
+                              '../styling/inner-tinymce.css',
+                              'https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&display=swap',
+                            ],
+                          }}
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
