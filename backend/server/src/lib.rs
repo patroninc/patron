@@ -299,6 +299,13 @@ pub async fn main() -> std::io::Result<()> {
                                     .route(web::put().to(handlers::api_keys::update_api_key))
                                     .route(web::delete().to(handlers::api_keys::delete_api_key)),
                             ),
+                    )
+                    .service(
+                        web::scope("/outrank")
+                            .service(
+                                web::resource("/webhook")
+                                    .route(web::post().to(handlers::outrank::process_webhook)),
+                            ),
                     ),
             )
     })

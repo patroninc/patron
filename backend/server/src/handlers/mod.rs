@@ -12,3 +12,6 @@ pub mod posts;
 
 /// API keys management handlers
 pub mod api_keys;
+
+/// Outrank SEO integration handlers
+pub mod outrank;
