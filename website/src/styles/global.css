@@ -80,6 +80,11 @@
     font-weight: 700;
   }
 
+  iframe {
+    max-width: 100%;
+    width: 100%;
+  }
+
   h1 {
     @apply b1320:text-h1 xl:leading-h1 sm:text-h2 sm:leading-h2 text-h3 leading-h3 xl:text-[60px];
   }
