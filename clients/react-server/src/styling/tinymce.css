@@ -1,3 +1,88 @@
-body {
-  background-color: red;
+.tox {
+  border-radius: 0px !important;
+}
+
+.tox-tinymce {
+  border: none !important;
+}
+
+.tox .tox-toolbar__group {
+  padding: 0 8px 0px 8px !important;
+  gap: 8px !important;
+}
+
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+  border-bottom: 3px solid #000 !important;
+  background-color: oklch(88.27% 0.1755 104.11deg) !important;
+  padding: 8px 0 !important;
+}
+
+.tox .tox-toolbar-overlord {
+  background-color: transparent !important;
+}
+
+.tox .tox-toolbar__primary {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+.tox .tox-tbtn {
+  align-items: center;
+  background: #fff !important;
+  border-radius: 0px !important;
+  box-shadow: none;
+  color: #000 !important;
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  justify-content: center;
+  margin: 0 !important;
+  outline: 0;
+  padding: 0;
+  text-transform: none;
+  width: unset !important;
+  height: unset !important;
+  min-width: 36px;
+  min-height: 36px;
+  border: 3px solid black !important;
+}
+
+.tox button,
+.tox input,
+.tox input:not([type]),
+.tox input[type='color'],
+.tox input[type='text'],
+.tox input[type='time'],
+.tox input[type='url'],
+.tox input[type='week'],
+.tox input[type='button'],
+.tox input[type='reset'],
+.tox input[type='submit'],
+.tox input[type='date'],
+.tox input[type='datetime'],
+.tox input[type='datetime-local'],
+.tox input[type='email'],
+.tox input[type='month'],
+.tox input[type='number'],
+.tox input[type='password'],
+.tox input[type='search'],
+.tox input[type='tel'],
+.tox pre,
+.tox select,
+.tox textarea {
+  font: inherit !important;
+}
+
+.tox .tox-tbtn--disabled svg,
+.tox .tox-tbtn--disabled:hover svg,
+.tox .tox-tbtn:disabled svg,
+.tox .tox-tbtn:disabled:hover svg {
+  fill: rgba(0, 0, 0, 0.5) !important;
+}
+
+.tox .tox-tbtn svg {
+  display: block;
+  fill: unset;
 }
