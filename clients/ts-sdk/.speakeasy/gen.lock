@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: a228c41908685c8887ef0a7d45626df2
+  docChecksum: 6dcf5916a1654ea107c10c07b1e7fb69
   docVersion: 1.0.0
-  speakeasyVersion: 1.628.6
-  generationVersion: 2.716.7
-  releaseVersion: 0.8.9
-  configChecksum: 861b1d9f47ad45464c1108c9932580e5
+  speakeasyVersion: 1.631.4
+  generationVersion: 2.716.16
+  releaseVersion: 0.9.0
+  configChecksum: 0ce0cd6782016ad034b71f1621be7f46
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -24,6 +24,7 @@ features:
     globalServerURLs: 2.82.5
     groups: 2.81.2
     methodArguments: 0.1.2
+    methodSecurity: 2.82.6
     nameOverrides: 2.81.2
     nullables: 0.1.1
     responseFormat: 0.2.3
@@ -70,12 +71,15 @@ generatedFiles:
   - docs/models/operations/listfilesrequest.md
   - docs/models/operations/listpostsrequest.md
   - docs/models/operations/listseriesrequest.md
+  - docs/models/operations/processwebhooksecurity.md
   - docs/models/operations/servefilecdnrequest.md
   - docs/models/operations/updateapikeyrequest.md
   - docs/models/operations/updatefilerequest.md
   - docs/models/operations/updatepostrequest.md
   - docs/models/operations/updateseriesrequest.md
   - docs/models/operations/verifyemailrequest.md
+  - docs/models/outrankwebhookpayload.md
+  - docs/models/outrankwebhookresponse.md
   - docs/models/postresponse.md
   - docs/models/registerrequest.md
   - docs/models/registerresponse.md
@@ -95,6 +99,7 @@ generatedFiles:
   - docs/sdks/apikeys/README.md
   - docs/sdks/auth/README.md
   - docs/sdks/files/README.md
+  - docs/sdks/outrank/README.md
   - docs/sdks/patronts/README.md
   - docs/sdks/posts/README.md
   - docs/sdks/series/README.md
@@ -129,6 +134,7 @@ generatedFiles:
   - src/funcs/filesServeCdn.ts
   - src/funcs/filesUpdate.ts
   - src/funcs/filesUpload.ts
+  - src/funcs/outrankProcessWebhook.ts
   - src/funcs/postsCreate.ts
   - src/funcs/postsDelete.ts
   - src/funcs/postsGet.ts
@@ -196,12 +202,15 @@ generatedFiles:
   - src/models/operations/listfiles.ts
   - src/models/operations/listposts.ts
   - src/models/operations/listseries.ts
+  - src/models/operations/processwebhook.ts
   - src/models/operations/servefilecdn.ts
   - src/models/operations/updateapikey.ts
   - src/models/operations/updatefile.ts
   - src/models/operations/updatepost.ts
   - src/models/operations/updateseries.ts
   - src/models/operations/verifyemail.ts
+  - src/models/outrankwebhookpayload.ts
+  - src/models/outrankwebhookresponse.ts
   - src/models/postresponse.ts
   - src/models/registerrequest.ts
   - src/models/registerresponse.ts
@@ -222,6 +231,7 @@ generatedFiles:
   - src/sdk/auth.ts
   - src/sdk/files.ts
   - src/sdk/index.ts
+  - src/sdk/outrank.ts
   - src/sdk/posts.ts
   - src/sdk/sdk.ts
   - src/sdk/series.ts
@@ -573,6 +583,17 @@ examples:
         path:
           api_key_id: "d30aa790-7049-4dd6-9089-24cd5bc5bd07"
       responses:
+        "401":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+  process_webhook:
+    speakeasy-default-process-webhook:
+      requestBody:
+        application/json: {"data": {"recommendations": ["Improve meta descriptions", "Add alt text to images"], "score": 85}, "eventType": "analysis_complete"}
+      responses:
+        "200":
+          application/json: {"message": "Webhook processed successfully"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":

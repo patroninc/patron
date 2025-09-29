@@ -134,6 +134,35 @@ async function run() {
 run();
 
 ```
+
+### Per-Operation Security Schemes
+
+Some operations in this SDK require the security scheme to be specified at the request level. For example:
+```typescript
+import { Patronts } from "patronts";
+
+const patronts = new Patronts();
+
+async function run() {
+  const result = await patronts.outrank.processWebhook({
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+  }, {
+    data: {
+      "recommendations": [
+        "Improve meta descriptions",
+        "Add alt text to images",
+      ],
+      "score": 85,
+    },
+    eventType: "analysis_complete",
+  });
+
+  console.log(result);
+}
+
+run();
+
+```
 <!-- End Authentication [security] -->
 
 <!-- Start Available Resources and Operations [operations] -->
@@ -173,6 +202,10 @@ run();
 * [get](docs/sdks/files/README.md#get) - Get a specific file by ID
 * [update](docs/sdks/files/README.md#update) - Update file metadata and properties
 * [delete](docs/sdks/files/README.md#delete) - Permanently delete a user file
+
+### [outrank](docs/sdks/outrank/README.md)
+
+* [processWebhook](docs/sdks/outrank/README.md#processwebhook) - Process Outrank webhook
 
 
 ### [posts](docs/sdks/posts/README.md)
@@ -232,6 +265,7 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 - [`filesServeCdn`](docs/sdks/files/README.md#servecdn) - Serve file content with user authentication
 - [`filesUpdate`](docs/sdks/files/README.md#update) - Update file metadata and properties
 - [`filesUpload`](docs/sdks/files/README.md#upload) - Upload a file
+- [`outrankProcessWebhook`](docs/sdks/outrank/README.md#processwebhook) - Process Outrank webhook
 - [`postsCreate`](docs/sdks/posts/README.md#create) - Create a new post
 - [`postsDelete`](docs/sdks/posts/README.md#delete) - Delete a post (soft delete) with series ownership validation
 - [`postsGet`](docs/sdks/posts/README.md#get) - Get a specific post by ID with series ownership validation

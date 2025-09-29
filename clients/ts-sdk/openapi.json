@@ -4049,7 +4049,8 @@
       "Value": {
         "type": "object",
         "title": "JSONValue",
-        "description": "Flexible JSON value that can be an object, array, string, number, boolean, or null"
+        "description": "Flexible JSON value that can be an object, array, string, number, boolean, or null",
+        "additionalProperties": true
       }
     },
     "securitySchemes": {

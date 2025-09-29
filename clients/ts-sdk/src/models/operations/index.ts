@@ -15,6 +15,7 @@ export * from "./listapikeys.js";
 export * from "./listfiles.js";
 export * from "./listposts.js";
 export * from "./listseries.js";
+export * from "./processwebhook.js";
 export * from "./servefilecdn.js";
 export * from "./updateapikey.js";
 export * from "./updatefile.js";
