@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node server",
+    "dev:local": "node -r dotenv/config server dotenv_config_path=.env.local",
+    "dev:prod": "node -r dotenv/config server dotenv_config_path=.env.prod",
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.tsx --outDir dist/server",

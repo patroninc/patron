@@ -161,7 +161,7 @@ export const Home = (): JSX.Element => {
             <p className="text-base">patron.com/{urlSlug}</p>
           </div>
         </div>
-        <Customization initialData={user} />
+        <Customization initialData={user ?? undefined} />
       </div>
       <main className="p-[50px] px-[100px]">
         <Tabs className="gap-10" defaultValue="all">
@@ -171,7 +171,10 @@ export const Home = (): JSX.Element => {
             <TabsTrigger value="membership-tiers">Membership Tiers</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
-          <TabsContent className="grid grid-cols-4 gap-10" value="all">
+          <TabsContent
+            className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+            value="all"
+          >
             <Link
               to="/new-post"
               className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none"
@@ -226,7 +229,10 @@ export const Home = (): JSX.Element => {
               </Link>
             ))}
           </TabsContent>
-          <TabsContent className="grid grid-cols-4 gap-10" value="serials">
+          <TabsContent
+            className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+            value="serials"
+          >
             <NewSerialForm
               trigger={
                 <button
@@ -277,7 +283,10 @@ export const Home = (): JSX.Element => {
               </Link>
             ))}
           </TabsContent>
-          <TabsContent className="grid grid-cols-4 gap-10" value="membership-tiers">
+          <TabsContent
+            className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+            value="membership-tiers"
+          >
             <Tiers tiers={tiers} />
           </TabsContent>
           <TabsContent className="gap-10" value="about">
