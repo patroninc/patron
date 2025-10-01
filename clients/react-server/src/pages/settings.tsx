@@ -2,7 +2,7 @@ import { JSX, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Trash2, Save, Camera } from 'lucide-react';
+import { Trash2, Save } from 'lucide-react';
 import MainLayout from '@/layouts/main';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -61,17 +61,8 @@ const accountSchema = z
     },
   );
 
-const preferencesSchema = z.object({
-  emailNotifications: z.boolean(),
-  pushNotifications: z.boolean(),
-  marketingEmails: z.boolean(),
-  profileVisibility: z.enum(['public', 'private']),
-  showEmail: z.boolean(),
-});
-
 type ProfileFormData = z.infer<typeof profileSchema>;
 type AccountFormData = z.infer<typeof accountSchema>;
-type PreferencesFormData = z.infer<typeof preferencesSchema>;
 
 /**
  * Settings page component with multiple sections for user preferences and account management.
@@ -102,18 +93,6 @@ const Settings = (): JSX.Element => {
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
-    },
-  });
-
-  // Preferences form
-  const preferencesForm = useForm<PreferencesFormData>({
-    resolver: zodResolver(preferencesSchema),
-    defaultValues: {
-      emailNotifications: true,
-      pushNotifications: true,
-      marketingEmails: false,
-      profileVisibility: 'public',
-      showEmail: false,
     },
   });
 
@@ -153,25 +132,6 @@ const Settings = (): JSX.Element => {
       // TODO: Show success message
     } catch (error) {
       console.error('Error updating account:', error);
-      // TODO: Show error message
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /**
-   * Handles preferences form submission.
-   *
-   * @param data - The preferences form data
-   */
-  const onPreferencesSubmit = async (data: PreferencesFormData): Promise<void> => {
-    setIsLoading(true);
-    try {
-      // TODO: Implement preferences update API call
-      console.log('Preferences updated:', data);
-      // TODO: Show success message
-    } catch (error) {
-      console.error('Error updating preferences:', error);
       // TODO: Show error message
     } finally {
       setIsLoading(false);

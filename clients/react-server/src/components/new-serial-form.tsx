@@ -31,7 +31,6 @@ import {
 } from '@/components/ui/select';
 import PxBorder from './px-border';
 import { patronClient } from '@/lib/utils';
-import { useNavigate } from 'react-router';
 
 export type SerialFormData = {
   title: string;
@@ -71,7 +70,6 @@ const NewSerialForm = ({
 }: NewSerialFormProps): JSX.Element => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isImageDialogOpen, setIsImageDialogOpen] = useState<boolean>(false);
-  const navigate = useNavigate();
   const form = useForm<SerialFormData>({
     defaultValues: {
       title: '',
