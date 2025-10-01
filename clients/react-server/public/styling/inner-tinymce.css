@@ -1,10 +1,54 @@
-body {
+@import 'tailwindcss';
+
+.mce-content-body {
   font-family: 'Albert Sans', sans-serif;
   background-color: white;
+  padding: 16px;
+  margin: 0px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-h4,
-h5,
-h6 {
+.mce-content-body > :first-child {
+  margin-block-start: 0;
+}
+
+.mce-content-body h1,
+.mce-content-body h2,
+.mce-content-body h3,
+.mce-content-body h4 {
   font-weight: 700;
+}
+
+.mce-content-body h1 {
+  font-size: 36px;
+  line-height: 1.11;
+}
+.mce-content-body h2 {
+  font-size: 30px;
+  line-height: 1.2;
+}
+.mce-content-body h3 {
+  font-size: 24px;
+  line-height: 1.33;
+}
+.mce-content-body h4 {
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.mce-content-body a[href] {
+  text-decoration: underline;
+  color: #000;
+}
+
+.mce-content-body ul,
+.mce-content-body ol {
+  padding-inline-start: 20px;
+}
+
+.mce-content-body p img {
+  width: 75%;
+  border: 3px solid #000;
+  border-radius: 6px;
 }

@@ -29,14 +29,14 @@
 .tox .tox-tbtn {
   align-items: center;
   background: #fff !important;
-  border-radius: 0px !important;
+  border-radius: 6px !important;
   box-shadow: none;
   color: #000 !important;
   display: flex;
   flex: 0 0 auto;
   font-size: 14px;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   justify-content: center;
   margin: 0 !important;
   outline: 0;
@@ -75,14 +75,189 @@
   font: inherit !important;
 }
 
-.tox .tox-tbtn--disabled svg,
-.tox .tox-tbtn--disabled:hover svg,
-.tox .tox-tbtn:disabled svg,
-.tox .tox-tbtn:disabled:hover svg {
-  fill: rgba(0, 0, 0, 0.5) !important;
+.tox .tox-tbtn__select-label {
+  font-weight: 500 !important;
+  font-family: 'Albert Sans', sans-serif !important;
 }
 
-.tox .tox-tbtn svg {
-  display: block;
-  fill: unset;
+.tox .tox-menu {
+  background-color: oklch(67.75% 0.1381 278.35deg) !important;
+  border: 3px solid black !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  margin-top: 3px !important;
+  margin-bottom: 3px !important;
+}
+
+.tox .tox-collection--list .tox-collection__item {
+  color: #000 !important;
+  border: 3px solid transparent !important;
+}
+
+.tox
+  .tox-collection--list
+  .tox-collection__item--enabled:not(.tox-collection__item--state-disabled) {
+  background-color: oklch(67.75% 0.1381 278.35deg) !important;
+}
+
+.tox
+  .tox-collection--list
+  .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
+  background-color: oklch(46.36% 0.1058 251.87deg) !important;
+  color: #fff !important;
+  border: 3px solid black !important;
+}
+
+.tox .tox-collection--list .tox-collection__item {
+  padding: 6px 8px !important;
+  border-radius: 6px !important;
+}
+
+.tox .tox-tbtn--active,
+.tox .tox-tbtn--enabled,
+.tox .tox-tbtn--enabled:focus,
+.tox .tox-tbtn--enabled:hover {
+  background-color: oklch(46.36% 0.1058 251.87deg) !important;
+  color: white !important;
+}
+
+.tox :not(svg):not(rect) {
+  color: unset !important;
+}
+
+.tox .tox-tbtn--active svg,
+.tox .tox-tbtn--enabled svg,
+.tox .tox-tbtn--enabled:focus svg,
+.tox .tox-tbtn--enabled:hover svg {
+  fill: white !important;
+}
+
+.tox .tox-tooltip__body {
+  background-color: white !important;
+  border: 2px solid black !important;
+  color: #000 !important;
+  font-family: 'Albert Sans', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+.tox .tox-edit-area {
+  margin: 4px !important;
+}
+
+.tox .tox-edit-area::before {
+  border: 2px solid #000 !important;
+  border-radius: 6px !important;
+  transition: none !important;
+}
+
+.tox .tox-collection__item-label,
+.tox .tox-collection__item-accessory {
+  font-weight: 500 !important;
+  font-family: 'Albert Sans', sans-serif !important;
+}
+
+.tox .tox-collection--list .tox-collection__group {
+  border-color: transparent !important;
+}
+
+.tox .tox-dialog-wrap__backdrop {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.tox .tox-dialog {
+  background-color: oklch(67.75% 0.1381 278.35deg) !important;
+  border-color: #000 !important;
+  border-radius: 6px !important;
+  border-style: solid !important;
+  border-width: 3px !important;
+  box-shadow: none !important;
+  font-family: 'Albert Sans', sans-serif !important;
+}
+
+.tox .tox-dialog__header {
+  align-items: center;
+  background-color: oklch(67.75% 0.1381 278.35deg) !important;
+  font-size: 16px;
+  justify-content: space-between;
+  padding: 24px 24px 0 24px !important;
+  position: relative;
+}
+
+.tox .tox-dialog__title {
+  font-family: inherit !important;
+  font-size: 20px;
+  font-weight: 700 !important;
+}
+
+.tox .tox-textfield {
+  border: 3px solid black !important;
+}
+
+.tox .tox-listboxfield .tox-listbox--select {
+  border: 3px solid black !important;
+}
+
+.tox .tox-listbox__select-label {
+  font-family: 'Albert Sans', sans-serif !important;
+}
+
+.tox .tox-dialog__body-content > :only-child {
+  gap: 8px !important;
+}
+
+.tox .tox-dialog__body-content {
+  padding: 24px !important  ;
+}
+
+.tox .tox-form__group {
+  margin-bottom: 0px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: inherit !important;
+}
+
+.tox .tox-label,
+.tox .tox-toolbar-label {
+  color: #000 !important;
+  font-weight: 700 !important;
+}
+
+.tox .tox-collection__item-label {
+  line-height: unset !important;
+}
+
+.tox .tox-dialog__footer {
+  align-items: center;
+  background-color: oklch(67.75% 0.1381 278.35deg) !important;
+  border-top: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 24px 24px 24px !important;
+}
+
+.tox .tox-button {
+  background-color: oklch(46.36% 0.1058 251.87deg) !important;
+  border-color: #000 !important;
+  border-width: 3px !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  padding: 8px 16px !important;
+}
+
+.tox .tox-button--secondary {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.tox .tox-button--naked {
+  border-color: transparent !important;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 2px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000 !important;
+  background-color: transparent !important;
 }
