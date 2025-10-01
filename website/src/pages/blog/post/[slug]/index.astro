@@ -243,24 +243,14 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
   table {
     position: relative;
     background-color: var(--color-purple);
-    width: calc(100% - 10px);
+    width: max-content;
+    max-width: 100%;
+    display: block;
+    overflow-x: auto;
+    border: 5px solid black;
 
-    &::before {
-      content: "";
-      position: absolute;
-      top: -5px;
-      left: -5px;
-      display: block;
-      width: calc(100% + 10px);
-      height: calc(100% + 10px);
-
-      border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='3' height='3' viewBox='0 0 3 3' fill='none'%3E%3Cpath d='M2 3H1V2H2V3ZM1 2H0V1H1V2ZM3 2H2V1H3V2ZM2 1H1V0H2V1Z' fill='black'/%3E%3C/svg%3E");
-      border-image-outset: 0;
-      border-image-repeat: stretch;
-      border-image-slice: 1;
-      border-image-width: 1;
-      border-style: solid;
-      border-width: 5px;
+    thead, tbody {
+      width: 100%;
     }
 
     tr th {
