@@ -89,7 +89,7 @@ const NewSerialForm = ({
    */
   const handleSubmit = async (formData: SerialFormData): Promise<void> => {
     try {
-      const series = await patronClient.series.createSeries({
+      const series = await patronClient.series.create({
         title: formData.title,
         description: formData.description,
         coverImageUrl: undefined,
