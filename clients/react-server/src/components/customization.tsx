@@ -337,10 +337,10 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
       // Upload file if one was selected
       if (uploadedFile) {
         try {
-          const uploadedFileResult = await patronClient.files.uploadFile({
+          const uploadedFileResult = await patronClient.files.upload({
             file: uploadedFile,
           });
-          const avatarUrl = await patronClient.files.serveFileCdn({
+          const avatarUrl = await patronClient.files.serveCdn({
             fileId: uploadedFileResult.file.id,
           });
 
