@@ -10,7 +10,7 @@ import Tiers from '@/components/tiers';
 import { Customization } from '@/components/customization';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppData } from '@/contexts/AppDataContext';
-import NewSerialForm from '@/components/new-serial-form';
+import NewSeriesForm from '@/components/new-series-form';
 
 /**
  * @returns {JSX.Element} The Home component
@@ -25,19 +25,19 @@ export const Home = (): JSX.Element => {
     {
       id: 1,
       name: 'Supporter',
-      features: ['Access to 1st serial', 'feature 2', 'feature 3'],
+      features: ['Access to 1st series', 'feature 2', 'feature 3'],
       price: 2,
     },
     {
       id: 2,
       name: 'Supporter+',
-      features: ['Access to 1st and 2nd serials', 'feature 2', 'feature 3', 'feature 4'],
+      features: ['Access to 1st and 2nd series', 'feature 2', 'feature 3', 'feature 4'],
       price: 5,
     },
     {
       id: 3,
       name: 'Supporter++',
-      features: ['Access to all serials', 'feature 2', 'feature 3', 'feature 4', 'feature 5'],
+      features: ['Access to all series', 'feature 2', 'feature 3', 'feature 4', 'feature 5'],
       price: 10,
     },
   ];
@@ -81,7 +81,7 @@ export const Home = (): JSX.Element => {
         <Tabs className="gap-10" defaultValue="all">
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="serials">Serials</TabsTrigger>
+            <TabsTrigger value="series">Series</TabsTrigger>
             <TabsTrigger value="membership-tiers">Membership Tiers</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
@@ -158,9 +158,9 @@ export const Home = (): JSX.Element => {
           </TabsContent>
           <TabsContent
             className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
-            value="serials"
+            value="series"
           >
-            <NewSerialForm
+            <NewSeriesForm
               trigger={
                 <button
                   type="button"
@@ -170,24 +170,28 @@ export const Home = (): JSX.Element => {
                   <FocusRing width={3} />
                   <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
                     <PlusIcon size={70} />
-                    <h2 className="text-3xl">Create new serial</h2>
+                    <h2 className="text-3xl">Create new series</h2>
                   </div>
                 </button>
               }
             />
             {series &&
-              series.map((serial) => (
-                <Link key={serial.id} className="group outline-none" to={`/serial/${serial.id}`}>
+              series.map((seriesItem) => (
+                <Link
+                  key={seriesItem.id}
+                  className="group outline-none"
+                  to={`/series/${seriesItem.id}`}
+                >
                   <div
-                    key={serial.id}
+                    key={seriesItem.id}
                     className="bg-secondary-primary relative flex h-full flex-col gap-4 p-5"
                   >
                     <div className="bg-accent relative aspect-video">
                       <PxBorder width={3} radius="lg" />
-                      {serial.coverImageUrl ? (
+                      {seriesItem.coverImageUrl ? (
                         <img
-                          src={serial.coverImageUrl}
-                          alt={serial.title}
+                          src={seriesItem.coverImageUrl}
+                          alt={seriesItem.title}
                           className="h-full w-full object-cover"
                         />
                       ) : (
@@ -212,9 +216,9 @@ export const Home = (): JSX.Element => {
                     <PxBorder width={3} radius="lg" />
                     <FocusRing width={3} />
                     <div className="flex flex-col gap-3">
-                      <h3 className="text-xl">{serial.title}</h3>
+                      <h3 className="text-xl">{seriesItem.title}</h3>
                       <p className="text-base">
-                        {serial.description || 'No description available'}
+                        {seriesItem.description || 'No description available'}
                       </p>
                     </div>
                   </div>

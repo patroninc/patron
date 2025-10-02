@@ -368,10 +368,10 @@ const NewPost = (): JSX.Element => {
       <AlertDialog open={showNoSeriesModal} onOpenChange={setShowNoSeriesModal}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Create a serial first</AlertDialogTitle>
+            <AlertDialogTitle>Create a series first</AlertDialogTitle>
             <AlertDialogDescription>
-              You need to create a serial first before you can create posts. Please go to the
-              Content dashboard to create a new serial.
+              You need to create a series first before you can create posts. Please go to the
+              Content dashboard to create a new series.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex sm:justify-center">
