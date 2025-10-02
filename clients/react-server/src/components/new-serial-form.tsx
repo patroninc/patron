@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/select';
 import PxBorder from './px-border';
 import { patronClient } from '@/lib/utils';
+import { useNavigate } from 'react-router';
 
 export type SerialFormData = {
   title: string;
@@ -81,6 +82,8 @@ const NewSerialForm = ({
     },
   });
 
+  const navigate = useNavigate();
+
   /**
    * Handles the submission of the serial creation form.
    *
@@ -89,19 +92,37 @@ const NewSerialForm = ({
    */
   const handleSubmit = async (formData: SerialFormData): Promise<void> => {
     try {
-      const series = await patronClient.series.create({
+      // Upload image if one was selected
+      let coverImageUrl: string | undefined = undefined;
+      if (formData.image) {
+        try {
+          const uploadedFileResult = await patronClient.files.upload({
+            file: formData.image,
+          });
+          coverImageUrl = (await patronClient.files.serveCdn({
+            fileId: uploadedFileResult.file.id,
+          })) as unknown as string;
+        } catch (uploadError) {
+          console.error('Error uploading cover image:', uploadError);
+          form.setError('image', {
+            type: 'manual',
+            message: 'Failed to upload cover image. Please try again.',
+          });
+          return; // Don't create serial if image upload fails
+        }
+      }
+
+      await patronClient.series.create({
         title: formData.title,
         description: formData.description,
-        coverImageUrl: undefined,
+        coverImageUrl: coverImageUrl,
         isMonetized: formData.isMonetized,
         isPublished: formData.isPublished,
         pricingTier: formData.pricingTier,
         slug: formData.title.toLowerCase().replace(/ /g, '-'),
       });
 
-      console.log(series);
-
-      // navigate(`/series/${series.id}`);
+      navigate(0);
     } catch (error) {
       form.setError('title', {
         type: 'manual',
