@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { DataTable, createSimpleColumn, createActionsColumn } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import NewSerialForm from '@/components/new-serial-form';
+import NewSeriesForm from '@/components/new-series-form';
 import { useAppData } from '@/contexts/AppDataContext';
 import PxBorder from '@/components/px-border';
 
@@ -20,7 +20,7 @@ export type Post = {
   publishedAt: string;
 };
 
-export type Serial = {
+export type Series = {
   id: string;
   title: string;
   description: string;
@@ -54,26 +54,26 @@ const postsColumns: ColumnDef<Post>[] = [
   ]),
 ];
 
-// Column definitions for serials
-const serialsColumns: ColumnDef<Serial>[] = [
+// Column definitions for series
+const seriesColumns: ColumnDef<Series>[] = [
   createSimpleColumn('title', 'Title', false),
   createSimpleColumn('description', 'Description', false),
-  createActionsColumn<Serial>([
+  createActionsColumn<Series>([
     {
-      label: 'Edit serial',
+      label: 'Edit series',
       icon: Edit,
-      onClick: (serial) => console.log('Edit serial:', serial.id),
+      onClick: (series) => console.log('Edit series:', series.id),
     },
     {
-      label: 'View serial',
+      label: 'View series',
       icon: Eye,
-      onClick: (serial) => console.log('View serial:', serial.id),
+      onClick: (series) => console.log('View series:', series.id),
     },
     {
-      label: 'Delete serial',
+      label: 'Delete series',
       icon: Trash2,
       destructive: true,
-      onClick: (serial) => console.log('Delete serial:', serial.id),
+      onClick: (series) => console.log('Delete series:', series.id),
     },
   ]),
 ];
@@ -87,7 +87,7 @@ const serialsColumns: ColumnDef<Serial>[] = [
 const Content = (): JSX.Element => {
   const navigate = useNavigate();
   const postsFilterRef = useRef<HTMLInputElement>(null);
-  const serialsFilterRef = useRef<HTMLInputElement>(null);
+  const seriesFilterRef = useRef<HTMLInputElement>(null);
 
   // Get data from context (fetched on server side)
   const { posts, series } = useAppData();
@@ -100,7 +100,7 @@ const Content = (): JSX.Element => {
         <Tabs defaultValue="posts" className="w-full">
           <TabsList>
             <TabsTrigger value="posts">All Posts</TabsTrigger>
-            <TabsTrigger value="serials">Serials</TabsTrigger>
+            <TabsTrigger value="series">Series</TabsTrigger>
           </TabsList>
 
           <TabsContent className="m-0" value="posts">
@@ -143,12 +143,12 @@ const Content = (): JSX.Element => {
             ) : (
               <div className="relative m-[3px] flex flex-col items-center justify-center gap-5 bg-white p-10">
                 <div className="text-lg">
-                  You need to create a serial first before you can create posts.
+                  You need to create a series first before you can create posts.
                 </div>
-                <NewSerialForm
+                <NewSeriesForm
                   trigger={
                     <Button containerClassName="w-max">
-                      Create Serial
+                      Create Series
                       <Plus />
                     </Button>
                   }
@@ -158,43 +158,43 @@ const Content = (): JSX.Element => {
             )}
           </TabsContent>
 
-          <TabsContent className="m-0" value="serials">
+          <TabsContent className="m-0" value="series">
             {series ? (
               <>
                 <div className="mb-5 flex items-center justify-between">
                   <Input
-                    ref={serialsFilterRef}
-                    placeholder="Search serials..."
+                    ref={seriesFilterRef}
+                    placeholder="Search series..."
                     className="md:text-base"
                   />
 
-                  <NewSerialForm
+                  <NewSeriesForm
                     trigger={
                       <Button>
-                        New serial
+                        New series
                         <Plus />
                       </Button>
                     }
                   />
                 </div>
                 <DataTable
-                  columns={serialsColumns}
+                  columns={seriesColumns}
                   data={series || []}
                   enableSorting={true}
                   enableCheckboxes={false}
                   enablePagination={true}
                   enableColumnFilters={true}
                   filterColumn="title"
-                  filterInputRef={serialsFilterRef}
+                  filterInputRef={seriesFilterRef}
                 />
               </>
             ) : (
               <div className="relative m-[3px] flex flex-col items-center justify-center gap-5 bg-white p-10">
-                <div className="text-lg">You haven't created any serials yet.</div>
-                <NewSerialForm
+                <div className="text-lg">You haven't created any series yet.</div>
+                <NewSeriesForm
                   trigger={
                     <Button containerClassName="w-max">
-                      New serial
+                      New series
                       <Plus />
                     </Button>
                   }
