@@ -10,7 +10,6 @@ import { CreatePostRequest } from "patronts/models";
 let value: CreatePostRequest = {
   audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
   content: "Welcome to our first episode where we discuss the fundamentals...",
-  isPremium: false,
   isPublished: false,
   postNumber: 1,
   seriesId: "b2c3d4e5-6f78-9012-bcde-f12345678901",
@@ -27,7 +26,6 @@ let value: CreatePostRequest = {
 | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `audioFileId`                                                     | *string*                                                          | :heavy_minus_sign:                                                | Optional audio file attachment for the post                       | c3d4e5f6-7890-1234-cdef-123456789012                              |
 | `content`                                                         | *string*                                                          | :heavy_check_mark:                                                | Full content of the post                                          | Welcome to our first episode where we discuss the fundamentals... |
-| `isPremium`                                                       | *boolean*                                                         | :heavy_minus_sign:                                                | Restrict this post to premium subscribers only                    | false                                                             |
 | `isPublished`                                                     | *boolean*                                                         | :heavy_minus_sign:                                                | Publish this post immediately upon creation                       | false                                                             |
 | `postNumber`                                                      | *number*                                                          | :heavy_check_mark:                                                | Episode or post number for sequencing content within the series   | 1                                                                 |
 | `seriesId`                                                        | *string*                                                          | :heavy_check_mark:                                                | Series to add this post to                                        | b2c3d4e5-6f78-9012-bcde-f12345678901                              |

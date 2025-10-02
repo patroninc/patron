@@ -20,10 +20,6 @@ export type UpdatePostRequest = {
    */
   content?: string | null | undefined;
   /**
-   * Modify premium subscription requirement for this post
-   */
-  isPremium?: boolean | null | undefined;
-  /**
    * Change the publication visibility of this post
    */
   isPublished?: boolean | null | undefined;
@@ -57,7 +53,6 @@ export const UpdatePostRequest$inboundSchema: z.ZodType<
 > = z.object({
   audioFileId: z.nullable(z.string()).optional(),
   content: z.nullable(z.string()).optional(),
-  isPremium: z.nullable(z.boolean()).optional(),
   isPublished: z.nullable(z.boolean()).optional(),
   postNumber: z.nullable(z.number().int()).optional(),
   slug: z.nullable(z.string()).optional(),
@@ -70,7 +65,6 @@ export const UpdatePostRequest$inboundSchema: z.ZodType<
 export type UpdatePostRequest$Outbound = {
   audioFileId?: string | null | undefined;
   content?: string | null | undefined;
-  isPremium?: boolean | null | undefined;
   isPublished?: boolean | null | undefined;
   postNumber?: number | null | undefined;
   slug?: string | null | undefined;
@@ -87,7 +81,6 @@ export const UpdatePostRequest$outboundSchema: z.ZodType<
 > = z.object({
   audioFileId: z.nullable(z.string()).optional(),
   content: z.nullable(z.string()).optional(),
-  isPremium: z.nullable(z.boolean()).optional(),
   isPublished: z.nullable(z.boolean()).optional(),
   postNumber: z.nullable(z.number().int()).optional(),
   slug: z.nullable(z.string()).optional(),

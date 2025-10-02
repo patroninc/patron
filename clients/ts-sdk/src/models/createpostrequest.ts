@@ -20,10 +20,6 @@ export type CreatePostRequest = {
    */
   content: string;
   /**
-   * Restrict this post to premium subscribers only
-   */
-  isPremium?: boolean | null | undefined;
-  /**
    * Publish this post immediately upon creation
    */
   isPublished?: boolean | null | undefined;
@@ -61,7 +57,6 @@ export const CreatePostRequest$inboundSchema: z.ZodType<
 > = z.object({
   audioFileId: z.nullable(z.string()).optional(),
   content: z.string(),
-  isPremium: z.nullable(z.boolean()).optional(),
   isPublished: z.nullable(z.boolean()).optional(),
   postNumber: z.number().int(),
   seriesId: z.string(),
@@ -75,7 +70,6 @@ export const CreatePostRequest$inboundSchema: z.ZodType<
 export type CreatePostRequest$Outbound = {
   audioFileId?: string | null | undefined;
   content: string;
-  isPremium?: boolean | null | undefined;
   isPublished?: boolean | null | undefined;
   postNumber: number;
   seriesId: string;
@@ -93,7 +87,6 @@ export const CreatePostRequest$outboundSchema: z.ZodType<
 > = z.object({
   audioFileId: z.nullable(z.string()).optional(),
   content: z.string(),
-  isPremium: z.nullable(z.boolean()).optional(),
   isPublished: z.nullable(z.boolean()).optional(),
   postNumber: z.number().int(),
   seriesId: z.string(),

@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 6dcf5916a1654ea107c10c07b1e7fb69
+  docChecksum: b7304f430aee322686517c7de23863bb
   docVersion: 1.0.0
-  speakeasyVersion: 1.631.4
-  generationVersion: 2.716.16
-  releaseVersion: 0.9.0
-  configChecksum: 0ce0cd6782016ad034b71f1621be7f46
+  speakeasyVersion: 1.633.2
+  generationVersion: 2.720.5
+  releaseVersion: 0.9.1
+  configChecksum: 4675f093edc2f52ab5a9bea566b1351f
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -14,7 +14,7 @@ management:
 features:
   typescript:
     additionalDependencies: 0.1.0
-    core: 3.21.25
+    core: 3.21.26
     defaultEnabledRetries: 0.1.0
     devContainers: 2.90.1
     enumUnions: 0.1.0
@@ -423,7 +423,7 @@ examples:
     speakeasy-default-list-posts:
       responses:
         "200":
-          application/json: [{"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPremium": false, "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}]
+          application/json: [{"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}]
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -431,10 +431,10 @@ examples:
   create_post:
     speakeasy-default-create-post:
       requestBody:
-        application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "isPremium": false, "isPublished": false, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
+        application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "isPublished": false, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
       responses:
         "201":
-          application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPremium": false, "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
+          application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -446,7 +446,7 @@ examples:
           post_id: "8b23b066-adfe-4d2d-967f-9f5fad145517"
       responses:
         "200":
-          application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPremium": false, "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
+          application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -457,10 +457,10 @@ examples:
         path:
           post_id: "05830c7f-2322-4d89-99a3-4f2a63d863b4"
       requestBody:
-        application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Updated content for the first episode with more details...", "isPremium": true, "isPublished": true, "postNumber": 2, "slug": "episode-1-updated", "thumbnailUrl": "https://example.com/new-thumbnail.jpg", "title": "Episode 1: Getting Started (Updated)", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
+        application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Updated content for the first episode with more details...", "isPublished": true, "postNumber": 2, "slug": "episode-1-updated", "thumbnailUrl": "https://example.com/new-thumbnail.jpg", "title": "Episode 1: Getting Started (Updated)", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
       responses:
         "200":
-          application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPremium": false, "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
+          application/json: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -479,7 +479,7 @@ examples:
     speakeasy-default-list-series:
       responses:
         "200":
-          application/json: [{"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "isMonetized": false, "isPublished": true, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}]
+          application/json: [{"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}]
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -487,10 +487,10 @@ examples:
   create_series:
     speakeasy-default-create-series:
       requestBody:
-        application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "description": "A weekly podcast about technology and innovation", "isMonetized": false, "isPublished": false, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast"}
+        application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "description": "A weekly podcast about technology and innovation", "slug": "my-awesome-podcast", "title": "My Awesome Podcast"}
       responses:
         "201":
-          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "isMonetized": false, "isPublished": true, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -502,7 +502,7 @@ examples:
           series_id: "8d41996a-2849-497f-a32a-300c043d4e31"
       responses:
         "200":
-          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "isMonetized": false, "isPublished": true, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -513,10 +513,10 @@ examples:
         path:
           series_id: "3a6d3426-0ca8-459f-9b67-866f35bbfc88"
       requestBody:
-        application/json: {"category": "Technology", "coverImageUrl": "https://example.com/new-cover.jpg", "description": "An updated description with more details", "isMonetized": true, "isPublished": true, "pricingTier": "premium", "slug": "my-updated-podcast", "title": "My Updated Podcast"}
+        application/json: {"category": "Technology", "coverImageUrl": "https://example.com/new-cover.jpg", "description": "An updated description with more details", "slug": "my-updated-podcast", "title": "My Updated Podcast"}
       responses:
         "200":
-          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "isMonetized": false, "isPublished": true, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":

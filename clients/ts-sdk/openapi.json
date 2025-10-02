@@ -2741,14 +2741,6 @@
             "description": "Full content of the post",
             "example": "Welcome to our first episode where we discuss the fundamentals..."
           },
-          "isPremium": {
-            "type": [
-              "boolean",
-              "null"
-            ],
-            "description": "Restrict this post to premium subscribers only",
-            "example": false
-          },
           "isPublished": {
             "type": [
               "boolean",
@@ -2800,7 +2792,6 @@
         "example": {
           "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
           "content": "Welcome to our first episode where we discuss the fundamentals...",
-          "isPremium": false,
           "isPublished": false,
           "postNumber": 1,
           "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901",
@@ -2842,30 +2833,6 @@
             "description": "Description of the series content and purpose (optional)",
             "example": "A weekly podcast about technology and innovation"
           },
-          "isMonetized": {
-            "type": [
-              "boolean",
-              "null"
-            ],
-            "description": "Enable monetization features for this series",
-            "example": false
-          },
-          "isPublished": {
-            "type": [
-              "boolean",
-              "null"
-            ],
-            "description": "Make this series visible to the public upon creation",
-            "example": false
-          },
-          "pricingTier": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Subscription tier required to access the series",
-            "example": "free"
-          },
           "slug": {
             "type": "string",
             "description": "Unique URL path segment for the new series",
@@ -2881,9 +2848,6 @@
           "category": "Technology",
           "coverImageUrl": "https://example.com/cover.jpg",
           "description": "A weekly podcast about technology and innovation",
-          "isMonetized": false,
-          "isPublished": false,
-          "pricingTier": "free",
           "slug": "my-awesome-podcast",
           "title": "My Awesome Podcast"
         }
@@ -3134,8 +3098,7 @@
           "content",
           "slug",
           "postNumber",
-          "isPublished",
-          "isPremium"
+          "isPublished"
         ],
         "properties": {
           "audioFileId": {
@@ -3166,11 +3129,6 @@
             "format": "uuid",
             "description": "Post's unique identifier",
             "example": "a1b2c3d4-5e6f-7890-abcd-ef1234567890"
-          },
-          "isPremium": {
-            "type": "boolean",
-            "description": "Whether the post requires premium access",
-            "example": false
           },
           "isPublished": {
             "type": "boolean",
@@ -3231,7 +3189,6 @@
           "content": "Welcome to our first episode where we discuss the fundamentals...",
           "createdAt": "2023-01-01T00:00:00Z",
           "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-          "isPremium": false,
           "isPublished": true,
           "postNumber": 1,
           "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901",
@@ -3254,7 +3211,6 @@
             "content": "Welcome to our first episode where we discuss the fundamentals...",
             "createdAt": "2023-01-01T00:00:00Z",
             "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
-            "isPremium": false,
             "isPublished": true,
             "postNumber": 1,
             "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901",
@@ -3397,9 +3353,6 @@
             "createdAt": "2023-01-01T00:00:00Z",
             "description": "A weekly podcast about technology and innovation",
             "id": "e5f6a7b8-9012-3456-ef01-345678901234",
-            "isMonetized": false,
-            "isPublished": true,
-            "pricingTier": "free",
             "slug": "my-awesome-podcast",
             "title": "My Awesome Podcast",
             "updatedAt": "2023-01-01T12:00:00Z",
@@ -3414,10 +3367,7 @@
           "id",
           "userId",
           "title",
-          "slug",
-          "isPublished",
-          "isMonetized",
-          "pricingTier"
+          "slug"
         ],
         "properties": {
           "category": {
@@ -3459,21 +3409,6 @@
             "description": "Series unique identifier",
             "example": "e5f6a7b8-9012-3456-ef01-345678901234"
           },
-          "isMonetized": {
-            "type": "boolean",
-            "description": "Whether the series has monetization enabled",
-            "example": false
-          },
-          "isPublished": {
-            "type": "boolean",
-            "description": "Whether the series is published and visible to users",
-            "example": true
-          },
-          "pricingTier": {
-            "type": "string",
-            "description": "Pricing tier for the series",
-            "example": "free"
-          },
           "slug": {
             "type": "string",
             "description": "SEO-friendly URL identifier for the series",
@@ -3506,9 +3441,6 @@
           "createdAt": "2023-01-01T00:00:00Z",
           "description": "A weekly podcast about technology and innovation",
           "id": "e5f6a7b8-9012-3456-ef01-345678901234",
-          "isMonetized": false,
-          "isPublished": true,
-          "pricingTier": "free",
           "slug": "my-awesome-podcast",
           "title": "My Awesome Podcast",
           "updatedAt": "2023-01-01T12:00:00Z",
@@ -3588,14 +3520,6 @@
             "description": "Updated post content text (optional)",
             "example": "Updated content for the first episode with more details..."
           },
-          "isPremium": {
-            "type": [
-              "boolean",
-              "null"
-            ],
-            "description": "Modify premium subscription requirement for this post",
-            "example": true
-          },
           "isPublished": {
             "type": [
               "boolean",
@@ -3650,7 +3574,6 @@
         "example": {
           "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
           "content": "Updated content for the first episode with more details...",
-          "isPremium": true,
           "isPublished": true,
           "postNumber": 2,
           "slug": "episode-1-updated",
@@ -3687,30 +3610,6 @@
             "description": "Updated description of the series (optional)",
             "example": "An updated description with more details"
           },
-          "isMonetized": {
-            "type": [
-              "boolean",
-              "null"
-            ],
-            "description": "Toggle monetization features for the series",
-            "example": true
-          },
-          "isPublished": {
-            "type": [
-              "boolean",
-              "null"
-            ],
-            "description": "Change the public visibility of the series",
-            "example": true
-          },
-          "pricingTier": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Modify the subscription tier requirement for the series",
-            "example": "premium"
-          },
           "slug": {
             "type": [
               "string",
@@ -3732,9 +3631,6 @@
           "category": "Technology",
           "coverImageUrl": "https://example.com/new-cover.jpg",
           "description": "An updated description with more details",
-          "isMonetized": true,
-          "isPublished": true,
-          "pricingTier": "premium",
           "slug": "my-updated-podcast",
           "title": "My Updated Podcast"
         }

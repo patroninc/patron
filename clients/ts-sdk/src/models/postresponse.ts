@@ -28,10 +28,6 @@ export type PostResponse = {
    */
   id: string;
   /**
-   * Whether the post requires premium access
-   */
-  isPremium: boolean;
-  /**
    * Whether the post is published and visible to users
    */
   isPublished: boolean;
@@ -77,7 +73,6 @@ export const PostResponse$inboundSchema: z.ZodType<
     z.string().datetime({ offset: true }).transform(v => new Date(v)),
   ).optional(),
   id: z.string(),
-  isPremium: z.boolean(),
   isPublished: z.boolean(),
   postNumber: z.number().int(),
   seriesId: z.string(),
@@ -96,7 +91,6 @@ export type PostResponse$Outbound = {
   content: string;
   createdAt?: string | null | undefined;
   id: string;
-  isPremium: boolean;
   isPublished: boolean;
   postNumber: number;
   seriesId: string;
@@ -117,7 +111,6 @@ export const PostResponse$outboundSchema: z.ZodType<
   content: z.string(),
   createdAt: z.nullable(z.date().transform(v => v.toISOString())).optional(),
   id: z.string(),
-  isPremium: z.boolean(),
   isPublished: z.boolean(),
   postNumber: z.number().int(),
   seriesId: z.string(),

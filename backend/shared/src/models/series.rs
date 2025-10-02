@@ -25,15 +25,6 @@ pub struct Series {
     /// URL to the series cover image
     #[serde(rename = "coverImageUrl")]
     pub cover_image_url: Option<String>,
-    /// Whether the series is published and visible to users
-    #[serde(rename = "isPublished")]
-    pub is_published: Option<bool>,
-    /// Whether the series has monetization enabled
-    #[serde(rename = "isMonetized")]
-    pub is_monetized: Option<bool>,
-    /// Pricing tier for the series (free, basic, premium, etc.)
-    #[serde(rename = "pricingTier")]
-    pub pricing_tier: Option<String>,
     /// Timestamp when the series was created
     #[serde(rename = "createdAt")]
     pub created_at: Option<NaiveDateTime>,
@@ -55,9 +46,6 @@ pub struct Series {
     "slug": "my-awesome-podcast",
     "category": "Technology",
     "coverImageUrl": "https://example.com/cover.jpg",
-    "isPublished": true,
-    "isMonetized": false,
-    "pricingTier": "free",
     "createdAt": "2023-01-01T00:00:00Z",
     "updatedAt": "2023-01-01T12:00:00Z"
 }))]
@@ -85,18 +73,6 @@ pub struct SeriesResponse {
     #[schema(example = "https://example.com/cover.jpg")]
     #[serde(rename = "coverImageUrl")]
     pub cover_image_url: Option<String>,
-    /// Whether the series is published and visible to users
-    #[schema(example = true)]
-    #[serde(rename = "isPublished")]
-    pub is_published: bool,
-    /// Whether the series has monetization enabled
-    #[schema(example = false)]
-    #[serde(rename = "isMonetized")]
-    pub is_monetized: bool,
-    /// Pricing tier for the series
-    #[schema(example = "free")]
-    #[serde(rename = "pricingTier")]
-    pub pricing_tier: String,
     /// Series creation timestamp
     #[schema(example = "2023-01-01T00:00:00Z")]
     #[serde(rename = "createdAt")]
@@ -117,9 +93,6 @@ impl From<Series> for SeriesResponse {
             slug: series.slug,
             category: series.category,
             cover_image_url: series.cover_image_url,
-            is_published: series.is_published.unwrap_or(false),
-            is_monetized: series.is_monetized.unwrap_or(false),
-            pricing_tier: series.pricing_tier.unwrap_or_else(|| "free".to_owned()),
             created_at: series.created_at.map(|dt| dt.and_utc()),
             updated_at: series.updated_at.map(|dt| dt.and_utc()),
         }
@@ -135,10 +108,7 @@ impl From<Series> for SeriesResponse {
         "description": "A weekly podcast about technology and innovation",
         "slug": "my-awesome-podcast",
         "category": "Technology",
-        "coverImageUrl": "https://example.com/cover.jpg",
-        "isPublished": false,
-        "isMonetized": false,
-        "pricingTier": "free"
+        "coverImageUrl": "https://example.com/cover.jpg"
     })
 )]
 pub struct CreateSeriesRequest {
@@ -158,18 +128,6 @@ pub struct CreateSeriesRequest {
     #[schema(example = "https://example.com/cover.jpg")]
     #[serde(rename = "coverImageUrl")]
     pub cover_image_url: Option<String>,
-    /// Make this series visible to the public upon creation
-    #[schema(example = false)]
-    #[serde(rename = "isPublished")]
-    pub is_published: Option<bool>,
-    /// Enable monetization features for this series
-    #[schema(example = false)]
-    #[serde(rename = "isMonetized")]
-    pub is_monetized: Option<bool>,
-    /// Subscription tier required to access the series
-    #[schema(example = "free")]
-    #[serde(rename = "pricingTier")]
-    pub pricing_tier: Option<String>,
 }
 
 /// Request model for updating an existing series
@@ -181,10 +139,7 @@ pub struct CreateSeriesRequest {
         "description": "An updated description with more details",
         "slug": "my-updated-podcast",
         "category": "Technology",
-        "coverImageUrl": "https://example.com/new-cover.jpg",
-        "isPublished": true,
-        "isMonetized": true,
-        "pricingTier": "premium"
+        "coverImageUrl": "https://example.com/new-cover.jpg"
     })
 )]
 pub struct UpdateSeriesRequest {
@@ -204,18 +159,6 @@ pub struct UpdateSeriesRequest {
     #[schema(example = "https://example.com/new-cover.jpg")]
     #[serde(rename = "coverImageUrl")]
     pub cover_image_url: Option<String>,
-    /// Change the public visibility of the series
-    #[schema(example = true)]
-    #[serde(rename = "isPublished")]
-    pub is_published: Option<bool>,
-    /// Toggle monetization features for the series
-    #[schema(example = true)]
-    #[serde(rename = "isMonetized")]
-    pub is_monetized: Option<bool>,
-    /// Modify the subscription tier requirement for the series
-    #[schema(example = "premium")]
-    #[serde(rename = "pricingTier")]
-    pub pricing_tier: Option<String>,
 }
 
 /// Response type for series list endpoints
@@ -228,9 +171,6 @@ pub struct UpdateSeriesRequest {
     "slug": "my-awesome-podcast",
     "category": "Technology",
     "coverImageUrl": "https://example.com/cover.jpg",
-    "isPublished": true,
-    "isMonetized": false,
-    "pricingTier": "free",
     "createdAt": "2023-01-01T00:00:00Z",
     "updatedAt": "2023-01-01T12:00:00Z"
 }]))]

@@ -32,18 +32,6 @@ export type SeriesResponse = {
    */
   id: string;
   /**
-   * Whether the series has monetization enabled
-   */
-  isMonetized: boolean;
-  /**
-   * Whether the series is published and visible to users
-   */
-  isPublished: boolean;
-  /**
-   * Pricing tier for the series
-   */
-  pricingTier: string;
-  /**
    * SEO-friendly URL identifier for the series
    */
   slug: string;
@@ -74,9 +62,6 @@ export const SeriesResponse$inboundSchema: z.ZodType<
   ).optional(),
   description: z.nullable(z.string()).optional(),
   id: z.string(),
-  isMonetized: z.boolean(),
-  isPublished: z.boolean(),
-  pricingTier: z.string(),
   slug: z.string(),
   title: z.string(),
   updatedAt: z.nullable(
@@ -92,9 +77,6 @@ export type SeriesResponse$Outbound = {
   createdAt?: string | null | undefined;
   description?: string | null | undefined;
   id: string;
-  isMonetized: boolean;
-  isPublished: boolean;
-  pricingTier: string;
   slug: string;
   title: string;
   updatedAt?: string | null | undefined;
@@ -112,9 +94,6 @@ export const SeriesResponse$outboundSchema: z.ZodType<
   createdAt: z.nullable(z.date().transform(v => v.toISOString())).optional(),
   description: z.nullable(z.string()).optional(),
   id: z.string(),
-  isMonetized: z.boolean(),
-  isPublished: z.boolean(),
-  pricingTier: z.string(),
   slug: z.string(),
   title: z.string(),
   updatedAt: z.nullable(z.date().transform(v => v.toISOString())).optional(),

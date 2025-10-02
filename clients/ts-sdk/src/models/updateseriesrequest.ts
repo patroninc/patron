@@ -24,18 +24,6 @@ export type UpdateSeriesRequest = {
    */
   description?: string | null | undefined;
   /**
-   * Toggle monetization features for the series
-   */
-  isMonetized?: boolean | null | undefined;
-  /**
-   * Change the public visibility of the series
-   */
-  isPublished?: boolean | null | undefined;
-  /**
-   * Modify the subscription tier requirement for the series
-   */
-  pricingTier?: string | null | undefined;
-  /**
    * New URL-friendly slug for the series (optional)
    */
   slug?: string | null | undefined;
@@ -54,9 +42,6 @@ export const UpdateSeriesRequest$inboundSchema: z.ZodType<
   category: z.nullable(z.string()).optional(),
   coverImageUrl: z.nullable(z.string()).optional(),
   description: z.nullable(z.string()).optional(),
-  isMonetized: z.nullable(z.boolean()).optional(),
-  isPublished: z.nullable(z.boolean()).optional(),
-  pricingTier: z.nullable(z.string()).optional(),
   slug: z.nullable(z.string()).optional(),
   title: z.nullable(z.string()).optional(),
 });
@@ -66,9 +51,6 @@ export type UpdateSeriesRequest$Outbound = {
   category?: string | null | undefined;
   coverImageUrl?: string | null | undefined;
   description?: string | null | undefined;
-  isMonetized?: boolean | null | undefined;
-  isPublished?: boolean | null | undefined;
-  pricingTier?: string | null | undefined;
   slug?: string | null | undefined;
   title?: string | null | undefined;
 };
@@ -82,9 +64,6 @@ export const UpdateSeriesRequest$outboundSchema: z.ZodType<
   category: z.nullable(z.string()).optional(),
   coverImageUrl: z.nullable(z.string()).optional(),
   description: z.nullable(z.string()).optional(),
-  isMonetized: z.nullable(z.boolean()).optional(),
-  isPublished: z.nullable(z.boolean()).optional(),
-  pricingTier: z.nullable(z.string()).optional(),
   slug: z.nullable(z.string()).optional(),
   title: z.nullable(z.string()).optional(),
 });

@@ -21,25 +21,14 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import PxBorder from './px-border';
 import { patronClient } from '@/lib/utils';
 import { useNavigate } from 'react-router';
+import { CreateSeriesRequest } from 'patronts/models';
 
 export type SerialFormData = {
-  title: string;
-  description?: string;
+  seriesData: Exclude<CreateSeriesRequest, 'coverImageUrl'>;
   image?: File;
-  isPublished: boolean;
-  isMonetized: boolean;
-  pricingTier?: string;
 };
 
 interface NewSerialFormProps {
@@ -73,12 +62,8 @@ const NewSerialForm = ({
   const [isImageDialogOpen, setIsImageDialogOpen] = useState<boolean>(false);
   const form = useForm<SerialFormData>({
     defaultValues: {
-      title: '',
-      description: undefined,
+      seriesData: {} as CreateSeriesRequest,
       image: undefined,
-      isPublished: false,
-      isMonetized: false,
-      pricingTier: undefined,
     },
   });
 
@@ -87,7 +72,7 @@ const NewSerialForm = ({
   /**
    * Handles the submission of the serial creation form.
    *
-   * @param {SerialFormData} formData - The form data containing title, description, and optional image
+   * @param {SerialFormData} formData - The form data containing seriesData and optional image
    * @returns {void}
    */
   const handleSubmit = async (formData: SerialFormData): Promise<void> => {
@@ -113,40 +98,18 @@ const NewSerialForm = ({
       }
 
       await patronClient.series.create({
-        title: formData.title,
-        description: formData.description,
+        ...formData.seriesData,
         coverImageUrl: coverImageUrl,
-        isMonetized: formData.isMonetized,
-        isPublished: formData.isPublished,
-        pricingTier: formData.pricingTier,
-        slug: formData.title.toLowerCase().replace(/ /g, '-'),
+        slug: formData.seriesData.title.toLowerCase().replace(/ /g, '-'),
       });
 
       navigate(0);
     } catch (error) {
-      form.setError('title', {
+      form.setError('seriesData.title', {
         type: 'manual',
         message: error instanceof Error ? error.message : 'Failed to create serial',
       });
     }
-  };
-
-  /**
-   * Opens the image upload dialog.
-   *
-   * @returns {void}
-   */
-  const openImageDialog = (): void => {
-    setIsImageDialogOpen(true);
-  };
-
-  /**
-   * Closes the image upload dialog.
-   *
-   * @returns {void}
-   */
-  const closeImageDialog = (): void => {
-    setIsImageDialogOpen(false);
   };
 
   /**
@@ -180,7 +143,7 @@ const NewSerialForm = ({
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="title"
+            name="seriesData.title"
             rules={{ required: 'Title is required' }}
             render={({ field }) => (
               <FormItem>
@@ -195,12 +158,16 @@ const NewSerialForm = ({
 
           <FormField
             control={form.control}
-            name="description"
+            name="seriesData.description"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter serial description..." {...field} />
+                  <Input
+                    placeholder="Enter serial description..."
+                    {...field}
+                    value={field.value || ''}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -218,7 +185,7 @@ const NewSerialForm = ({
                     <Button
                       type="button"
                       variant="secondary"
-                      onClick={openImageDialog}
+                      onClick={() => setIsImageDialogOpen(true)}
                       className="w-full"
                       shadow={false}
                     >
@@ -231,62 +198,6 @@ const NewSerialForm = ({
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="isPublished"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center gap-2">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel>Make this series visible to the public upon creation</FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="isMonetized"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center gap-2">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel>Monetize this serial</FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
-
-          {form.watch('isMonetized') && (
-            <FormField
-              control={form.control}
-              name="pricingTier"
-              rules={{ required: 'Pricing tier is required when monetized' }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pricing Tier</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a pricing tier" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="basic">Basic - $5/month</SelectItem>
-                      <SelectItem value="premium">Premium - $10/month</SelectItem>
-                      <SelectItem value="pro">Pro - $20/month</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
 
           <AlertDialogFooter>
             <AlertDialogTrigger asChild>
@@ -348,13 +259,13 @@ const NewSerialForm = ({
           </div>
 
           <AlertDialogFooter>
-            <Button type="button" variant="secondary" onClick={closeImageDialog}>
+            <Button type="button" variant="secondary" onClick={() => setIsImageDialogOpen(false)}>
               Cancel
             </Button>
             <Button
               type="button"
               onClick={() => {
-                closeImageDialog();
+                setIsImageDialogOpen(false);
               }}
               disabled={!imagePreview}
             >

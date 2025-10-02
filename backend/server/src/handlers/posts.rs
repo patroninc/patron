@@ -84,7 +84,6 @@ pub async fn create_post(
         slug: body.slug.clone(),
         number: body.number,
         is_published: Some(body.is_published.unwrap_or(false)),
-        is_premium: Some(body.is_premium.unwrap_or(false)),
         thumbnail_url: body.thumbnail_url.clone(),
         audio_file_id: body.audio_file_id,
         video_file_id: body.video_file_id,
@@ -278,7 +277,6 @@ pub async fn update_post(
             body.slug.as_ref().map(|v| posts_dsl::slug.eq(v)),
             body.number.map(|v| posts_dsl::number.eq(v)),
             body.is_published.map(|v| posts_dsl::is_published.eq(v)),
-            body.is_premium.map(|v| posts_dsl::is_premium.eq(v)),
             body.thumbnail_url
                 .as_ref()
                 .map(|v| posts_dsl::thumbnail_url.eq(v)),
