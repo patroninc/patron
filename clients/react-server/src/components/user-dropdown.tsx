@@ -79,8 +79,15 @@ export const UserDropdown = (): JSX.Element => {
                   Terms of Service
                 </a>
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-lg">
-                <LogOut className="size-6" onClick={() => patronClient.auth.logout()} />
+              <DropdownMenuItem
+                className="text-lg"
+                onClick={async () => {
+                  await patronClient.auth.logout();
+                  document.cookie = 'session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                  window.location.reload();
+                }}
+              >
+                <LogOut className="size-6" />
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuGroup>
