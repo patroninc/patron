@@ -9,6 +9,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { DataTable, createSimpleColumn, createActionsColumn } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
 import NewSerialForm from '@/components/new-serial-form';
+import { useAppData } from '@/contexts/AppDataContext';
+import PxBorder from '@/components/px-border';
 
 // Data types
 export type Post = {
@@ -23,46 +25,6 @@ export type Serial = {
   title: string;
   description: string;
 };
-
-// Mock data
-const postsData: Post[] = [
-  {
-    id: '1',
-    postNumber: 1,
-    title: 'Getting Started with React',
-    publishedAt: '2024-01-15',
-  },
-  {
-    id: '2',
-    postNumber: 2,
-    title: 'Advanced TypeScript Patterns',
-    publishedAt: '2024-01-20',
-  },
-  {
-    id: '3',
-    postNumber: 3,
-    title: 'Building Scalable APIs',
-    publishedAt: '2024-01-25',
-  },
-];
-
-const serialsData: Serial[] = [
-  {
-    id: '1',
-    title: 'Web Development Series',
-    description: 'A comprehensive guide to modern web development',
-  },
-  {
-    id: '2',
-    title: 'React Masterclass',
-    description: 'Deep dive into React patterns and best practices',
-  },
-  {
-    id: '3',
-    title: 'Backend Architecture',
-    description: 'Building robust and scalable backend systems',
-  },
-];
 
 // Column definitions for posts
 const postsColumns: ColumnDef<Post>[] = [
@@ -127,6 +89,9 @@ const Content = (): JSX.Element => {
   const postsFilterRef = useRef<HTMLInputElement>(null);
   const serialsFilterRef = useRef<HTMLInputElement>(null);
 
+  // Get data from context (fetched on server side)
+  const { posts, series } = useAppData();
+
   return (
     <MainLayout>
       <div className="p-[50px] px-[100px]">
@@ -138,54 +103,105 @@ const Content = (): JSX.Element => {
             <TabsTrigger value="serials">Serials</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="posts">
-            <div className="mb-5 flex items-center justify-between">
-              <Input ref={postsFilterRef} placeholder="Search posts..." className="md:text-base" />
+          <TabsContent className="m-0" value="posts">
+            {series && series.length > 0 ? (
+              posts && posts.length > 0 ? (
+                <>
+                  <div className="mb-5 flex items-center justify-between">
+                    <Input
+                      ref={postsFilterRef}
+                      placeholder="Search posts..."
+                      className="md:text-base"
+                    />
 
-              <Button onClick={() => navigate('/new-post')}>
-                New post
-                <Plus />
-              </Button>
-            </div>
-            <DataTable
-              columns={postsColumns}
-              data={postsData}
-              enableSorting={true}
-              enableCheckboxes={false}
-              enablePagination={true}
-              enableColumnFilters={true}
-              filterColumn="title"
-              filterInputRef={postsFilterRef}
-            />
-          </TabsContent>
-
-          <TabsContent value="serials">
-            <div className="mb-5 flex items-center justify-between">
-              <Input
-                ref={serialsFilterRef}
-                placeholder="Search serials..."
-                className="md:text-base"
-              />
-
-              <NewSerialForm
-                trigger={
-                  <Button>
-                    New serial
+                    <Button onClick={() => navigate('/new-post')}>
+                      New post
+                      <Plus />
+                    </Button>
+                  </div>
+                  <DataTable
+                    columns={postsColumns}
+                    data={posts || []}
+                    enableSorting={true}
+                    enableCheckboxes={false}
+                    enablePagination={true}
+                    enableColumnFilters={true}
+                    filterColumn="title"
+                    filterInputRef={postsFilterRef}
+                  />
+                </>
+              ) : (
+                <div className="relative m-[3px] flex flex-col items-center justify-center gap-5 bg-white p-10">
+                  <div className="text-lg">You haven't created any posts yet.</div>
+                  <Button onClick={() => navigate('/new-post')} containerClassName="w-max">
+                    New post
                     <Plus />
                   </Button>
-                }
-              />
-            </div>
-            <DataTable
-              columns={serialsColumns}
-              data={serialsData}
-              enableSorting={true}
-              enableCheckboxes={false}
-              enablePagination={true}
-              enableColumnFilters={true}
-              filterColumn="title"
-              filterInputRef={serialsFilterRef}
-            />
+                  <PxBorder width={3} radius="lg" />
+                </div>
+              )
+            ) : (
+              <div className="relative m-[3px] flex flex-col items-center justify-center gap-5 bg-white p-10">
+                <div className="text-lg">
+                  You need to create a serial first before you can create posts.
+                </div>
+                <NewSerialForm
+                  trigger={
+                    <Button containerClassName="w-max">
+                      Create Serial
+                      <Plus />
+                    </Button>
+                  }
+                />
+                <PxBorder width={3} radius="lg" />
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent className="m-0" value="serials">
+            {series ? (
+              <>
+                <div className="mb-5 flex items-center justify-between">
+                  <Input
+                    ref={serialsFilterRef}
+                    placeholder="Search serials..."
+                    className="md:text-base"
+                  />
+
+                  <NewSerialForm
+                    trigger={
+                      <Button>
+                        New serial
+                        <Plus />
+                      </Button>
+                    }
+                  />
+                </div>
+                <DataTable
+                  columns={serialsColumns}
+                  data={series || []}
+                  enableSorting={true}
+                  enableCheckboxes={false}
+                  enablePagination={true}
+                  enableColumnFilters={true}
+                  filterColumn="title"
+                  filterInputRef={serialsFilterRef}
+                />
+              </>
+            ) : (
+              <div className="relative m-[3px] flex flex-col items-center justify-center gap-5 bg-white p-10">
+                <div className="text-lg">You haven't created any serials yet.</div>
+                <NewSerialForm
+                  trigger={
+                    <Button containerClassName="w-max">
+                      New serial
+                      <Plus />
+                    </Button>
+                  }
+                />
+                <PxBorder width={3} radius="lg" />
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
