@@ -269,7 +269,7 @@ app.listen(port, () => {
  * @param {string} url - The request path, relative to the app base.
  * @param {import('express').Request} req - The Express request object for headers/session.
  * @param {import('express').Response} res - The Express response object for setting cookies.
- * @returns {Promise<{user: object | null, shouldRedirect?: {to: string}}>} Data to serialize into the document for SSR/hydration.
+ * @returns {Promise<{user: object | null, shouldRedirect?: {to: string}, posts?: Array, series?: Array}>} Data to serialize into the document for SSR/hydration.
  */
 // eslint-disable-next-line no-unused-vars
 async function loadDataForUrl(url, req, res) {
@@ -283,14 +283,74 @@ async function loadDataForUrl(url, req, res) {
       },
     });
 
-    if (url === 'login' || url === 'register') {
-      return {
-        user,
-        shouldRedirect: { to: '/' },
-      };
-    }
+    switch (url) {
+      case 'login':
+      case 'register':
+        return {
+          user,
+          shouldRedirect: { to: '/' },
+        };
 
-    return { user };
+      case '/':
+        try {
+          const [posts, series] = await Promise.all([
+            patronClient.posts.list({
+              credentials: 'include',
+              headers: {
+                cookie: cookies,
+              },
+            }),
+            patronClient.series.list({
+              credentials: 'include',
+              headers: {
+                cookie: cookies,
+              },
+            }),
+          ]);
+
+          // fetch tiers and about section
+
+          return {
+            user,
+            posts,
+            series,
+          };
+        } catch (dataError) {
+          console.warn('Failed to fetch posts/series for home page:', dataError);
+          return { user };
+        }
+
+      case 'dashboard/content':
+      case 'new-post':
+        try {
+          const [posts, series] = await Promise.all([
+            patronClient.posts.list({
+              credentials: 'include',
+              headers: {
+                cookie: cookies,
+              },
+            }),
+            patronClient.series.list({
+              credentials: 'include',
+              headers: {
+                cookie: cookies,
+              },
+            }),
+          ]);
+
+          return {
+            user,
+            posts,
+            series,
+          };
+        } catch (dataError) {
+          console.warn('Failed to fetch posts/series:', dataError);
+          return { user };
+        }
+
+      default:
+        return { user };
+    }
   } catch {
     const isProtectedRoute =
       !url.startsWith('login') && !url.startsWith('register') && !url.startsWith('forgot-password');
