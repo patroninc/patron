@@ -3,6 +3,7 @@ import { hydrateRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router';
 import { UserInfo } from 'patronts/models';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { AppDataProvider } from '@/contexts/AppDataContext';
 import Home from '@/pages/home';
 import { Login } from '@/pages/login';
 import { Register } from '@/pages/register';
@@ -16,7 +17,11 @@ import Settings from '@/pages/settings';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import NewPost from './pages/new-post';
 
-const initialData = (window as any).__INITIAL_DATA__ as { user?: UserInfo | null } | null;
+const initialData = (window as any).__INITIAL_DATA__ as {
+  user?: UserInfo | null;
+  posts?: any[];
+  series?: any[];
+} | null;
 
 export const router = createBrowserRouter([
   {
@@ -132,7 +137,9 @@ export const router = createBrowserRouter([
 const App = (): JSX.Element => {
   return (
     <AuthProvider initialUser={initialData?.user}>
-      <RouterProvider router={router} />
+      <AppDataProvider initialPosts={initialData?.posts} initialSeries={initialData?.series}>
+        <RouterProvider router={router} />
+      </AppDataProvider>
     </AuthProvider>
   );
 };
