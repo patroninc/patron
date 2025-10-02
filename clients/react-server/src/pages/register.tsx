@@ -122,7 +122,7 @@ export const Register = (): React.ReactElement => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email" type="email" {...field} />
+                    <Input placeholder="Enter your email" type="email" autoFocus {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

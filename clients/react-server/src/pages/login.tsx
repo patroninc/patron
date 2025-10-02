@@ -78,7 +78,7 @@ const EmailStep = ({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your email" type="email" {...field} />
+                  <Input placeholder="Enter your email" type="email" autoFocus {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -201,7 +201,7 @@ const LoginPasswordStep = ({
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your password" type="password" {...field} />
+                  <Input placeholder="Enter your password" type="password" autoFocus {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
