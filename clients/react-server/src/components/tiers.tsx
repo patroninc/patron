@@ -363,7 +363,7 @@ const Tiers = ({ tiers }: TiersProps): JSX.Element => {
     <>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <button className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 p-5 outline-none">
+          <button className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 px-5 py-20 outline-none">
             <PxBorder width={3} radius="lg" />
             <FocusRing width={3} />
             <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
