@@ -26,9 +26,6 @@ pub struct Post {
     /// Whether the post is published and visible to users
     #[serde(rename = "isPublished")]
     pub is_published: Option<bool>,
-    /// Whether the post requires premium access
-    #[serde(rename = "isPremium")]
-    pub is_premium: Option<bool>,
     /// URL to the post's thumbnail image
     #[serde(rename = "thumbnailUrl")]
     pub thumbnail_url: Option<String>,
@@ -59,7 +56,6 @@ pub struct Post {
     "slug": "episode-1-getting-started",
     "postNumber": 1,
     "isPublished": true,
-    "isPremium": false,
     "thumbnailUrl": "https://example.com/thumbnail.jpg",
     "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
     "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123",
@@ -91,10 +87,6 @@ pub struct PostResponse {
     #[schema(example = true)]
     #[serde(rename = "isPublished")]
     pub is_published: bool,
-    /// Whether the post requires premium access
-    #[schema(example = false)]
-    #[serde(rename = "isPremium")]
-    pub is_premium: bool,
     /// URL to the post's thumbnail image
     #[schema(example = "https://example.com/thumbnail.jpg")]
     #[serde(rename = "thumbnailUrl")]
@@ -127,7 +119,6 @@ impl From<Post> for PostResponse {
             slug: post.slug,
             number: post.number,
             is_published: post.is_published.unwrap_or(false),
-            is_premium: post.is_premium.unwrap_or(false),
             thumbnail_url: post.thumbnail_url,
             audio_file_id: post.audio_file_id,
             video_file_id: post.video_file_id,
@@ -148,7 +139,6 @@ impl From<Post> for PostResponse {
         "slug": "episode-1-getting-started",
         "postNumber": 1,
         "isPublished": false,
-        "isPremium": false,
         "thumbnailUrl": "https://example.com/thumbnail.jpg",
         "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
         "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"
@@ -176,10 +166,6 @@ pub struct CreatePostRequest {
     #[schema(example = false)]
     #[serde(rename = "isPublished")]
     pub is_published: Option<bool>,
-    /// Restrict this post to premium subscribers only
-    #[schema(example = false)]
-    #[serde(rename = "isPremium")]
-    pub is_premium: Option<bool>,
     /// Cover image URL for the post preview
     #[schema(example = "https://example.com/thumbnail.jpg")]
     #[serde(rename = "thumbnailUrl")]
@@ -204,7 +190,6 @@ pub struct CreatePostRequest {
         "slug": "episode-1-updated",
         "postNumber": 2,
         "isPublished": true,
-        "isPremium": true,
         "thumbnailUrl": "https://example.com/new-thumbnail.jpg",
         "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
         "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"
@@ -228,10 +213,6 @@ pub struct UpdatePostRequest {
     #[schema(example = true)]
     #[serde(rename = "isPublished")]
     pub is_published: Option<bool>,
-    /// Modify premium subscription requirement for this post
-    #[schema(example = true)]
-    #[serde(rename = "isPremium")]
-    pub is_premium: Option<bool>,
     /// Replace the post's cover image with a new URL
     #[schema(example = "https://example.com/new-thumbnail.jpg")]
     #[serde(rename = "thumbnailUrl")]
@@ -256,7 +237,6 @@ pub struct UpdatePostRequest {
     "slug": "episode-1-getting-started",
     "postNumber": 1,
     "isPublished": true,
-    "isPremium": false,
     "thumbnailUrl": "https://example.com/thumbnail.jpg",
     "audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012",
     "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123",

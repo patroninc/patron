@@ -113,7 +113,6 @@ async function run() {
   const result = await patronts.posts.create({
     audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
     content: "Welcome to our first episode where we discuss the fundamentals...",
-    isPremium: false,
     isPublished: false,
     postNumber: 1,
     seriesId: "b2c3d4e5-6f78-9012-bcde-f12345678901",
@@ -150,7 +149,6 @@ async function run() {
   const res = await postsCreate(patronts, {
     audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
     content: "Welcome to our first episode where we discuss the fundamentals...",
-    isPremium: false,
     isPublished: false,
     postNumber: 1,
     seriesId: "b2c3d4e5-6f78-9012-bcde-f12345678901",
@@ -297,7 +295,6 @@ async function run() {
     updatePostRequest: {
       audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
       content: "Updated content for the first episode with more details...",
-      isPremium: true,
       isPublished: true,
       postNumber: 2,
       slug: "episode-1-updated",
@@ -336,7 +333,6 @@ async function run() {
     updatePostRequest: {
       audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
       content: "Updated content for the first episode with more details...",
-      isPremium: true,
       isPublished: true,
       postNumber: 2,
       slug: "episode-1-updated",

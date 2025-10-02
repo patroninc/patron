@@ -68,13 +68,6 @@ pub async fn create_series(
         slug: body.slug.clone(),
         category: body.category.clone(),
         cover_image_url: body.cover_image_url.clone(),
-        is_published: Some(body.is_published.unwrap_or(false)),
-        is_monetized: Some(body.is_monetized.unwrap_or(false)),
-        pricing_tier: Some(
-            body.pricing_tier
-                .clone()
-                .unwrap_or_else(|| "free".to_owned()),
-        ),
         created_at: Some(Utc::now().naive_utc()),
         updated_at: Some(Utc::now().naive_utc()),
         deleted_at: None,
@@ -258,11 +251,6 @@ pub async fn update_series(
                 body.cover_image_url
                     .as_ref()
                     .map(|v| series_dsl::cover_image_url.eq(v)),
-                body.is_published.map(|v| series_dsl::is_published.eq(v)),
-                body.is_monetized.map(|v| series_dsl::is_monetized.eq(v)),
-                body.pricing_tier
-                    .as_ref()
-                    .map(|v| series_dsl::pricing_tier.eq(v)),
                 series_dsl::updated_at.eq(current_time),
             ))
             .get_result(&mut conn)

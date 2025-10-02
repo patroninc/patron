@@ -1,8 +1,5 @@
 // @generated automatically by Diesel CLI.
 
-#![allow(clippy::pub_use)]
-#![allow(clippy::single_char_lifetime_names)]
-
 diesel::table! {
     api_keys (id) {
         id -> Uuid,
@@ -41,7 +38,6 @@ diesel::table! {
         slug -> Varchar,
         number -> Int4,
         is_published -> Nullable<Bool>,
-        is_premium -> Nullable<Bool>,
         thumbnail_url -> Nullable<Text>,
         audio_file_id -> Nullable<Uuid>,
         video_file_id -> Nullable<Uuid>,
@@ -63,10 +59,6 @@ diesel::table! {
         #[max_length = 100]
         category -> Nullable<Varchar>,
         cover_image_url -> Nullable<Text>,
-        is_published -> Nullable<Bool>,
-        is_monetized -> Nullable<Bool>,
-        #[max_length = 50]
-        pricing_tier -> Nullable<Varchar>,
         created_at -> Nullable<Timestamp>,
         updated_at -> Nullable<Timestamp>,
         deleted_at -> Nullable<Timestamp>,

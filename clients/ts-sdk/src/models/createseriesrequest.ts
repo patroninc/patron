@@ -24,18 +24,6 @@ export type CreateSeriesRequest = {
    */
   description?: string | null | undefined;
   /**
-   * Enable monetization features for this series
-   */
-  isMonetized?: boolean | null | undefined;
-  /**
-   * Make this series visible to the public upon creation
-   */
-  isPublished?: boolean | null | undefined;
-  /**
-   * Subscription tier required to access the series
-   */
-  pricingTier?: string | null | undefined;
-  /**
    * Unique URL path segment for the new series
    */
   slug: string;
@@ -54,9 +42,6 @@ export const CreateSeriesRequest$inboundSchema: z.ZodType<
   category: z.nullable(z.string()).optional(),
   coverImageUrl: z.nullable(z.string()).optional(),
   description: z.nullable(z.string()).optional(),
-  isMonetized: z.nullable(z.boolean()).optional(),
-  isPublished: z.nullable(z.boolean()).optional(),
-  pricingTier: z.nullable(z.string()).optional(),
   slug: z.string(),
   title: z.string(),
 });
@@ -66,9 +51,6 @@ export type CreateSeriesRequest$Outbound = {
   category?: string | null | undefined;
   coverImageUrl?: string | null | undefined;
   description?: string | null | undefined;
-  isMonetized?: boolean | null | undefined;
-  isPublished?: boolean | null | undefined;
-  pricingTier?: string | null | undefined;
   slug: string;
   title: string;
 };
@@ -82,9 +64,6 @@ export const CreateSeriesRequest$outboundSchema: z.ZodType<
   category: z.nullable(z.string()).optional(),
   coverImageUrl: z.nullable(z.string()).optional(),
   description: z.nullable(z.string()).optional(),
-  isMonetized: z.nullable(z.boolean()).optional(),
-  isPublished: z.nullable(z.boolean()).optional(),
-  pricingTier: z.nullable(z.string()).optional(),
   slug: z.string(),
   title: z.string(),
 });

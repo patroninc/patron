@@ -1557,12 +1557,6 @@ components:
           type: "string"
           description: "Full content of the post"
           example: "Welcome to our first episode where we discuss the fundamentals..."
-        "isPremium":
-          type:
-            - "boolean"
-            - "null"
-          description: "Restrict this post to premium subscribers only"
-          example: false
         "isPublished":
           type:
             - "boolean"
@@ -1600,7 +1594,7 @@ components:
           format: "uuid"
           description: "Optional video file attachment for the post"
           example: "d4e5f6a7-8901-2345-def0-234567890123"
-      example: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "isPremium": false, "isPublished": false, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
+      example: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "isPublished": false, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
     "CreateSeriesRequest":
       type: "object"
       description: "Request payload for creating a new series with content and metadata"
@@ -1626,24 +1620,6 @@ components:
             - "null"
           description: "Description of the series content and purpose (optional)"
           example: "A weekly podcast about technology and innovation"
-        "isMonetized":
-          type:
-            - "boolean"
-            - "null"
-          description: "Enable monetization features for this series"
-          example: false
-        "isPublished":
-          type:
-            - "boolean"
-            - "null"
-          description: "Make this series visible to the public upon creation"
-          example: false
-        "pricingTier":
-          type:
-            - "string"
-            - "null"
-          description: "Subscription tier required to access the series"
-          example: "free"
         "slug":
           type: "string"
           description: "Unique URL path segment for the new series"
@@ -1652,7 +1628,7 @@ components:
           type: "string"
           description: "Name for the new series being created"
           example: "My Awesome Podcast"
-      example: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "description": "A weekly podcast about technology and innovation", "isMonetized": false, "isPublished": false, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast"}
+      example: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "description": "A weekly podcast about technology and innovation", "slug": "my-awesome-podcast", "title": "My Awesome Podcast"}
     "ErrorResponse":
       type: "object"
       description: "Standard JSON error response structure for API endpoints."
@@ -1795,7 +1771,6 @@ components:
         - "slug"
         - "postNumber"
         - "isPublished"
-        - "isPremium"
       properties:
         "audioFileId":
           type:
@@ -1820,10 +1795,6 @@ components:
           format: "uuid"
           description: "Post's unique identifier"
           example: "a1b2c3d4-5e6f-7890-abcd-ef1234567890"
-        "isPremium":
-          type: "boolean"
-          description: "Whether the post requires premium access"
-          example: false
         "isPublished":
           type: "boolean"
           description: "Whether the post is published and visible to users"
@@ -1866,12 +1837,12 @@ components:
           format: "uuid"
           description: "ID of associated video file"
           example: "d4e5f6a7-8901-2345-def0-234567890123"
-      example: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPremium": false, "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
+      example: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
     "PostsListResponse":
       type: "array"
       items: {"$ref": "#/components/schemas/PostResponse"}
       description: "List of posts with pagination support"
-      example: [{"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPremium": false, "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}]
+      example: [{"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Welcome to our first episode where we discuss the fundamentals...", "createdAt": "2023-01-01T00:00:00Z", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "isPublished": true, "postNumber": 1, "seriesId": "b2c3d4e5-6f78-9012-bcde-f12345678901", "slug": "episode-1-getting-started", "thumbnailUrl": "https://example.com/thumbnail.jpg", "title": "Episode 1: Getting Started", "updatedAt": "2023-01-01T12:00:00Z", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}]
     "RegisterRequest":
       type: "object"
       description: "Request body for user registration."
@@ -1946,7 +1917,7 @@ components:
       type: "array"
       items: {"$ref": "#/components/schemas/SeriesResponse"}
       description: "List of series with pagination support"
-      example: [{"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "isMonetized": false, "isPublished": true, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}]
+      example: [{"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}]
     "SeriesResponse":
       type: "object"
       description: "API response model for series"
@@ -1955,9 +1926,6 @@ components:
         - "userId"
         - "title"
         - "slug"
-        - "isPublished"
-        - "isMonetized"
-        - "pricingTier"
       properties:
         "category":
           type:
@@ -1989,18 +1957,6 @@ components:
           format: "uuid"
           description: "Series unique identifier"
           example: "e5f6a7b8-9012-3456-ef01-345678901234"
-        "isMonetized":
-          type: "boolean"
-          description: "Whether the series has monetization enabled"
-          example: false
-        "isPublished":
-          type: "boolean"
-          description: "Whether the series is published and visible to users"
-          example: true
-        "pricingTier":
-          type: "string"
-          description: "Pricing tier for the series"
-          example: "free"
         "slug":
           type: "string"
           description: "SEO-friendly URL identifier for the series"
@@ -2021,7 +1977,7 @@ components:
           format: "uuid"
           description: "ID of the user who owns this series"
           example: "f6a7b8c9-0123-4567-f012-456789012345"
-      example: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "isMonetized": false, "isPublished": true, "pricingTier": "free", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+      example: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
     "UpdateApiKeyRequest":
       type: "object"
       description: "Request payload for updating an API key"
@@ -2071,12 +2027,6 @@ components:
             - "null"
           description: "Updated post content text (optional)"
           example: "Updated content for the first episode with more details..."
-        "isPremium":
-          type:
-            - "boolean"
-            - "null"
-          description: "Modify premium subscription requirement for this post"
-          example: true
         "isPublished":
           type:
             - "boolean"
@@ -2115,7 +2065,7 @@ components:
           format: "uuid"
           description: "Updated video file reference for the post"
           example: "d4e5f6a7-8901-2345-def0-234567890123"
-      example: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Updated content for the first episode with more details...", "isPremium": true, "isPublished": true, "postNumber": 2, "slug": "episode-1-updated", "thumbnailUrl": "https://example.com/new-thumbnail.jpg", "title": "Episode 1: Getting Started (Updated)", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
+      example: {"audioFileId": "c3d4e5f6-7890-1234-cdef-123456789012", "content": "Updated content for the first episode with more details...", "isPublished": true, "postNumber": 2, "slug": "episode-1-updated", "thumbnailUrl": "https://example.com/new-thumbnail.jpg", "title": "Episode 1: Getting Started (Updated)", "videoFileId": "d4e5f6a7-8901-2345-def0-234567890123"}
     "UpdateSeriesRequest":
       type: "object"
       description: "Request payload for updating series content, metadata, or status"
@@ -2138,24 +2088,6 @@ components:
             - "null"
           description: "Updated description of the series (optional)"
           example: "An updated description with more details"
-        "isMonetized":
-          type:
-            - "boolean"
-            - "null"
-          description: "Toggle monetization features for the series"
-          example: true
-        "isPublished":
-          type:
-            - "boolean"
-            - "null"
-          description: "Change the public visibility of the series"
-          example: true
-        "pricingTier":
-          type:
-            - "string"
-            - "null"
-          description: "Modify the subscription tier requirement for the series"
-          example: "premium"
         "slug":
           type:
             - "string"
@@ -2168,7 +2100,7 @@ components:
             - "null"
           description: "New title for the series (optional)"
           example: "My Updated Podcast"
-      example: {"category": "Technology", "coverImageUrl": "https://example.com/new-cover.jpg", "description": "An updated description with more details", "isMonetized": true, "isPublished": true, "pricingTier": "premium", "slug": "my-updated-podcast", "title": "My Updated Podcast"}
+      example: {"category": "Technology", "coverImageUrl": "https://example.com/new-cover.jpg", "description": "An updated description with more details", "slug": "my-updated-podcast", "title": "My Updated Podcast"}
     "UpdateUserFileRequest":
       type: "object"
       description: "Request payload for updating user file metadata, filename, or status"

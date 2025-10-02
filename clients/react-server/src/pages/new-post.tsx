@@ -37,16 +37,6 @@ import { CreatePostRequest } from 'patronts/models';
 import { Editor } from '@tinymce/tinymce-react';
 import { useAppData } from '@/contexts/AppDataContext';
 
-export type PostFormData = {
-  title: string;
-  content: string;
-  postNumber: number;
-  isPublished: boolean;
-  isPremium: boolean;
-  thumbnailUrl?: string;
-  seriesId?: string;
-};
-
 import '../styling/tinymce.css';
 
 /**
@@ -69,13 +59,12 @@ const NewPost = (): JSX.Element => {
   /**
    * Form instance for post creation with default values and validation rules.
    */
-  const form = useForm<PostFormData>({
+  const form = useForm<CreatePostRequest>({
     defaultValues: {
       title: '',
       content: '',
       postNumber: 1,
       isPublished: false,
-      isPremium: false,
       thumbnailUrl: undefined,
       seriesId: undefined,
     },
@@ -91,10 +80,10 @@ const NewPost = (): JSX.Element => {
   /**
    * Handles the submission of the post creation form.
    *
-   * @param {PostFormData} formData - The form data containing all post information
+   * @param {CreatePostRequest} formData - The form data containing all post information
    * @returns {void}
    */
-  const handleSubmit = async (formData: PostFormData): Promise<void> => {
+  const handleSubmit = async (formData: CreatePostRequest): Promise<void> => {
     try {
       setIsLoading(true);
 
@@ -344,24 +333,12 @@ const NewPost = (): JSX.Element => {
                     <FormItem>
                       <div className="flex items-center gap-2">
                         <FormControl>
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                          <Checkbox
+                            checked={field.value ?? undefined}
+                            onCheckedChange={field.onChange}
+                          />
                         </FormControl>
                         <FormLabel>Publish this post immediately</FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="isPremium"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center gap-2">
-                        <FormControl>
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                        <FormLabel>Make this post premium (requires subscription)</FormLabel>
                       </div>
                     </FormItem>
                   )}

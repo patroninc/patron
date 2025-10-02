@@ -10,7 +10,6 @@ import { UpdatePostRequest } from "patronts/models";
 let value: UpdatePostRequest = {
   audioFileId: "c3d4e5f6-7890-1234-cdef-123456789012",
   content: "Updated content for the first episode with more details...",
-  isPremium: true,
   isPublished: true,
   postNumber: 2,
   slug: "episode-1-updated",
@@ -26,7 +25,6 @@ let value: UpdatePostRequest = {
 | ---------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
 | `audioFileId`                                              | *string*                                                   | :heavy_minus_sign:                                         | Updated audio file reference for the post                  | c3d4e5f6-7890-1234-cdef-123456789012                       |
 | `content`                                                  | *string*                                                   | :heavy_minus_sign:                                         | Updated post content text (optional)                       | Updated content for the first episode with more details... |
-| `isPremium`                                                | *boolean*                                                  | :heavy_minus_sign:                                         | Modify premium subscription requirement for this post      | true                                                       |
 | `isPublished`                                              | *boolean*                                                  | :heavy_minus_sign:                                         | Change the publication visibility of this post             | true                                                       |
 | `postNumber`                                               | *number*                                                   | :heavy_minus_sign:                                         | Updated sequential number within the series (optional)     | 2                                                          |
 | `slug`                                                     | *string*                                                   | :heavy_minus_sign:                                         | New URL-friendly slug for the post (optional)              | episode-1-updated                                          |
