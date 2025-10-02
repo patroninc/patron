@@ -30,7 +30,16 @@ export const render = (
 ): PipeableStream => {
   return renderToPipeableStream(
     <StrictMode>
-      <App initialData={initialData as { user?: UserInfo | null } | null} url={url} />
+      <App
+        initialData={
+          initialData as {
+            user?: UserInfo | null;
+            posts?: any[];
+            series?: any[];
+          } | null
+        }
+        url={url}
+      />
     </StrictMode>,
     options,
   );

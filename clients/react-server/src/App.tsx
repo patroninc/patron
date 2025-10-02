@@ -1,6 +1,7 @@
 import { JSX } from 'react';
 import { UserInfo } from 'patronts/models';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { AppDataProvider } from '@/contexts/AppDataContext';
 import Home from '@/pages/home';
 import { Login } from '@/pages/login';
 import { Register } from '@/pages/register';
@@ -15,6 +16,8 @@ import { StaticRouter } from 'react-router';
 type AppProps = {
   initialData?: {
     user?: UserInfo | null;
+    posts?: any[];
+    series?: any[];
   } | null;
   url?: string;
 };
@@ -105,7 +108,9 @@ const App = ({ initialData, url }: AppProps): JSX.Element => {
 
   return (
     <AuthProvider initialUser={initialData?.user}>
-      <StaticRouter location={url || '/'}>{renderPage()}</StaticRouter>
+      <AppDataProvider initialPosts={initialData?.posts} initialSeries={initialData?.series}>
+        <StaticRouter location={url || '/'}>{renderPage()}</StaticRouter>
+      </AppDataProvider>
     </AuthProvider>
   );
 };
