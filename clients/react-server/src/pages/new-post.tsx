@@ -15,19 +15,36 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import PxBorder from '@/components/px-border';
 import { patronClient } from '@/lib/utils';
 import { CreatePostRequest } from 'patronts/models';
 import { Editor } from '@tinymce/tinymce-react';
+import { useAppData } from '@/contexts/AppDataContext';
 
 export type PostFormData = {
   title: string;
   content: string;
-  slug: string;
   postNumber: number;
   isPublished: boolean;
   isPremium: boolean;
   thumbnailUrl?: string;
+  seriesId?: string;
 };
 
 import '../styling/tinymce.css';
@@ -40,10 +57,14 @@ import '../styling/tinymce.css';
  */
 const NewPost = (): JSX.Element => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showNoSeriesModal, setShowNoSeriesModal] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const editorRef = useRef<any>(null);
+
+  const { series } = useAppData();
 
   /**
    * Form instance for post creation with default values and validation rules.
@@ -52,27 +73,20 @@ const NewPost = (): JSX.Element => {
     defaultValues: {
       title: '',
       content: '',
-      slug: '',
       postNumber: 1,
       isPublished: false,
       isPremium: false,
       thumbnailUrl: undefined,
+      seriesId: undefined,
     },
   });
 
-  // Auto-generate slug from title
-  const watchedTitle = form.watch('title');
+  // Show modal if user has no series when entering the page
   useEffect(() => {
-    if (watchedTitle) {
-      const slug = watchedTitle
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
-      form.setValue('slug', slug);
+    if (!series || series.length === 0) {
+      setShowNoSeriesModal(true);
     }
-  }, [watchedTitle, form]);
+  }, [series]);
 
   /**
    * Handles the submission of the post creation form.
@@ -87,11 +101,19 @@ const NewPost = (): JSX.Element => {
       // Get content from TinyMCE editor
       const editorContent = editorRef.current?.getContent() || formData.content;
 
+      // Generate slug from title
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+
       const createPostRequest: CreatePostRequest = {
-        seriesId: '', // TODO: This needs to be provided - series selection was removed
+        seriesId: formData.seriesId === 'none' ? '' : formData.seriesId || '',
         title: formData.title,
         content: editorContent,
-        slug: formData.slug,
+        slug: slug,
         postNumber: formData.postNumber,
         isPublished: formData.isPublished,
         isPremium: formData.isPremium,
@@ -100,7 +122,7 @@ const NewPost = (): JSX.Element => {
         videoFileId: null,
       };
 
-      const result = await patronClient.posts.createPost(createPostRequest);
+      const result = await patronClient.posts.create(createPostRequest);
       console.log('Post created successfully:', result);
 
       // Navigate back to content dashboard
@@ -114,6 +136,24 @@ const NewPost = (): JSX.Element => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  /**
+   * Opens the image upload dialog.
+   *
+   * @returns {void}
+   */
+  const openImageDialog = (): void => {
+    setIsImageDialogOpen(true);
+  };
+
+  /**
+   * Closes the image upload dialog.
+   *
+   * @returns {void}
+   */
+  const closeImageDialog = (): void => {
+    setIsImageDialogOpen(false);
   };
 
   /**
@@ -143,59 +183,74 @@ const NewPost = (): JSX.Element => {
         <div className="max-w-4xl space-y-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-              {/* Title */}
-              <FormField
-                control={form.control}
-                name="title"
-                rules={{ required: 'Title is required' }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter post title..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Title and Series Row */}
+              <div className="flex items-center gap-6">
+                {/* Title */}
+                <FormField
+                  control={form.control}
+                  name="title"
+                  rules={{ required: 'Title is required' }}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter post title..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Slug */}
-              <FormField
-                control={form.control}
-                name="slug"
-                rules={{ required: 'Slug is required' }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input placeholder="post-slug" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                {/* Post Number */}
+                <FormField
+                  control={form.control}
+                  name="postNumber"
+                  rules={{ required: 'Post number is required', min: 1 }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Post Number</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          className="w-[100px]"
+                          min="1"
+                          placeholder="1"
+                          {...field}
+                          onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Post Number */}
-              <FormField
-                control={form.control}
-                name="postNumber"
-                rules={{ required: 'Post number is required', min: 1 }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Post Number</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        placeholder="1"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                {/* Series Selection */}
+                <FormField
+                  control={form.control}
+                  name="seriesId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Series</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a series..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="none">No Series</SelectItem>
+                          {series?.map((s) => (
+                            <SelectItem key={s.id} value={s.id}>
+                              {s.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               {/* Content Editor */}
               <FormField
@@ -262,34 +317,17 @@ const NewPost = (): JSX.Element => {
                   <FormItem>
                     <FormLabel>Thumbnail Image</FormLabel>
                     <FormControl>
-                      <div className="space-y-4">
-                        <input
-                          id="post-image-upload"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className="hidden"
-                        />
+                      <div className="space-y-2">
                         <Button
                           type="button"
                           variant="secondary"
-                          onClick={() => document.getElementById('post-image-upload')?.click()}
+                          onClick={openImageDialog}
                           className="w-full"
                           shadow={false}
                         >
                           <Upload className="h-4 w-4" />
-                          {imagePreview ? 'Change Image' : 'Choose Thumbnail Image'}
+                          {imagePreview ? 'Change Image' : 'Add Image'}
                         </Button>
-                        {imagePreview && (
-                          <div className="relative aspect-video w-1/3">
-                            <PxBorder width={3} radius="lg" />
-                            <img
-                              src={imagePreview}
-                              alt="Thumbnail preview"
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                        )}
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -331,7 +369,7 @@ const NewPost = (): JSX.Element => {
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex gap-4 pt-6">
+              <div className="flex items-center justify-between gap-4 pt-6">
                 <Button
                   type="button"
                   variant="secondary"
@@ -349,6 +387,78 @@ const NewPost = (): JSX.Element => {
           </Form>
         </div>
       </div>
+
+      <AlertDialog open={showNoSeriesModal} onOpenChange={setShowNoSeriesModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Create a serial first</AlertDialogTitle>
+            <AlertDialogDescription>
+              You need to create a serial first before you can create posts. Please go to the
+              Content dashboard to create a new serial.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex sm:justify-center">
+            <AlertDialogAction onClick={() => navigate('/dashboard/content')}>
+              Go to Content Dashboard
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Image Upload Dialog */}
+      <AlertDialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Upload Thumbnail Image</AlertDialogTitle>
+            <AlertDialogDescription>
+              Select an image for your post. Image should be in 16:9 aspect ratio.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="flex flex-col items-center gap-2">
+            <input
+              id="post-image-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+
+            {imagePreview && (
+              <div className="relative aspect-video w-2/3">
+                <PxBorder width={3} radius="lg" />
+                <img src={imagePreview} alt="Preview" className="h-full w-full object-cover" />
+              </div>
+            )}
+
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => document.getElementById('post-image-upload')?.click()}
+              shadow={false}
+              className="mx-auto w-max"
+            >
+              <Upload />
+              Choose Image File
+            </Button>
+          </div>
+
+          <AlertDialogFooter>
+            <Button type="button" variant="secondary" onClick={closeImageDialog}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                closeImageDialog();
+              }}
+              disabled={!imagePreview}
+            >
+              Save Image
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 };
