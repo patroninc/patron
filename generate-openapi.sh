@@ -17,6 +17,16 @@ jq '
 
 echo "✅ Added additionalProperties: true to Value schema"
 
+echo "🔍 Linting OpenAPI spec with vacuum..."
+vacuum lint clients/ts-sdk/openapi.json -r '.github/rules.yaml' -d --fail-severity warn
+
+if [ $? -ne 0 ]; then
+    echo "❌ OpenAPI spec has errors or warnings. Fix them before generating the SDK."
+    exit 1
+fi
+
+echo "✅ OpenAPI spec passed vacuum lint"
+
 echo "🔄 Rebuilding TypeScript SDK..."
 cd clients/ts-sdk
 speakeasy run
