@@ -18,12 +18,12 @@ import { Button } from '@/components/ui/button';
  */
 export const Home = (): JSX.Element => {
   const { user } = useAuth();
-  const navigate = useNavigate();
-  const { series } = useAppData();
+  const { series, fetchSeries } = useAppData();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'all';
   const description = 'creating high quality chess lessons';
   const urlSlug = 'bobby';
+  const navigate = useNavigate();
 
   const tiers = [
     {
@@ -105,6 +105,7 @@ export const Home = (): JSX.Element => {
                   content with your audience.
                 </p>
                 <NewSeriesForm
+                  onSeriesCreated={fetchSeries}
                   trigger={
                     <Button containerClassName="w-max">
                       Create Your First Series

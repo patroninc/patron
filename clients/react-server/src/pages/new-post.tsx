@@ -105,7 +105,6 @@ const NewPost = (): JSX.Element => {
         slug: slug,
         postNumber: formData.postNumber,
         isPublished: formData.isPublished,
-        isPremium: formData.isPremium,
         thumbnailUrl: formData.thumbnailUrl || null,
         audioFileId: null,
         videoFileId: null,
@@ -115,7 +114,7 @@ const NewPost = (): JSX.Element => {
       console.log('Post created successfully:', result);
 
       // Refresh posts data
-      await fetchPosts();
+      await fetchPosts?.();
 
       // Navigate back to content dashboard
       navigate('/dashboard/content');
