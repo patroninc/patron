@@ -63,7 +63,6 @@ describe("Posts API Integration Tests", () => {
       expect(response?.slug).toBe(testPostSlug);
       expect(response?.postNumber).toBe(1);
       expect(response?.isPublished).toBeDefined();
-      expect(response?.isPremium).toBeDefined();
 
       testPostId = response?.id || null;
     });
@@ -86,7 +85,6 @@ describe("Posts API Integration Tests", () => {
       expect(response?.title).toBe("Complete Test Post");
       expect(response?.content).toBe("This is comprehensive test post content with all fields");
       expect(response?.postNumber).toBe(2);
-      expect(response?.isPremium).toBe(true);
       expect(response?.isPublished).toBe(true);
       expect(response?.audioFileId).toBeNull();
 
@@ -377,7 +375,6 @@ describe("Posts API Integration Tests", () => {
         postId: testPostId!,
         updatePostRequest: {
           audioFileId: undefined,
-          isPremium: undefined,
           isPublished: undefined,
           postNumber: undefined,
           slug: undefined,
@@ -411,7 +408,6 @@ describe("Posts API Integration Tests", () => {
       });
 
       expect(response?.isPublished).toBe(true);
-      expect(response?.isPremium).toBe(true);
     });
 
     it("should update post slug and number", async () => {
@@ -426,7 +422,6 @@ describe("Posts API Integration Tests", () => {
         updatePostRequest: {
           audioFileId: undefined,
           content: undefined,
-          isPremium: undefined,
           isPublished: undefined,
           title: undefined,
           ...updateRequest,
@@ -446,7 +441,6 @@ describe("Posts API Integration Tests", () => {
         postId: testPostId!,
         updatePostRequest: {
           content: undefined,
-          isPremium: undefined,
           isPublished: undefined,
           postNumber: undefined,
           slug: undefined,
@@ -476,7 +470,6 @@ describe("Posts API Integration Tests", () => {
           updatePostRequest: {
             audioFileId: undefined,
             content: undefined,
-            isPremium: undefined,
             isPublished: undefined,
             postNumber: undefined,
             title: undefined,
@@ -511,7 +504,6 @@ describe("Posts API Integration Tests", () => {
           updatePostRequest: {
             audioFileId: undefined,
             content: undefined,
-            isPremium: undefined,
             isPublished: undefined,
             slug: undefined,
             title: undefined,
@@ -538,7 +530,6 @@ describe("Posts API Integration Tests", () => {
           updatePostRequest: {
             audioFileId: undefined,
             content: undefined,
-            isPremium: undefined,
             isPublished: undefined,
             postNumber: undefined,
             slug: undefined,

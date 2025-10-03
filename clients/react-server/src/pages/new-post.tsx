@@ -54,7 +54,7 @@ const NewPost = (): JSX.Element => {
 
   const editorRef = useRef<any>(null);
 
-  const { series } = useAppData();
+  const { series, fetchPosts } = useAppData();
 
   /**
    * Form instance for post creation with default values and validation rules.
@@ -105,7 +105,6 @@ const NewPost = (): JSX.Element => {
         slug: slug,
         postNumber: formData.postNumber,
         isPublished: formData.isPublished,
-        isPremium: formData.isPremium,
         thumbnailUrl: formData.thumbnailUrl || null,
         audioFileId: null,
         videoFileId: null,
@@ -113,6 +112,9 @@ const NewPost = (): JSX.Element => {
 
       const result = await patronClient.posts.create(createPostRequest);
       console.log('Post created successfully:', result);
+
+      // Refresh posts data
+      await fetchPosts?.();
 
       // Navigate back to content dashboard
       navigate('/dashboard/content');

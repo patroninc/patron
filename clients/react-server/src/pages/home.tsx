@@ -3,7 +3,7 @@ import MainLayout from '../layouts/main';
 import { JSX } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PxBorder from '@/components/px-border';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import FocusRing from '@/components/focus-ring';
 import About from '@/components/about';
 import Tiers from '@/components/tiers';
@@ -18,10 +18,12 @@ import { Button } from '@/components/ui/button';
  */
 export const Home = (): JSX.Element => {
   const { user } = useAuth();
-  const navigate = useNavigate();
-  const { series } = useAppData();
+  const { posts, series, fetchSeries } = useAppData();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'all';
   const description = 'creating high quality chess lessons';
   const urlSlug = 'bobby';
+  const navigate = useNavigate();
 
   const tiers = [
     {
@@ -80,7 +82,11 @@ export const Home = (): JSX.Element => {
         <Customization initialData={user ?? undefined} />
       </div>
       <main className="p-[50px] px-[100px]">
-        <Tabs className="gap-10" defaultValue="all">
+        <Tabs
+          className="gap-10"
+          value={activeTab}
+          onValueChange={(value) => setSearchParams({ tab: value })}
+        >
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="membership-tiers">Membership Tiers</TabsTrigger>
@@ -99,6 +105,7 @@ export const Home = (): JSX.Element => {
                   content with your audience.
                 </p>
                 <NewSeriesForm
+                  onSeriesCreated={fetchSeries}
                   trigger={
                     <Button containerClassName="w-max">
                       Create Your First Series

@@ -283,73 +283,36 @@ async function loadDataForUrl(url, req, res) {
       },
     });
 
-    switch (url) {
-      case 'login':
-      case 'register':
-        return {
-          user,
-          shouldRedirect: { to: '/' },
-        };
+    // Redirect authenticated users away from auth pages
+    if (url === 'login' || url === 'register') {
+      return {
+        user,
+        shouldRedirect: { to: '/' },
+      };
+    }
 
-      case '/':
-        try {
-          const [posts, series] = await Promise.all([
-            patronClient.posts.list({
-              credentials: 'include',
-              headers: {
-                cookie: cookies,
-              },
-            }),
-            patronClient.series.list({
-              credentials: 'include',
-              headers: {
-                cookie: cookies,
-              },
-            }),
-          ]);
+    try {
+      const requestOptions = {
+        credentials: 'include',
+        headers: {
+          cookie: cookies,
+          accept: 'application/json',
+        },
+      };
 
-          // fetch tiers and about section
+      const [posts, series] = await Promise.all([
+        patronClient.posts.list(undefined, requestOptions),
+        patronClient.series.list({ limit: 40 }, requestOptions),
+      ]);
 
-          return {
-            user,
-            posts,
-            series,
-          };
-        } catch (dataError) {
-          console.warn('Failed to fetch posts/series for home page:', dataError);
-          return { user };
-        }
-
-      case 'dashboard/content':
-      case 'new-post':
-        try {
-          const [posts, series] = await Promise.all([
-            patronClient.posts.list({
-              credentials: 'include',
-              headers: {
-                cookie: cookies,
-              },
-            }),
-            patronClient.series.list({
-              credentials: 'include',
-              headers: {
-                cookie: cookies,
-              },
-            }),
-          ]);
-
-          return {
-            user,
-            posts,
-            series,
-          };
-        } catch (dataError) {
-          console.warn('Failed to fetch posts/series:', dataError);
-          return { user };
-        }
-
-      default:
-        return { user };
+      return {
+        user,
+        posts,
+        series,
+      };
+    } catch (dataError) {
+      console.warn('Failed to fetch posts/series:', dataError);
+      return { user };
     }
   } catch {
     const isProtectedRoute =

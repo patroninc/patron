@@ -36,8 +36,6 @@ describe("Series API Integration Tests", () => {
       expect(response?.id).toBeDefined();
       expect(response?.title).toBe("Test Series");
       expect(response?.slug).toBe(testSeriesSlug);
-      expect(response?.isPublished).toBe(false);
-      expect(response?.isMonetized).toBe(false);
       expect(response?.userId).toBeDefined();
 
       testSeriesId = response?.id || null;
@@ -62,9 +60,6 @@ describe("Series API Integration Tests", () => {
       expect(response?.description).toBe("A comprehensive test series for API validation");
       expect(response?.category).toBe("Technology");
       expect(response?.coverImageUrl).toBe("https://example.com/test-cover.jpg");
-      expect(response?.isPublished).toBe(true);
-      expect(response?.isMonetized).toBe(true);
-      expect(response?.pricingTier).toBe("premium");
 
       testSeriesId = response?.id || null;
     });
@@ -237,9 +232,6 @@ describe("Series API Integration Tests", () => {
         updateSeriesRequest: {
           category: undefined,
           coverImageUrl: undefined,
-          isMonetized: undefined,
-          isPublished: undefined,
-          pricingTier: undefined,
           slug: undefined,
           ...updateRequest,
         },
@@ -269,10 +261,6 @@ describe("Series API Integration Tests", () => {
           ...updateRequest,
         },
       });
-
-      expect(response?.isPublished).toBe(true);
-      expect(response?.isMonetized).toBe(true);
-      expect(response?.pricingTier).toBe("premium");
     });
 
     it("should update series category and cover image", async () => {
@@ -285,9 +273,6 @@ describe("Series API Integration Tests", () => {
         seriesId: testSeriesId!,
         updateSeriesRequest: {
           description: undefined,
-          isMonetized: undefined,
-          isPublished: undefined,
-          pricingTier: undefined,
           slug: undefined,
           title: undefined,
           ...updateRequest,
@@ -310,9 +295,6 @@ describe("Series API Integration Tests", () => {
           category: undefined,
           coverImageUrl: undefined,
           description: undefined,
-          isMonetized: undefined,
-          isPublished: undefined,
-          pricingTier: undefined,
           title: undefined,
           ...updateRequest,
         },
@@ -361,9 +343,6 @@ describe("Series API Integration Tests", () => {
             category: undefined,
             coverImageUrl: undefined,
             description: undefined,
-            isMonetized: undefined,
-            isPublished: undefined,
-            pricingTier: undefined,
             slug: undefined,
             title: "Updated Title",
           },
