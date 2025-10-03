@@ -3,7 +3,7 @@ import MainLayout from '../layouts/main';
 import { JSX } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PxBorder from '@/components/px-border';
-import { Link, useSearchParams } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import FocusRing from '@/components/focus-ring';
 import About from '@/components/about';
 import Tiers from '@/components/tiers';
@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
  */
 export const Home = (): JSX.Element => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { series } = useAppData();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'all';
@@ -115,10 +116,13 @@ export const Home = (): JSX.Element => {
             ) : (
               <>
                 {series.map((series) => (
-                  <Link className="group outline-none" to={`/series/${series.id}`} key={series.id}>
-                    <div
-                      key={series.id}
-                      className="bg-secondary-primary relative flex h-full flex-col gap-4 p-5"
+                  <div
+                    className="bg-secondary-primary relative flex h-full flex-col gap-5 p-5"
+                    key={series.id}
+                  >
+                    <Link
+                      className="group flex flex-col gap-4 outline-none"
+                      to={`/series/${series.id}`}
                     >
                       <div className="bg-accent relative aspect-video">
                         <PxBorder width={3} radius="lg" />
@@ -164,8 +168,16 @@ export const Home = (): JSX.Element => {
                         </div>
                       </div>
                       <p className="text-base">{series.description}</p>
-                    </div>
-                  </Link>
+                    </Link>
+                    <Button
+                      className="w-full"
+                      containerClassName="mt-0"
+                      onClick={() => navigate(`/new-post?serial-id={${series.id}}`)}
+                    >
+                      Create a new post
+                      <PlusIcon size={20} />
+                    </Button>
+                  </div>
                 ))}
               </>
             )}
