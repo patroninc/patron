@@ -2,6 +2,7 @@ import { JSX } from 'react';
 import MainLayout from '@/layouts/main';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PxBorder from '@/components/px-border';
+import UnderContruction from '@/components/under-contruction';
 
 /**
  * Payouts dashboard page component.
@@ -12,7 +13,8 @@ import PxBorder from '@/components/px-border';
 const Payouts = (): JSX.Element => {
   return (
     <MainLayout>
-      <div className="p-[50px] px-[100px]">
+      <UnderContruction />
+      {/* <div className="p-[50px] px-[100px]">
         <h1 className="mb-[50px] text-5xl">Payouts</h1>
 
         <Tabs defaultValue="balance" className="w-full">
@@ -40,7 +42,7 @@ const Payouts = (): JSX.Element => {
             <div className="mb-5 flex items-center justify-between"></div>
           </TabsContent>
         </Tabs>
-      </div>
+      </div> */}
     </MainLayout>
   );
 };

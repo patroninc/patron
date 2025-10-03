@@ -11,6 +11,7 @@ import MainLayout from '@/layouts/main';
 import { Tabs, TabsTrigger, TabsContent, TabsList } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import PxBorder from '@/components/px-border';
+import UnderContruction from '@/components/under-contruction';
 
 /**
  * Generate 30 days of sample chart data for membership tiers
@@ -105,7 +106,8 @@ const Insights = (): JSX.Element => {
 
   return (
     <MainLayout>
-      <div className="p-[50px] px-[100px]">
+      <UnderContruction />
+      {/* <div className="p-[50px] px-[100px]">
         <h1 className="mb-[50px] text-5xl">Insights</h1>
 
         <Tabs defaultValue="memberships" className="w-full">
@@ -228,7 +230,7 @@ const Insights = (): JSX.Element => {
             <div className="mb-5 flex items-center justify-between"></div>
           </TabsContent>
         </Tabs>
-      </div>
+      </div> */}
     </MainLayout>
   );
 };
