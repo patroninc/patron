@@ -44,6 +44,10 @@ interface NewSeriesFormProps {
    * Optional description for the dialog
    */
   description?: string;
+  /**
+   * Optional callback to refresh series after creation
+   */
+  onSeriesCreated?: () => void;
 }
 
 /**
@@ -57,6 +61,7 @@ const NewSeriesForm = ({
   trigger,
   title = 'Create New Series',
   description = 'Create a new series to organize your posts into a cohesive series.',
+  onSeriesCreated,
 }: NewSeriesFormProps): JSX.Element => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isImageDialogOpen, setIsImageDialogOpen] = useState<boolean>(false);
@@ -102,6 +107,11 @@ const NewSeriesForm = ({
         coverImageUrl: coverImageUrl,
         slug: formData.seriesData.title.toLowerCase().replace(/ /g, '-'),
       });
+
+      // Call the callback to refresh series data
+      if (onSeriesCreated) {
+        onSeriesCreated();
+      }
 
       navigate(0);
     } catch (error) {
