@@ -11,13 +11,14 @@ import { Customization } from '@/components/customization';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppData } from '@/contexts/AppDataContext';
 import NewSeriesForm from '@/components/new-series-form';
+import { Button } from '@/components/ui/button';
 
 /**
  * @returns {JSX.Element} The Home component
  */
 export const Home = (): JSX.Element => {
   const { user } = useAuth();
-  const { posts, series, fetchSeries } = useAppData();
+  const { series } = useAppData();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'all';
   const description = 'creating high quality chess lessons';
@@ -87,7 +88,6 @@ export const Home = (): JSX.Element => {
         >
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="series">Series</TabsTrigger>
             <TabsTrigger value="membership-tiers">Membership Tiers</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
@@ -95,149 +95,106 @@ export const Home = (): JSX.Element => {
             className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
             value="all"
           >
-            <Link
-              to="/new-post"
-              className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 px-5 py-20 outline-none"
-            >
-              <PxBorder width={3} radius="lg" />
-              <FocusRing width={3} />
-              <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
-                <PlusIcon size={70} />
-                <h2 className="text-3xl">Add new post</h2>
+            {!series || series.length === 0 ? (
+              <div className="relative col-span-full flex flex-col items-center justify-center gap-5 bg-white p-10">
+                <PxBorder width={3} radius="lg" />
+                <h2 className="text-2xl">Welcome to your Patron page!</h2>
+                <p className="text-lg">
+                  You need to create a series first before you can create posts and start sharing
+                  content with your audience.
+                </p>
+                <NewSeriesForm
+                  trigger={
+                    <Button containerClassName="w-max">
+                      Create Your First Series
+                      <PlusIcon size={20} />
+                    </Button>
+                  }
+                />
               </div>
-            </Link>
-            {posts &&
-              posts.map((post) => (
-                <Link
-                  className="group outline-none"
-                  to={`/post/${post.seriesId}/${post.postNumber}`}
-                  key={post.id}
-                >
-                  <div
-                    key={post.postNumber}
-                    className="bg-secondary-primary relative flex h-full flex-col gap-4 p-5"
-                  >
-                    <div className="bg-accent relative aspect-video">
-                      <PxBorder width={3} radius="lg" />
-                      {post.thumbnailUrl ? (
-                        <img
-                          src={post.thumbnailUrl}
-                          alt={post.title}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-full"
-                          viewBox="0 0 284 160"
-                          fill="none"
-                        >
-                          <rect width="284" height="160" fill="#ECDD30" />
-                          <path
-                            d="M137 108H127V102.909H137V108ZM157 108H147V102.909H157V108ZM127 102.909H122V87.6367H127V102.909ZM147 102.909H137V97.8184H147V102.909ZM162 102.909H157V87.6367H162V102.909ZM122 82.5459V87.6367H117V82.5459H122ZM167 87.6367H162V82.5459H167V87.6367ZM117 82.5459H112V72.3633H117V82.5459ZM172 82.5459H167V72.3633H172V82.5459ZM132 72.3633H117V67.2725H132V72.3633ZM167 72.3633H152V67.2725H167V72.3633ZM137 67.2725H132V57.0908H137V67.2725ZM152 67.2725H147V57.0908H152V67.2725ZM147 57.0908H137V52H147V57.0908Z"
-                            fill="black"
+            ) : (
+              <>
+                {series.map((series) => (
+                  <Link className="group outline-none" to={`/series/${series.id}`} key={series.id}>
+                    <div
+                      key={series.id}
+                      className="bg-secondary-primary relative flex h-full flex-col gap-4 p-5"
+                    >
+                      <div className="bg-accent relative aspect-video">
+                        <PxBorder width={3} radius="lg" />
+                        {series.coverImageUrl ? (
+                          <img
+                            src={series.coverImageUrl}
+                            alt={series.title}
+                            className="h-full w-full object-cover"
                           />
-                          <path
-                            d="M147 67.2725H152V72.3633H167V82.5449H162V87.6367H157V102.909H147V97.8184H137V102.909H127V87.6367H122V82.5449H117V72.3633H132V67.2725H137V57.0908H147V67.2725Z"
-                            fill="#265B92"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                    <PxBorder width={3} radius="lg" />
-                    <FocusRing width={3} />
-                    <div className="flex flex-col gap-3">
-                      <h3 className="text-xl">{post.title}</h3>
-                      <div className="flex items-center gap-2">
-                        <CalendarDays strokeWidth={1.5} size={20} />
-                        <p className="text-sm">
-                          {post.createdAt
-                            ? new Date(post.createdAt).toLocaleDateString()
-                            : 'No date'}
-                        </p>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-full"
+                            viewBox="0 0 284 160"
+                            fill="none"
+                          >
+                            <rect width="284" height="160" fill="#ECDD30" />
+                            <path
+                              d="M137 108H127V102.909H137V108ZM157 108H147V102.909H157V108ZM127 102.909H122V87.6367H127V102.909ZM147 102.909H137V97.8184H147V102.909ZM162 102.909H157V87.6367H162V102.909ZM122 82.5459V87.6367H117V82.5459H122ZM167 87.6367H162V82.5459H167V87.6367ZM117 82.5459H112V72.3633H117V82.5459ZM172 82.5459H167V72.3633H172V82.5459ZM132 72.3633H117V67.2725H132V72.3633ZM167 72.3633H152V67.2725H167V72.3633ZM137 67.2725H132V57.0908H137V67.2725ZM152 67.2725H147V57.0908H152V67.2725ZM147 57.0908H137V52H147V57.0908Z"
+                              fill="black"
+                            />
+                            <path
+                              d="M147 67.2725H152V72.3633H167V82.5449H162V87.6367H157V102.909H147V97.8184H137V102.909H127V87.6367H122V82.5449H117V72.3633H132V67.2725H137V57.0908H147V67.2725Z"
+                              fill="#265B92"
+                            />
+                          </svg>
+                        )}
                       </div>
-                    </div>
-                    <p className="text-base">{post.content}</p>
-                  </div>
-                </Link>
-              ))}
-          </TabsContent>
-          <TabsContent
-            className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
-            value="series"
-          >
-            <NewSeriesForm
-              onSeriesCreated={fetchSeries}
-              trigger={
-                <button
-                  type="button"
-                  className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 px-5 py-20 outline-none"
-                  suppressHydrationWarning
-                >
-                  <PxBorder width={3} radius="lg" />
-                  <FocusRing width={3} />
-                  <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
-                    <PlusIcon size={70} />
-                    <h2 className="text-3xl">Create new series</h2>
-                  </div>
-                </button>
-              }
-            />
-            {series &&
-              series.map((seriesItem) => (
-                <Link
-                  key={seriesItem.id}
-                  className="group outline-none"
-                  to={`/series/${seriesItem.id}`}
-                >
-                  <div
-                    key={seriesItem.id}
-                    className="bg-secondary-primary relative flex h-full flex-col gap-4 p-5"
-                  >
-                    <div className="bg-accent relative aspect-video">
                       <PxBorder width={3} radius="lg" />
-                      {seriesItem.coverImageUrl ? (
-                        <img
-                          src={seriesItem.coverImageUrl}
-                          alt={seriesItem.title}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-full"
-                          viewBox="0 0 284 160"
-                          fill="none"
-                        >
-                          <rect width="284" height="160" fill="#ECDD30" />
-                          <path
-                            d="M137 108H127V102.909H137V108ZM157 108H147V102.909H157V108ZM127 102.909H122V87.6367H127V102.909ZM147 102.909H137V97.8184H147V102.909ZM162 102.909H157V87.6367H162V102.909ZM122 82.5459V87.6367H117V82.5459H122ZM167 87.6367H162V82.5459H167V87.6367ZM117 82.5459H112V72.3633H117V82.5459ZM172 82.5459H167V72.3633H172V82.5459ZM132 72.3633H117V67.2725H132V72.3633ZM167 72.3633H152V67.2725H167V72.3633ZM137 67.2725H132V57.0908H137V67.2725ZM152 67.2725H147V57.0908H152V67.2725ZM147 57.0908H137V52H147V57.0908Z"
-                            fill="black"
-                          />
-                          <path
-                            d="M147 67.2725H152V72.3633H167V82.5449H162V87.6367H157V102.909H147V97.8184H137V102.909H127V87.6367H122V82.5449H117V72.3633H132V67.2725H137V57.0908H147V67.2725Z"
-                            fill="#265B92"
-                          />
-                        </svg>
-                      )}
+                      <FocusRing width={3} />
+                      <div className="flex flex-col gap-3">
+                        <h3 className="text-xl">{series.title}</h3>
+                        <div className="flex items-center justify-between">
+                          <p>{series.numberOfPosts} posts</p>
+                          <div className="flex items-center gap-2">
+                            <CalendarDays strokeWidth={1.5} size={20} />
+                            <p className="text-sm">
+                              {series.createdAt
+                                ? new Date(series.createdAt).toLocaleDateString()
+                                : 'No date'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-base">{series.description}</p>
                     </div>
-                    <PxBorder width={3} radius="lg" />
-                    <FocusRing width={3} />
-                    <div className="flex flex-col gap-3">
-                      <h3 className="text-xl">{seriesItem.title}</h3>
-                      <p className="text-base">
-                        {seriesItem.description || 'No description available'}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
+              </>
+            )}
           </TabsContent>
           <TabsContent
             className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
             value="membership-tiers"
           >
-            <Tiers tiers={tiers} />
+            {tiers.length === 0 ? (
+              <div className="relative col-span-full flex flex-col items-center justify-center gap-5 bg-white p-10">
+                <PxBorder width={3} radius="lg" />
+                <h2 className="text-2xl">Ready to offer exclusive content?</h2>
+                <p className="text-lg">
+                  Create membership tiers to offer different levels of access and benefits to your
+                  supporters.
+                </p>
+                <Tiers
+                  tiers={tiers}
+                  trigger={
+                    <Button containerClassName="w-max">
+                      Create Your First Tier
+                      <PlusIcon size={20} />
+                    </Button>
+                  }
+                />
+              </div>
+            ) : (
+              <Tiers tiers={tiers} />
+            )}
           </TabsContent>
           <TabsContent className="gap-10" value="about">
             <About joined={joined} about={about} />
