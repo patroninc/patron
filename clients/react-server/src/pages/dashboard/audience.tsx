@@ -10,6 +10,7 @@ import {
   createSimpleColumn,
   createActionsColumn,
 } from '@/components/data-table';
+import UnderContruction from '@/components/under-contruction';
 
 // User data types and placeholder data
 export type User = {
@@ -101,7 +102,8 @@ const Audience = (): JSX.Element => {
   const filterRef = useRef<HTMLInputElement>(null);
   return (
     <MainLayout>
-      <main className="p-[50px] px-[100px]">
+      <UnderContruction />
+      {/* <main className="p-[50px] px-[100px]">
         <h1 className="mb-[50px] text-5xl">Audience</h1>
         <div className="flex items-center py-4">
           <Input ref={filterRef} placeholder="Search users..." className="max-w-sm" />
@@ -116,7 +118,7 @@ const Audience = (): JSX.Element => {
           filterColumn="name"
           filterInputRef={filterRef}
         />
-      </main>
+      </main> */}
     </MainLayout>
   );
 };
