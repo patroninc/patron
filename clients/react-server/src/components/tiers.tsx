@@ -35,6 +35,7 @@ export type Tier = {
 
 type TiersProps = {
   tiers: Tier[];
+  trigger?: React.ReactNode;
 };
 
 type TierFormData = {
@@ -261,7 +262,7 @@ const TierForm = ({
  * @param root0.tiers List of tiers to display
  * @returns JSX element containing the tiers grid with internal operation handlers
  */
-const Tiers = ({ tiers }: TiersProps): JSX.Element => {
+const Tiers = ({ tiers, trigger }: TiersProps): JSX.Element => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -364,14 +365,16 @@ const Tiers = ({ tiers }: TiersProps): JSX.Element => {
     <>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <button className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 px-5 py-20 outline-none">
-            <PxBorder width={3} radius="lg" />
-            <FocusRing width={3} />
-            <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
-              <Pencil strokeWidth={1.5} size={70} />
-              <h2 className="text-3xl">Manage tiers</h2>
-            </div>
-          </button>
+          {trigger || (
+            <button className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 px-5 py-20 outline-none">
+              <PxBorder width={3} radius="lg" />
+              <FocusRing width={3} />
+              <div className="flex h-full flex-col items-center justify-center gap-5 text-center text-black">
+                <Pencil strokeWidth={1.5} size={70} />
+                <h2 className="text-3xl">Manage tiers</h2>
+              </div>
+            </button>
+          )}
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
