@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 import { JSX, useState } from 'react';
 import { Pencil, Trash, Plus } from 'lucide-react';
 import PxBorder from '@/components/px-border';
@@ -487,8 +488,10 @@ const Tiers = ({ tiers }: TiersProps): JSX.Element => {
               </div>
             </div>
             <ul className="flex [list-style-type:square] flex-col gap-2 pl-5">
-              {tier.features.map((feature) => (
-                <li className="text-sm">{feature}</li>
+              {tier.features.map((feature, index) => (
+                <li key={index} className="text-sm">
+                  {feature}
+                </li>
               ))}
             </ul>
           </div>

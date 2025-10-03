@@ -1,7 +1,7 @@
 import { JSX, useRef } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import MainLayout from '@/layouts/main';
 import { Input } from '@/components/ui/input';
@@ -86,6 +86,8 @@ const seriesColumns: ColumnDef<Series>[] = [
  */
 const Content = (): JSX.Element => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'posts';
   const postsFilterRef = useRef<HTMLInputElement>(null);
   const seriesFilterRef = useRef<HTMLInputElement>(null);
 
@@ -97,7 +99,11 @@ const Content = (): JSX.Element => {
       <div className="p-[50px] px-[100px]">
         <h1 className="mb-[50px] text-5xl">Content</h1>
 
-        <Tabs defaultValue="posts" className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setSearchParams({ tab: value })}
+          className="w-full"
+        >
           <TabsList>
             <TabsTrigger value="posts">All Posts</TabsTrigger>
             <TabsTrigger value="series">Series</TabsTrigger>

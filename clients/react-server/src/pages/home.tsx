@@ -3,7 +3,7 @@ import MainLayout from '../layouts/main';
 import { JSX } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PxBorder from '@/components/px-border';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import FocusRing from '@/components/focus-ring';
 import About from '@/components/about';
 import Tiers from '@/components/tiers';
@@ -17,7 +17,9 @@ import NewSeriesForm from '@/components/new-series-form';
  */
 export const Home = (): JSX.Element => {
   const { user } = useAuth();
-  const { posts, series } = useAppData();
+  const { posts, series, fetchSeries } = useAppData();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'all';
   const description = 'creating high quality chess lessons';
   const urlSlug = 'bobby';
 
@@ -78,7 +80,11 @@ export const Home = (): JSX.Element => {
         <Customization initialData={user ?? undefined} />
       </div>
       <main className="p-[50px] px-[100px]">
-        <Tabs className="gap-10" defaultValue="all">
+        <Tabs
+          className="gap-10"
+          value={activeTab}
+          onValueChange={(value) => setSearchParams({ tab: value })}
+        >
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="series">Series</TabsTrigger>
@@ -161,10 +167,12 @@ export const Home = (): JSX.Element => {
             value="series"
           >
             <NewSeriesForm
+              onSeriesCreated={fetchSeries}
               trigger={
                 <button
                   type="button"
                   className="bg-secondary-primary group relative flex cursor-pointer flex-col gap-4 px-5 py-20 outline-none"
+                  suppressHydrationWarning
                 >
                   <PxBorder width={3} radius="lg" />
                   <FocusRing width={3} />
