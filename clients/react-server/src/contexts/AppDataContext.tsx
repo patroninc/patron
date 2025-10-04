@@ -5,8 +5,12 @@ import { createContext, useContext, ReactNode, JSX, useState } from 'react';
 interface AppDataContextType {
   posts: any[] | null;
   series: any[] | null;
+  singleSeries: any | null;
+  singlePost: any | null;
   fetchPosts?: () => Promise<void>;
   fetchSeries?: () => Promise<void>;
+  fetchSingleSeries?: (seriesId: string) => Promise<void>;
+  fetchSinglePost?: (postId: string) => Promise<void>;
   // Future data types can be added here
   // users?: any[];
   // analytics?: any;
@@ -18,6 +22,8 @@ interface AppDataProviderProps {
   children: ReactNode;
   initialPosts?: PostResponse[] | null;
   initialSeries?: any[];
+  initialSingleSeries?: any;
+  initialSinglePost?: any;
 }
 
 /**
@@ -27,15 +33,21 @@ interface AppDataProviderProps {
  * @param {ReactNode} props.children - Child components to render
  * @param {PostResponse[] | null} props.initialPosts - Initial posts data from server
  * @param {any[]} props.initialSeries - Initial series data from server
+ * @param {any} props.initialSingleSeries - Initial single series data from server
+ * @param {any} props.initialSinglePost - Initial single post data from server
  * @returns {JSX.Element} The provider component
  */
 export const AppDataProvider = ({
   children,
   initialPosts,
   initialSeries,
+  initialSingleSeries,
+  initialSinglePost,
 }: AppDataProviderProps): JSX.Element => {
   const [posts, setPosts] = useState<PostResponse[] | null>(initialPosts ?? null);
   const [series, setSeries] = useState<any[] | null>(initialSeries ?? null);
+  const [singleSeries, setSingleSeries] = useState<any | null>(initialSingleSeries ?? null);
+  const [singlePost, setSinglePost] = useState<any | null>(initialSinglePost ?? null);
 
   /**
    * Fetch posts from the server.
@@ -53,11 +65,39 @@ export const AppDataProvider = ({
     setSeries(seriesResp);
   };
 
+  /**
+   * Fetch a single series from the server.
+   *
+   * @param {string} seriesId - The ID of the series to fetch
+   */
+  const fetchSingleSeries = async (seriesId: string): Promise<void> => {
+    // Clear the current singleSeries to avoid showing stale data
+    setSingleSeries(null);
+    const seriesResp = await patronClient.series.get({ seriesId });
+    setSingleSeries(seriesResp);
+  };
+
+  /**
+   * Fetch a single post from the server.
+   *
+   * @param {string} postId - The ID of the post to fetch
+   */
+  const fetchSinglePost = async (postId: string): Promise<void> => {
+    // Clear the current singlePost to avoid showing stale data
+    setSinglePost(null);
+    const postResp = await patronClient.posts.get({ postId });
+    setSinglePost(postResp);
+  };
+
   const value = {
     posts,
     series,
+    singleSeries,
+    singlePost,
     fetchPosts,
     fetchSeries,
+    fetchSingleSeries,
+    fetchSinglePost,
   };
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;

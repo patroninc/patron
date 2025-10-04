@@ -269,7 +269,7 @@ app.listen(port, '0.0.0.0', () => {
  * @param {string} url - The request path, relative to the app base.
  * @param {import('express').Request} req - The Express request object for headers/session.
  * @param {import('express').Response} res - The Express response object for setting cookies.
- * @returns {Promise<{user: object | null, shouldRedirect?: {to: string}, posts?: Array, series?: Array}>} Data to serialize into the document for SSR/hydration.
+ * @returns {Promise<{user: object | null, shouldRedirect?: {to: string}, posts?: Array, series?: Array, post?: object}>} Data to serialize into the document for SSR/hydration.
  */
 // eslint-disable-next-line no-unused-vars
 async function loadDataForUrl(url, req, res) {
@@ -300,15 +300,69 @@ async function loadDataForUrl(url, req, res) {
         },
       };
 
-      const [posts, series] = await Promise.all([
+      // Default: fetch all posts and series for general use
+      const [allPosts, allSeries] = await Promise.all([
         patronClient.posts.list(undefined, requestOptions),
         patronClient.series.list({ limit: 40 }, requestOptions),
       ]);
 
+      // Handle individual series page
+      const seriesMatch = url.match(/^\/?series\/([^/]+)\/?$/);
+      if (seriesMatch) {
+        const seriesId = seriesMatch[1];
+        try {
+          const [series, seriesPosts] = await Promise.all([
+            patronClient.series.get({ seriesId: seriesId }, requestOptions),
+            patronClient.posts.list({ seriesId: seriesId, limit: 50 }, requestOptions),
+          ]);
+          return {
+            user,
+            singleSeries: series,
+            series: allSeries,
+            posts: seriesPosts,
+            allPosts,
+          };
+        } catch (seriesError) {
+          console.warn('Failed to fetch series data:', seriesError);
+          return { user, posts: allPosts, series: allSeries };
+        }
+      }
+
+      // Handle individual post page
+      const postMatch = url.match(/^\/?post\/([^/]+)\/?$/);
+      if (postMatch) {
+        const postId = postMatch[1];
+        try {
+          const post = await patronClient.posts.get({ postId: postId }, requestOptions);
+          let series = null;
+
+          // If post belongs to a series, fetch series data too
+          if (post.seriesId) {
+            try {
+              series = await patronClient.series.get({ seriesId: post.seriesId }, requestOptions);
+            } catch (seriesError) {
+              console.warn('Failed to fetch series for post:', seriesError);
+            }
+          }
+
+          return {
+            user,
+            singlePost: post,
+            posts: allPosts,
+            singleSeries: series,
+            series: allSeries,
+          };
+        } catch (postError) {
+          console.warn('Failed to fetch post data:', postError);
+          return { user, posts: allPosts, series: allSeries };
+        }
+      }
+
+      // Default: return all posts and series for home page
       return {
         user,
-        posts,
-        series,
+        posts: allPosts,
+        series: allSeries,
       };
     } catch (dataError) {
       console.warn('Failed to fetch posts/series:', dataError);
