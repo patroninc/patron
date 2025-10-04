@@ -1,0 +1,64 @@
+# Patron
+
+> An open-source Patreon alternative with lower fees, specifically designed for creators who publish ongoing sequential content like webcomics, serialized novels, podcasts, book chapters, and serialized stories.
+
+https://patron.com
+
+## Overview
+
+Patron is an open-source creator-focused platform that enables content creators to monetize their serialized work by providing early access to supporters. Unlike traditional patronage platforms, Patron is built specifically for creators who produce ongoing series, episodes, chapters, or other sequential content.
+
+## Key Value Propositions
+
+- **Low Fees**: Lifetime 1% fees for early adopters (vs Patreon's 8-12%)
+- **Open Source**: Fully transparent codebase available on GitHub, can be self-hosted for complete control
+- **Sequential Content Focus**: Purpose-built for creators publishing ongoing series with advanced content organization and release scheduling
+- **Rolling Paywalls**: Supporters get early access to new content which automatically becomes free over time based on your schedule
+- **Feature Parity**: Discord integration, email systems, community chat, and all core features you expect from Patreon
+
+## How It Works
+
+1. **Create Your Creator Page**: Set up your branded creator page for your ongoing series with professional presentation and easy navigation
+2. **Configure Rolling Paywalls**: Set up flexible release rules - choose when new pieces become available to different supporter tiers and when they drip out to free readers
+3. **Publish & Organize**: Release new episodes that start gated to supporters and automatically become free over time based on your schedule
+4. **Earn Sustainably**: Build recurring revenue as supporters get early access while building a free archive that helps new readers discover your work
+
+## Features
+
+- **Early Access Model**: Supporters get preview access to content before public release
+- **Advanced Content Organization**: Optimized for creators producing ongoing series, whether single-series or multi-series creators
+- **Release Scheduling**: Automated content release windows with different tier access
+- **Modern Technology Stack**: Built with Astro, TypeScript, and modern web technologies for fast, reliable performance
+- **Creator-Centric Design**: Built with creators' needs in mind, not corporate profit maximization
+
+## Philosophy
+
+Patron is built by creators for creators. The founder uses Patreon extensively for serialized content and built Patron to address the specific pain points of serial content creators. The platform stays lean and focused to keep fees low, with no venture capital pressure to maximize profits. The goal is sustainable, affordable, and creator-friendly for the long term.
+
+## Technology
+
+- **Frontend**: Astro static site generator
+- **CMS**: Keystatic (Git-based content management)
+- **SDK**: TypeScript SDK for API integration
+- **CDN**: Bunny.net for fast global delivery
+- **Payment Processing**: Stripe integration
+
+## Community & Support
+
+- GitHub: https://github.com/patroninc/patron
+- Discord: https://discord.gg/3vtTNMZbjG
+- Twitter/X: https://x.com/skeptrune
+- YouTube: https://www.youtube.com/@patroninc
+- Email: humans@patron.com
+
+## Status
+
+Currently accepting waitlist signups with lifetime 1% fees for early adopters. The platform is in active development with regular changelog updates. Early supporters will receive weekly updates on progress.
+
+## Migration from Patreon
+
+For creators switching from Patreon: Post in both places at once and direct new subscribers to Patron to keep more of their support. Once most subscribers have migrated, consider shutting down the old Patreon. Your existing supporters aren't lost - just gradually transition them over.
+
+## License
+
+Open source under MIT License - see the GitHub repository for details.
