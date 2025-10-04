@@ -12,12 +12,16 @@ import Insights from '@/pages/dashboard/insights';
 import Audience from '@/pages/dashboard/audience';
 import Payouts from '@/pages/dashboard/payouts';
 import { StaticRouter } from 'react-router';
+import Series from '@/pages/series';
+import Post from '@/pages/post';
 
 type AppProps = {
   initialData?: {
     user?: UserInfo | null;
     posts?: any[];
     series?: any[];
+    singleSeries?: any;
+    singlePost?: any;
   } | null;
   url?: string;
 };
@@ -98,6 +102,21 @@ const App = ({ initialData, url }: AppProps): JSX.Element => {
           </ProtectedRoute>
         );
       default:
+        // Handle dynamic routes
+        if (path.startsWith('/series/') || path.startsWith('series/')) {
+          return (
+            <ProtectedRoute requireAuth={true}>
+              <Series />
+            </ProtectedRoute>
+          );
+        }
+        if (path.startsWith('/post/') || path.startsWith('post/')) {
+          return (
+            <ProtectedRoute requireAuth={true}>
+              <Post />
+            </ProtectedRoute>
+          );
+        }
         return (
           <ProtectedRoute requireAuth={true}>
             <Home />
@@ -108,7 +127,12 @@ const App = ({ initialData, url }: AppProps): JSX.Element => {
 
   return (
     <AuthProvider initialUser={initialData?.user}>
-      <AppDataProvider initialPosts={initialData?.posts} initialSeries={initialData?.series}>
+      <AppDataProvider
+        initialPosts={initialData?.posts}
+        initialSeries={initialData?.series}
+        initialSingleSeries={initialData?.singleSeries}
+        initialSinglePost={initialData?.singlePost}
+      >
         <StaticRouter location={url || '/'}>{renderPage()}</StaticRouter>
       </AppDataProvider>
     </AuthProvider>
