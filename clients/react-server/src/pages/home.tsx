@@ -118,7 +118,7 @@ export const Home = (): JSX.Element => {
               <>
                 {series.map((series) => (
                   <div
-                    className="bg-secondary-primary relative flex h-full flex-col gap-5 p-5"
+                    className="bg-secondary-primary relative flex h-full flex-col justify-between gap-5 p-5"
                     key={series.id}
                   >
                     <Link
@@ -134,22 +134,23 @@ export const Home = (): JSX.Element => {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-full"
-                            viewBox="0 0 284 160"
-                            fill="none"
-                          >
-                            <rect width="284" height="160" fill="#ECDD30" />
-                            <path
-                              d="M137 108H127V102.909H137V108ZM157 108H147V102.909H157V108ZM127 102.909H122V87.6367H127V102.909ZM147 102.909H137V97.8184H147V102.909ZM162 102.909H157V87.6367H162V102.909ZM122 82.5459V87.6367H117V82.5459H122ZM167 87.6367H162V82.5459H167V87.6367ZM117 82.5459H112V72.3633H117V82.5459ZM172 82.5459H167V72.3633H172V82.5459ZM132 72.3633H117V67.2725H132V72.3633ZM167 72.3633H152V67.2725H167V72.3633ZM137 67.2725H132V57.0908H137V67.2725ZM152 67.2725H147V57.0908H152V67.2725ZM147 57.0908H137V52H147V57.0908Z"
-                              fill="black"
-                            />
-                            <path
-                              d="M147 67.2725H152V72.3633H167V82.5449H162V87.6367H157V102.909H147V97.8184H137V102.909H127V87.6367H122V82.5449H117V72.3633H132V67.2725H137V57.0908H147V67.2725Z"
-                              fill="#265B92"
-                            />
-                          </svg>
+                          <div className="flex h-full w-full items-center justify-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-[50px]"
+                              viewBox="0 0 100 92"
+                              fill="none"
+                            >
+                              <path
+                                d="M41.667 92H25V83.6367H41.667V92ZM75 92H58.333V83.6367H75V92ZM25 83.6367H16.667V58.5459H25V83.6367ZM58.333 83.6367H41.667V75.2725H58.333V83.6367ZM83.333 83.6367H75V58.5459H83.333V83.6367ZM16.667 50.1816V58.5459H8.33301V50.1816H16.667ZM91.667 58.5459H83.333V50.1816H91.667V58.5459ZM8.33301 50.1816H0V33.4541H8.33301V50.1816ZM100 50.1816H91.667V33.4541H100V50.1816ZM33.333 33.4541H8.33301V25.0908H33.333V33.4541ZM91.667 33.4541H66.667V25.0908H91.667V33.4541ZM41.667 25.0908H33.333V8.36328H41.667V25.0908ZM66.667 25.0908H58.333V8.36328H66.667V25.0908ZM58.333 8.36328H41.667V0H58.333V8.36328Z"
+                                fill="black"
+                              />
+                              <path
+                                d="M58.3335 25.0908H66.6665V33.4541H91.6665V50.1816H83.3335V58.5449H75.0005V83.6357H58.3335V75.2725H41.6665V83.6357H25.0005V58.5449H16.6665V50.1816H8.3335V33.4541H33.3335V25.0908H41.6665V8.36328H58.3335V25.0908Z"
+                                fill="#265B92"
+                              />
+                            </svg>
+                          </div>
                         )}
                       </div>
                       <PxBorder width={3} radius="lg" />
@@ -157,7 +158,7 @@ export const Home = (): JSX.Element => {
                       <div className="flex flex-col gap-3">
                         <h3 className="text-xl">{series.title}</h3>
                         <div className="flex items-center justify-between">
-                          <p>{series.numberOfPosts} posts</p>
+                          {series.numberOfPosts && <p>{series.numberOfPosts} posts</p>}
                           <div className="flex items-center gap-2">
                             <CalendarDays strokeWidth={1.5} size={20} />
                             <p className="text-sm">
@@ -173,7 +174,9 @@ export const Home = (): JSX.Element => {
                     <Button
                       className="w-full"
                       containerClassName="mt-0"
-                      onClick={() => navigate(`/new-post?serial-id={${series.id}}`)}
+                      onClick={() =>
+                        navigate(`/new-post?series-id=${series.id}`, { viewTransition: true })
+                      }
                     >
                       Create a new post
                       <PlusIcon size={20} />
