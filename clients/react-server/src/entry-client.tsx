@@ -15,12 +15,16 @@ import Audience from '@/pages/dashboard/audience';
 import Payouts from '@/pages/dashboard/payouts';
 import Settings from '@/pages/settings';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import NewPost from './pages/new-post';
+import NewPost from '@/pages/new-post';
+import Series from '@/pages/series';
+import Post from '@/pages/post';
 
 const initialData = (window as any).__INITIAL_DATA__ as {
   user?: UserInfo | null;
   posts?: any[];
   series?: any[];
+  singleSeries?: any;
+  singlePost?: any;
 } | null;
 
 export const router = createBrowserRouter([
@@ -118,6 +122,24 @@ export const router = createBrowserRouter([
         ),
         errorElement: <ErrorBoundary />,
       },
+      {
+        path: 'series/:seriesId',
+        Component: () => (
+          <ProtectedRoute requireAuth={true}>
+            <Series />
+          </ProtectedRoute>
+        ),
+        errorElement: <ErrorBoundary />,
+      },
+      {
+        path: 'post/:postId',
+        Component: () => (
+          <ProtectedRoute requireAuth={true}>
+            <Post />
+          </ProtectedRoute>
+        ),
+        errorElement: <ErrorBoundary />,
+      },
     ],
   },
   {
@@ -137,7 +159,12 @@ export const router = createBrowserRouter([
 const App = (): JSX.Element => {
   return (
     <AuthProvider initialUser={initialData?.user}>
-      <AppDataProvider initialPosts={initialData?.posts} initialSeries={initialData?.series}>
+      <AppDataProvider
+        initialPosts={initialData?.posts}
+        initialSeries={initialData?.series}
+        initialSingleSeries={initialData?.singleSeries}
+        initialSinglePost={initialData?.singlePost}
+      >
         <RouterProvider router={router} />
       </AppDataProvider>
     </AuthProvider>
