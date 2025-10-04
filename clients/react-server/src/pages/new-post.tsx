@@ -1,7 +1,7 @@
 import { JSX, useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { Upload, Save } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import MainLayout from '@/layouts/main';
 import { Input } from '@/components/ui/input';
@@ -50,7 +50,9 @@ const NewPost = (): JSX.Element => {
   const [isImageDialogOpen, setIsImageDialogOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showNoSeriesModal, setShowNoSeriesModal] = useState<boolean>(false);
+  const [selectedSeriesId, setSelectedSeriesId] = useState<string>('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const editorRef = useRef<any>(null);
 
@@ -77,6 +79,20 @@ const NewPost = (): JSX.Element => {
     }
   }, [series]);
 
+  // Check for series-id in URL parameters and pre-select the series
+  useEffect(() => {
+    const seriesId = searchParams.get('series-id');
+    if (seriesId && series && series.length > 0) {
+      // Check if the series ID exists in the available series
+      const foundSeries = series.find((s) => s.id === seriesId);
+      if (foundSeries) {
+        console.log('Pre-selecting series:', foundSeries.title, 'with ID:', seriesId);
+        setSelectedSeriesId(seriesId);
+        form.setValue('seriesId', seriesId, { shouldValidate: true, shouldDirty: true });
+      }
+    }
+  }, [searchParams, series, form]);
+
   /**
    * Handles the submission of the post creation form.
    *
@@ -88,7 +104,17 @@ const NewPost = (): JSX.Element => {
       setIsLoading(true);
 
       // Get content from TinyMCE editor
-      const editorContent = editorRef.current?.getContent() || formData.content;
+      const editorContent = editorRef.current?.getContent() || '';
+
+      // Validate editor content
+      if (!editorContent || editorContent.trim() === '' || editorContent === '<p></p>') {
+        form.setError('content', {
+          type: 'manual',
+          message: 'Content is required',
+        });
+        setIsLoading(false);
+        return;
+      }
 
       // Generate slug from title
       const slug = formData.title
@@ -222,7 +248,14 @@ const NewPost = (): JSX.Element => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Series</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select
+                        key={selectedSeriesId || field.value || 'default'}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          setSelectedSeriesId(value);
+                        }}
+                        value={selectedSeriesId || field.value || ''}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a series..." />
@@ -247,7 +280,6 @@ const NewPost = (): JSX.Element => {
               <FormField
                 control={form.control}
                 name="content"
-                rules={{ required: 'Content is required' }}
                 render={() => (
                   <FormItem>
                     <FormLabel>Content</FormLabel>
