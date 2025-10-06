@@ -14,68 +14,69 @@ categories:
 coverImage: /src/assets/images/blog-posts/sep-26-oct-2-changelog/coverImage.png
 ogSection: Technology
 ---
-***🚀 TLDR: The app is now truly functional! Creators can login, create and manage their content with a complete content management system. While payment rails are still in development, we're gearing up for a ProductHunt launch next week as the platform is ready for user feedback and real-world testing.***
+
+**_🚀 TLDR: The app is now truly functional! Creators can login, create and manage their content with a complete content management system. While payment rails are still in development, we're gearing up for a ProductHunt launch next week as the platform is ready for user feedback and real-world testing._**
 
 #### ✨ Content Creation & Management
 
-* **Rich Text Editor**: Implemented TinyMCE editor for powerful content creation with full formatting capabilities
-* **New Post Creation**: Complete new post page and form with intuitive content input
-* **Series Management**: Added new series form with image upload support and comprehensive creation flow
-* **Content Organization**: Enhanced content page with improved structure and navigation
-* **Image Upload**: Integrated image upload functionality for series and content creation
-* **App Data Context**: Implemented centralized app data context for posts and series data management
-* **Real-time Data**: Added functionality to fetch and display posts and series data throughout the app
+- **Rich Text Editor**: Implemented TinyMCE editor for powerful content creation with full formatting capabilities
+- **New Post Creation**: Complete new post page and form with intuitive content input
+- **Series Management**: Added new series form with image upload support and comprehensive creation flow
+- **Content Organization**: Enhanced content page with improved structure and navigation
+- **Image Upload**: Integrated image upload functionality for series and content creation
+- **App Data Context**: Implemented centralized app data context for posts and series data management
+- **Real-time Data**: Added functionality to fetch and display posts and series data throughout the app
 
 #### 🎨 UI/UX Enhancements
 
-* **Autofocus Inputs**: All login and register pages now feature autofocus on first input for better UX
-* **Responsive Layouts**: Adjusted 4-column homepage layouts to adapt to different screen widths
-* **Settings Page**: Complete settings page implementation with user preferences
-* **Customization Component**: Enhanced customization features with improved functionality
-* **Payouts Page**: Updated payouts interface with better layout and information
-* **Text Selection**: Added text select component for better content interaction
-* **Popover Component**: New popover component for contextual UI elements
-* **Link Buttons**: Updated link button component with improved styling
-* **Table Overflow**: Fixed table overflow-x behavior for better mobile experience
-* **404 Page**: Fixed styling issues with broken button on 404 page
+- **Autofocus Inputs**: All login and register pages now feature autofocus on first input for better UX
+- **Responsive Layouts**: Adjusted 4-column homepage layouts to adapt to different screen widths
+- **Settings Page**: Complete settings page implementation with user preferences
+- **Customization Component**: Enhanced customization features with improved functionality
+- **Payouts Page**: Updated payouts interface with better layout and information
+- **Text Selection**: Added text select component for better content interaction
+- **Popover Component**: New popover component for contextual UI elements
+- **Link Buttons**: Updated link button component with improved styling
+- **Table Overflow**: Fixed table overflow-x behavior for better mobile experience
+- **404 Page**: Fixed styling issues with broken button on 404 page
 
 #### 🔧 Component & Code Architecture
 
-* **Editor Migration**: Switched from Slate to TinyMCE for more robust editing experience
-* **Component Cleanup**: Removed unused code from new-serial-form.tsx, settings.tsx, and customization.tsx
-* **Styling Organization**: Moved all styling files to dedicated `src/styling` directory
-* **Select Component**: Enhanced select component with improved styling
-* **Lists Behavior**: Fixed list handling and various editor-related issues
-* **Code Quality**: Comprehensive linting and formatting applied to react-server codebase
+- **Editor Migration**: Switched from Slate to TinyMCE for more robust editing experience
+- **Component Cleanup**: Removed unused code from new-serial-form.tsx, settings.tsx, and customization.tsx
+- **Styling Organization**: Moved all styling files to dedicated `src/styling` directory
+- **Select Component**: Enhanced select component with improved styling
+- **Lists Behavior**: Fixed list handling and various editor-related issues
+- **Code Quality**: Comprehensive linting and formatting applied to react-server codebase
 
 #### 🔐 Authentication & Security
 
-* **Logout Improvements**: Logout action now forcibly clears cookies and reloads page for complete session cleanup
-* **User Session**: Enhanced session management for better security
+- **Logout Improvements**: Logout action now forcibly clears cookies and reloads page for complete session cleanup
+- **User Session**: Enhanced session management for better security
 
 #### 📊 Data Model & API
 
-* **Series Terminology**: Changed all references from "serials" to "series" throughout react-server to align with data model
-* **Model Refactoring**: Removed premium and monetization fields from post and series models (payment rails coming soon)
-* **SDK Updates**: Updated patronts SDK and other dependencies in react-server
-* **OpenAPI Linting**: Added linting step for OpenAPI spec generation in convenience script
+- **Series Terminology**: Changed all references from "serials" to "series" throughout react-server to align with data model
+- **Model Refactoring**: Removed premium and monetization fields from post and series models (payment rails coming soon)
+- **SDK Updates**: Updated patronts SDK and other dependencies in react-server
+- **OpenAPI Linting**: Added linting step for OpenAPI spec generation in convenience script
 
 #### 📝 Content & Documentation
 
-* **Blog Content**: Added comprehensive guide for monetizing webcomics in 2025
-* **Outrank Integration**: New route and webhook URL for outrank integration
-* **Sitemap Support**: Added sitemap response for root path in markdown serving
-* **Changelog Archive**: Restored Aug 17-13 changelog to documentation
-* **Domain Agreement**: Clarified terms in blog post content
+- **Blog Content**: Added comprehensive guide for monetizing webcomics in 2025
+- **Outrank Integration**: New route and webhook URL for outrank integration
+- **Sitemap Support**: Added sitemap response for root path in markdown serving
+- **Changelog Archive**: Restored Aug 17-13 changelog to documentation
+- **Domain Agreement**: Clarified terms in blog post content
 
 #### 🛠️ Development & Dependencies
 
-* **Dependency Updates**: Multiple rounds of dependency updates for react-server and patronts
-* **Package Additions**: Installed various new packages to support enhanced functionality
-* **Code Optimization**: Removed unnecessary packages and streamlined dependencies
+- **Dependency Updates**: Multiple rounds of dependency updates for react-server and patronts
+- **Package Additions**: Installed various new packages to support enhanced functionality
+- **Code Optimization**: Removed unnecessary packages and streamlined dependencies
 
 #### 🎯 ProductHunt Launch Prep
 
-* **Feature Complete**: Core content creation and management features are fully functional
-* **User Ready**: Platform is ready for users to login, create content, and provide feedback
-* **Next Phase**: Payment rails and monetization features coming in next development cycle
+- **Feature Complete**: Core content creation and management features are fully functional
+- **User Ready**: Platform is ready for users to login, create content, and provide feedback
+- **Next Phase**: Payment rails and monetization features coming in next development cycle

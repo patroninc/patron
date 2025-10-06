@@ -14,46 +14,47 @@ categories:
 coverImage: /src/assets/images/blog-posts/sep-3-sep-9-changelog/coverImage.png
 ogSection: Technology
 ---
-***TL;DR: 🎉 HUGE MILESTONE - Patron now has a fully functional web application that users can sign up for! Complete with working authentication, password reset, user management, and a polished UI built with modern components.***
+
+**_TL;DR: 🎉 HUGE MILESTONE - Patron now has a fully functional web application that users can sign up for! Complete with working authentication, password reset, user management, and a polished UI built with modern components._**
 
 #### 🔐 Authentication & User Management
 
-* **Enhanced Registration**: Updated registration response structure to include detailed user information and improved success navigation
-* **Login Improvements**: Fixed credential handling across login, registration, and password reset flows
-* **Cookie Security**: Added secure configuration for session management with proper credential handling
-* **Email Verification**: Allow users to sign in even without email verification, with resend verification endpoint
-* **Password Reset**: Complete Redis integration for secure password reset functionality with updated request structures
-* **User Information**: Return complete UserInfo struct fields from GetCurrentUser route and added displayName to registration
+- **Enhanced Registration**: Updated registration response structure to include detailed user information and improved success navigation
+- **Login Improvements**: Fixed credential handling across login, registration, and password reset flows
+- **Cookie Security**: Added secure configuration for session management with proper credential handling
+- **Email Verification**: Allow users to sign in even without email verification, with resend verification endpoint
+- **Password Reset**: Complete Redis integration for secure password reset functionality with updated request structures
+- **User Information**: Return complete UserInfo struct fields from GetCurrentUser route and added displayName to registration
 
 #### 💻 Client Application Enhancements
 
-* **UI Component Library**: Added multiple new UI components including sidebar, alert-dialog, and enhanced form elements
-* **Layout System**: Refactored and renamed Layout components to LoginLayout and MainLayout for better clarity
-* **Navigation Experience**: Added view transitions for improved user experience with proper redirect handling
-* **TypeScript Improvements**: Enhanced components with TypeScript annotations and improved documentation
-* **Architecture Refactor**: Simplified SDK integration by removing context wrapper, allowing direct SDK usage
-* **Styling Updates**: Button style improvements and route renaming for better user interaction
-* **Environment Configuration**: Added backend environment variable for flexible development setup
+- **UI Component Library**: Added multiple new UI components including sidebar, alert-dialog, and enhanced form elements
+- **Layout System**: Refactored and renamed Layout components to LoginLayout and MainLayout for better clarity
+- **Navigation Experience**: Added view transitions for improved user experience with proper redirect handling
+- **TypeScript Improvements**: Enhanced components with TypeScript annotations and improved documentation
+- **Architecture Refactor**: Simplified SDK integration by removing context wrapper, allowing direct SDK usage
+- **Styling Updates**: Button style improvements and route renaming for better user interaction
+- **Environment Configuration**: Added backend environment variable for flexible development setup
 
 #### 🛠️ Backend & Infrastructure
 
-* **Database Migrations**: Added comprehensive database migration functionality with updated dependencies
-* **Container Configuration**: Updated container names and database configuration in docker-compose.yml
-* **HTTPClient Integration**: Enhanced request handling in patronClient with improved HTTP client
-* **API Enhancements**: New route for checking user email registration status
-* **CI/CD Improvements**: Added push event trigger for backend server paths in Rust test suite
-* **OpenAPI Updates**: Enhanced OpenAPI documentation with version increment to 0.4.9
+- **Database Migrations**: Added comprehensive database migration functionality with updated dependencies
+- **Container Configuration**: Updated container names and database configuration in docker-compose.yml
+- **HTTPClient Integration**: Enhanced request handling in patronClient with improved HTTP client
+- **API Enhancements**: New route for checking user email registration status
+- **CI/CD Improvements**: Added push event trigger for backend server paths in Rust test suite
+- **OpenAPI Updates**: Enhanced OpenAPI documentation with version increment to 0.4.9
 
 #### 📚 Developer Experience
 
-* **Documentation**: Clarified project structure in README and specified client applications
-* **SDK Updates**: Regenerated TypeScript SDK with OpenAPI Doc using Speakeasy CLI 1.608.0
-* **Code Quality**: Improved TypeScript annotations and component documentation
-* **Development Workflow**: Streamlined authentication flow and removed unnecessary email verification page
+- **Documentation**: Clarified project structure in README and specified client applications
+- **SDK Updates**: Regenerated TypeScript SDK with OpenAPI Doc using Speakeasy CLI 1.608.0
+- **Code Quality**: Improved TypeScript annotations and component documentation
+- **Development Workflow**: Streamlined authentication flow and removed unnecessary email verification page
 
 #### 🎨 User Experience
 
-* **Forgot Password**: Complete forgot password page implementation with Redis backend support
-* **Main Layout**: New main layout system with improved navigation
-* **Authentication Context**: Multiple authentication functions added to context for better state management
-* **Page Updates**: Updated various pages with improved styling and functionality
+- **Forgot Password**: Complete forgot password page implementation with Redis backend support
+- **Main Layout**: New main layout system with improved navigation
+- **Authentication Context**: Multiple authentication functions added to context for better state management
+- **Page Updates**: Updated various pages with improved styling and functionality
