@@ -1,6 +1,18 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    if (
+      url.pathname !== "/" &&
+      !url.pathname.endsWith("/") &&
+      !/\.[a-zA-Z0-9]+$/.test(url.pathname)
+    ) {
+      return Response.redirect(
+        url.origin + url.pathname + "/" + url.search,
+        301,
+      );
+    }
+
     const acceptHeader = request.headers.get("accept") || "";
 
     const acceptTypes = acceptHeader.split(",");
