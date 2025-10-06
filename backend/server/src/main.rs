@@ -1,5 +1,6 @@
 //! Main entry point for the patron backend server
 
-fn main() -> std::io::Result<()> {
-    backend::main()
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    backend::main().await
 }

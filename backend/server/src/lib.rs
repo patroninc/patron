@@ -26,7 +26,19 @@ use utoipa::OpenApi;
 use utoipa_redoc::{Redoc, Servable};
 
 /// Entry point for the Patron backend server, sets up services and starts the HTTP server.
-#[actix_web::main]
+///
+/// # Errors
+///
+/// Returns an error if:
+/// - AWS configuration fails
+/// - Database connection cannot be established
+/// - Redis connection cannot be established
+/// - HTTP server fails to bind or start
+///
+/// # Panics
+///
+/// Panics if the session TTL days cannot be converted to u32
+#[allow(clippy::too_many_lines)]
 pub async fn main() -> std::io::Result<()> {
     #[allow(unused_results)]
     dotenvy::dotenv().ok();
