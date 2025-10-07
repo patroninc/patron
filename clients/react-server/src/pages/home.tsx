@@ -155,21 +155,10 @@ export const Home = (): JSX.Element => {
                       </div>
                       <PxBorder width={3} radius="lg" />
                       <FocusRing width={3} />
-                      <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-2">
                         <h3 className="text-xl">{series.title}</h3>
-                        <div className="flex items-center justify-between">
-                          {series.numberOfPosts && <p>{series.numberOfPosts} posts</p>}
-                          <div className="flex items-center gap-2">
-                            <CalendarDays strokeWidth={1.5} size={20} />
-                            <p className="text-sm">
-                              {series.createdAt
-                                ? new Date(series.createdAt).toLocaleDateString()
-                                : 'No date'}
-                            </p>
-                          </div>
-                        </div>
+                        <p className="text-base">{series.description}</p>
                       </div>
-                      <p className="text-base">{series.description}</p>
                     </Link>
                     <Button
                       className="w-full"

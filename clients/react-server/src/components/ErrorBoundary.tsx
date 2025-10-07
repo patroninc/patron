@@ -65,7 +65,7 @@ export const ErrorBoundary = (): JSX.Element => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <div className="mx-auto h-12 w-12 text-red-500">
@@ -78,11 +78,11 @@ export const ErrorBoundary = (): JSX.Element => {
               />
             </svg>
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">{errorInfo.title}</h2>
-          <p className="mt-2 text-sm text-gray-600">{errorInfo.message}</p>
+          <h2 className="mt-6 text-3xl font-bold">{errorInfo.title}</h2>
+          <p className="mt-2 text-sm">{errorInfo.message}</p>
 
           {errorInfo.status === 404 && (
-            <p className="mt-2 text-sm text-gray-500">The page you're looking for doesn't exist.</p>
+            <p className="mt-2 text-sm">The page you're looking for doesn't exist.</p>
           )}
         </div>
 
@@ -98,12 +98,10 @@ export const ErrorBoundary = (): JSX.Element => {
 
         {process.env.NODE_ENV === 'development' && error instanceof Error && (
           <details className="mt-8">
-            <summary className="cursor-pointer text-sm font-medium text-gray-700">
+            <summary className="cursor-pointer text-sm font-medium">
               Error Details (Development)
             </summary>
-            <pre className="mt-2 max-h-40 overflow-auto rounded bg-gray-100 p-2 text-xs">
-              {error.stack}
-            </pre>
+            <pre className="mt-2 max-h-40 overflow-auto p-2 text-xs">{error.stack}</pre>
           </details>
         )}
       </div>
