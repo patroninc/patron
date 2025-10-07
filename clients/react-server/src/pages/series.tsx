@@ -1,11 +1,17 @@
 import { JSX, useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
-import { CalendarDays, ArrowLeft, PlusIcon, Play, FileText } from 'lucide-react';
+import { PlusIcon, EllipsisIcon, Share2, Pencil, Trash2 } from 'lucide-react';
 
 import MainLayout from '@/layouts/main';
 import PxBorder from '@/components/px-border';
 import FocusRing from '@/components/focus-ring';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useAppData } from '@/contexts/AppDataContext';
 
 /**
@@ -87,34 +93,12 @@ export const Series = (): JSX.Element => {
     );
   }
 
-  // Show error if no series data is available after trying to fetch
   if (!series && hasTriedFetch) {
-    return (
-      <MainLayout>
-        <div className="flex min-h-[400px] flex-col items-center justify-center gap-5">
-          <div className="text-lg text-red-600">Series not found</div>
-          <Button onClick={() => navigate('/')}>
-            <ArrowLeft size={20} />
-            Back to Home
-          </Button>
-        </div>
-      </MainLayout>
-    );
+    throw new Error('This series does not exist');
   }
 
-  // Show error if no series data and no seriesId
   if (!series && !seriesId) {
-    return (
-      <MainLayout>
-        <div className="flex min-h-[400px] flex-col items-center justify-center gap-5">
-          <div className="text-lg text-red-600">Series not found</div>
-          <Button onClick={() => navigate('/')}>
-            <ArrowLeft size={20} />
-            Back to Home
-          </Button>
-        </div>
-      </MainLayout>
-    );
+    throw new Error('This series does not exist');
   }
 
   // Don't render main content if series is still null
@@ -131,9 +115,9 @@ export const Series = (): JSX.Element => {
   return (
     <MainLayout>
       <div className="p-[50px] px-[100px]">
-        <div className="bg-secondary-primary relative m-[5px] mb-10 p-10">
+        <div className="bg-secondary-primary relative mx-auto mb-10 w-full max-w-[1200px] p-10">
           <PxBorder width={5} radius="lg" />
-          <div className="flex gap-10">
+          <div className="flex gap-5">
             <div className="bg-accent relative m-[5px] aspect-video w-[300px]">
               <PxBorder width={5} radius="lg" />
               {series.coverImageUrl ? (
@@ -161,43 +145,43 @@ export const Series = (): JSX.Element => {
                   </svg>
                 </div>
               )}
+
+              <div className="absolute right-2.5 bottom-2.5">
+                <div className="relative m-[3px] bg-white px-1.5 py-[3px]">
+                  <PxBorder width={3} radius="md" />
+                  {/* {series.numberOfPosts && <span className="text-sm">{series.numberOfPosts}</span>} */}
+                  20 posts
+                </div>
+              </div>
             </div>
 
-            {/* Series info */}
-            <div className="flex flex-1 flex-col gap-4">
-              <h1 className="text-3xl font-bold">{series.title}</h1>
+            <div className="flex flex-1 flex-col justify-between">
+              <div className="flex flex-col gap-3">
+                <h1 className="text-3xl font-bold">{series.title}</h1>
 
-              {series.description && <p className="text-lg">{series.description}</p>}
+                {series.description && <p className="text-base">{series.description}</p>}
+              </div>
 
-              <div className="flex items-center gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <CalendarDays size={16} />
-                  <span>
-                    {series.createdAt
-                      ? new Date(series.createdAt).toLocaleDateString()
-                      : 'Unknown date'}
-                  </span>
-                </div>
+              <div className="flex items-center justify-end gap-3">
+                <Button shadow={false} variant="secondary" size="icon">
+                  <EllipsisIcon />
+                </Button>
+                <Button shadow={false} variant="secondary" size="icon">
+                  <Share2 />
+                </Button>
+                <Button onClick={() => navigate(`/new-post?series-id=${seriesId}`)} shadow={false}>
+                  New post <PlusIcon />
+                </Button>
               </div>
             </div>
           </div>
         </div>
 
         {/* Posts section */}
-        <div className="mb-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Posts ({posts.length})</h2>
-            <Button
-              onClick={() => navigate(`/new-post?series-id=${seriesId}`)}
-              className="flex items-center gap-2"
-            >
-              <PlusIcon size={20} />
-              Create New Post
-            </Button>
-          </div>
-
+        <div className="relative mx-auto w-full max-w-[1200px]">
+          <PxBorder width={5} className="z-[5]" radius="lg" />
           {posts.length === 0 ? (
-            <div className="relative bg-white p-8 text-center">
+            <div className="relative bg-white p-10 text-center">
               <PxBorder width={5} radius="lg" />
               <div className="flex flex-col items-center gap-4">
                 <h3 className="text-xl">No posts yet</h3>
@@ -214,9 +198,16 @@ export const Series = (): JSX.Element => {
           ) : (
             <div className="grid grid-cols-1">
               {posts.map((post) => (
-                <div key={post.id} className="bg-secondary-primary relative p-5">
-                  <Link className="group flex flex-col gap-4 outline-none" to={`/post/${post.id}`}>
-                    <div className="bg-accent relative aspect-video h-[50px]">
+                <div
+                  key={post.id}
+                  className="bg-secondary-primary relative flex items-center border-black not-last:border-b-[5px]"
+                >
+                  <Link
+                    className="group flex flex-1 flex-row items-center gap-5 px-3 py-5 outline-none"
+                    to={`/post/${post.id}`}
+                  >
+                    <span className="w-[3ch] text-xl">{post.postNumber}</span>
+                    <div className="bg-accent relative aspect-video w-[178px]">
                       <PxBorder width={3} radius="lg" />
                       {post.thumbnailUrl ? (
                         <img
@@ -228,30 +219,34 @@ export const Series = (): JSX.Element => {
                         <div className="flex h-full w-full items-center justify-center"></div>
                       )}
                     </div>
-                    <PxBorder width={3} radius="lg" />
                     <FocusRing width={3} />
-                    <div className="flex flex-col gap-2">
-                      <h3 className="text-lg font-bold">{post.title}</h3>
-                      <div className="flex items-center justify-between text-sm">
-                        <span>Post #{post.postNumber}</span>
-                        <div className="flex items-center gap-2">
-                          <CalendarDays size={14} />
-                          <span>
-                            {post.createdAt
-                              ? new Date(post.createdAt).toLocaleDateString()
-                              : 'No date'}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-sm">
-                        {post.isPublished ? (
-                          <span className="font-medium text-green-600">Published</span>
-                        ) : (
-                          <span className="font-medium text-yellow-600">Draft</span>
-                        )}
-                      </div>
-                    </div>
+                    <h3 className="pl-3 text-2xl font-bold">{post.title}</h3>
                   </Link>
+
+                  <div className="pr-3">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="secondary" size="icon" shadow={false}>
+                          <EllipsisIcon />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => navigate(`/edit-post/${post.id}`)}>
+                          <Pencil />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={() => {
+                            console.log('Delete post:', post.id);
+                          }}
+                        >
+                          <Trash2 />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
               ))}
             </div>
