@@ -46,6 +46,7 @@ pub struct Series {
     "slug": "my-awesome-podcast",
     "category": "Technology",
     "coverImageUrl": "https://example.com/cover.jpg",
+    "length": 42,
     "createdAt": "2023-01-01T00:00:00Z",
     "updatedAt": "2023-01-01T12:00:00Z"
 }))]
@@ -73,6 +74,9 @@ pub struct SeriesResponse {
     #[schema(example = "https://example.com/cover.jpg")]
     #[serde(rename = "coverImageUrl")]
     pub cover_image_url: Option<String>,
+    /// Total number of posts in the series
+    #[schema(example = 42)]
+    pub length: Option<i32>,
     /// Series creation timestamp
     #[schema(example = "2023-01-01T00:00:00Z")]
     #[serde(rename = "createdAt")]
@@ -93,9 +97,18 @@ impl From<Series> for SeriesResponse {
             slug: series.slug,
             category: series.category,
             cover_image_url: series.cover_image_url,
+            length: None, // Will be populated in handlers when needed
             created_at: series.created_at.map(|dt| dt.and_utc()),
             updated_at: series.updated_at.map(|dt| dt.and_utc()),
         }
+    }
+}
+
+impl SeriesResponse {
+    /// Create a SeriesResponse with length populated
+    pub fn with_length(mut self, length: Option<i32>) -> Self {
+        self.length = length;
+        self
     }
 }
 
@@ -171,6 +184,7 @@ pub struct UpdateSeriesRequest {
     "slug": "my-awesome-podcast",
     "category": "Technology",
     "coverImageUrl": "https://example.com/cover.jpg",
+    "length": 42,
     "createdAt": "2023-01-01T00:00:00Z",
     "updatedAt": "2023-01-01T12:00:00Z"
 }]))]

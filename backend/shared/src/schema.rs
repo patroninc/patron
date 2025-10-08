@@ -69,6 +69,15 @@ diesel::table! {
 }
 
 diesel::table! {
+    series_length (id) {
+        id -> Uuid,
+        series_id -> Uuid,
+        length -> Int4,
+        updated_at -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
     user_files (id) {
         id -> Uuid,
         user_id -> Uuid,
@@ -108,6 +117,7 @@ diesel::joinable!(api_keys -> users (user_id));
 diesel::joinable!(email_verification_tokens -> users (user_id));
 diesel::joinable!(posts -> series (series_id));
 diesel::joinable!(series -> users (user_id));
+diesel::joinable!(series_length -> series (series_id));
 diesel::joinable!(user_files -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
@@ -115,6 +125,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     email_verification_tokens,
     posts,
     series,
+    series_length,
     user_files,
     users,
 );

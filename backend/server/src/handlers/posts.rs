@@ -11,6 +11,7 @@ use shared::{
         auth::User,
         posts::{CreatePostRequest, Post, PostResponse, PostsListResponse, UpdatePostRequest},
         series::Series,
+        series_length::SeriesLength,
     },
 };
 use utoipa::ToSchema;
@@ -105,6 +106,28 @@ pub async fn create_post(
             ),
             _ => ServiceError::Database(e.to_string()),
         })?;
+
+    // Update series length
+    use shared::schema::series_length::dsl as series_length_dsl;
+
+    let post_count: i64 = posts_dsl::posts
+        .filter(posts_dsl::series_id.eq(body.series_id))
+        .filter(posts_dsl::deleted_at.is_null())
+        .count()
+        .get_result(&mut conn)
+        .await
+        .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+    let new_series_length = SeriesLength::new(body.series_id, post_count as i32);
+
+    let _rows_affected = diesel::insert_into(series_length_dsl::series_length)
+        .values(&new_series_length)
+        .on_conflict(series_length_dsl::series_id)
+        .do_update()
+        .set(series_length_dsl::length.eq(post_count as i32))
+        .execute(&mut conn)
+        .await
+        .map_err(|e| ServiceError::Database(e.to_string()))?;
 
     Ok(HttpResponse::Created().json(PostResponse::from(inserted_post)))
 }
@@ -328,7 +351,7 @@ pub async fn delete_post(
     let pool = db_service.pool();
     let mut conn = pool.get().await.map_err(ServiceError::from)?;
 
-    let _existing_post: Post = posts_dsl::posts
+    let existing_post: Post = posts_dsl::posts
         .inner_join(series_dsl::series.on(posts_dsl::series_id.eq(series_dsl::id)))
         .filter(posts_dsl::id.eq(post_id))
         .filter(series_dsl::user_id.eq(user.id))
@@ -342,12 +365,36 @@ pub async fn delete_post(
             _ => ServiceError::Database(e.to_string()),
         })?;
 
+    let series_id_for_update = existing_post.series_id;
+
     let _updated: Post = diesel::update(posts_dsl::posts.filter(posts_dsl::id.eq(post_id)))
         .set((
             posts_dsl::deleted_at.eq(Utc::now().naive_utc()),
             posts_dsl::updated_at.eq(Utc::now().naive_utc()),
         ))
         .get_result(&mut conn)
+        .await
+        .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+    // Update series length
+    use shared::schema::series_length::dsl as series_length_dsl;
+
+    let post_count: i64 = posts_dsl::posts
+        .filter(posts_dsl::series_id.eq(series_id_for_update))
+        .filter(posts_dsl::deleted_at.is_null())
+        .count()
+        .get_result(&mut conn)
+        .await
+        .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+    let new_series_length = SeriesLength::new(series_id_for_update, post_count as i32);
+
+    let _rows_affected = diesel::insert_into(series_length_dsl::series_length)
+        .values(&new_series_length)
+        .on_conflict(series_length_dsl::series_id)
+        .do_update()
+        .set(series_length_dsl::length.eq(post_count as i32))
+        .execute(&mut conn)
         .await
         .map_err(|e| ServiceError::Database(e.to_string()))?;
 
