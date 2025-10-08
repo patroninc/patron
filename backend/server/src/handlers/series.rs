@@ -13,6 +13,7 @@ use shared::{
             CreateSeriesRequest, Series, SeriesListResponse, SeriesResponse, UpdateSeriesRequest,
         },
     },
+    schema::series_length::dsl as series_length_dsl,
 };
 use utoipa::ToSchema;
 use uuid::Uuid;
@@ -85,7 +86,16 @@ pub async fn create_series(
             _ => ServiceError::Database(e.to_string()),
         })?;
 
-    Ok(HttpResponse::Created().json(SeriesResponse::from(inserted_series)))
+    // Fetch series length
+    let length: Option<i32> = series_length_dsl::series_length
+        .filter(series_length_dsl::series_id.eq(inserted_series.id))
+        .select(series_length_dsl::length)
+        .first(&mut conn)
+        .await
+        .optional()
+        .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+    Ok(HttpResponse::Created().json(SeriesResponse::from(inserted_series).with_length(length)))
 }
 
 /// List user's series with cursor-based pagination
@@ -140,8 +150,24 @@ pub async fn list_series(
         .await
         .map_err(|e| ServiceError::Database(e.to_string()))?;
 
-    let series_responses: Vec<SeriesResponse> =
-        series_list.into_iter().map(SeriesResponse::from).collect();
+    // Fetch lengths for all series
+    let series_ids: Vec<Uuid> = series_list.iter().map(|s| s.id).collect();
+    let lengths: Vec<(Uuid, i32)> = series_length_dsl::series_length
+        .filter(series_length_dsl::series_id.eq_any(&series_ids))
+        .select((series_length_dsl::series_id, series_length_dsl::length))
+        .load(&mut conn)
+        .await
+        .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+    let length_map: std::collections::HashMap<Uuid, i32> = lengths.into_iter().collect();
+
+    let series_responses: Vec<SeriesResponse> = series_list
+        .into_iter()
+        .map(|s| {
+            let length = length_map.get(&s.id).copied();
+            SeriesResponse::from(s).with_length(length)
+        })
+        .collect();
     let response = SeriesListResponse::from(series_responses);
 
     Ok(HttpResponse::Ok().json(response))
@@ -189,7 +215,16 @@ pub async fn get_series(
             _ => ServiceError::Database(e.to_string()),
         })?;
 
-    Ok(HttpResponse::Ok().json(SeriesResponse::from(series)))
+    // Fetch series length
+    let length: Option<i32> = series_length_dsl::series_length
+        .filter(series_length_dsl::series_id.eq(series_id))
+        .select(series_length_dsl::length)
+        .first(&mut conn)
+        .await
+        .optional()
+        .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+    Ok(HttpResponse::Ok().json(SeriesResponse::from(series).with_length(length)))
 }
 
 /// Update a series
@@ -263,7 +298,16 @@ pub async fn update_series(
                 _ => ServiceError::Database(e.to_string()),
             })?;
 
-    Ok(HttpResponse::Ok().json(SeriesResponse::from(updated_series)))
+    // Fetch series length
+    let length: Option<i32> = series_length_dsl::series_length
+        .filter(series_length_dsl::series_id.eq(series_id))
+        .select(series_length_dsl::length)
+        .first(&mut conn)
+        .await
+        .optional()
+        .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+    Ok(HttpResponse::Ok().json(SeriesResponse::from(updated_series).with_length(length)))
 }
 
 /// Delete a series (soft delete) with user ownership validation

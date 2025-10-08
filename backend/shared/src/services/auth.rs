@@ -88,8 +88,9 @@ impl GoogleOAuthService {
         );
 
         if let Some(state_value) = state {
-            write!(url, "&state={}", urlencoding::encode(state_value))
-                .expect("Failed to append state parameter");
+            // Writing to a String is infallible
+            #[allow(clippy::let_underscore_must_use)]
+            let _ = write!(url, "&state={}", urlencoding::encode(state_value));
         }
 
         url

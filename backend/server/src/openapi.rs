@@ -1,3 +1,5 @@
+#![allow(clippy::needless_for_each)]
+
 use crate::handlers::auth::{
     CheckEmailRequest, ForgotPasswordRequest, ForgotPasswordResponse, LoginRequest, LoginResponse,
     LogoutResponse, RegisterRequest, RegisterResponse, ResendVerificationResponse,
