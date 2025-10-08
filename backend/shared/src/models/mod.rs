@@ -12,3 +12,6 @@ pub mod posts;
 
 /// API keys data models.
 pub mod api_keys;
+
+/// Series length data models.
+pub mod series_length;
