@@ -32,6 +32,10 @@ export type SeriesResponse = {
    */
   id: string;
   /**
+   * Total number of posts in the series
+   */
+  length?: number | null | undefined;
+  /**
    * SEO-friendly URL identifier for the series
    */
   slug: string;
@@ -62,6 +66,7 @@ export const SeriesResponse$inboundSchema: z.ZodType<
   ).optional(),
   description: z.nullable(z.string()).optional(),
   id: z.string(),
+  length: z.nullable(z.number().int()).optional(),
   slug: z.string(),
   title: z.string(),
   updatedAt: z.nullable(
@@ -77,6 +82,7 @@ export type SeriesResponse$Outbound = {
   createdAt?: string | null | undefined;
   description?: string | null | undefined;
   id: string;
+  length?: number | null | undefined;
   slug: string;
   title: string;
   updatedAt?: string | null | undefined;
@@ -94,6 +100,7 @@ export const SeriesResponse$outboundSchema: z.ZodType<
   createdAt: z.nullable(z.date().transform(v => v.toISOString())).optional(),
   description: z.nullable(z.string()).optional(),
   id: z.string(),
+  length: z.nullable(z.number().int()).optional(),
   slug: z.string(),
   title: z.string(),
   updatedAt: z.nullable(z.date().transform(v => v.toISOString())).optional(),

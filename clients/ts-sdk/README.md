@@ -207,7 +207,6 @@ run();
 
 * [processWebhook](docs/sdks/outrank/README.md#processwebhook) - Process Outrank webhook
 
-
 ### [posts](docs/sdks/posts/README.md)
 
 * [list](docs/sdks/posts/README.md#list) - List posts with cursor-based pagination and optional series filtering
