@@ -201,7 +201,7 @@ run();
 
 ### [files](docs/sdks/files/README.md)
 
-* [serveCdn](docs/sdks/files/README.md#servecdn) - Serve file content with user authentication
+* [serveCdn](docs/sdks/files/README.md#servecdn) - Serve file content without authentication
 * [list](docs/sdks/files/README.md#list) - List user's files with cursor-based pagination
 * [upload](docs/sdks/files/README.md#upload) - Upload a file
 * [get](docs/sdks/files/README.md#get) - Get a specific file by ID
@@ -266,7 +266,7 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 - [`filesDelete`](docs/sdks/files/README.md#delete) - Permanently delete a user file
 - [`filesGet`](docs/sdks/files/README.md#get) - Get a specific file by ID
 - [`filesList`](docs/sdks/files/README.md#list) - List user's files with cursor-based pagination
-- [`filesServeCdn`](docs/sdks/files/README.md#servecdn) - Serve file content with user authentication
+- [`filesServeCdn`](docs/sdks/files/README.md#servecdn) - Serve file content without authentication
 - [`filesUpdate`](docs/sdks/files/README.md#update) - Update file metadata and properties
 - [`filesUpload`](docs/sdks/files/README.md#upload) - Upload a file
 - [`outrankProcessWebhook`](docs/sdks/outrank/README.md#processwebhook) - Process Outrank webhook

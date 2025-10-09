@@ -490,14 +490,14 @@ pub async fn delete_file(
     Ok(HttpResponse::NoContent().finish())
 }
 
-/// Serve file content with user authentication
+/// Serve file content without authentication
 ///
-/// This endpoint is designed to be used to get file content with proper authentication.
-/// It verifies user access to the file and returns the file content with proper cache headers.
+/// This endpoint is designed to be used to get file content without authentication.
+/// It returns the file content with proper cache headers for public access.
 /// The file content is streamed directly from S3 to minimize memory usage for large files.
 ///
 /// # Errors
-/// Returns an error if file not found, access denied, or S3 operations fail.
+/// Returns an error if file not found or S3 operations fail.
 #[utoipa::path(
     get,
     path = "/api/cdn/files/{file_id}",
@@ -508,17 +508,11 @@ pub async fn delete_file(
     responses(
         (status = 200, description = "Streaming file content with CDN-optimized headers", content_type = "application/octet-stream",
             example = "Binary file content with appropriate Content-Type and Cache-Control headers"),
-        (status = 404, description = "CDN file not found or access denied", body = ErrorResponse),
-        (status = 401, description = "Authentication required for CDN file access", body = ErrorResponse),
-        (status = 403, description = "CDN access forbidden - user cannot access this file", body = ErrorResponse),
+        (status = 404, description = "CDN file not found", body = ErrorResponse),
         (status = 500, description = "CDN streaming error from storage backend", body = ErrorResponse)
-    ),
-    security(
-        ("cookieAuth" = [], "bearerAuth" = [])
     )
 )]
 pub async fn serve_file_cdn(
-    user: User,
     db_service: web::Data<shared::services::db::DbService>,
     s3_service: web::Data<S3Service>,
     path: web::Path<Uuid>,
@@ -531,14 +525,11 @@ pub async fn serve_file_cdn(
 
     let file: UserFile = files_dsl::user_files
         .filter(files_dsl::id.eq(file_id))
-        .filter(files_dsl::user_id.eq(user.id))
         .filter(files_dsl::deleted_at.is_null())
         .first(&mut conn)
         .await
         .map_err(|e| match e {
-            diesel::result::Error::NotFound => {
-                actix_web::error::ErrorNotFound("File not found or access denied")
-            }
+            diesel::result::Error::NotFound => actix_web::error::ErrorNotFound("File not found"),
             _ => actix_web::error::ErrorInternalServerError(format!("Database error: {e}")),
         })?;
 

@@ -589,8 +589,8 @@ paths:
     get:
       tags:
         - "Files"
-      summary: "Serve file content with user authentication"
-      description: "This endpoint is designed to be used to get file content with proper authentication.\nIt verifies user access to the file and returns the file content with proper cache headers.\nThe file content is streamed directly from S3 to minimize memory usage for large files.\n\n# Errors\nReturns an error if file not found, access denied, or S3 operations fail."
+      summary: "Serve file content without authentication"
+      description: "This endpoint is designed to be used to get file content without authentication.\nIt returns the file content with proper cache headers for public access.\nThe file content is streamed directly from S3 to minimize memory usage for large files.\n\n# Errors\nReturns an error if file not found or S3 operations fail."
       operationId: "serve_file_cdn"
       parameters:
         - name: "file_id"
@@ -606,18 +606,8 @@ paths:
           content:
             "application/octet-stream":
               example: "Binary file content with appropriate Content-Type and Cache-Control headers"
-        "401":
-          description: "Authentication required for CDN file access"
-          content:
-            "application/json":
-              schema: {"$ref": "#/components/schemas/ErrorResponse"}
-        "403":
-          description: "CDN access forbidden - user cannot access this file"
-          content:
-            "application/json":
-              schema: {"$ref": "#/components/schemas/ErrorResponse"}
         "404":
-          description: "CDN file not found or access denied"
+          description: "CDN file not found"
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
@@ -626,9 +616,6 @@ paths:
           content:
             "application/json":
               schema: {"$ref": "#/components/schemas/ErrorResponse"}
-      security:
-        - bearerAuth: []
-          cookieAuth: []
       x-speakeasy-name-override: "serveCdn"
   "/api/files":
     get:

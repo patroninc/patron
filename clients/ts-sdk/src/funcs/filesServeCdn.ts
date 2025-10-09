@@ -27,15 +27,15 @@ import { APICall, APIPromise } from "../types/async.js";
 import { Result } from "../types/fp.js";
 
 /**
- * Serve file content with user authentication
+ * Serve file content without authentication
  *
  * @remarks
- * This endpoint is designed to be used to get file content with proper authentication.
- * It verifies user access to the file and returns the file content with proper cache headers.
+ * This endpoint is designed to be used to get file content without authentication.
+ * It returns the file content with proper cache headers for public access.
  * The file content is streamed directly from S3 to minimize memory usage for large files.
  *
  * # Errors
- * Returns an error if file not found, access denied, or S3 operations fail.
+ * Returns an error if file not found or S3 operations fail.
  */
 export function filesServeCdn(
   client: PatrontsCore,
@@ -152,7 +152,7 @@ async function $do(
 
   const doResult = await client._do(req, {
     context,
-    errorCodes: ["401", "403", "404", "4XX", "500", "5XX"],
+    errorCodes: ["404", "4XX", "500", "5XX"],
     retryConfig: context.retryConfig,
     retryCodes: context.retryCodes,
   });
@@ -178,7 +178,7 @@ async function $do(
     | SDKValidationError
   >(
     M.nil(200, z.void()),
-    M.jsonErr([401, 403, 404], errors.ErrorResponse$inboundSchema),
+    M.jsonErr(404, errors.ErrorResponse$inboundSchema),
     M.jsonErr(500, errors.ErrorResponse$inboundSchema),
     M.fail("4XX"),
     M.fail("5XX"),
