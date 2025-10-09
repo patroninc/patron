@@ -34,7 +34,9 @@ const patronts = new Patronts({
 async function run() {
   const result = await patronts.series.list();
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 run();
@@ -61,7 +63,9 @@ async function run() {
   const res = await seriesList(patronts);
   if (res.ok) {
     const { value: result } = res;
-    console.log(result);
+    for await (const page of result) {
+    console.log(page);
+  }
   } else {
     console.log("seriesList failed:", res.error);
   }
@@ -81,7 +85,7 @@ run();
 
 ### Response
 
-**Promise\<[models.SeriesResponse[]](../../models/.md)\>**
+**Promise\<[operations.ListSeriesResponse](../../models/operations/listseriesresponse.md)\>**
 
 ### Errors
 

@@ -11,6 +11,7 @@ import { ClientSDK, RequestOptions } from "../lib/sdks.js";
 import * as models from "../models/index.js";
 import * as operations from "../models/operations/index.js";
 import { unwrapAsync } from "../types/fp.js";
+import { PageIterator, unwrapResultIterator } from "../types/operations.js";
 
 export class Series extends ClientSDK {
   /**
@@ -23,8 +24,8 @@ export class Series extends ClientSDK {
   async list(
     request?: operations.ListSeriesRequest | undefined,
     options?: RequestOptions,
-  ): Promise<Array<models.SeriesResponse>> {
-    return unwrapAsync(seriesList(
+  ): Promise<PageIterator<operations.ListSeriesResponse, { cursor: string }>> {
+    return unwrapResultIterator(seriesList(
       this,
       request,
       options,

@@ -11,6 +11,7 @@ import { ClientSDK, RequestOptions } from "../lib/sdks.js";
 import * as models from "../models/index.js";
 import * as operations from "../models/operations/index.js";
 import { unwrapAsync } from "../types/fp.js";
+import { PageIterator, unwrapResultIterator } from "../types/operations.js";
 
 export class ApiKeys extends ClientSDK {
   /**
@@ -23,8 +24,8 @@ export class ApiKeys extends ClientSDK {
   async list(
     request?: operations.ListApiKeysRequest | undefined,
     options?: RequestOptions,
-  ): Promise<Array<models.ApiKeyResponse>> {
-    return unwrapAsync(apiKeysList(
+  ): Promise<PageIterator<operations.ListApiKeysResponse, { cursor: string }>> {
+    return unwrapResultIterator(apiKeysList(
       this,
       request,
       options,

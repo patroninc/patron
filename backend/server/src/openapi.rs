@@ -143,7 +143,71 @@ pub struct ApiDoc;
 struct SecurityAddon;
 
 impl Modify for SecurityAddon {
+    #[allow(clippy::too_many_lines)]
     fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        // Add x-speakeasy-retries extension at the root level
+        if let Some(obj) = serde_json::json!({
+            "x-speakeasy-retries": {
+                "strategy": "backoff",
+                "backoff": {
+                    "initialInterval": 500_i32,
+                    "maxInterval": 60_000_i32,
+                    "maxElapsedTime": 3_600_000_i32,
+                    "exponent": 1.5_f64
+                },
+                "statusCodes": [
+                    "5XX",
+                    "429"
+                ],
+                "retryConnectionErrors": true
+            }
+        })
+        .as_object()
+        {
+            openapi.extensions = Some(obj.clone().into_iter().collect());
+        }
+
+        // Add x-speakeasy-pagination hints to list endpoints
+        let pagination_extension = serde_json::json!({
+            "x-speakeasy-pagination": {
+                "type": "cursor",
+                "inputs": [
+                    {
+                        "name": "offset",
+                        "in": "parameters",
+                        "type": "cursor"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "parameters",
+                        "type": "limit"
+                    }
+                ],
+                "outputs": {
+                    "results": "$.data",
+                    "nextCursor": "$.nextCursor"
+                }
+            }
+        });
+
+        // Add pagination hints to list operations
+        let list_paths = vec![
+            "/api/api-keys",
+            "/api/series",
+            "/api/posts",
+            "/api/user-files",
+        ];
+
+        for path in list_paths {
+            if let Some(path_item) = openapi.paths.paths.get_mut(path) {
+                if let Some(operation) = path_item.get.as_mut() {
+                    if let Some(obj) = pagination_extension.as_object() {
+                        operation.extensions = Some(obj.clone().into_iter().collect());
+                    }
+                }
+            }
+        }
+
         if let Some(components) = openapi.components.as_mut() {
             let mut cookie_auth =
                 SecurityScheme::ApiKey(ApiKey::Cookie(ApiKeyValue::new("sessionid")));

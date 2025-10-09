@@ -14,7 +14,7 @@ export class Outrank extends ClientSDK {
    *
    * @remarks
    * # Security
-   * Validates Bearer token from Authorization header against OUTRANK_ACCESS_TOKEN environment variable
+   * Validates Bearer token from Authorization header against `OUTRANK_ACCESS_TOKEN` environment variable
    *
    * # Errors
    * Returns 401 if access token is invalid or missing, 500 for processing errors

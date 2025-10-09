@@ -11,6 +11,7 @@ import { ClientSDK, RequestOptions } from "../lib/sdks.js";
 import * as models from "../models/index.js";
 import * as operations from "../models/operations/index.js";
 import { unwrapAsync } from "../types/fp.js";
+import { PageIterator, unwrapResultIterator } from "../types/operations.js";
 
 export class Posts extends ClientSDK {
   /**
@@ -23,8 +24,8 @@ export class Posts extends ClientSDK {
   async list(
     request?: operations.ListPostsRequest | undefined,
     options?: RequestOptions,
-  ): Promise<Array<models.PostResponse>> {
-    return unwrapAsync(postsList(
+  ): Promise<PageIterator<operations.ListPostsResponse, { cursor: string }>> {
+    return unwrapResultIterator(postsList(
       this,
       request,
       options,

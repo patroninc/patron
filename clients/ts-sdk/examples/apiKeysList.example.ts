@@ -23,7 +23,9 @@ const patronts = new Patronts({
 async function main() {
   const result = await patronts.apiKeys.list();
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 main().catch(console.error);

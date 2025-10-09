@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: b7304f430aee322686517c7de23863bb
+  docChecksum: 7bcdb634ae12b545e4493adc576d3c8e
   docVersion: 1.0.0
-  speakeasyVersion: 1.633.2
-  generationVersion: 2.720.5
-  releaseVersion: 0.9.1
-  configChecksum: 4675f093edc2f52ab5a9bea566b1351f
+  speakeasyVersion: 1.636.2
+  generationVersion: 2.723.8
+  releaseVersion: 0.10.1
+  configChecksum: 66d69519a721fb64834381dc3dfe4319
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -22,11 +22,12 @@ features:
     globalSecurity: 2.82.14
     globalSecurityCallbacks: 0.1.0
     globalServerURLs: 2.82.5
-    groups: 2.81.2
+    groups: 2.81.3
     methodArguments: 0.1.2
     methodSecurity: 2.82.6
     nameOverrides: 2.81.2
     nullables: 0.1.1
+    pagination: 2.83.0
     responseFormat: 0.2.3
     retries: 2.83.0
     sdkHooks: 0.3.0
@@ -68,9 +69,12 @@ generatedFiles:
   - docs/models/operations/getseriesrequest.md
   - docs/models/operations/googleauthcallbackrequest.md
   - docs/models/operations/listapikeysrequest.md
+  - docs/models/operations/listapikeysresponse.md
   - docs/models/operations/listfilesrequest.md
   - docs/models/operations/listpostsrequest.md
+  - docs/models/operations/listpostsresponse.md
   - docs/models/operations/listseriesrequest.md
+  - docs/models/operations/listseriesresponse.md
   - docs/models/operations/processwebhooksecurity.md
   - docs/models/operations/servefilecdnrequest.md
   - docs/models/operations/updateapikeyrequest.md
@@ -100,7 +104,6 @@ generatedFiles:
   - docs/sdks/auth/README.md
   - docs/sdks/files/README.md
   - docs/sdks/outrank/README.md
-  - docs/sdks/patronts/README.md
   - docs/sdks/posts/README.md
   - docs/sdks/series/README.md
   - eslint.config.mjs
@@ -479,7 +482,7 @@ examples:
     speakeasy-default-list-series:
       responses:
         "200":
-          application/json: [{"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}]
+          application/json: [{"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "length": 42, "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}]
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -490,7 +493,7 @@ examples:
         application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "description": "A weekly podcast about technology and innovation", "slug": "my-awesome-podcast", "title": "My Awesome Podcast"}
       responses:
         "201":
-          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "length": 42, "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
         "400":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -502,7 +505,7 @@ examples:
           series_id: "8d41996a-2849-497f-a32a-300c043d4e31"
       responses:
         "200":
-          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "length": 42, "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
@@ -516,7 +519,7 @@ examples:
         application/json: {"category": "Technology", "coverImageUrl": "https://example.com/new-cover.jpg", "description": "An updated description with more details", "slug": "my-updated-podcast", "title": "My Updated Podcast"}
       responses:
         "200":
-          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+          application/json: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "length": 42, "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":

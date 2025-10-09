@@ -3,9 +3,11 @@
  */
 
 import * as z from "zod";
+import { remap as remap$ } from "../../lib/primitives.js";
 import { safeParse } from "../../lib/schemas.js";
 import { Result as SafeParseResult } from "../../types/fp.js";
 import { SDKValidationError } from "../errors/sdkvalidationerror.js";
+import * as models from "../index.js";
 
 export type ListSeriesRequest = {
   /**
@@ -16,6 +18,10 @@ export type ListSeriesRequest = {
    * Maximum number of series to return (default: 50, max: 100)
    */
   limit?: number | null | undefined;
+};
+
+export type ListSeriesResponse = {
+  result: Array<models.SeriesResponse>;
 };
 
 /** @internal */
@@ -72,5 +78,67 @@ export function listSeriesRequestFromJSON(
     jsonString,
     (x) => ListSeriesRequest$inboundSchema.parse(JSON.parse(x)),
     `Failed to parse 'ListSeriesRequest' from JSON`,
+  );
+}
+
+/** @internal */
+export const ListSeriesResponse$inboundSchema: z.ZodType<
+  ListSeriesResponse,
+  z.ZodTypeDef,
+  unknown
+> = z.object({
+  Result: z.array(models.SeriesResponse$inboundSchema),
+}).transform((v) => {
+  return remap$(v, {
+    "Result": "result",
+  });
+});
+
+/** @internal */
+export type ListSeriesResponse$Outbound = {
+  Result: Array<models.SeriesResponse$Outbound>;
+};
+
+/** @internal */
+export const ListSeriesResponse$outboundSchema: z.ZodType<
+  ListSeriesResponse$Outbound,
+  z.ZodTypeDef,
+  ListSeriesResponse
+> = z.object({
+  result: z.array(models.SeriesResponse$outboundSchema),
+}).transform((v) => {
+  return remap$(v, {
+    result: "Result",
+  });
+});
+
+/**
+ * @internal
+ * @deprecated This namespace will be removed in future versions. Use schemas and types that are exported directly from this module.
+ */
+export namespace ListSeriesResponse$ {
+  /** @deprecated use `ListSeriesResponse$inboundSchema` instead. */
+  export const inboundSchema = ListSeriesResponse$inboundSchema;
+  /** @deprecated use `ListSeriesResponse$outboundSchema` instead. */
+  export const outboundSchema = ListSeriesResponse$outboundSchema;
+  /** @deprecated use `ListSeriesResponse$Outbound` instead. */
+  export type Outbound = ListSeriesResponse$Outbound;
+}
+
+export function listSeriesResponseToJSON(
+  listSeriesResponse: ListSeriesResponse,
+): string {
+  return JSON.stringify(
+    ListSeriesResponse$outboundSchema.parse(listSeriesResponse),
+  );
+}
+
+export function listSeriesResponseFromJSON(
+  jsonString: string,
+): SafeParseResult<ListSeriesResponse, SDKValidationError> {
+  return safeParse(
+    jsonString,
+    (x) => ListSeriesResponse$inboundSchema.parse(JSON.parse(x)),
+    `Failed to parse 'ListSeriesResponse' from JSON`,
   );
 }

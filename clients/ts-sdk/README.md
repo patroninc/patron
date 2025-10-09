@@ -25,6 +25,7 @@ Patron API: An open source Patreon alternative with lower fees designed for crea
   * [Authentication](#authentication)
   * [Available Resources and Operations](#available-resources-and-operations)
   * [Standalone functions](#standalone-functions)
+  * [Pagination](#pagination)
   * [File uploads](#file-uploads)
   * [Retries](#retries)
   * [Error Handling](#error-handling)
@@ -94,7 +95,9 @@ const patronts = new Patronts({
 async function run() {
   const result = await patronts.apiKeys.list();
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 run();
@@ -128,7 +131,9 @@ const patronts = new Patronts({
 async function run() {
   const result = await patronts.apiKeys.list();
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 run();
@@ -207,7 +212,6 @@ run();
 
 * [processWebhook](docs/sdks/outrank/README.md#processwebhook) - Process Outrank webhook
 
-
 ### [posts](docs/sdks/posts/README.md)
 
 * [list](docs/sdks/posts/README.md#list) - List posts with cursor-based pagination and optional series filtering
@@ -280,6 +284,41 @@ To read more about standalone functions, check [FUNCTIONS.md](./FUNCTIONS.md).
 </details>
 <!-- End Standalone functions [standalone-funcs] -->
 
+<!-- Start Pagination [pagination] -->
+## Pagination
+
+Some of the endpoints in this SDK support pagination. To use pagination, you
+make your SDK calls as usual, but the returned response object will also be an
+async iterable that can be consumed using the [`for await...of`][for-await-of]
+syntax.
+
+[for-await-of]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
+
+Here's an example of one such pagination call:
+
+```typescript
+import { Patronts } from "patronts";
+
+const patronts = new Patronts({
+  security: {
+    bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
+    cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
+  },
+});
+
+async function run() {
+  const result = await patronts.apiKeys.list();
+
+  for await (const page of result) {
+    console.log(page);
+  }
+}
+
+run();
+
+```
+<!-- End Pagination [pagination] -->
+
 <!-- Start File uploads [file-upload] -->
 ## File uploads
 
@@ -348,7 +387,9 @@ async function run() {
     },
   });
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 run();
@@ -379,7 +420,9 @@ const patronts = new Patronts({
 async function run() {
   const result = await patronts.apiKeys.list();
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 run();
@@ -417,7 +460,9 @@ async function run() {
   try {
     const result = await patronts.apiKeys.list();
 
-    console.log(result);
+    for await (const page of result) {
+      console.log(page);
+    }
   } catch (error) {
     // The base class for HTTP error responses
     if (error instanceof errors.PatrontsError) {
@@ -492,7 +537,9 @@ const patronts = new Patronts({
 async function run() {
   const result = await patronts.apiKeys.list();
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 run();
@@ -516,7 +563,9 @@ const patronts = new Patronts({
 async function run() {
   const result = await patronts.apiKeys.list();
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 run();

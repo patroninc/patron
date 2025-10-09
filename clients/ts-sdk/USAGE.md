@@ -12,7 +12,9 @@ const patronts = new Patronts({
 async function run() {
   const result = await patronts.apiKeys.list();
 
-  console.log(result);
+  for await (const page of result) {
+    console.log(page);
+  }
 }
 
 run();

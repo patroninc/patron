@@ -109,7 +109,26 @@
             "bearerAuth": [],
             "cookieAuth": []
           }
-        ]
+        ],
+        "x-speakeasy-pagination": {
+          "inputs": [
+            {
+              "in": "parameters",
+              "name": "offset",
+              "type": "cursor"
+            },
+            {
+              "in": "parameters",
+              "name": "limit",
+              "type": "limit"
+            }
+          ],
+          "outputs": {
+            "nextCursor": "$.nextCursor",
+            "results": "$.data"
+          },
+          "type": "cursor"
+        }
       },
       "post": {
         "tags": [
@@ -1532,7 +1551,7 @@
           "Outrank"
         ],
         "summary": "Process Outrank webhook",
-        "description": "# Security\nValidates Bearer token from Authorization header against OUTRANK_ACCESS_TOKEN environment variable\n\n# Errors\nReturns 401 if access token is invalid or missing, 500 for processing errors",
+        "description": "# Security\nValidates Bearer token from Authorization header against `OUTRANK_ACCESS_TOKEN` environment variable\n\n# Errors\nReturns 401 if access token is invalid or missing, 500 for processing errors",
         "operationId": "process_webhook",
         "requestBody": {
           "description": "Webhook payload from Outrank",
@@ -1690,7 +1709,26 @@
             "bearerAuth": [],
             "cookieAuth": []
           }
-        ]
+        ],
+        "x-speakeasy-pagination": {
+          "inputs": [
+            {
+              "in": "parameters",
+              "name": "offset",
+              "type": "cursor"
+            },
+            {
+              "in": "parameters",
+              "name": "limit",
+              "type": "limit"
+            }
+          ],
+          "outputs": {
+            "nextCursor": "$.nextCursor",
+            "results": "$.data"
+          },
+          "type": "cursor"
+        }
       },
       "post": {
         "tags": [
@@ -2103,7 +2141,26 @@
             "bearerAuth": [],
             "cookieAuth": []
           }
-        ]
+        ],
+        "x-speakeasy-pagination": {
+          "inputs": [
+            {
+              "in": "parameters",
+              "name": "offset",
+              "type": "cursor"
+            },
+            {
+              "in": "parameters",
+              "name": "limit",
+              "type": "limit"
+            }
+          ],
+          "outputs": {
+            "nextCursor": "$.nextCursor",
+            "results": "$.data"
+          },
+          "type": "cursor"
+        }
       },
       "post": {
         "tags": [
@@ -4000,5 +4057,19 @@
       "name": "Outrank",
       "description": "Outrank SEO integration webhook endpoints"
     }
-  ]
+  ],
+  "x-speakeasy-retries": {
+    "backoff": {
+      "exponent": 1.5,
+      "initialInterval": 500,
+      "maxElapsedTime": 3600000,
+      "maxInterval": 60000
+    },
+    "retryConnectionErrors": true,
+    "statusCodes": [
+      "5XX",
+      "429"
+    ],
+    "strategy": "backoff"
+  }
 }
