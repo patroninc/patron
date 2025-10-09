@@ -7,7 +7,7 @@ File upload, download, and management endpoints
 
 ### Available Operations
 
-* [serveCdn](#servecdn) - Serve file content with user authentication
+* [serveCdn](#servecdn) - Serve file content without authentication
 * [list](#list) - List user's files with cursor-based pagination
 * [upload](#upload) - Upload a file
 * [get](#get) - Get a specific file by ID
@@ -16,12 +16,12 @@ File upload, download, and management endpoints
 
 ## serveCdn
 
-This endpoint is designed to be used to get file content with proper authentication.
-It verifies user access to the file and returns the file content with proper cache headers.
+This endpoint is designed to be used to get file content without authentication.
+It returns the file content with proper cache headers for public access.
 The file content is streamed directly from S3 to minimize memory usage for large files.
 
 # Errors
-Returns an error if file not found, access denied, or S3 operations fail.
+Returns an error if file not found or S3 operations fail.
 
 ### Example Usage
 
@@ -96,7 +96,7 @@ run();
 
 | Error Type                  | Status Code                 | Content Type                |
 | --------------------------- | --------------------------- | --------------------------- |
-| errors.ErrorResponse        | 401, 403, 404               | application/json            |
+| errors.ErrorResponse        | 404                         | application/json            |
 | errors.ErrorResponse        | 500                         | application/json            |
 | errors.PatrontsDefaultError | 4XX, 5XX                    | \*/\*                       |
 

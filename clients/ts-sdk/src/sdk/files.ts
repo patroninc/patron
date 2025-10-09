@@ -15,15 +15,15 @@ import { unwrapAsync } from "../types/fp.js";
 
 export class Files extends ClientSDK {
   /**
-   * Serve file content with user authentication
+   * Serve file content without authentication
    *
    * @remarks
-   * This endpoint is designed to be used to get file content with proper authentication.
-   * It verifies user access to the file and returns the file content with proper cache headers.
+   * This endpoint is designed to be used to get file content without authentication.
+   * It returns the file content with proper cache headers for public access.
    * The file content is streamed directly from S3 to minimize memory usage for large files.
    *
    * # Errors
-   * Returns an error if file not found, access denied, or S3 operations fail.
+   * Returns an error if file not found or S3 operations fail.
    */
   async serveCdn(
     request: operations.ServeFileCdnRequest,

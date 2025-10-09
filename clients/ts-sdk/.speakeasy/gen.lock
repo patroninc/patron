@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: 7bcdb634ae12b545e4493adc576d3c8e
+  docChecksum: a8fd6417b6420f61e953de8478e75343
   docVersion: 1.0.0
   speakeasyVersion: 1.636.2
   generationVersion: 2.723.8
-  releaseVersion: 0.10.1
-  configChecksum: 66d69519a721fb64834381dc3dfe4319
+  releaseVersion: 0.10.2
+  configChecksum: 9471e6e86624476667086578914d269c
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -365,6 +365,8 @@ examples:
         "401":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
+          application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "404":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
   list_files:
     speakeasy-default-list-files:
