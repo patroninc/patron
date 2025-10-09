@@ -7,6 +7,7 @@ import { remap as remap$ } from "../../lib/primitives.js";
 import { safeParse } from "../../lib/schemas.js";
 import { Result as SafeParseResult } from "../../types/fp.js";
 import { SDKValidationError } from "../errors/sdkvalidationerror.js";
+import * as models from "../index.js";
 
 export type ListPostsRequest = {
   /**
@@ -21,6 +22,10 @@ export type ListPostsRequest = {
    * Filter posts by series ID
    */
   seriesId?: string | null | undefined;
+};
+
+export type ListPostsResponse = {
+  result: Array<models.PostResponse>;
 };
 
 /** @internal */
@@ -88,5 +93,67 @@ export function listPostsRequestFromJSON(
     jsonString,
     (x) => ListPostsRequest$inboundSchema.parse(JSON.parse(x)),
     `Failed to parse 'ListPostsRequest' from JSON`,
+  );
+}
+
+/** @internal */
+export const ListPostsResponse$inboundSchema: z.ZodType<
+  ListPostsResponse,
+  z.ZodTypeDef,
+  unknown
+> = z.object({
+  Result: z.array(models.PostResponse$inboundSchema),
+}).transform((v) => {
+  return remap$(v, {
+    "Result": "result",
+  });
+});
+
+/** @internal */
+export type ListPostsResponse$Outbound = {
+  Result: Array<models.PostResponse$Outbound>;
+};
+
+/** @internal */
+export const ListPostsResponse$outboundSchema: z.ZodType<
+  ListPostsResponse$Outbound,
+  z.ZodTypeDef,
+  ListPostsResponse
+> = z.object({
+  result: z.array(models.PostResponse$outboundSchema),
+}).transform((v) => {
+  return remap$(v, {
+    result: "Result",
+  });
+});
+
+/**
+ * @internal
+ * @deprecated This namespace will be removed in future versions. Use schemas and types that are exported directly from this module.
+ */
+export namespace ListPostsResponse$ {
+  /** @deprecated use `ListPostsResponse$inboundSchema` instead. */
+  export const inboundSchema = ListPostsResponse$inboundSchema;
+  /** @deprecated use `ListPostsResponse$outboundSchema` instead. */
+  export const outboundSchema = ListPostsResponse$outboundSchema;
+  /** @deprecated use `ListPostsResponse$Outbound` instead. */
+  export type Outbound = ListPostsResponse$Outbound;
+}
+
+export function listPostsResponseToJSON(
+  listPostsResponse: ListPostsResponse,
+): string {
+  return JSON.stringify(
+    ListPostsResponse$outboundSchema.parse(listPostsResponse),
+  );
+}
+
+export function listPostsResponseFromJSON(
+  jsonString: string,
+): SafeParseResult<ListPostsResponse, SDKValidationError> {
+  return safeParse(
+    jsonString,
+    (x) => ListPostsResponse$inboundSchema.parse(JSON.parse(x)),
+    `Failed to parse 'ListPostsResponse' from JSON`,
   );
 }

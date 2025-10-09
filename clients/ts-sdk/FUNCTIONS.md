@@ -35,7 +35,9 @@ async function run() {
   const res = await apiKeysList(patronts);
   if (res.ok) {
     const { value: result } = res;
-    console.log(result);
+    for await (const page of result) {
+    console.log(page);
+  }
   } else {
     console.log("apiKeysList failed:", res.error);
   }

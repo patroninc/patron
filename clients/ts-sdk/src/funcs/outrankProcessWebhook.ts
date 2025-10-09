@@ -31,7 +31,7 @@ import { Result } from "../types/fp.js";
  *
  * @remarks
  * # Security
- * Validates Bearer token from Authorization header against OUTRANK_ACCESS_TOKEN environment variable
+ * Validates Bearer token from Authorization header against `OUTRANK_ACCESS_TOKEN` environment variable
  *
  * # Errors
  * Returns 401 if access token is invalid or missing, 500 for processing errors
@@ -124,8 +124,18 @@ async function $do(
     securitySource: security,
     retryConfig: options?.retries
       || client._options.retryConfig
+      || {
+        strategy: "backoff",
+        backoff: {
+          initialInterval: 500,
+          maxInterval: 60000,
+          exponent: 1.5,
+          maxElapsedTime: 3600000,
+        },
+        retryConnectionErrors: true,
+      }
       || { strategy: "none" },
-    retryCodes: options?.retryCodes || ["429", "500", "502", "503", "504"],
+    retryCodes: options?.retryCodes || ["5XX", "429"],
   };
 
   const requestRes = client._createRequest(context, {

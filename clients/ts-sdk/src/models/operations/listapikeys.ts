@@ -3,9 +3,11 @@
  */
 
 import * as z from "zod";
+import { remap as remap$ } from "../../lib/primitives.js";
 import { safeParse } from "../../lib/schemas.js";
 import { Result as SafeParseResult } from "../../types/fp.js";
 import { SDKValidationError } from "../errors/sdkvalidationerror.js";
+import * as models from "../index.js";
 
 export type ListApiKeysRequest = {
   /**
@@ -20,6 +22,10 @@ export type ListApiKeysRequest = {
    * Only show active or inactive API keys
    */
   isActive?: boolean | null | undefined;
+};
+
+export type ListApiKeysResponse = {
+  result: Array<models.ApiKeyResponse>;
 };
 
 /** @internal */
@@ -79,5 +85,67 @@ export function listApiKeysRequestFromJSON(
     jsonString,
     (x) => ListApiKeysRequest$inboundSchema.parse(JSON.parse(x)),
     `Failed to parse 'ListApiKeysRequest' from JSON`,
+  );
+}
+
+/** @internal */
+export const ListApiKeysResponse$inboundSchema: z.ZodType<
+  ListApiKeysResponse,
+  z.ZodTypeDef,
+  unknown
+> = z.object({
+  Result: z.array(models.ApiKeyResponse$inboundSchema),
+}).transform((v) => {
+  return remap$(v, {
+    "Result": "result",
+  });
+});
+
+/** @internal */
+export type ListApiKeysResponse$Outbound = {
+  Result: Array<models.ApiKeyResponse$Outbound>;
+};
+
+/** @internal */
+export const ListApiKeysResponse$outboundSchema: z.ZodType<
+  ListApiKeysResponse$Outbound,
+  z.ZodTypeDef,
+  ListApiKeysResponse
+> = z.object({
+  result: z.array(models.ApiKeyResponse$outboundSchema),
+}).transform((v) => {
+  return remap$(v, {
+    result: "Result",
+  });
+});
+
+/**
+ * @internal
+ * @deprecated This namespace will be removed in future versions. Use schemas and types that are exported directly from this module.
+ */
+export namespace ListApiKeysResponse$ {
+  /** @deprecated use `ListApiKeysResponse$inboundSchema` instead. */
+  export const inboundSchema = ListApiKeysResponse$inboundSchema;
+  /** @deprecated use `ListApiKeysResponse$outboundSchema` instead. */
+  export const outboundSchema = ListApiKeysResponse$outboundSchema;
+  /** @deprecated use `ListApiKeysResponse$Outbound` instead. */
+  export type Outbound = ListApiKeysResponse$Outbound;
+}
+
+export function listApiKeysResponseToJSON(
+  listApiKeysResponse: ListApiKeysResponse,
+): string {
+  return JSON.stringify(
+    ListApiKeysResponse$outboundSchema.parse(listApiKeysResponse),
+  );
+}
+
+export function listApiKeysResponseFromJSON(
+  jsonString: string,
+): SafeParseResult<ListApiKeysResponse, SDKValidationError> {
+  return safeParse(
+    jsonString,
+    (x) => ListApiKeysResponse$inboundSchema.parse(JSON.parse(x)),
+    `Failed to parse 'ListApiKeysResponse' from JSON`,
   );
 }
