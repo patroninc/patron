@@ -1917,7 +1917,7 @@ components:
       type: "array"
       items: {"$ref": "#/components/schemas/SeriesResponse"}
       description: "List of series with pagination support"
-      example: [{"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}]
+      example: [{"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "length": 42, "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}]
     "SeriesResponse":
       type: "object"
       description: "API response model for series"
@@ -1957,6 +1957,13 @@ components:
           format: "uuid"
           description: "Series unique identifier"
           example: "e5f6a7b8-9012-3456-ef01-345678901234"
+        "length":
+          type:
+            - "integer"
+            - "null"
+          format: "int32"
+          description: "Total number of posts in the series"
+          example: 42
         "slug":
           type: "string"
           description: "SEO-friendly URL identifier for the series"
@@ -1977,7 +1984,7 @@ components:
           format: "uuid"
           description: "ID of the user who owns this series"
           example: "f6a7b8c9-0123-4567-f012-456789012345"
-      example: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
+      example: {"category": "Technology", "coverImageUrl": "https://example.com/cover.jpg", "createdAt": "2023-01-01T00:00:00Z", "description": "A weekly podcast about technology and innovation", "id": "e5f6a7b8-9012-3456-ef01-345678901234", "length": 42, "slug": "my-awesome-podcast", "title": "My Awesome Podcast", "updatedAt": "2023-01-01T12:00:00Z", "userId": "f6a7b8c9-0123-4567-f012-456789012345"}
     "UpdateApiKeyRequest":
       type: "object"
       description: "Request payload for updating an API key"

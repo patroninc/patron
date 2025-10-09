@@ -1,8 +1,9 @@
 use crate::errors::ServiceError;
 use crate::services::config::AwsConfig;
-use aws_config::{BehaviorVersion, Region};
-use aws_credential_types::{provider::SharedCredentialsProvider, Credentials};
+use aws_config::Region;
+use aws_credential_types::Credentials;
 use aws_sdk_s3::{presigning::PresigningConfig, primitives::ByteStream, Client};
+use aws_types::sdk_config::SdkConfig;
 use bytes::Bytes;
 use futures_util::stream::{Stream, StreamExt};
 use std::pin::Pin;
@@ -34,11 +35,13 @@ impl S3Service {
             "patron-app",
         );
 
-        let credentials_provider = SharedCredentialsProvider::new(credentials);
+        // Create a minimal SDK config with behavior version and credentials
+        let sdk_config = SdkConfig::builder()
+            .credentials_provider(credentials)
+            .region(Region::new(aws_config.region.clone()))
+            .build();
 
-        let mut config_builder = aws_config::defaults(BehaviorVersion::latest())
-            .credentials_provider(credentials_provider)
-            .region(Region::new(aws_config.region.clone()));
+        let mut s3_config_builder = aws_sdk_s3::config::Builder::from(&sdk_config);
 
         if let Some(ref endpoint) = aws_config.s3_host {
             let endpoint_url =
@@ -47,11 +50,13 @@ impl S3Service {
                 } else {
                     format!("https://{endpoint}")
                 };
-            config_builder = config_builder.endpoint_url(endpoint_url);
+            s3_config_builder = s3_config_builder
+                .endpoint_url(endpoint_url)
+                .force_path_style(true);
         }
 
-        let config = config_builder.load().await;
-        let client = Client::new(&config);
+        let s3_config = s3_config_builder.build();
+        let client = Client::from_conf(s3_config);
 
         Ok(Self {
             client,

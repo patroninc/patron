@@ -51,8 +51,11 @@ pub async fn main() -> std::io::Result<()> {
         )
         .init();
 
+    println!("Starting server...");
     let config = ConfigService::from_env();
+    println!("Config loaded.");
 
+    println!("Loading AWS config...");
     let aws_config = match config.aws_config() {
         Ok(cfg) => cfg,
         Err(e) => {
@@ -63,6 +66,7 @@ pub async fn main() -> std::io::Result<()> {
             ));
         }
     };
+    println!("AWS config loaded. Creating S3 service...");
     let s3_service = match S3Service::new(aws_config).await {
         Ok(service) => service,
         Err(e) => {

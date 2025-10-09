@@ -1,9 +1,9 @@
-speakeasyVersion: 1.633.2
+speakeasyVersion: 1.636.1
 sources:
     Patron API:
         sourceNamespace: patron-api
-        sourceRevisionDigest: sha256:85ea0c2e498745affab32d738170c56021b0ad9a9abdc315d9a4fc3a476387ac
-        sourceBlobDigest: sha256:4b6fdab326af6854435cea68e602d4700ba06ccf365a13c95b7270bbfff86cb8
+        sourceRevisionDigest: sha256:2ac2c4ea4863bb2c3241d40e86ca6c8a2e828b92c4999b26198ce3199eb2c6eb
+        sourceBlobDigest: sha256:914467fbb8464304acb4bd760d674f8ea7e86ada81463382f0bd60299584cab5
         tags:
             - latest
             - 1.0.0
@@ -11,10 +11,10 @@ targets:
     patron-ts-sdk:
         source: Patron API
         sourceNamespace: patron-api
-        sourceRevisionDigest: sha256:85ea0c2e498745affab32d738170c56021b0ad9a9abdc315d9a4fc3a476387ac
-        sourceBlobDigest: sha256:4b6fdab326af6854435cea68e602d4700ba06ccf365a13c95b7270bbfff86cb8
+        sourceRevisionDigest: sha256:2ac2c4ea4863bb2c3241d40e86ca6c8a2e828b92c4999b26198ce3199eb2c6eb
+        sourceBlobDigest: sha256:914467fbb8464304acb4bd760d674f8ea7e86ada81463382f0bd60299584cab5
         codeSamplesNamespace: celeb-ai-video-generation-api-typescript-code-samples
-        codeSamplesRevisionDigest: sha256:f6ae666c50b83f2e03653a14e3c3d19ec3234b6e5bb9c87869cd6d6ccf5aefca
+        codeSamplesRevisionDigest: sha256:1b0bb8b6669bbdef57d15158fd8e7882815c72d34081ddc5a74df06d74af5158
 workflow:
     workflowVersion: 1.0.0
     speakeasyVersion: latest
