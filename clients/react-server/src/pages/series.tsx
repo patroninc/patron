@@ -1,6 +1,6 @@
 import { JSX, useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
-import { PlusIcon, EllipsisIcon, Share2, Pencil, Trash2 } from 'lucide-react';
+import { PlusIcon, MoreHorizontal, Pencil, Trash2, Edit } from 'lucide-react';
 
 import MainLayout from '@/layouts/main';
 import PxBorder from '@/components/px-border';
@@ -12,7 +12,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useAppData } from '@/contexts/AppDataContext';
+import NewSeriesForm from '@/components/new-series-form';
+import { patronClient } from '@/lib/utils';
 
 /**
  * Individual series display page component
@@ -31,6 +43,9 @@ export const Series = (): JSX.Element => {
   } = useAppData();
   const [isLoading, setIsLoading] = useState(false);
   const [hasTriedFetch, setHasTriedFetch] = useState(false);
+  const [editingSeries, setEditingSeries] = useState(false);
+  const [deletingSeries, setDeletingSeries] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Use server-provided data directly
   const series = singleSeries;
@@ -81,6 +96,27 @@ export const Series = (): JSX.Element => {
   useEffect(() => {
     setHasTriedFetch(false);
   }, [seriesId]);
+
+  /**
+   * Handles the deletion of a series after confirmation.
+   *
+   * @returns {Promise<void>}
+   */
+  const handleDeleteSeries = async (): Promise<void> => {
+    if (!series) return;
+
+    setIsDeleting(true);
+    try {
+      await patronClient.series.delete({ seriesId: series.id });
+      setDeletingSeries(false);
+      // Use window.location to simulate a link click and trigger a full page reload
+      window.location.href = '/dashboard/content';
+    } catch (error) {
+      console.error('Failed to delete series:', error);
+      // You could add error handling/toast notification here
+      setIsDeleting(false);
+    }
+  };
 
   // Show loading state
   if (isLoading) {
@@ -163,12 +199,24 @@ export const Series = (): JSX.Element => {
               </div>
 
               <div className="flex items-center justify-end gap-3">
-                <Button shadow={false} variant="secondary" size="icon">
-                  <EllipsisIcon />
-                </Button>
-                <Button shadow={false} variant="secondary" size="icon">
-                  <Share2 />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button shadow={false} variant="secondary" size="icon">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setEditingSeries(true)}>
+                      <Edit />
+                      Edit series
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setDeletingSeries(true)} variant="destructive">
+                      <Trash2 />
+                      Delete series
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button onClick={() => navigate(`/new-post?series-id=${seriesId}`)} shadow={false}>
                   New post <PlusIcon />
                 </Button>
@@ -227,7 +275,7 @@ export const Series = (): JSX.Element => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="secondary" size="icon" shadow={false}>
-                          <EllipsisIcon />
+                          <MoreHorizontal />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -253,6 +301,40 @@ export const Series = (): JSX.Element => {
           )}
         </div>
       </div>
+
+      {/* Edit Series Dialog */}
+      <NewSeriesForm
+        existingSeries={series}
+        open={editingSeries}
+        onOpenChange={(open) => !open && setEditingSeries(false)}
+        onSeriesCreated={() => {
+          setEditingSeries(false);
+          window.location.reload(); // Reload to refresh series data
+        }}
+      />
+
+      {/* Delete Series Confirmation Dialog */}
+      <AlertDialog open={deletingSeries} onOpenChange={(open) => !open && setDeletingSeries(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Series</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{series?.title}"? This action cannot be undone and
+              will also delete all posts in this series.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteSeries}
+              disabled={isDeleting}
+              variant="destructive"
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 };

@@ -1,11 +1,28 @@
 import { JSX, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Edit, EllipsisIcon } from 'lucide-react';
+import { Edit, Trash2, MoreHorizontal } from 'lucide-react';
 
 import MainLayout from '@/layouts/main';
 import PxBorder from '@/components/px-border';
 import { Button } from '@/components/ui/button';
 import { useAppData } from '@/contexts/AppDataContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { patronClient } from '@/lib/utils';
 
 /**
  * Individual post display page component
@@ -25,6 +42,8 @@ export const Post = (): JSX.Element => {
   } = useAppData();
   const [isLoading, setIsLoading] = useState(false);
   const [hasTriedFetch, setHasTriedFetch] = useState(false);
+  const [deletingPost, setDeletingPost] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Use server-provided data directly
   const post = singlePost;
@@ -84,6 +103,27 @@ export const Post = (): JSX.Element => {
     setHasTriedFetch(false);
   }, [postId]);
 
+  /**
+   * Handles the deletion of a post after confirmation.
+   *
+   * @returns {Promise<void>}
+   */
+  const handleDeletePost = async (): Promise<void> => {
+    if (!post) return;
+
+    setIsDeleting(true);
+    try {
+      await patronClient.posts.delete({ postId: post.id });
+      setDeletingPost(false);
+      // Use window.location to simulate a link click and trigger a full page reload
+      window.location.href = '/dashboard/content';
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+      // You could add error handling/toast notification here
+      setIsDeleting(false);
+    }
+  };
+
   // Show loading state
   if (isLoading) {
     return (
@@ -125,10 +165,21 @@ export const Post = (): JSX.Element => {
               </div>
 
               <div className="flex items-center justify-end gap-3">
-                <Button shadow={false} variant="secondary" size="icon">
-                  <EllipsisIcon />
-                </Button>
-                <Button shadow={false} onClick={() => navigate(`/new-post?post-id=${post.id}`)}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button shadow={false} variant="secondary" size="icon">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setDeletingPost(true)} variant="destructive">
+                      <Trash2 />
+                      Delete post
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button shadow={false} onClick={() => navigate(`/edit-post?id=${post.id}`)}>
                   <Edit />
                   Edit
                 </Button>
@@ -144,6 +195,28 @@ export const Post = (): JSX.Element => {
           </div>
         </div>
       </div>
+
+      {/* Delete Post Confirmation Dialog */}
+      <AlertDialog open={deletingPost} onOpenChange={(open) => !open && setDeletingPost(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Post</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{post?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeletePost}
+              disabled={isDeleting}
+              variant="destructive"
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 };
