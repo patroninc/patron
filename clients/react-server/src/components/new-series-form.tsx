@@ -1,4 +1,4 @@
-import { JSX, useState } from 'react';
+import { JSX, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Upload, Image } from 'lucide-react';
 
@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/button';
 import PxBorder from './px-border';
 import { patronClient } from '@/lib/utils';
 import { useNavigate } from 'react-router';
-import { CreateSeriesRequest } from 'patronts/models';
+import { CreateSeriesRequest, SeriesResponse } from 'patronts/models';
 
 export type SeriesFormData = {
   seriesData: Exclude<CreateSeriesRequest, 'coverImageUrl'>;
@@ -35,7 +35,7 @@ interface NewSeriesFormProps {
   /**
    * Optional trigger element to open the dialog
    */
-  trigger: React.ReactNode;
+  trigger?: React.ReactNode;
   /**
    * Optional title for the dialog
    */
@@ -45,37 +45,103 @@ interface NewSeriesFormProps {
    */
   description?: string;
   /**
-   * Optional callback to refresh series after creation
+   * Optional callback to refresh series after creation/update
    */
   onSeriesCreated?: () => void;
+  /**
+   * Optional existing series data for editing
+   */
+  existingSeries?: SeriesResponse;
+  /**
+   * Controlled open state
+   */
+  open?: boolean;
+  /**
+   * Callback when open state changes
+   */
+  onOpenChange?: (isOpen: boolean) => void; // eslint-disable-line
 }
 
 /**
- * Reusable form component for creating a new series.
+ * Reusable form component for creating or editing a series.
  * Can be used as a standalone dialog or with a custom trigger.
  *
  * @param {NewSeriesFormProps} props - The component props
- * @returns {JSX.Element} The new series form component
+ * @returns {JSX.Element} The series form component
  */
 const NewSeriesForm = ({
   trigger,
-  title = 'Create New Series',
-  description = 'Create a new series to organize your posts into a cohesive series.',
+  title,
+  description,
   onSeriesCreated,
+  existingSeries,
+  open,
+  onOpenChange,
 }: NewSeriesFormProps): JSX.Element => {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  // Keep track of the last valid series data to prevent flickering during close
+  const [lastSeries, setLastSeries] = useState<SeriesResponse | null>(existingSeries || null);
+
+  // Use lastSeries during closing animation to prevent flickering
+  const currentSeries = existingSeries || lastSeries;
+  const isEditMode = !!currentSeries;
+  const defaultTitle = isEditMode ? 'Edit Series' : 'Create New Series';
+  const defaultDescription = isEditMode
+    ? 'Update your series information.'
+    : 'Create a new series to organize your posts into a cohesive series.';
+
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    currentSeries?.coverImageUrl || null,
+  );
   const [isImageDialogOpen, setIsImageDialogOpen] = useState<boolean>(false);
   const form = useForm<SeriesFormData>({
     defaultValues: {
-      seriesData: {} as CreateSeriesRequest,
+      seriesData: {
+        title: currentSeries?.title || '',
+        description: currentSeries?.description || '',
+        category: currentSeries?.category || '',
+      } as CreateSeriesRequest,
       image: undefined,
     },
   });
 
   const navigate = useNavigate();
 
+  // Update form when existingSeries is provided
+  useEffect(() => {
+    if (existingSeries) {
+      setLastSeries(existingSeries);
+      form.reset({
+        seriesData: {
+          title: existingSeries.title,
+          description: existingSeries.description || '',
+          category: existingSeries.category || '',
+        } as CreateSeriesRequest,
+        image: undefined,
+      });
+      setImagePreview(existingSeries.coverImageUrl || null);
+    }
+  }, [existingSeries, form]);
+
+  // Clear form only after dialog is fully closed
+  useEffect(() => {
+    if (open === false) {
+      // Delay clearing to allow close animation to complete
+      const timer = setTimeout(() => {
+        setLastSeries(null);
+        if (!existingSeries) {
+          form.reset({
+            seriesData: {} as CreateSeriesRequest,
+            image: undefined,
+          });
+          setImagePreview(null);
+        }
+      }, 300); // Match dialog animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [open, existingSeries, form]);
+
   /**
-   * Handles the submission of the series creation form.
+   * Handles the submission of the series creation/update form.
    *
    * @param {SeriesFormData} formData - The form data containing seriesData and optional image
    * @returns {void}
@@ -83,7 +149,7 @@ const NewSeriesForm = ({
   const handleSubmit = async (formData: SeriesFormData): Promise<void> => {
     try {
       // Upload image if one was selected
-      let coverImageUrl: string | undefined = undefined;
+      let coverImageUrl: string | undefined = currentSeries?.coverImageUrl ?? undefined;
       if (formData.image) {
         try {
           const uploadedFileResult = await patronClient.files.upload({
@@ -98,15 +164,30 @@ const NewSeriesForm = ({
             type: 'manual',
             message: 'Failed to upload cover image. Please try again.',
           });
-          return; // Don't create series if image upload fails
+          return; // Don't create/update series if image upload fails
         }
       }
 
-      await patronClient.series.create({
-        ...formData.seriesData,
-        coverImageUrl: coverImageUrl,
-        slug: formData.seriesData.title.toLowerCase().replace(/ /g, '-'),
-      });
+      if (isEditMode && currentSeries) {
+        // Update existing series
+        await patronClient.series.update({
+          seriesId: currentSeries.id,
+          updateSeriesRequest: {
+            title: formData.seriesData.title,
+            description: formData.seriesData.description,
+            category: formData.seriesData.category,
+            coverImageUrl: coverImageUrl,
+            slug: formData.seriesData.title.toLowerCase().replace(/ /g, '-'),
+          },
+        });
+      } else {
+        // Create new series
+        await patronClient.series.create({
+          ...formData.seriesData,
+          coverImageUrl: coverImageUrl,
+          slug: formData.seriesData.title.toLowerCase().replace(/ /g, '-'),
+        });
+      }
 
       // Call the callback to refresh series data
       if (onSeriesCreated) {
@@ -117,7 +198,10 @@ const NewSeriesForm = ({
     } catch (error) {
       form.setError('seriesData.title', {
         type: 'manual',
-        message: error instanceof Error ? error.message : 'Failed to create series',
+        message:
+          error instanceof Error
+            ? error.message
+            : `Failed to ${isEditMode ? 'update' : 'create'} series`,
       });
     }
   };
@@ -145,8 +229,8 @@ const NewSeriesForm = ({
   const formContent = (
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{title}</AlertDialogTitle>
-        <AlertDialogDescription>{description}</AlertDialogDescription>
+        <AlertDialogTitle>{title || defaultTitle}</AlertDialogTitle>
+        <AlertDialogDescription>{description || defaultDescription}</AlertDialogDescription>
       </AlertDialogHeader>
 
       <Form {...form}>
@@ -215,7 +299,7 @@ const NewSeriesForm = ({
                 Cancel
               </Button>
             </AlertDialogTrigger>
-            <Button type="submit">Create Series</Button>
+            <Button type="submit">{isEditMode ? 'Update Series' : 'Create Series'}</Button>
           </AlertDialogFooter>
         </form>
       </Form>
@@ -225,8 +309,8 @@ const NewSeriesForm = ({
   // If trigger is provided, wrap with AlertDialog and trigger
   return (
     <>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      <AlertDialog open={open} onOpenChange={onOpenChange}>
+        {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
         {formContent}
       </AlertDialog>
 
