@@ -140,7 +140,7 @@ actix-web = "4.11.0"
 reqwest = { version = "0.12.23", features = ["json", "stream"] }
 thiserror = "2.0.16"
 aws-config = { version = "1.8.6", features = ["behavior-version-latest"] }
-aws-sdk-s3 = "1.106.0"
+aws-sdk-s3 = { version = "1.106.0", features = ["behavior-version-latest"] }
 tracing = "0.1.41"
 bytes = "1.10.1"
 urlencoding = { version = "2.1.3" }

@@ -3,7 +3,6 @@ use crate::services::config::AwsConfig;
 use aws_config::Region;
 use aws_credential_types::Credentials;
 use aws_sdk_s3::{presigning::PresigningConfig, primitives::ByteStream, Client};
-use aws_types::sdk_config::SdkConfig;
 use bytes::Bytes;
 use futures_util::stream::{Stream, StreamExt};
 use std::pin::Pin;
@@ -35,13 +34,9 @@ impl S3Service {
             "patron-app",
         );
 
-        // Create a minimal SDK config with behavior version and credentials
-        let sdk_config = SdkConfig::builder()
+        let mut s3_config_builder = aws_sdk_s3::config::Builder::new()
             .credentials_provider(credentials)
-            .region(Region::new(aws_config.region.clone()))
-            .build();
-
-        let mut s3_config_builder = aws_sdk_s3::config::Builder::from(&sdk_config);
+            .region(Region::new(aws_config.region.clone()));
 
         if let Some(ref endpoint) = aws_config.s3_host {
             let endpoint_url =
