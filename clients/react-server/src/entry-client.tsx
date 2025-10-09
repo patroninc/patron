@@ -16,6 +16,7 @@ import Payouts from '@/pages/dashboard/payouts';
 import Settings from '@/pages/settings';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import NewPost from '@/pages/new-post';
+import EditPost from '@/pages/edit-post';
 import Series from '@/pages/series';
 import Post from '@/pages/post';
 
@@ -109,6 +110,15 @@ export const router = createBrowserRouter([
         Component: () => (
           <ProtectedRoute requireAuth={true}>
             <NewPost />
+          </ProtectedRoute>
+        ),
+        errorElement: <ErrorBoundary />,
+      },
+      {
+        path: 'edit-post',
+        Component: () => (
+          <ProtectedRoute requireAuth={true}>
+            <EditPost />
           </ProtectedRoute>
         ),
         errorElement: <ErrorBoundary />,
