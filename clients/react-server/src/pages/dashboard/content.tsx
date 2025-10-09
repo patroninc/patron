@@ -1,7 +1,8 @@
-import { JSX, useRef } from 'react';
+import { JSX, useRef, useState, useEffect } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router';
+import { PostResponse, SeriesResponse } from 'patronts/models';
 
 import MainLayout from '@/layouts/main';
 import { Input } from '@/components/ui/input';
@@ -11,72 +12,17 @@ import { Button } from '@/components/ui/button';
 import NewSeriesForm from '@/components/new-series-form';
 import { useAppData } from '@/contexts/AppDataContext';
 import PxBorder from '@/components/px-border';
-
-// Data types
-export type Post = {
-  id: string;
-  postNumber: number;
-  title: string;
-  publishedAt: string;
-};
-
-export type Series = {
-  id: string;
-  title: string;
-  description: string;
-};
-
-// Column definitions for posts
-const postsColumns: ColumnDef<Post>[] = [
-  createSimpleColumn('postNumber', '#', true),
-  createSimpleColumn('title', 'Title', false),
-  createSimpleColumn('publishedAt', 'Published At', true, ({ row }) => {
-    const date = new Date(row.getValue('publishedAt'));
-    return <div>{date.toLocaleDateString()}</div>;
-  }),
-  createActionsColumn<Post>([
-    {
-      label: 'Edit post',
-      icon: Edit,
-      onClick: (post) => console.log('Edit post:', post.id),
-    },
-    {
-      label: 'View post',
-      icon: Eye,
-      onClick: (post) => console.log('View post:', post.id),
-    },
-    {
-      label: 'Delete post',
-      icon: Trash2,
-      destructive: true,
-      onClick: (post) => console.log('Delete post:', post.id),
-    },
-  ]),
-];
-
-// Column definitions for series
-const seriesColumns: ColumnDef<Series>[] = [
-  createSimpleColumn('title', 'Title', false),
-  createSimpleColumn('description', 'Description', false),
-  createActionsColumn<Series>([
-    {
-      label: 'Edit series',
-      icon: Edit,
-      onClick: (series) => console.log('Edit series:', series.id),
-    },
-    {
-      label: 'View series',
-      icon: Eye,
-      onClick: (series) => console.log('View series:', series.id),
-    },
-    {
-      label: 'Delete series',
-      icon: Trash2,
-      destructive: true,
-      onClick: (series) => console.log('Delete series:', series.id),
-    },
-  ]),
-];
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { patronClient } from '@/lib/utils';
 
 /**
  * Content dashboard page component.
@@ -90,9 +36,152 @@ const Content = (): JSX.Element => {
   const activeTab = searchParams.get('tab') || 'posts';
   const postsFilterRef = useRef<HTMLInputElement>(null);
   const seriesFilterRef = useRef<HTMLInputElement>(null);
+  const [editingSeries, setEditingSeries] = useState<SeriesResponse | undefined>(undefined);
+  const [deletingSeries, setDeletingSeries] = useState<SeriesResponse | undefined>(undefined);
+  const [lastDeletingSeries, setLastDeletingSeries] = useState<SeriesResponse | null>(null);
+  const [deletingPost, setDeletingPost] = useState<PostResponse | undefined>(undefined);
+  const [lastDeletingPost, setLastDeletingPost] = useState<PostResponse | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Get data from context (fetched on server side)
   const { posts, series } = useAppData();
+
+  // Keep track of the last valid series for delete dialog to prevent flickering
+  const currentDeletingSeries = deletingSeries || lastDeletingSeries;
+  const currentDeletingPost = deletingPost || lastDeletingPost;
+
+  // Update lastDeletingSeries when deletingSeries is set
+  useEffect(() => {
+    if (deletingSeries) {
+      setLastDeletingSeries(deletingSeries);
+    }
+  }, [deletingSeries]);
+
+  // Clear lastDeletingSeries after dialog closes
+  useEffect(() => {
+    if (!deletingSeries) {
+      const timer = setTimeout(() => {
+        setLastDeletingSeries(null);
+      }, 300); // Match dialog animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [deletingSeries]);
+
+  // Update lastDeletingPost when deletingPost is set
+  useEffect(() => {
+    if (deletingPost) {
+      setLastDeletingPost(deletingPost);
+    }
+  }, [deletingPost]);
+
+  // Clear lastDeletingPost after dialog closes
+  useEffect(() => {
+    if (!deletingPost) {
+      const timer = setTimeout(() => {
+        setLastDeletingPost(null);
+      }, 300); // Match dialog animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [deletingPost]);
+
+  /**
+   * Handles the deletion of a series after confirmation.
+   *
+   * @returns {Promise<void>}
+   */
+  const handleDeleteSeries = async (): Promise<void> => {
+    if (!currentDeletingSeries) return;
+
+    setIsDeleting(true);
+    try {
+      await patronClient.series.delete({ seriesId: currentDeletingSeries.id });
+      setDeletingSeries(undefined);
+      navigate(0); // Refresh the page
+    } catch (error) {
+      console.error('Failed to delete series:', error);
+      // You could add error handling/toast notification here
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  /**
+   * Handles the deletion of a post after confirmation.
+   *
+   * @returns {Promise<void>}
+   */
+  const handleDeletePost = async (): Promise<void> => {
+    if (!currentDeletingPost) return;
+
+    setIsDeleting(true);
+    try {
+      await patronClient.posts.delete({ postId: currentDeletingPost.id });
+      setDeletingPost(undefined);
+      navigate(0); // Refresh the page
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+      // You could add error handling/toast notification here
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Column definitions for posts
+  const postsColumns: ColumnDef<PostResponse>[] = [
+    createSimpleColumn('postNumber', '#', true),
+    createSimpleColumn('title', 'Title', false),
+    createSimpleColumn('createdAt', 'Created At', true, ({ row }) => {
+      const value = row.getValue('createdAt');
+      if (!value) return <div>-</div>;
+
+      const date = value instanceof Date ? value : new Date(value as string);
+      if (isNaN(date.getTime())) return <div>Invalid date</div>;
+
+      return <div>{date.toLocaleDateString()}</div>;
+    }),
+    createActionsColumn<PostResponse>([
+      {
+        label: 'Edit post',
+        icon: Edit,
+        onClick: (post) => navigate(`/edit-post?id=${post.id}`),
+      },
+      {
+        label: 'View post',
+        icon: Eye,
+        onClick: (post) => navigate(`/post/${post.id}`),
+      },
+      {
+        label: 'Delete post',
+        icon: Trash2,
+        destructive: true,
+        onClick: (post) => setDeletingPost(post),
+      },
+    ]),
+  ];
+
+  // Column definitions for series (needs to be inside component to access setEditingSeries)
+  const seriesColumns: ColumnDef<SeriesResponse>[] = [
+    createSimpleColumn('title', 'Title', false),
+    createSimpleColumn('description', 'Description', false),
+    createActionsColumn<SeriesResponse>([
+      {
+        label: 'Edit series',
+        icon: Edit,
+        onClick: (series) => setEditingSeries(series),
+      },
+      {
+        label: 'View series',
+        icon: Eye,
+        onClick: (series) => navigate(`/series/${series.id}`),
+      },
+      {
+        label: 'Delete series',
+        icon: Trash2,
+        destructive: true,
+        onClick: (series) => setDeletingSeries(series),
+      },
+    ]),
+  ];
 
   return (
     <MainLayout>
@@ -211,6 +300,66 @@ const Content = (): JSX.Element => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Series Dialog */}
+      <NewSeriesForm
+        existingSeries={editingSeries}
+        open={!!editingSeries}
+        onOpenChange={(open) => !open && setEditingSeries(undefined)}
+        onSeriesCreated={() => setEditingSeries(undefined)}
+      />
+
+      {/* Delete Series Confirmation Dialog */}
+      <AlertDialog
+        open={!!deletingSeries}
+        onOpenChange={(open) => !open && setDeletingSeries(undefined)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Series</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{currentDeletingSeries?.title}"? This action cannot
+              be undone and will also delete all posts in this series.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteSeries}
+              disabled={isDeleting}
+              variant="destructive"
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Post Confirmation Dialog */}
+      <AlertDialog
+        open={!!deletingPost}
+        onOpenChange={(open) => !open && setDeletingPost(undefined)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Post</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{currentDeletingPost?.title}"? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeletePost}
+              disabled={isDeleting}
+              variant="destructive"
+            >
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 };
