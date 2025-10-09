@@ -1,12 +1,12 @@
 import { patronClient } from '@/lib/utils';
-import { PostResponse } from 'patronts/models';
+import { PostResponse, SeriesResponse } from 'patronts/models';
 import { createContext, useContext, ReactNode, JSX, useState } from 'react';
 
 interface AppDataContextType {
-  posts: any[] | null;
-  series: any[] | null;
-  singleSeries: any | null;
-  singlePost: any | null;
+  posts: PostResponse[] | null;
+  series: SeriesResponse[] | null;
+  singleSeries: SeriesResponse | null;
+  singlePost: PostResponse | null;
   fetchPosts?: () => Promise<void>;
   fetchSeries?: () => Promise<void>;
   fetchSingleSeries?: (seriesId: string) => Promise<void>;
@@ -21,9 +21,9 @@ const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
 interface AppDataProviderProps {
   children: ReactNode;
   initialPosts?: PostResponse[] | null;
-  initialSeries?: any[];
-  initialSingleSeries?: any;
-  initialSinglePost?: any;
+  initialSeries?: SeriesResponse[] | null;
+  initialSingleSeries?: SeriesResponse | null;
+  initialSinglePost?: PostResponse | null;
 }
 
 /**
@@ -32,9 +32,9 @@ interface AppDataProviderProps {
  * @param {AppDataProviderProps} props - The component props
  * @param {ReactNode} props.children - Child components to render
  * @param {PostResponse[] | null} props.initialPosts - Initial posts data from server
- * @param {any[]} props.initialSeries - Initial series data from server
- * @param {any} props.initialSingleSeries - Initial single series data from server
- * @param {any} props.initialSinglePost - Initial single post data from server
+ * @param {SeriesResponse[] | null} props.initialSeries - Initial series data from server
+ * @param {SeriesResponse | null} props.initialSingleSeries - Initial single series data from server
+ * @param {PostResponse | null} props.initialSinglePost - Initial single post data from server
  * @returns {JSX.Element} The provider component
  */
 export const AppDataProvider = ({
@@ -45,9 +45,11 @@ export const AppDataProvider = ({
   initialSinglePost,
 }: AppDataProviderProps): JSX.Element => {
   const [posts, setPosts] = useState<PostResponse[] | null>(initialPosts ?? null);
-  const [series, setSeries] = useState<any[] | null>(initialSeries ?? null);
-  const [singleSeries, setSingleSeries] = useState<any | null>(initialSingleSeries ?? null);
-  const [singlePost, setSinglePost] = useState<any | null>(initialSinglePost ?? null);
+  const [series, setSeries] = useState<SeriesResponse[] | null>(initialSeries ?? null);
+  const [singleSeries, setSingleSeries] = useState<SeriesResponse | null>(
+    initialSingleSeries ?? null,
+  );
+  const [singlePost, setSinglePost] = useState<PostResponse | null>(initialSinglePost ?? null);
 
   /**
    * Fetch posts from the server.
