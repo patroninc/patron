@@ -14,6 +14,8 @@ import Payouts from '@/pages/dashboard/payouts';
 import { StaticRouter } from 'react-router';
 import Series from '@/pages/series';
 import Post from '@/pages/post';
+import NewPost from '@/pages/new-post';
+import EditPost from '@/pages/edit-post';
 
 type AppProps = {
   initialData?: {
@@ -101,6 +103,20 @@ const App = ({ initialData, url }: AppProps): JSX.Element => {
             <Payouts />
           </ProtectedRoute>
         );
+      case 'new-post':
+      case '/new-post':
+        return (
+          <ProtectedRoute requireAuth={true}>
+            <NewPost />
+          </ProtectedRoute>
+        );
+      case 'edit-post':
+      case '/edit-post':
+        return (
+          <ProtectedRoute requireAuth={true}>
+            <EditPost />
+          </ProtectedRoute>
+        );
       default:
         // Handle dynamic routes
         if (path.startsWith('/series/') || path.startsWith('series/')) {
@@ -114,6 +130,22 @@ const App = ({ initialData, url }: AppProps): JSX.Element => {
           return (
             <ProtectedRoute requireAuth={true}>
               <Post />
+            </ProtectedRoute>
+          );
+        }
+        // Handle edit-post with query params
+        if (path.startsWith('/edit-post?') || path.startsWith('edit-post?')) {
+          return (
+            <ProtectedRoute requireAuth={true}>
+              <EditPost />
+            </ProtectedRoute>
+          );
+        }
+        // Handle new-post with query params
+        if (path.startsWith('/new-post?') || path.startsWith('new-post?')) {
+          return (
+            <ProtectedRoute requireAuth={true}>
+              <NewPost />
             </ProtectedRoute>
           );
         }
