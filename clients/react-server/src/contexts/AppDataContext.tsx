@@ -9,7 +9,9 @@ interface AppDataContextType {
   singlePost: PostResponse | null;
   fetchPosts?: () => Promise<void>;
   fetchSeries?: () => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
   fetchSingleSeries?: (seriesId: string) => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
   fetchSinglePost?: (postId: string) => Promise<void>;
   // Future data types can be added here
   // users?: any[];
