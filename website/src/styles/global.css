@@ -280,7 +280,7 @@
   width: 100%;
 }
 
-.button-animated-bg>* {
+.button-animated-bg > * {
   position: relative;
   z-index: 20;
 }
