@@ -12,7 +12,17 @@ export async function getStaticPaths() {
     params: { category: id },
     props: {
       category,
-      entries: posts.filter((p) => p.data.categories.includes(id)),
+      entries: posts
+        .filter((p) => p.data.categories.includes(id) && !p.data.isDraft)
+        .sort(
+          (a, b) =>
+            (
+              b.data.lastUpdatedAt ??
+              b.data.createdAt ??
+              new Date(0)
+            ).valueOf() -
+            (a.data.lastUpdatedAt ?? a.data.createdAt ?? new Date(0)).valueOf(),
+        ),
     },
   }));
 }
