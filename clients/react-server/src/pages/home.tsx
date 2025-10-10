@@ -1,4 +1,4 @@
-import { Link2, CalendarDays, PlusIcon } from 'lucide-react';
+import { Link2, PlusIcon } from 'lucide-react';
 import MainLayout from '../layouts/main';
 import { JSX } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -6,7 +6,6 @@ import PxBorder from '@/components/px-border';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import FocusRing from '@/components/focus-ring';
 import About from '@/components/about';
-import Tiers from '@/components/tiers';
 import { Customization } from '@/components/customization';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppData } from '@/contexts/AppDataContext';
@@ -24,27 +23,6 @@ export const Home = (): JSX.Element => {
   const description = 'creating high quality chess lessons';
   const urlSlug = 'bobby';
   const navigate = useNavigate();
-
-  const tiers = [
-    {
-      id: 1,
-      name: 'Supporter',
-      features: ['Access to 1st series', 'feature 2', 'feature 3'],
-      price: 2,
-    },
-    {
-      id: 2,
-      name: 'Supporter+',
-      features: ['Access to 1st and 2nd series', 'feature 2', 'feature 3', 'feature 4'],
-      price: 5,
-    },
-    {
-      id: 3,
-      name: 'Supporter++',
-      features: ['Access to all series', 'feature 2', 'feature 3', 'feature 4', 'feature 5'],
-      price: 10,
-    },
-  ];
 
   const about =
     'Bobby Fischer is a passionate chess instructor dedicated to helping players of all levels unlock their full potential. With years of experience both playing and teaching, Bobby specializes in making complex strategies accessible and fun, guiding students to improve their skills and enjoy the game even more.';
@@ -89,7 +67,6 @@ export const Home = (): JSX.Element => {
         >
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="membership-tiers">Membership Tiers</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
           <TabsContent
@@ -135,21 +112,19 @@ export const Home = (): JSX.Element => {
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-[50px]"
-                              viewBox="0 0 100 92"
-                              fill="none"
-                            >
-                              <path
-                                d="M41.667 92H25V83.6367H41.667V92ZM75 92H58.333V83.6367H75V92ZM25 83.6367H16.667V58.5459H25V83.6367ZM58.333 83.6367H41.667V75.2725H58.333V83.6367ZM83.333 83.6367H75V58.5459H83.333V83.6367ZM16.667 50.1816V58.5459H8.33301V50.1816H16.667ZM91.667 58.5459H83.333V50.1816H91.667V58.5459ZM8.33301 50.1816H0V33.4541H8.33301V50.1816ZM100 50.1816H91.667V33.4541H100V50.1816ZM33.333 33.4541H8.33301V25.0908H33.333V33.4541ZM91.667 33.4541H66.667V25.0908H91.667V33.4541ZM41.667 25.0908H33.333V8.36328H41.667V25.0908ZM66.667 25.0908H58.333V8.36328H66.667V25.0908ZM58.333 8.36328H41.667V0H58.333V8.36328Z"
-                                fill="black"
-                              />
-                              <path
-                                d="M58.3335 25.0908H66.6665V33.4541H91.6665V50.1816H83.3335V58.5449H75.0005V83.6357H58.3335V75.2725H41.6665V83.6357H25.0005V58.5449H16.6665V50.1816H8.3335V33.4541H33.3335V25.0908H41.6665V8.36328H58.3335V25.0908Z"
-                                fill="#265B92"
-                              />
-                            </svg>
+                            <img
+                              src="/assets/series.png"
+                              alt="series"
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        )}
+                        {series.length && (
+                          <div className="absolute right-2.5 bottom-2.5">
+                            <div className="relative m-[3px] bg-white px-1.5 py-[3px]">
+                              <PxBorder width={3} radius="md" />
+                              <span className="text-sm">{series.length} posts</span>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -173,32 +148,6 @@ export const Home = (): JSX.Element => {
                   </div>
                 ))}
               </>
-            )}
-          </TabsContent>
-          <TabsContent
-            className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
-            value="membership-tiers"
-          >
-            {tiers.length === 0 ? (
-              <div className="relative col-span-full flex flex-col items-center justify-center gap-5 bg-white p-10">
-                <PxBorder width={3} radius="lg" />
-                <h2 className="text-2xl">Ready to offer exclusive content?</h2>
-                <p className="text-lg">
-                  Create membership tiers to offer different levels of access and benefits to your
-                  supporters.
-                </p>
-                <Tiers
-                  tiers={tiers}
-                  trigger={
-                    <Button containerClassName="w-max">
-                      Create Your First Tier
-                      <PlusIcon size={20} />
-                    </Button>
-                  }
-                />
-              </div>
-            ) : (
-              <Tiers tiers={tiers} />
             )}
           </TabsContent>
           <TabsContent className="gap-10" value="about">
