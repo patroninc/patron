@@ -56,7 +56,7 @@ export const AppDataProvider = ({
    */
   const fetchPosts = async (): Promise<void> => {
     const postsResp = await patronClient.posts.list({ limit: 20 });
-    setPosts(postsResp);
+    setPosts(postsResp.result);
   };
 
   /**
@@ -64,7 +64,7 @@ export const AppDataProvider = ({
    */
   const fetchSeries = async (): Promise<void> => {
     const seriesResp = await patronClient.series.list({ limit: 20 });
-    setSeries(seriesResp);
+    setSeries(seriesResp.result);
   };
 
   /**
@@ -88,7 +88,7 @@ export const AppDataProvider = ({
     // Clear the current singlePost to avoid showing stale data
     setSinglePost(null);
     const postResp = await patronClient.posts.get({ postId });
-    setSinglePost(postResp);
+    setSinglePost(postResp.result);
   };
 
   const value = {
