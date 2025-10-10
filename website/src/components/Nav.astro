@@ -33,7 +33,7 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
     <nav
       class="flex h-full w-full items-center justify-between border-y-5 border-y-black bg-white p-[10px] sm:p-[15px] sm:px-[20px]"
     >
-      <div class="flex items-center justify-between gap-14">
+      <div class="flex items-center justify-between gap-12">
         <div>
           <a href={i18n.logo.href} aria-label="Go to homepage">
             <KeystaticImage
@@ -45,7 +45,7 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
         </div>
 
         <!-- Desktop Navigation Links -->
-        <div class="hidden items-center space-x-[50px] sm:flex">
+        <div class="hidden items-center space-x-10 md:flex">
           {
             i18n.navigationLinks.map((link) => (
               <Link
@@ -86,7 +86,7 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
           color="secondary"
           shadow={false}
           id="mobile-menu-button"
-          class="flex items-center justify-center sm:hidden"
+          class="flex items-center justify-center md:hidden"
           aria-label="Toggle mobile menu"
           aria-expanded="false"
         >
@@ -102,7 +102,7 @@ const positionClass = isBlogPath ? "absolute" : "fixed";
               as="button"
               type="button"
               id="nav-cta-button"
-              class="hidden cursor-pointer sm:flex"
+              class="hidden cursor-pointer md:flex"
             >
               {i18n.ctaButton.label}
               <ArrowRight />

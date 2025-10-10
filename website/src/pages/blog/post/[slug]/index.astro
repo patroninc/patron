@@ -118,7 +118,7 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
               i18n.categories.map((category) => {
                 return (
                   <a href={`/blog/category/${category}/`}>
-                    <div class="bg-orange/90 button-animated-bg rounded-lg px-2 py-1 text-xs">
+                    <div class="bg-orange px-2 py-1 text-xs">
                       {categories.find((c) => c.id === category)?.data.name}
                     </div>
                   </a>

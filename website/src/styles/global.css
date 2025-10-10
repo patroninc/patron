@@ -6,7 +6,7 @@
   --color-green: #00d6bd;
   --color-purple: #858deb;
   --color-orange: #f68615;
-  --color-azule: #007fff;
+  --color-yellow: #ecdd30;
 }
 
 @theme {
@@ -14,7 +14,7 @@
   --color-green: var(--color-green);
   --color-purple: var(--color-purple);
   --color-orange: var(--color-orange);
-  --color-azule: var(--color-azule);
+  --color-yellow: var(--color-yellow);
 
   --text-h1: 64px;
   --text-h2: 48px;
@@ -255,32 +255,4 @@
     width: 100%;
     max-width: 90%;
   }
-}
-
-.button-animated-bg {
-  position: relative;
-  overflow: hidden;
-}
-
-.button-animated-bg::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.12);
-  z-index: 10;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-}
-
-.button-animated-bg:hover::before,
-.button-animated-bg:focus-visible::before {
-  width: 100%;
-}
-
-.button-animated-bg > * {
-  position: relative;
-  z-index: 20;
 }
