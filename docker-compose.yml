@@ -2,6 +2,8 @@ services:
   postgres:
     image: postgres:15
     container_name: patron_postgres
+    profiles:
+      - postgres
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -28,6 +30,20 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  patron-backend:
+    image: skeptrune/patron-backend:latest
+    container_name: patron_backend
+    pull_policy: always
+    env_file:
+      - backend/.env
+    environment:
+      REDIS_URL: redis://patron_redis:6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:
