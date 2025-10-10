@@ -301,25 +301,27 @@ async function loadDataForUrl(url, req, res) {
       };
 
       // Default: fetch all posts and series for general use
-      const [allPosts, allSeries] = await Promise.all([
+      const [allPostsResponse, allSeriesResponse] = await Promise.all([
         patronClient.posts.list(undefined, requestOptions),
         patronClient.series.list({ limit: 40 }, requestOptions),
       ]);
+      const allPosts = allPostsResponse.result;
+      const allSeries = allSeriesResponse.result;
 
       // Handle individual series page
       const seriesMatch = url.match(/^\/?series\/([^/]+)\/?$/);
       if (seriesMatch) {
         const seriesId = seriesMatch[1];
         try {
-          const [series, seriesPosts] = await Promise.all([
+          const [seriesResponse, seriesPostsResponse] = await Promise.all([
             patronClient.series.get({ seriesId: seriesId }, requestOptions),
             patronClient.posts.list({ seriesId: seriesId, limit: 50 }, requestOptions),
           ]);
           return {
             user,
-            singleSeries: series,
+            singleSeries: seriesResponse.result,
             series: allSeries,
-            posts: seriesPosts,
+            posts: seriesPostsResponse.result,
             allPosts,
           };
         } catch (seriesError) {
@@ -333,13 +335,18 @@ async function loadDataForUrl(url, req, res) {
       if (postMatch) {
         const postId = postMatch[1];
         try {
-          const post = await patronClient.posts.get({ postId: postId }, requestOptions);
+          const postResponse = await patronClient.posts.get({ postId: postId }, requestOptions);
+          const post = postResponse.result;
           let series = null;
 
           // If post belongs to a series, fetch series data too
           if (post.seriesId) {
             try {
-              series = await patronClient.series.get({ seriesId: post.seriesId }, requestOptions);
+              const seriesResponse = await patronClient.series.get(
+                { seriesId: post.seriesId },
+                requestOptions,
+              );
+              series = seriesResponse.result;
             } catch (seriesError) {
               console.warn('Failed to fetch series for post:', seriesError);
             }
