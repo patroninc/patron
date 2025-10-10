@@ -164,31 +164,22 @@ export const Series = (): JSX.Element => {
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-[50px]"
-                    viewBox="0 0 100 92"
-                    fill="none"
-                  >
-                    <path
-                      d="M41.667 92H25V83.6367H41.667V92ZM75 92H58.333V83.6367H75V92ZM25 83.6367H16.667V58.5459H25V83.6367ZM58.333 83.6367H41.667V75.2725H58.333V83.6367ZM83.333 83.6367H75V58.5459H83.333V83.6367ZM16.667 50.1816V58.5459H8.33301V50.1816H16.667ZM91.667 58.5459H83.333V50.1816H91.667V58.5459ZM8.33301 50.1816H0V33.4541H8.33301V50.1816ZM100 50.1816H91.667V33.4541H100V50.1816ZM33.333 33.4541H8.33301V25.0908H33.333V33.4541ZM91.667 33.4541H66.667V25.0908H91.667V33.4541ZM41.667 25.0908H33.333V8.36328H41.667V25.0908ZM66.667 25.0908H58.333V8.36328H66.667V25.0908ZM58.333 8.36328H41.667V0H58.333V8.36328Z"
-                      fill="black"
-                    />
-                    <path
-                      d="M58.3335 25.0908H66.6665V33.4541H91.6665V50.1816H83.3335V58.5449H75.0005V83.6357H58.3335V75.2725H41.6665V83.6357H25.0005V58.5449H16.6665V50.1816H8.3335V33.4541H33.3335V25.0908H41.6665V8.36328H58.3335V25.0908Z"
-                      fill="#265B92"
-                    />
-                  </svg>
+                  <img
+                    src="/assets/series.png"
+                    alt="series"
+                    className="h-full w-full object-cover"
+                  />
                 </div>
               )}
 
-              <div className="absolute right-2.5 bottom-2.5">
-                <div className="relative m-[3px] bg-white px-1.5 py-[3px]">
-                  <PxBorder width={3} radius="md" />
-                  {/* {series.numberOfPosts && <span className="text-sm">{series.numberOfPosts}</span>} */}
-                  20 posts
+              {series.length && (
+                <div className="absolute right-2.5 bottom-2.5">
+                  <div className="relative m-[3px] bg-white px-1.5 py-[3px]">
+                    <PxBorder width={3} radius="md" />
+                    <span className="text-sm">{series.length} posts</span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="flex flex-1 flex-col justify-between">
@@ -245,7 +236,8 @@ export const Series = (): JSX.Element => {
             </div>
           ) : (
             <div className="grid grid-cols-1">
-              {posts.map((post) => (
+              {/* eslint-disable-next-line max-params */}
+              {posts.map((post, i) => (
                 <div
                   key={post.id}
                   className="bg-secondary-primary relative flex items-center border-black not-last:border-b-[5px]"
@@ -264,7 +256,13 @@ export const Series = (): JSX.Element => {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center"></div>
+                        <div className="flex h-full w-full items-center justify-center">
+                          <img
+                            src={`/assets/post-${['orange', 'green', 'purple', 'blue'][i % 4]}.png`}
+                            alt="post"
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
                       )}
                     </div>
                     <FocusRing width={3} />
