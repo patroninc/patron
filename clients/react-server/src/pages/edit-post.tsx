@@ -22,7 +22,12 @@ const EditPost = (): JSX.Element => {
   const postId = searchParams.get('id');
 
   useEffect(() => {
-    const fetchPost = async () => {
+    /**
+     * Fetches the post data from the server.
+     *
+     * @returns {Promise<void>} A promise that resolves when the post is fetched
+     */
+    const fetchPost = async (): Promise<void> => {
       if (!postId) {
         setError('No post ID provided');
         setIsLoading(false);
@@ -41,7 +46,7 @@ const EditPost = (): JSX.Element => {
       }
     };
 
-    fetchPost();
+    void fetchPost();
   }, [postId]);
 
   if (isLoading) {

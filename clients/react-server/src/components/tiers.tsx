@@ -260,6 +260,7 @@ const TierForm = ({
  *
  * @param root0 Destructured props
  * @param root0.tiers List of tiers to display
+ * @param root0.trigger Optional custom trigger element for the manage dialog
  * @returns JSX element containing the tiers grid with internal operation handlers
  */
 const Tiers = ({ tiers, trigger }: TiersProps): JSX.Element => {
