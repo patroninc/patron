@@ -33,7 +33,7 @@ import { patronClient } from '@/lib/utils';
 const Content = (): JSX.Element => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'posts';
+  const activeTab = searchParams.get('tab') || 'series';
   const postsFilterRef = useRef<HTMLInputElement>(null);
   const seriesFilterRef = useRef<HTMLInputElement>(null);
   const [editingSeries, setEditingSeries] = useState<SeriesResponse | undefined>(undefined);
@@ -194,9 +194,55 @@ const Content = (): JSX.Element => {
           className="w-full"
         >
           <TabsList>
-            <TabsTrigger value="posts">All Posts</TabsTrigger>
             <TabsTrigger value="series">Series</TabsTrigger>
+            <TabsTrigger value="posts">All Posts</TabsTrigger>
           </TabsList>
+
+          <TabsContent className="m-0" value="series">
+            {series ? (
+              <>
+                <div className="mb-5 flex items-center justify-between">
+                  <Input
+                    ref={seriesFilterRef}
+                    placeholder="Search series..."
+                    className="md:text-base"
+                  />
+
+                  <NewSeriesForm
+                    trigger={
+                      <Button>
+                        New series
+                        <Plus />
+                      </Button>
+                    }
+                  />
+                </div>
+                <DataTable
+                  columns={seriesColumns}
+                  data={series || []}
+                  enableSorting={true}
+                  enableCheckboxes={false}
+                  enablePagination={true}
+                  enableColumnFilters={true}
+                  filterColumn="title"
+                  filterInputRef={seriesFilterRef}
+                />
+              </>
+            ) : (
+              <div className="relative m-[3px] flex flex-col items-center justify-center gap-5 bg-white p-10">
+                <div className="text-lg">You haven't created any series yet.</div>
+                <NewSeriesForm
+                  trigger={
+                    <Button containerClassName="w-max">
+                      New series
+                      <Plus />
+                    </Button>
+                  }
+                />
+                <PxBorder width={3} radius="lg" />
+              </div>
+            )}
+          </TabsContent>
 
           <TabsContent className="m-0" value="posts">
             {series && series.length > 0 ? (
@@ -244,52 +290,6 @@ const Content = (): JSX.Element => {
                   trigger={
                     <Button containerClassName="w-max">
                       Create Series
-                      <Plus />
-                    </Button>
-                  }
-                />
-                <PxBorder width={3} radius="lg" />
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent className="m-0" value="series">
-            {series ? (
-              <>
-                <div className="mb-5 flex items-center justify-between">
-                  <Input
-                    ref={seriesFilterRef}
-                    placeholder="Search series..."
-                    className="md:text-base"
-                  />
-
-                  <NewSeriesForm
-                    trigger={
-                      <Button>
-                        New series
-                        <Plus />
-                      </Button>
-                    }
-                  />
-                </div>
-                <DataTable
-                  columns={seriesColumns}
-                  data={series || []}
-                  enableSorting={true}
-                  enableCheckboxes={false}
-                  enablePagination={true}
-                  enableColumnFilters={true}
-                  filterColumn="title"
-                  filterInputRef={seriesFilterRef}
-                />
-              </>
-            ) : (
-              <div className="relative m-[3px] flex flex-col items-center justify-center gap-5 bg-white p-10">
-                <div className="text-lg">You haven't created any series yet.</div>
-                <NewSeriesForm
-                  trigger={
-                    <Button containerClassName="w-max">
-                      New series
                       <Plus />
                     </Button>
                   }

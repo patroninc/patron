@@ -66,7 +66,7 @@ export const Home = (): JSX.Element => {
           onValueChange={(value) => setSearchParams({ tab: value })}
         >
           <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="all">Series</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
           <TabsContent

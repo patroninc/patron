@@ -25,9 +25,17 @@ export type UserInfo = {
    */
   avatarUrl?: string | null | undefined;
   /**
+   * URL to user's banner image
+   */
+  banner?: string | null | undefined;
+  /**
    * User account creation timestamp
    */
   createdAt?: Date | null | undefined;
+  /**
+   * User's description or bio
+   */
+  description?: string | null | undefined;
   /**
    * User's display name
    */
@@ -58,9 +66,11 @@ export const UserInfo$inboundSchema: z.ZodType<
 > = z.object({
   authProvider: AuthProvider$inboundSchema,
   avatarUrl: z.nullable(z.string()).optional(),
+  banner: z.nullable(z.string()).optional(),
   createdAt: z.nullable(
     z.string().datetime({ offset: true }).transform(v => new Date(v)),
   ).optional(),
+  description: z.nullable(z.string()).optional(),
   displayName: z.nullable(z.string()).optional(),
   email: z.string(),
   emailVerified: z.boolean(),
@@ -74,7 +84,9 @@ export const UserInfo$inboundSchema: z.ZodType<
 export type UserInfo$Outbound = {
   authProvider: string;
   avatarUrl?: string | null | undefined;
+  banner?: string | null | undefined;
   createdAt?: string | null | undefined;
+  description?: string | null | undefined;
   displayName?: string | null | undefined;
   email: string;
   emailVerified: boolean;
@@ -90,7 +102,9 @@ export const UserInfo$outboundSchema: z.ZodType<
 > = z.object({
   authProvider: AuthProvider$outboundSchema,
   avatarUrl: z.nullable(z.string()).optional(),
+  banner: z.nullable(z.string()).optional(),
   createdAt: z.nullable(z.date().transform(v => v.toISOString())).optional(),
+  description: z.nullable(z.string()).optional(),
   displayName: z.nullable(z.string()).optional(),
   email: z.string(),
   emailVerified: z.boolean(),

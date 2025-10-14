@@ -2126,6 +2126,11 @@ components:
             - "string"
             - "null"
           description: "Updated avatar URL for the user"
+        "banner":
+          type:
+            - "string"
+            - "null"
+          description: "Updated banner URL for the user"
         "description":
           type:
             - "string"
@@ -2136,7 +2141,7 @@ components:
             - "string"
             - "null"
           description: "Updated display name for the user"
-      example: {"avatarUrl": "https://example.com/new-avatar.jpg", "description": "A brief description about myself", "displayName": "New Display Name"}
+      example: {"avatarUrl": "https://example.com/new-avatar.jpg", "banner": "https://example.com/new-banner.jpg", "description": "A brief description about myself", "displayName": "New Display Name"}
     "UpdateUserInfoResponse":
       type: "object"
       description: "Response for successful user information update"
@@ -2235,6 +2240,12 @@ components:
             - "null"
           description: "URL to user's avatar image"
           example: "https://example.com/avatar.jpg"
+        "banner":
+          type:
+            - "string"
+            - "null"
+          description: "URL to user's banner image"
+          example: "https://example.com/banner.jpg"
         "createdAt":
           type:
             - "string"
@@ -2242,6 +2253,12 @@ components:
           format: "date-time"
           description: "User account creation timestamp"
           example: "2023-01-01T00:00:00Z"
+        "description":
+          type:
+            - "string"
+            - "null"
+          description: "User's description or bio"
+          example: "A brief bio about myself"
         "displayName":
           type:
             - "string"
@@ -2268,7 +2285,7 @@ components:
           format: "date-time"
           description: "Timestamp of user's last login"
           example: "2023-01-02T12:00:00Z"
-      example: {"authProvider": "email", "avatarUrl": "https://example.com/avatar.jpg", "createdAt": "2023-01-01T00:00:00", "displayName": "John Doe", "email": "user@example.com", "emailVerified": true, "id": "a7b8c9d0-1234-5678-a123-567890123456", "lastLogin": "2023-01-02T12:00:00"}
+      example: {"authProvider": "email", "avatarUrl": "https://example.com/avatar.jpg", "banner": "https://example.com/banner.jpg", "createdAt": "2023-01-01T00:00:00", "description": "A brief bio about myself", "displayName": "John Doe", "email": "user@example.com", "emailVerified": true, "id": "a7b8c9d0-1234-5678-a123-567890123456", "lastLogin": "2023-01-02T12:00:00"}
     "Value":
       type: "object"
       title: "JSONValue"

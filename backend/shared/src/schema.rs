@@ -1,8 +1,5 @@
 // @generated automatically by Diesel CLI.
 
-#![allow(clippy::pub_use)]
-#![allow(clippy::single_char_lifetime_names)]
-
 diesel::table! {
     api_keys (id) {
         id -> Uuid,
@@ -110,6 +107,7 @@ diesel::table! {
         email_verified -> Bool,
         last_login -> Nullable<Timestamp>,
         description -> Nullable<Text>,
+        banner -> Nullable<Text>,
     }
 }
 

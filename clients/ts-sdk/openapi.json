@@ -3731,6 +3731,13 @@
             ],
             "description": "Updated avatar URL for the user"
           },
+          "banner": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Updated banner URL for the user"
+          },
           "description": {
             "type": [
               "string",
@@ -3748,6 +3755,7 @@
         },
         "example": {
           "avatarUrl": "https://example.com/new-avatar.jpg",
+          "banner": "https://example.com/new-banner.jpg",
           "description": "A brief description about myself",
           "displayName": "New Display Name"
         }
@@ -3930,6 +3938,14 @@
             "description": "URL to user's avatar image",
             "example": "https://example.com/avatar.jpg"
           },
+          "banner": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "URL to user's banner image",
+            "example": "https://example.com/banner.jpg"
+          },
           "createdAt": {
             "type": [
               "string",
@@ -3938,6 +3954,14 @@
             "format": "date-time",
             "description": "User account creation timestamp",
             "example": "2023-01-01T00:00:00Z"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "User's description or bio",
+            "example": "A brief bio about myself"
           },
           "displayName": {
             "type": [
@@ -3976,7 +4000,9 @@
         "example": {
           "authProvider": "email",
           "avatarUrl": "https://example.com/avatar.jpg",
+          "banner": "https://example.com/banner.jpg",
           "createdAt": "2023-01-01T00:00:00",
+          "description": "A brief bio about myself",
           "displayName": "John Doe",
           "email": "user@example.com",
           "emailVerified": true,
