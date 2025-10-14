@@ -15,7 +15,8 @@ describe("Connection Test", () => {
   });
 
   it("should test basic fetch functionality", async () => {
-    const response = await fetch("http://localhost:8080/api/series", {
+    const apiUrl = process.env.PATRON_API_URL || "http://localhost:8080";
+    const response = await fetch(`${apiUrl}/api/series`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${process.env.PATRONTS_BEARER_AUTH}`,

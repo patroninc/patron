@@ -303,7 +303,10 @@ pub async fn get_file(
         .filter(files_dsl::deleted_at.is_null())
         .first(&mut conn)
         .await
-        .map_err(|e| ServiceError::Database(e.to_string()))?;
+        .map_err(|e| match e {
+            diesel::result::Error::NotFound => ServiceError::NotFound("File not found".to_owned()),
+            _ => ServiceError::Database(e.to_string()),
+        })?;
 
     let presigned_url = s3_service
         .get_presigned_url(&file.file_path, 3600)

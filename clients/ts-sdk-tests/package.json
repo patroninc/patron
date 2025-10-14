@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "jest",
+    "test:local": "dotenv -e .env.local -- jest",
+    "test:prod": "dotenv -e .env.prod -- jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "eslint --cache --max-warnings=0 src",
@@ -19,6 +21,7 @@
     "@jest/globals": "30.1.2",
     "@types/jest": "30.0.0",
     "@types/node": "24.5.2",
+    "dotenv-cli": "^10.0.0",
     "eslint": "9.36.0",
     "globals": "16.4.0",
     "jest": "30.1.3",

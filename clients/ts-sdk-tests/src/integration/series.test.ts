@@ -117,11 +117,11 @@ describe("Series API Integration Tests", () => {
       const response = await patronClient.series.list();
 
       expect(response).toBeDefined();
-      expect(Array.isArray(response)).toBe(true);
-      expect(response.length).toBeGreaterThan(0);
+      expect(Array.isArray(response.result)).toBe(true);
+      expect(response.result.length).toBeGreaterThan(0);
 
       // Find our test series
-      const testSeries = response.find((series) => series.id === testSeriesId);
+      const testSeries = response.result.find((series) => series.id === testSeriesId);
       expect(testSeries).toBeDefined();
       expect(testSeries?.title).toBe("List Test Series");
     });
@@ -132,7 +132,7 @@ describe("Series API Integration Tests", () => {
       });
 
       expect(response).toBeDefined();
-      expect(response.length).toBeLessThanOrEqual(1);
+      expect(response.result.length).toBeLessThanOrEqual(1);
     });
 
     it("should support cursor-based pagination with offset", async () => {
@@ -141,8 +141,8 @@ describe("Series API Integration Tests", () => {
         limit: 1,
       });
 
-      if (firstPage && firstPage.length > 0) {
-        const firstSeriesId = firstPage[0].id;
+      if (firstPage && firstPage.result.length > 0) {
+        const firstSeriesId = firstPage.result[0].id;
 
         // Get second page using offset
         const secondPage = await patronClient.series.list({
@@ -151,8 +151,8 @@ describe("Series API Integration Tests", () => {
         });
 
         // If there's a second page, it should not contain the first item
-        if (secondPage && secondPage.length > 0) {
-          expect(secondPage[0].id).not.toBe(firstSeriesId);
+        if (secondPage && secondPage.result.length > 0) {
+          expect(secondPage.result[0].id).not.toBe(firstSeriesId);
         }
       }
     });

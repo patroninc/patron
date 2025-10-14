@@ -51,7 +51,17 @@ impl S3Service {
         }
 
         let config = config_builder.load().await;
-        let client = Client::new(&config);
+
+        let s3_config = aws_sdk_s3::config::Builder::from(&config)
+            .timeout_config(
+                aws_sdk_s3::config::timeout::TimeoutConfig::builder()
+                    .operation_timeout(std::time::Duration::from_secs(10))
+                    .operation_attempt_timeout(std::time::Duration::from_secs(5))
+                    .build()
+            )
+            .build();
+
+        let client = Client::from_conf(s3_config);
 
         Ok(Self {
             client,

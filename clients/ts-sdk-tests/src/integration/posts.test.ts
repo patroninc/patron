@@ -214,11 +214,11 @@ describe("Posts API Integration Tests", () => {
       const response = await patronClient.posts.list();
 
       expect(response).toBeDefined();
-      expect(Array.isArray(response)).toBe(true);
-      expect(response.length).toBeGreaterThanOrEqual(2);
+      expect(Array.isArray(response.result)).toBe(true);
+      expect(response.result.length).toBeGreaterThanOrEqual(2);
 
       // Find our test posts
-      const testPosts = response.filter(
+      const testPosts = response.result.filter(
         (post) => post.slug?.startsWith(testPostSlug) && post.seriesId === testSeriesId
       );
       expect(testPosts.length).toBe(2);
@@ -230,15 +230,15 @@ describe("Posts API Integration Tests", () => {
       });
 
       expect(response).toBeDefined();
-      expect(Array.isArray(response)).toBe(true);
+      expect(Array.isArray(response.result)).toBe(true);
 
       // All returned posts should belong to our test series
-      response.forEach((post) => {
+      response.result.forEach((post) => {
         expect(post.seriesId).toBe(testSeriesId);
       });
 
       // Should contain our test posts
-      const testPosts = response.filter((post) => post.slug?.startsWith(testPostSlug));
+      const testPosts = response.result.filter((post) => post.slug?.startsWith(testPostSlug));
       expect(testPosts.length).toBe(2);
     });
 
@@ -249,7 +249,7 @@ describe("Posts API Integration Tests", () => {
       });
 
       expect(response).toBeDefined();
-      expect(response.length).toBeLessThanOrEqual(1);
+      expect(response.result.length).toBeLessThanOrEqual(1);
     });
 
     it("should support cursor-based pagination with offset", async () => {
@@ -259,8 +259,8 @@ describe("Posts API Integration Tests", () => {
         seriesId: testSeriesId!,
       });
 
-      if (firstPage && firstPage.length > 0) {
-        const firstPostId = firstPage[0].id;
+      if (firstPage && firstPage.result.length > 0) {
+        const firstPostId = firstPage.result[0].id;
 
         // Get second page using offset
         const secondPage = await patronClient.posts.list({
@@ -270,8 +270,8 @@ describe("Posts API Integration Tests", () => {
         });
 
         // If there's a second page, it should not contain the first item
-        if (secondPage && secondPage.length > 0) {
-          expect(secondPage[0].id).not.toBe(firstPostId);
+        if (secondPage && secondPage.result.length > 0) {
+          expect(secondPage.result[0].id).not.toBe(firstPostId);
         }
       }
     });
@@ -285,8 +285,8 @@ describe("Posts API Integration Tests", () => {
         });
         // Should either return empty array or throw access denied error
         if (response) {
-          expect(Array.isArray(response)).toBe(true);
-          expect(response.length).toBe(0);
+          expect(Array.isArray(response.result)).toBe(true);
+          expect(response.result.length).toBe(0);
         }
       } catch (error: any) {
         // 403 forbidden is also acceptable for non-owned series

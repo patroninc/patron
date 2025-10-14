@@ -74,8 +74,9 @@ describe("Series Length API Integration Tests", () => {
 
       const postResponse = await patronClient.posts.create(postRequest);
       expect(postResponse).toBeDefined();
-      testPostIds.push(postResponse?.id!);
-
+      if (postResponse?.id) {
+        testPostIds.push(postResponse.id);
+      }
       // Fetch series to check updated length
       const seriesResponse = await patronClient.series.get({
         seriesId: testSeriesId!,
@@ -94,7 +95,9 @@ describe("Series Length API Integration Tests", () => {
         postNumber: 1,
       };
       const post1Response = await patronClient.posts.create(post1Request);
-      testPostIds.push(post1Response?.id!);
+      if (post1Response?.id) {
+        testPostIds.push(post1Response.id!);
+      }
 
       // Create second post
       const post2Request = {
@@ -105,7 +108,9 @@ describe("Series Length API Integration Tests", () => {
         postNumber: 2,
       };
       const post2Response = await patronClient.posts.create(post2Request);
-      testPostIds.push(post2Response?.id!);
+      if (post2Response?.id) {
+        testPostIds.push(post2Response.id!);
+      }
 
       // Fetch series to check updated length
       const seriesResponse = await patronClient.series.get({
@@ -128,7 +133,7 @@ describe("Series Length API Integration Tests", () => {
           postNumber: i + 1,
         };
         const postResponse = await patronClient.posts.create(postRequest);
-        testPostIds.push(postResponse?.id!);
+        testPostIds.push(postResponse.id);
       }
 
       // Fetch series to check updated length
@@ -160,7 +165,7 @@ describe("Series Length API Integration Tests", () => {
           postNumber: i + 1,
         };
         const postResponse = await patronClient.posts.create(postRequest);
-        testPostIds.push(postResponse?.id!);
+        testPostIds.push(postResponse.id);
       }
     });
 
@@ -169,7 +174,7 @@ describe("Series Length API Integration Tests", () => {
       let seriesResponse = await patronClient.series.get({
         seriesId: testSeriesId!,
       });
-      expect(seriesResponse?.length).toBe(3);
+      expect(seriesResponse.length).toBe(3);
 
       // Delete one post
       const postIdToDelete = testPostIds[0];
@@ -218,7 +223,7 @@ describe("Series Length API Integration Tests", () => {
           postNumber: i + 1,
         };
         const postResponse = await patronClient.posts.create(postRequest);
-        testPostIds.push(postResponse?.id!);
+        testPostIds.push(postResponse.id);
       }
     });
 
@@ -226,10 +231,10 @@ describe("Series Length API Integration Tests", () => {
       const listResponse = await patronClient.series.list();
 
       expect(listResponse).toBeDefined();
-      expect(Array.isArray(listResponse)).toBe(true);
+      expect(Array.isArray(listResponse.result)).toBe(true);
 
       // Find our test series in the list
-      const testSeries = listResponse.find((s) => s.id === testSeriesId);
+      const testSeries = listResponse.result.find((s) => s.id === testSeriesId);
 
       expect(testSeries).toBeDefined();
       expect(testSeries?.length).toBeDefined();
@@ -240,10 +245,10 @@ describe("Series Length API Integration Tests", () => {
       const listResponse = await patronClient.series.list();
 
       expect(listResponse).toBeDefined();
-      expect(Array.isArray(listResponse)).toBe(true);
+      expect(Array.isArray(listResponse.result)).toBe(true);
 
       // Verify that length field exists for all series
-      listResponse.forEach((series) => {
+      listResponse.result.forEach((series) => {
         expect(series).toHaveProperty("length");
         expect(typeof series.length === "number" || series.length === null).toBe(true);
       });
@@ -270,13 +275,13 @@ describe("Series Length API Integration Tests", () => {
           postNumber: i + 1,
         };
         const postResponse = await patronClient.posts.create(postRequest);
-        testPostIds.push(postResponse?.id!);
+        testPostIds.push(postResponse.id);
       }
     });
 
     it("should maintain length when updating series metadata", async () => {
       // Verify initial length
-      let seriesResponse = await patronClient.series.get({
+      const seriesResponse = await patronClient.series.get({
         seriesId: testSeriesId!,
       });
       expect(seriesResponse?.length).toBe(2);
@@ -355,7 +360,7 @@ describe("Series Length API Integration Tests", () => {
           postNumber: i + 1,
         };
         const postResponse = await patronClient.posts.create(postRequest);
-        const postId = postResponse?.id!;
+        const postId = postResponse.id;
 
         // Immediately delete it
         await patronClient.posts.delete({ postId });
