@@ -110,6 +110,7 @@ diesel::table! {
         email_verified -> Bool,
         last_login -> Nullable<Timestamp>,
         description -> Nullable<Text>,
+        banner -> Nullable<Text>,
     }
 }
 

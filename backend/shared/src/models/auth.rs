@@ -143,6 +143,8 @@ pub struct User {
     pub last_login: Option<NaiveDateTime>,
     /// User's description or bio
     pub description: Option<String>,
+    /// URL to user's banner image
+    pub banner: Option<String>,
 }
 
 /// User information for API responses and internal use
@@ -155,7 +157,9 @@ pub struct User {
     "authProvider": "email",
     "emailVerified": true,
     "createdAt": "2023-01-01T00:00:00",
-    "lastLogin": "2023-01-02T12:00:00"
+    "lastLogin": "2023-01-02T12:00:00",
+    "description": "A brief bio about myself",
+    "banner": "https://example.com/banner.jpg"
 }))]
 pub struct UserInfo {
     /// User's unique identifier
@@ -188,6 +192,12 @@ pub struct UserInfo {
     #[schema(example = "2023-01-02T12:00:00Z")]
     #[serde(with = "optional_datetime_format", rename = "lastLogin")]
     pub last_login: Option<NaiveDateTime>,
+    /// User's description or bio
+    #[schema(example = "A brief bio about myself")]
+    pub description: Option<String>,
+    /// URL to user's banner image
+    #[schema(example = "https://example.com/banner.jpg")]
+    pub banner: Option<String>,
 }
 
 impl FromRequest for User {
@@ -244,6 +254,8 @@ impl From<User> for UserInfo {
             email_verified: user.email_verified,
             created_at: user.created_at,
             last_login: user.last_login,
+            description: user.description,
+            banner: user.banner,
         }
     }
 }

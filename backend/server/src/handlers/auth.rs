@@ -126,7 +126,8 @@ pub struct ResendVerificationResponse {
 #[schema(example = json!({
     "displayName": "New Display Name",
     "avatarUrl": "https://example.com/new-avatar.jpg",
-    "description": "A brief description about myself"
+    "description": "A brief description about myself",
+    "banner": "https://example.com/new-banner.jpg"
 }))]
 pub struct UpdateUserInfoRequest {
     /// Updated display name for the user
@@ -137,6 +138,8 @@ pub struct UpdateUserInfoRequest {
     pub avatar_url: Option<String>,
     /// Updated description for the user
     pub description: Option<String>,
+    /// Updated banner URL for the user
+    pub banner: Option<String>,
 }
 
 /// Response for successful user information update
@@ -391,6 +394,7 @@ async fn create_new_user_from_google_info(
         updated_at: None,
         last_login: Some(Utc::now().naive_utc()),
         description: None,
+        banner: None,
     };
 
     let _ = diesel::insert_into(users_dsl::users)
@@ -595,6 +599,7 @@ pub async fn register(
         updated_at: None,
         last_login: Some(Utc::now().naive_utc()),
         description: None,
+        banner: None,
     };
 
     let _ = diesel::insert_into(users_dsl::users)
@@ -1171,11 +1176,19 @@ pub async fn update_user_info(
     if let Some(ref avatar_url) = body.avatar_url {
         user.avatar_url = Some(avatar_url.clone());
     }
+    if let Some(ref description) = body.description {
+        user.description = Some(description.clone());
+    }
+    if let Some(ref banner) = body.banner {
+        user.banner = Some(banner.clone());
+    }
 
     let _ = diesel::update(users_dsl::users.filter(users_dsl::id.eq(&user.id)))
         .set((
             users_dsl::display_name.eq(&user.display_name),
             users_dsl::avatar_url.eq(&user.avatar_url),
+            users_dsl::description.eq(&user.description),
+            users_dsl::banner.eq(&user.banner),
             users_dsl::updated_at.eq(Some(Utc::now().naive_utc())),
         ))
         .execute(&mut conn)

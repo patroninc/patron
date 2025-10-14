@@ -334,32 +334,34 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
     setIsLoading(true);
 
     try {
-      // Upload file if one was selected
+      let avatarUrl: string | undefined = data.profilePicture || undefined;
+
       if (uploadedFile) {
         try {
           const uploadedFileResult = await patronClient.files.upload({
             file: uploadedFile,
           });
-          const avatarUrl = await patronClient.files.serveCdn({
-            fileId: uploadedFileResult.file.id,
-          });
 
-          const updateUserInfo = await patronClient.auth.updateUserInfo({
-            avatarUrl: avatarUrl as unknown as string,
-            displayName: data.displayName || undefined,
-            description: data.description || undefined,
-          });
-
-          console.log('Update user info:', updateUserInfo);
-          form.setValue('profilePicture', avatarUrl as unknown as string);
+          const serverUrl = patronClient._baseURL?.toString().replace(/\/$/, '') || '';
+          avatarUrl = `${serverUrl}/api/cdn/files/${uploadedFileResult.file.id}`;
         } catch (avatarError) {
           console.error('Error uploading avatar:', avatarError);
           form.setError('profilePicture', {
             type: 'manual',
             message: 'Failed to upload avatar. Please try again.',
           });
-          return; // Don't close the dialog if avatar upload fails
+          return;
         }
+      }
+
+      await patronClient.auth.updateUserInfo({
+        avatarUrl: avatarUrl || undefined,
+        displayName: data.displayName || undefined,
+        description: data.description || undefined,
+      });
+
+      if (avatarUrl) {
+        form.setValue('profilePicture', avatarUrl);
       }
 
       setIsOpen(false);
