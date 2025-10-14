@@ -52,6 +52,16 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
       class="max-w-container mx-auto"
     >
       <h1>{i18n.title}</h1>
+      {
+        i18n.coverImage && (i18n.displayCoverImage ?? false) && (
+          <div class="mt-6 mb-3">
+            <img
+              src={i18n.coverImage.src}
+              alt={i18n.title}
+            />
+          </div>
+        )
+      }
       <div class="mt-3">
         <p class="font-semibold">{`Written by ${i18n.author}`}</p>
         <div class="flex w-full flex-col text-xs">
@@ -118,7 +128,7 @@ const ogImage = new URL(i18n.coverImage.src, site).href;
               i18n.categories.map((category) => {
                 return (
                   <a href={`/blog/category/${category}/`}>
-                    <div class="bg-orange px-2 py-1 text-xs">
+                    <div class="bg-orange px-2 py-1 text-xxs rounded-sm">
                       {categories.find((c) => c.id === category)?.data.name}
                     </div>
                   </a>

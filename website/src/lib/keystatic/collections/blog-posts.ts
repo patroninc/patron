@@ -54,6 +54,11 @@ export const blogPosts = collection({
       directory: "src/assets/images/blog-posts",
       publicPath: "/src/assets/images/blog-posts/",
     }),
+    displayCoverImage: fields.checkbox({
+      label: "Display cover image",
+      description: "Whether to display the cover image at the top of the post",
+      defaultValue: false,
+    }),
     ogSection: fields.text({
       label: "OG Section",
       description: "The section of the blog post for Open Graph",

@@ -63,7 +63,7 @@ const POSTS_PER_LOAD = 6;
 </div>
 
 <script is:inline>
-  document.addEventListener("DOMContentLoaded", function () {
+  const handleShowMore = () => {
     const showMoreBtn = document.getElementById("show-more-btn");
     const postCards = document.querySelectorAll(".post-card");
 
@@ -86,5 +86,11 @@ const POSTS_PER_LOAD = 6;
         }
       });
     }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    handleShowMore();
   });
+  document.addEventListener("astro:after-swap", () => handleShowMore());
+  document.addEventListener("astro:page-load", () => handleShowMore());
 </script>

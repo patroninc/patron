@@ -73,7 +73,7 @@ const activeCategories = categories.filter((cat) => categoryCounts[cat.slug]);
       {
         allPosts.length > POSTS_PER_LOAD && (
           <div class="flex justify-center">
-            <Button id="show-more-btn">Show more</Button>
+            <Button shadow={false} id="show-more-btn">Show more</Button>
           </div>
         )
       }

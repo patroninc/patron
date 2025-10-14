@@ -33,6 +33,7 @@ const blogPosts = defineCollection({
       isDraft: z.boolean(),
       categories: z.array(z.string()),
       coverImage: image(),
+      displayCoverImage: z.boolean().optional(),
     }),
 });
 

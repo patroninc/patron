@@ -13,7 +13,7 @@ const { title, details } = Astro.props as Props;
 <Box class="w-full" shadow>
   <div class="accordion group relative w-full max-w-full">
     <button
-      class="accordion__button bg-purple flex w-full flex-1 items-center justify-between gap-2.5 p-5 transition outline-none"
+      class="accordion__button bg-purple flex w-full flex-1 items-center justify-between gap-2.5 p-5 transition outline-none hover:cursor-pointer"
       type="button"
       id={`${title} accordion menu button`}
       aria-expanded="false"
