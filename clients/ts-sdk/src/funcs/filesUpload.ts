@@ -190,7 +190,7 @@ async function $do(
     | UnexpectedClientError
     | SDKValidationError
   >(
-    M.json(201, models.FileUploadResponse$inboundSchema),
+    M.json([200, 201], models.FileUploadResponse$inboundSchema),
     M.jsonErr([400, 401, 413], errors.ErrorResponse$inboundSchema),
     M.jsonErr(500, errors.ErrorResponse$inboundSchema),
     M.fail("4XX"),

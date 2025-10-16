@@ -3891,10 +3891,10 @@ path-to-regexp@^8.0.0:
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-8.3.0.tgz#aa818a6981f99321003a08987d3cec9c3474cd1f"
   integrity sha512-7jdwVIRtsP8MYpdXSwOS0YdD0Du+qOoF/AEPIt88PcCFrZCzx41oxku1jD88hZBwbNUIEfpqvuhjFaMAqMTWnA==
 
-patronts@0.10.1:
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/patronts/-/patronts-0.10.1.tgz#0bf147389da322784c36eb18e84a3b1c83ab9402"
-  integrity sha512-iFnTMVgyMKMCkM7+8CTTCXf1BG4sLKj+x2j1rF5B2woHBEVtVPzVbcez/AHhumrK0C6VxP9Eaq2FbZuyqdVpgA==
+patronts@0.10.4:
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/patronts/-/patronts-0.10.4.tgz#644d70526145dc72ddc683415d7064f463a0ac42"
+  integrity sha512-4FYacxLLVoNSuYOtR1o8rMTepXdpP+HIQRuUXmwsaB1uaW6L1SmWTM/OpwCPamDJAVjX3+go8YNrfP/5zgxdQw==
   dependencies:
     zod "^3.20.0"
 

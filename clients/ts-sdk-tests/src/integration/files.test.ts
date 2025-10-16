@@ -240,6 +240,40 @@ describe("Files API Integration Tests", () => {
         throw error;
       }
     }, 30000); // 30 second timeout for large uploads
+
+    it("should return existing file when uploading duplicate content", async () => {
+      // Upload the same file twice
+      const fileBuffer = fs.readFileSync(testFilePath);
+      const file1 = new File([fileBuffer], testFileName, { type: "text/plain" });
+
+      // First upload
+      const response1 = await patronClient.files.upload({
+        file: file1,
+      });
+
+      expect(response1).toBeDefined();
+      expect(response1?.message).toBe("File uploaded successfully");
+      expect(response1?.file).toBeDefined();
+      const firstFileId = response1?.file.id;
+
+      // Second upload with same content but potentially different filename
+      const duplicateFileName = `duplicate-${testFileName}`;
+      const file2 = new File([fileBuffer], duplicateFileName, { type: "text/plain" });
+
+      const response2 = await patronClient.files.upload({
+        file: file2,
+      });
+
+      // Should return existing file with 200 status instead of creating new one
+      expect(response2).toBeDefined();
+      expect(response2?.message).toBe("File already exists");
+      expect(response2?.file).toBeDefined();
+      expect(response2?.file.id).toBe(firstFileId); // Same file ID
+      expect(response2?.file.fileHash).toBe(response1?.file.fileHash); // Same hash
+
+      // Clean up - only need to delete once since it's the same file
+      testFileId = firstFileId || null;
+    });
   });
 
   describe("GET /api/files - List Files", () => {

@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PxBorder from '@/components/px-border';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import FocusRing from '@/components/focus-ring';
-import About from '@/components/about';
+import UnderContruction from '@/components/under-contruction';
 import { Customization } from '@/components/customization';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAppData } from '@/contexts/AppDataContext';
@@ -23,10 +23,6 @@ export const Home = (): JSX.Element => {
   const description = 'creating high quality chess lessons';
   const urlSlug = 'bobby';
   const navigate = useNavigate();
-
-  const about =
-    'Bobby Fischer is a passionate chess instructor dedicated to helping players of all levels unlock their full potential. With years of experience both playing and teaching, Bobby specializes in making complex strategies accessible and fun, guiding students to improve their skills and enjoy the game even more.';
-  const joined = 'September 2025';
 
   return (
     <MainLayout>
@@ -67,7 +63,7 @@ export const Home = (): JSX.Element => {
         >
           <TabsList>
             <TabsTrigger value="all">Series</TabsTrigger>
-            <TabsTrigger value="about">About</TabsTrigger>
+            <TabsTrigger value="tiers">Tiers</TabsTrigger>
           </TabsList>
           <TabsContent
             className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
@@ -150,8 +146,8 @@ export const Home = (): JSX.Element => {
               </>
             )}
           </TabsContent>
-          <TabsContent className="gap-10" value="about">
-            <About joined={joined} about={about} />
+          <TabsContent className="gap-10" value="tiers">
+            <UnderContruction />
           </TabsContent>
         </Tabs>
       </main>

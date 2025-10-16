@@ -78,6 +78,7 @@ pub struct FileUploadResponse {
 ///
 /// # Errors
 /// Returns an error if file upload, database operations, or file system operations fail.
+#[allow(clippy::too_many_lines)]
 #[utoipa::path(
     post,
     path = "/api/files/actions/upload",
@@ -91,6 +92,7 @@ pub struct FileUploadResponse {
         })
     ),
     responses(
+        (status = 200, description = "File with same content already exists, returning existing file", body = FileUploadResponse),
         (status = 201, description = "File uploaded successfully", body = FileUploadResponse),
         (status = 400, description = "Invalid file upload request or malformed file data", body = ErrorResponse),
         (status = 401, description = "Authentication required for file upload", body = ErrorResponse),
@@ -181,7 +183,7 @@ pub async fn upload_file(
         file_size: i64::try_from(file_bytes.len())
             .map_err(|_err| actix_web::error::ErrorBadRequest("File size too large"))?,
         mime_type,
-        file_hash,
+        file_hash: file_hash.clone(),
         status: FileStatus::Uploaded.into(),
         metadata: Some(serde_json::json!({
             "s3_url": s3_url,
@@ -192,11 +194,31 @@ pub async fn upload_file(
         deleted_at: None,
     };
 
-    let inserted_file: UserFile = diesel::insert_into(files_dsl::user_files)
+    let inserted_file: UserFile = match diesel::insert_into(files_dsl::user_files)
         .values(&new_file)
         .get_result(&mut conn)
         .await
-        .map_err(|e| ServiceError::Database(e.to_string()))?;
+    {
+        Ok(file) => file,
+        Err(diesel::result::Error::DatabaseError(
+            diesel::result::DatabaseErrorKind::UniqueViolation,
+            _,
+        )) => {
+            let existing_file: UserFile = files_dsl::user_files
+                .filter(files_dsl::user_id.eq(user.id))
+                .filter(files_dsl::file_hash.eq(&file_hash))
+                .filter(files_dsl::deleted_at.is_null())
+                .first(&mut conn)
+                .await
+                .map_err(|e| ServiceError::Database(e.to_string()))?;
+
+            return Ok(HttpResponse::Ok().json(FileUploadResponse {
+                message: "File already exists".to_owned(),
+                file: existing_file.into(),
+            }));
+        }
+        Err(e) => return Err(ServiceError::Database(e.to_string()).into()),
+    };
 
     Ok(HttpResponse::Created().json(FileUploadResponse {
         message: "File uploaded successfully".to_owned(),

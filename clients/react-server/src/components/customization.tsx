@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Camera, Check, Settings, Upload } from 'lucide-react';
+import { Camera, Settings, Upload } from 'lucide-react';
 import { JSX } from 'react';
 
 import {
@@ -28,7 +28,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { cn, patronClient } from '@/lib/utils';
-import PxBorder from './px-border';
 import { UserInfo } from 'patronts/models';
 // Validation schema
 const customizationSchema = z.object({
@@ -50,12 +49,47 @@ interface CustomizationProps {
   initialData?: UserInfo;
 }
 
-// Default banners
+// Default banners with colors
 const defaultBanners = [
-  { class: 'bg-background', name: 'Background' },
-  { class: 'bg-secondary-primary', name: 'Secondary' },
-  { class: 'bg-accent', name: 'Accent' },
+  { class: 'bg-background', name: 'Background', color: '#09090b' },
+  { class: 'bg-secondary-primary', name: 'Secondary', color: '#18181b' },
+  { class: 'bg-accent', name: 'Accent', color: '#27272a' },
 ];
+
+/**
+ * Generates a solid color image and returns it as a File object.
+ *
+ * @param color - The hex color code
+ * @param width - The width of the image
+ * @param height - The height of the image
+ * @returns A Promise that resolves to a File object
+ */
+const generateSolidColorImage = async (
+  color: string,
+  width: number = 1200,
+  height: number = 300,
+): Promise<File> => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+
+    if (ctx) {
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const file = new File([blob], `banner-${color.replace('#', '')}.png`, {
+          type: 'image/png',
+        });
+        resolve(file);
+      }
+    }, 'image/png');
+  });
+};
 
 /**
  * Props for the AvatarSelector component.
@@ -82,7 +116,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
   onClose,
 }): JSX.Element => {
   const [selectedAvatar, setSelectedAvatar] = React.useState(currentAvatar || '');
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   /**
@@ -90,52 +124,64 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
    *
    * @param event - The file input change event
    */
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const file = event.target.files?.[0];
     if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setSelectedAvatar(result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+      setIsUploading(true);
+      try {
+        const uploadedFileResult = await patronClient.files.upload({
+          file: file,
+        });
 
-  /**
-   * Handles saving the selected avatar.
-   */
-  const handleSave = (): void => {
-    onSelect(selectedAvatar, selectedFile || undefined);
-    onClose();
+        const serverUrl = patronClient._baseURL?.toString().replace(/\/$/, '') || '';
+        const avatarUrl = `${serverUrl}/api/cdn/files/${uploadedFileResult.file.id}`;
+
+        setSelectedAvatar(avatarUrl);
+        onSelect(avatarUrl, file);
+      } catch (error) {
+        console.error('Error uploading avatar:', error);
+        alert('Failed to upload avatar. Please try again.');
+      } finally {
+        setIsUploading(false);
+      }
+    }
   };
 
   return (
     <div className="space-y-4">
-      {/* Current Selection Preview */}
-      {selectedAvatar && (
-        <div className="flex justify-center">
-          <Avatar className="h-24 w-24">
-            <AvatarImage src={selectedAvatar} alt="Selected avatar" />
-            <AvatarFallback>?</AvatarFallback>
-          </Avatar>
-        </div>
-      )}
-
       {/* Upload Option */}
       <div className="flex flex-col items-center gap-2">
-        <Button shadow={false} variant="secondary" onClick={() => fileInputRef.current?.click()}>
+        <Button
+          shadow={false}
+          variant="secondary"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isUploading}
+        >
           <Upload />
-          Upload Custom Image
+          {isUploading ? 'Uploading...' : 'Upload Custom Image'}
         </Button>
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          onChange={handleFileUpload}
+          onChange={(e) => void handleFileUpload(e)}
           className="hidden"
         />
+
+        {/* Preview under button */}
+        {isUploading && (
+          <div className="flex justify-center">
+            <div className="h-16 w-16 animate-pulse rounded-full bg-gray-300" />
+          </div>
+        )}
+        {!isUploading && selectedAvatar && (
+          <div className="flex justify-center">
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={selectedAvatar} alt="Selected avatar" />
+              <AvatarFallback>?</AvatarFallback>
+            </Avatar>
+          </div>
+        )}
       </div>
 
       {/* Default Avatars */}
@@ -169,10 +215,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-2 pt-4">
-        <Button variant="secondary" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={onClose}>Done</Button>
       </div>
     </div>
   );
@@ -184,7 +227,7 @@ const AvatarSelector: React.FC<AvatarSelectorProps> = ({
 interface BannerSelectorProps {
   currentBanner?: string;
   // eslint-disable-next-line no-unused-vars
-  onSelect: (selectedBanner: string) => void;
+  onSelect: (selectedBanner: string, file?: File) => void;
   onClose: () => void;
 }
 
@@ -203,6 +246,7 @@ const BannerSelector: React.FC<BannerSelectorProps> = ({
   onClose,
 }): JSX.Element => {
   const [selectedBanner, setSelectedBanner] = React.useState(currentBanner || '');
+  const [isUploading, setIsUploading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   /**
@@ -210,54 +254,100 @@ const BannerSelector: React.FC<BannerSelectorProps> = ({
    *
    * @param event - The file input change event
    */
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setSelectedBanner(result);
-      };
-      reader.readAsDataURL(file);
+      setIsUploading(true);
+      try {
+        const uploadedFileResult = await patronClient.files.upload({
+          file: file,
+        });
+
+        const serverUrl = patronClient._baseURL?.toString().replace(/\/$/, '') || '';
+        const bannerUrl = `${serverUrl}/api/cdn/files/${uploadedFileResult.file.id}`;
+
+        setSelectedBanner(bannerUrl);
+        onSelect(bannerUrl, file);
+      } catch (error) {
+        console.error('Error uploading banner:', error);
+        alert('Failed to upload banner. Please try again.');
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
   /**
-   * Handles saving the selected banner.
+   * Handles selecting a default banner.
+   *
+   * @param _bannerClass - The CSS class name for the default banner (unused, for reference only)
+   * @param color - The hex color code for the banner
    */
-  const handleSave = (): void => {
-    onSelect(selectedBanner);
-    onClose();
+  const handleDefaultBannerSelect = async (_bannerClass: string, color: string): Promise<void> => {
+    setIsUploading(true);
+    try {
+      // Generate a solid color image
+      const imageFile = await generateSolidColorImage(color);
+
+      // Upload the generated image
+      const uploadedFileResult = await patronClient.files.upload({
+        file: imageFile,
+      });
+
+      const serverUrl = patronClient._baseURL?.toString().replace(/\/$/, '') || '';
+      const bannerUrl = `${serverUrl}/api/cdn/files/${uploadedFileResult.file.id}`;
+
+      setSelectedBanner(bannerUrl);
+      onSelect(bannerUrl, imageFile);
+    } catch (error) {
+      console.error('Error generating and uploading default banner:', error);
+      alert('Failed to generate banner. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div className="space-y-4">
-      {/* Current Selection Preview */}
-      {selectedBanner && selectedBanner.startsWith('data:') && (
-        <div className="flex justify-center">
-          <div className="relative h-24 w-48 overflow-hidden">
-            <img
-              src={selectedBanner}
-              alt="Selected banner"
-              className="h-full w-full object-cover"
-            />
-          </div>
-        </div>
-      )}
-
       {/* Upload Option */}
       <div className="flex flex-col items-center gap-2">
-        <Button shadow={false} variant="secondary" onClick={() => fileInputRef.current?.click()}>
+        <Button
+          shadow={false}
+          variant="secondary"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isUploading}
+        >
           <Upload />
-          Upload Custom Banner
+          {isUploading ? 'Uploading...' : 'Upload Custom Banner'}
         </Button>
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          onChange={handleFileUpload}
+          onChange={(e) => void handleFileUpload(e)}
           className="hidden"
         />
+
+        {/* Preview under button */}
+        {isUploading && (
+          <div className="flex justify-center">
+            <div className="h-12 w-32 animate-pulse rounded bg-gray-300" />
+          </div>
+        )}
+        {!isUploading &&
+          selectedBanner &&
+          !selectedBanner.startsWith('bg-') &&
+          selectedBanner.trim() !== '' && (
+            <div className="flex justify-center">
+              <div className="relative h-12 w-32 overflow-hidden rounded">
+                <img
+                  src={selectedBanner}
+                  alt="Selected banner"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          )}
       </div>
 
       {/* Default Banners */}
@@ -267,19 +357,18 @@ const BannerSelector: React.FC<BannerSelectorProps> = ({
           {defaultBanners.map((banner, index) => (
             <Button
               key={index}
-              aria-active={selectedBanner && selectedBanner.startsWith(banner.class)}
               shadow={false}
-              onClick={() => setSelectedBanner(banner.class)}
+              onClick={() => void handleDefaultBannerSelect(banner.class, banner.color)}
+              disabled={isUploading}
               className={cn(
                 'relative m-[3px] h-16 w-full items-end justify-end px-2 py-2',
                 banner.class,
               )}
               title={banner.name}
             >
-              {selectedBanner && selectedBanner.startsWith(banner.class) && (
-                <div className="bg-primary relative flex size-4 items-center justify-center">
-                  <Check className="size-4 text-white" />
-                  <PxBorder width={2} radius="md" />
+              {isUploading && (
+                <div className="bg-primary/50 absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs text-white">Generating...</span>
                 </div>
               )}
             </Button>
@@ -289,10 +378,7 @@ const BannerSelector: React.FC<BannerSelectorProps> = ({
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-2 pt-4">
-        <Button variant="secondary" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={onClose}>Done</Button>
       </div>
     </div>
   );
@@ -310,7 +396,6 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
   const [showAvatarSelector, setShowAvatarSelector] = React.useState(false);
   const [showBannerSelector, setShowBannerSelector] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
 
   const form = useForm<CustomizationFormData>({
     resolver: zodResolver(customizationSchema),
@@ -334,35 +419,12 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
     setIsLoading(true);
 
     try {
-      let avatarUrl: string | undefined = data.profilePicture || undefined;
-
-      if (uploadedFile) {
-        try {
-          const uploadedFileResult = await patronClient.files.upload({
-            file: uploadedFile,
-          });
-
-          const serverUrl = patronClient._baseURL?.toString().replace(/\/$/, '') || '';
-          avatarUrl = `${serverUrl}/api/cdn/files/${uploadedFileResult.file.id}`;
-        } catch (avatarError) {
-          console.error('Error uploading avatar:', avatarError);
-          form.setError('profilePicture', {
-            type: 'manual',
-            message: 'Failed to upload avatar. Please try again.',
-          });
-          return;
-        }
-      }
-
       await patronClient.auth.updateUserInfo({
-        avatarUrl: avatarUrl || undefined,
+        avatarUrl: data.profilePicture || undefined,
+        banner: data.banner || undefined,
         displayName: data.displayName || undefined,
         description: data.description || undefined,
       });
-
-      if (avatarUrl) {
-        form.setValue('profilePicture', avatarUrl);
-      }
 
       setIsOpen(false);
     } catch (error) {
@@ -380,11 +442,9 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
    * Handles avatar selection.
    *
    * @param avatar - The selected avatar URL
-   * @param file - The uploaded file object
    */
-  const handleAvatarSelect = (avatar: string, file?: File): void => {
+  const handleAvatarSelect = (avatar: string): void => {
     form.setValue('profilePicture', avatar);
-    setUploadedFile(file || null);
     setShowAvatarSelector(false);
   };
 
@@ -430,16 +490,26 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
                     <FormItem className="flex flex-col gap-2">
                       <FormLabel className="max-h-3.5">Profile Picture</FormLabel>
                       <FormControl>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          shadow={false}
-                          onClick={() => setShowAvatarSelector(true)}
-                          className="w-full"
-                        >
-                          Update Profile Picture
-                          <Camera />
-                        </Button>
+                        <div className="flex flex-col gap-2">
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            shadow={false}
+                            onClick={() => setShowAvatarSelector(true)}
+                            className="w-full"
+                          >
+                            Update Profile Picture
+                            <Camera />
+                          </Button>
+                          {watchedProfilePicture && (
+                            <div className="flex justify-center">
+                              <Avatar className="h-12 w-12">
+                                <AvatarImage src={watchedProfilePicture} alt="Current avatar" />
+                                <AvatarFallback>?</AvatarFallback>
+                              </Avatar>
+                            </div>
+                          )}
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -452,16 +522,31 @@ const Customization: React.FC<CustomizationProps> = ({ initialData }): JSX.Eleme
                     <FormItem className="flex flex-col gap-2">
                       <FormLabel className="max-h-3.5">Banner</FormLabel>
                       <FormControl>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          shadow={false}
-                          onClick={() => setShowBannerSelector(true)}
-                          className="w-full"
-                        >
-                          Update Banner
-                          <Camera />
-                        </Button>
+                        <div className="flex flex-col gap-2">
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            shadow={false}
+                            onClick={() => setShowBannerSelector(true)}
+                            className="w-full"
+                          >
+                            Update Banner
+                            <Camera />
+                          </Button>
+                          {watchedBanner &&
+                            !watchedBanner.startsWith('bg-') &&
+                            watchedBanner.trim() !== '' && (
+                              <div className="flex justify-center">
+                                <div className="relative h-8 w-24 overflow-hidden rounded">
+                                  <img
+                                    src={watchedBanner}
+                                    alt="Current banner"
+                                    className="h-full w-full object-cover"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -1,12 +1,12 @@
 lockVersion: 2.0.0
 id: 29f6286a-13e0-48c8-b4fa-b64fad6aed34
 management:
-  docChecksum: f1d6c8f4fe887d769b836ec946deb7eb
+  docChecksum: 941de79e66696fbd67a57233c98dc257
   docVersion: 1.0.0
   speakeasyVersion: 1.636.3
   generationVersion: 2.723.11
-  releaseVersion: 0.10.4
-  configChecksum: cd786f88dfb09b05b9397c97a5810200
+  releaseVersion: 0.10.6
+  configChecksum: 5a4f6f549ceea5e1bddd4c58ee97a1e0
   repoURL: https://github.com/patroninc/patron.git
   repoSubDirectory: clients/ts-sdk
   installationURL: https://gitpkg.now.sh/patroninc/patron/clients/ts-sdk
@@ -388,6 +388,8 @@ examples:
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
         "500":
           application/json: {"code": "AUTH_INVALID_CREDENTIALS", "error": "Invalid email or password"}
+        "200":
+          application/json: {"file": {"createdAt": "2023-01-01T00:00:00Z", "fileHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "fileSize": 1048576, "filename": "document.pdf", "id": "d290f1ee-6c54-4b01-90e6-d701748f0851", "metadata": {"description": "Important document"}, "mimeType": "application/pdf", "originalFilename": "My Important Document.pdf", "status": "uploaded", "updatedAt": "2023-01-01T00:00:00Z", "userId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"}, "message": "File uploaded successfully"}
   get_file:
     speakeasy-default-get-file:
       parameters:

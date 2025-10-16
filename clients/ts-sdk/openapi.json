@@ -1220,6 +1220,16 @@
           "required": true
         },
         "responses": {
+          "200": {
+            "description": "File with same content already exists, returning existing file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResponse"
+                }
+              }
+            }
+          },
           "201": {
             "description": "File uploaded successfully",
             "content": {
