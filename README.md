@@ -18,7 +18,7 @@ Patron is purpose-built for creators publishing sequential content like webcomic
 This repository contains the following main applications and components:
 
 - **`/website`** - Marketing website built with [Astro](https://astro.build)
-- **`/server`** - Backend API built with [Rust Actix-web](https://actix.rs/)
+- **`/backend`** - Backend API built with [Rust Actix-web](https://actix.rs/)
 - **`/clients/react-server`** - Web application for creators and patrons built with [React](https://react.dev/) and [Vite](https://vite.dev/)
 - **`/clients/ts-sdk`** - TypeScript SDK (`patronts`) for interacting with the Patron API
 
