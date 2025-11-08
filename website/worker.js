@@ -2,6 +2,14 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // Custom redirects
+    if (url.pathname === "/blog/patron-fee-changes-2025" || url.pathname === "/blog/patron-fee-changes-2025/") {
+      return Response.redirect(
+        url.origin + "/blog/patreon-fee-changes-2025/",
+        301,
+      );
+    }
+
     if (
       url.pathname !== "/" &&
       !url.pathname.endsWith("/") &&

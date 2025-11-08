@@ -11,6 +11,9 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   site: "https://www.patron.com",
+  redirects: {
+    "/blog/patron-fee-changes-2025": "/blog/patreon-fee-changes-2025",
+  },
   integrations: [
     react(),
     ...(process.env.SKIP_KEYSTATIC ? [] : [keystatic()]),
