@@ -7,13 +7,19 @@ import Posts from "@components/Posts.astro";
 export async function getStaticPaths() {
   const categories = await getCollection("blogCategories");
   const posts = await getCollection("blogPosts");
+  const now = new Date();
 
   return categories.map(({ id, data: category }) => ({
     params: { category: id },
     props: {
       category,
       entries: posts
-        .filter((p) => p.data.categories.includes(id) && !p.data.isDraft)
+        .filter(
+          (p) =>
+            p.data.categories.includes(id) &&
+            !p.data.isDraft &&
+            (p.data.createdAt ? p.data.createdAt <= now : true),
+        )
         .sort(
           (a, b) =>
             (
@@ -37,7 +43,7 @@ const POSTS_PER_LOAD = 6;
   ogDescription={category.description}
 >
   <section
-    class="bg-green cube-bg px-base mx-auto pt-[150px] pb-[80px] sm:pt-[200px] sm:pb-[160px]"
+    class="bg-green cube-bg px-base mx-auto pt-[150px] pb-20 sm:pt-[200px] sm:pb-40"
   >
     <div class="container-content flex flex-col gap-10">
       <h1>

@@ -14,9 +14,15 @@ const i18n = await keystatic.singletons.blog.read({
 });
 invariant(i18n, "No Blog content found");
 
+const now = new Date();
 const allPosts = await getCollection("blogPosts").then((posts) =>
   posts
-    .filter((e) => !e.data.isDraft && !e.data.categories?.includes("changelog"))
+    .filter(
+      (e) =>
+        !e.data.isDraft &&
+        !e.data.categories?.includes("changelog") &&
+        (e.data.createdAt ? e.data.createdAt <= now : true),
+    )
     .toSorted(
       (a, b) =>
         (b.data.createdAt?.getTime() ?? 0) - (a.data.createdAt?.getTime() ?? 0),
@@ -34,7 +40,7 @@ const categories = allCategories.map((cat) => ({
 const categoryCounts: Record<string, number> = {};
 allPosts.forEach((post) => {
   if (post.data.categories) {
-    post.data.categories.forEach((cat) => {
+    post.data.categories.forEach((cat: string | number) => {
       categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
     });
   }
@@ -46,7 +52,7 @@ const activeCategories = categories.filter((cat) => categoryCounts[cat.slug]);
 
 <Layout title="Blog - Patron">
   <section
-    class="bg-green cube-bg px-base mx-auto pt-[150px] pb-[80px] sm:pt-[200px] sm:pb-[160px]"
+    class="bg-green cube-bg px-base mx-auto pt-[150px] pb-20 sm:pt-[200px] sm:pb-40"
   >
     <div class="container-content flex flex-col gap-10">
       <h1 set:html={marked(i18n.title)} />
