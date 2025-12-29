@@ -6,6 +6,7 @@ import Nav from "@components/Nav.astro";
 import { ClientRouter } from "astro:transitions";
 
 const currentUrl = Astro.url.href;
+const siteUrl = Astro.site?.origin ?? "https://www.patron.com";
 
 interface Props {
   title?: string;
@@ -41,6 +42,10 @@ const {
   articleSection,
   articleTags = [],
 } = Astro.props;
+
+const absoluteOgImage = ogImage.startsWith("http")
+  ? ogImage
+  : `${siteUrl}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`;
 ---
 
 <html lang="en">
@@ -55,7 +60,11 @@ const {
     <meta property="og:url" content={ogUrl} />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:type" content={ogType} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={absoluteOgImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={absoluteOgImage} />
     {
       articleTags.length > 0 && (
         <meta property="og:article:tag" content={articleTags.join(",")} />
