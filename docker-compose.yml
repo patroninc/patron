@@ -2,8 +2,6 @@ services:
   postgres:
     image: postgres:15
     container_name: patron_postgres
-    profiles:
-      - postgres
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -34,6 +32,8 @@ services:
   patron-backend:
     image: skeptrune/patron-backend:latest
     container_name: patron_backend
+    profiles:
+      - backend
     pull_policy: always
     env_file:
       - backend/.env
