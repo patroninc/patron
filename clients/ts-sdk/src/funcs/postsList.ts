@@ -3,8 +3,8 @@
  */
 
 import { PatrontsCore } from "../core.js";
-import { dlv } from "../lib/dlv.js";
 import { encodeFormQuery } from "../lib/encodings.js";
+import { matchStatusCode } from "../lib/http.js";
 import * as M from "../lib/matchers.js";
 import { compactMap } from "../lib/primitives.js";
 import { safeParse } from "../lib/schemas.js";
@@ -161,7 +161,8 @@ async function $do(
 
   const doResult = await client._do(req, {
     context,
-    errorCodes: ["401", "403", "4XX", "500", "5XX"],
+    isErrorStatusCode: (statusCode: number) =>
+      matchStatusCode({ status: statusCode } as Response, ["4XX", "5XX"]),
     retryConfig: context.retryConfig,
     retryCodes: context.retryCodes,
   });
@@ -219,14 +220,16 @@ async function $do(
     >;
     "~next"?: { cursor: string };
   } => {
-    const nextCursor = dlv(responseData, "nextCursor");
+    const nextCursor =
+      (responseData as { nextCursor?: unknown } | null | undefined)?.nextCursor;
     if (typeof nextCursor !== "string") {
       return { next: () => null };
     }
     if (nextCursor.trim() === "") {
       return { next: () => null };
     }
-    const results = dlv(responseData, "data");
+    const results = (responseData as { data?: unknown } | null | undefined)
+      ?.data;
     if (!Array.isArray(results) || !results.length) {
       return { next: () => null };
     }
@@ -239,7 +242,7 @@ async function $do(
       postsList(
         client,
         {
-          ...request,
+          ...request!,
           offset: nextCursor,
         },
         options,
