@@ -9,3 +9,13 @@ Based on:
 - [typescript v0.4.0] clients/ts-sdk
 ### Releases
 - [NPM v0.4.0] https://www.npmjs.com/package/patronts/v/0.4.0 - clients/ts-sdk
+
+## 2026-09-19 01:58:01
+### Changes
+Based on:
+- OpenAPI Doc  
+- Speakeasy CLI 1.798.0 (2.938.0) https://github.com/speakeasy-api/speakeasy
+### Generated
+- [typescript v0.11.0] clients/ts-sdk
+### Releases
+- [NPM v0.11.0] https://www.npmjs.com/package/patronts/v/0.11.0 - clients/ts-sdk

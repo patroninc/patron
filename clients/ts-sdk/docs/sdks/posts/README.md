@@ -1,5 +1,4 @@
 # Posts
-(*posts*)
 
 ## Overview
 
