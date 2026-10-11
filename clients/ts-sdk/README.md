@@ -176,7 +176,7 @@ run();
 <details open>
 <summary>Available methods</summary>
 
-### [apiKeys](docs/sdks/apikeys/README.md)
+### [ApiKeys](docs/sdks/apikeys/README.md)
 
 * [list](docs/sdks/apikeys/README.md#list) - List API keys with cursor-based pagination and optional filtering
 * [create](docs/sdks/apikeys/README.md#create) - Create a new API key
@@ -184,7 +184,7 @@ run();
 * [update](docs/sdks/apikeys/README.md#update) - Update an API key
 * [delete](docs/sdks/apikeys/README.md#delete) - Delete an API key (hard delete for security)
 
-### [auth](docs/sdks/auth/README.md)
+### [Auth](docs/sdks/auth/README.md)
 
 * [checkEmail](docs/sdks/auth/README.md#checkemail) - Check if email exists
 * [forgotPassword](docs/sdks/auth/README.md#forgotpassword) - Forgot password
@@ -199,7 +199,7 @@ run();
 * [resetPassword](docs/sdks/auth/README.md#resetpassword) - Reset password
 * [verifyEmail](docs/sdks/auth/README.md#verifyemail) - Email verification
 
-### [files](docs/sdks/files/README.md)
+### [Files](docs/sdks/files/README.md)
 
 * [serveCdn](docs/sdks/files/README.md#servecdn) - Serve file content without authentication
 * [list](docs/sdks/files/README.md#list) - List user's files with cursor-based pagination
@@ -208,11 +208,11 @@ run();
 * [update](docs/sdks/files/README.md#update) - Update file metadata and properties
 * [delete](docs/sdks/files/README.md#delete) - Permanently delete a user file
 
-### [outrank](docs/sdks/outrank/README.md)
+### [Outrank](docs/sdks/outrank/README.md)
 
 * [processWebhook](docs/sdks/outrank/README.md#processwebhook) - Process Outrank webhook
 
-### [posts](docs/sdks/posts/README.md)
+### [Posts](docs/sdks/posts/README.md)
 
 * [list](docs/sdks/posts/README.md#list) - List posts with cursor-based pagination and optional series filtering
 * [create](docs/sdks/posts/README.md#create) - Create a new post
@@ -220,7 +220,7 @@ run();
 * [update](docs/sdks/posts/README.md#update) - Update a post
 * [delete](docs/sdks/posts/README.md#delete) - Delete a post (soft delete) with series ownership validation
 
-### [series](docs/sdks/series/README.md)
+### [Series](docs/sdks/series/README.md)
 
 * [list](docs/sdks/series/README.md#list) - List user's series with cursor-based pagination
 * [create](docs/sdks/series/README.md#create) - Create a new series
@@ -374,7 +374,7 @@ const patronts = new Patronts({
 });
 
 async function run() {
-  const result = await patronts.apiKeys.list({
+  const result = await patronts.apiKeys.list(undefined, {
     retries: {
       strategy: "backoff",
       backoff: {
@@ -527,7 +527,7 @@ You can override the default server globally by passing a server index to the `s
 import { Patronts } from "patronts";
 
 const patronts = new Patronts({
-  serverIdx: 1,
+  serverIdx: 0,
   security: {
     bearerAuth: process.env["PATRONTS_BEARER_AUTH"] ?? "",
     cookieAuth: process.env["PATRONTS_COOKIE_AUTH"] ?? "",
@@ -586,19 +586,23 @@ The `HTTPClient` constructor takes an optional `fetcher` argument that can be
 used to integrate a third-party HTTP client or when writing tests to mock out
 the HTTP client and feed in fixtures.
 
-The following example shows how to use the `"beforeRequest"` hook to to add a
-custom header and a timeout to requests and how to use the `"requestError"` hook
-to log errors:
+The following example shows how to:
+- route requests through a proxy server using [undici](https://www.npmjs.com/package/undici)'s ProxyAgent
+- use the `"beforeRequest"` hook to add a custom header and a timeout to requests
+- use the `"requestError"` hook to log errors
 
 ```typescript
 import { Patronts } from "patronts";
+import { ProxyAgent } from "undici";
 import { HTTPClient } from "patronts/lib/http";
 
+const dispatcher = new ProxyAgent("http://proxy.example.com:8080");
+
 const httpClient = new HTTPClient({
-  // fetcher takes a function that has the same signature as native `fetch`.
-  fetcher: (request) => {
-    return fetch(request);
-  }
+  // 'fetcher' takes a function that has the same signature as native 'fetch'.
+  fetcher: (input, init) =>
+    // 'dispatcher' is specific to undici and not part of the standard Fetch API.
+    fetch(input, { ...init, dispatcher } as RequestInit),
 });
 
 httpClient.addHook("beforeRequest", (request) => {
