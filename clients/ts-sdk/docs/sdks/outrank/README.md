@@ -1,5 +1,4 @@
 # Outrank
-(*outrank*)
 
 ## Overview
 

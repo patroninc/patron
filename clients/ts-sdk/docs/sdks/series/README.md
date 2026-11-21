@@ -1,5 +1,4 @@
 # Series
-(*series*)
 
 ## Overview
 
