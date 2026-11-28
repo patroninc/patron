@@ -1,6 +1,6 @@
 {
   "name": "patronts",
-  "version": "0.10.6",
+  "version": "0.11.0",
   "author": "Speakeasy",
   "type": "module",
   "tshy": {
@@ -10,6 +10,7 @@
     "exports": {
       ".": "./src/index.ts",
       "./package.json": "./package.json",
+      "./node": "./src/node.ts",
       "./types": "./src/types/index.ts",
       "./models/errors": "./src/models/errors/index.ts",
       "./models": "./src/models/index.ts",
@@ -31,15 +32,15 @@
   },
   "peerDependencies": {},
   "devDependencies": {
-    "@eslint/js": "^9.19.0",
-    "eslint": "^9.19.0",
+    "@eslint/js": "^9.26.0",
+    "eslint": "^9.26.0",
     "globals": "^15.14.0",
-    "tshy": "^2.0.0",
+    "tshy": "^3.3.2",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.26.0"
   },
   "dependencies": {
-    "zod": "^3.20.0"
+    "zod": "^3.25.0 || ^4.6.6"
   },
   "exports": {
     ".": {
@@ -54,6 +55,17 @@
       }
     },
     "./package.json": "./package.json",
+    "./node": {
+      "import": {
+        "patronts/source": "./src/node.ts",
+        "types": "./dist/esm/node.d.ts",
+        "default": "./dist/esm/node.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/node.d.ts",
+        "default": "./dist/commonjs/node.js"
+      }
+    },
     "./types": {
       "import": {
         "patronts/source": "./src/types/index.ts",

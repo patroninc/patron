@@ -2,11 +2,12 @@
 
 {
   "name": "patronts",
-  "version": "0.10.6",
+  "version": "0.11.0",
   "exports": {
-    ".": "./src/index.ts",    
-    "./models/errors": "./src/models/errors/index.ts",    
-    "./models": "./src/models/index.ts",    
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts",
+    "./models/errors": "./src/models/errors/index.ts",
+    "./models": "./src/models/index.ts",
     "./models/operations": "./src/models/operations/index.ts",
     "./lib/config": "./src/lib/config.ts",
     "./lib/http": "./src/lib/http.ts",
