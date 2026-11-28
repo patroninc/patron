@@ -148,3 +148,48 @@ export function allRequired<V extends Record<string, unknown>>(
 
   return v as ReturnType<typeof allRequired<V>>;
 }
+
+export function isPlainObject(
+  value: unknown,
+): value is Record<string, unknown> {
+  if (value === null || typeof value !== "object") return false;
+  if (Object.prototype.toString.call(value) !== "[object Object]") return false;
+  const proto = Object.getPrototypeOf(value);
+  if (proto === null || proto === Object.prototype) return true;
+  // cross-realm plain objects (vm contexts, iframes) inherit from a
+  // different realm's Object.prototype, which itself has a null prototype
+  try {
+    return Object.getPrototypeOf(proto) === null;
+  } catch {
+    return false;
+  }
+}
+
+function exceedsMaxLength(value: string, maxLength: number): boolean {
+  if (value.length <= maxLength) {
+    return false;
+  }
+  let codePoints = 0;
+  for (const _ of value) {
+    if (++codePoints > maxLength) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function withinMaxLength(maxLength: number): (value: string) => boolean {
+  return (value) => !exceedsMaxLength(value, maxLength);
+}
+
+// A value over maxLength is rejected by withinMaxLength, so the pattern is not
+// run against arbitrarily long input.
+export function matchesPattern(
+  pattern: string,
+  maxLength?: number,
+): (value: string) => boolean {
+  const re = new RegExp(pattern, "u");
+  return (value) =>
+    (maxLength !== undefined && exceedsMaxLength(value, maxLength)) ||
+    re.test(value);
+}
